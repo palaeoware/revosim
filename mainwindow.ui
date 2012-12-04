@@ -50,8 +50,8 @@
   <widget class="QDockWidget" name="envSettings">
    <property name="minimumSize">
     <size>
-     <width>285</width>
-     <height>610</height>
+     <width>331</width>
+     <height>625</height>
     </size>
    </property>
    <property name="accessibleName">
@@ -81,7 +81,7 @@
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Please enter the settings for the dynamic environment below. Most are obvious. Convergence sets the amount of smoothing between spots and background.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Please enter the settings for the dynamic environment below. Most are obvious. Convergence sets the amount of smoothing between spots and background. 0.01 is very smooth, but will initially take about a minute to create environment.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
        </property>
       </widget>
      </item>
@@ -153,13 +153,6 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="5" column="1">
-      <widget class="QSpinBox" name="velMax">
-       <property name="value">
-        <number>5</number>
-       </property>
-      </widget>
-     </item>
      <item row="6" column="0">
       <widget class="QLabel" name="label_6">
        <property name="text">
@@ -174,14 +167,14 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+     <item row="8" column="0">
       <widget class="QLabel" name="label_8">
        <property name="text">
         <string>Background:</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
+     <item row="8" column="1">
       <widget class="QCheckBox" name="periodic">
        <property name="text">
         <string>Periodic</string>
@@ -191,14 +184,14 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
+     <item row="10" column="0">
       <widget class="QLabel" name="label_9">
        <property name="text">
         <string>Convergence</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="1">
+     <item row="10" column="1">
       <widget class="QDoubleSpinBox" name="convergeAt">
        <property name="decimals">
         <number>4</number>
@@ -212,30 +205,33 @@ p, li { white-space: pre-wrap; }
        <property name="singleStep">
         <double>0.001000000000000</double>
        </property>
+       <property name="value">
+        <double>0.100000000000000</double>
+       </property>
       </widget>
      </item>
-     <item row="9" column="0">
+     <item row="12" column="0">
       <widget class="QCheckBox" name="checkBox">
        <property name="text">
         <string>Background colour</string>
        </property>
       </widget>
      </item>
-     <item row="9" column="1">
+     <item row="12" column="1">
       <widget class="QPushButton" name="colourbutton">
        <property name="text">
         <string>Pick</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="0">
+     <item row="13" column="0">
       <widget class="QLabel" name="label_5">
        <property name="text">
         <string>Generate for...</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="1">
+     <item row="13" column="1">
       <widget class="QSpinBox" name="numGenerations">
        <property name="minimum">
         <number>1</number>
@@ -248,28 +244,28 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="12" column="0">
+     <item row="15" column="0">
       <widget class="QPushButton" name="generateEnvironment">
        <property name="text">
         <string>Go!</string>
        </property>
       </widget>
      </item>
-     <item row="12" column="1">
+     <item row="15" column="1">
       <widget class="QPushButton" name="pushButton">
        <property name="text">
         <string>Save location...</string>
        </property>
       </widget>
      </item>
-     <item row="13" column="0">
+     <item row="16" column="0">
       <widget class="QLabel" name="label_7">
        <property name="text">
         <string>Current:</string>
        </property>
       </widget>
      </item>
-     <item row="13" column="1">
+     <item row="16" column="1">
       <widget class="QTextBrowser" name="textBrowser_2">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
@@ -292,15 +288,79 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </item>
-     <item row="14" column="0">
+     <item row="17" column="0">
       <widget class="QLabel" name="label_10">
        <property name="text">
         <string>Save images?</string>
        </property>
       </widget>
      </item>
-     <item row="14" column="1">
+     <item row="17" column="1">
       <widget class="QCheckBox" name="checkBox_2">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="0">
+      <widget class="QLabel" name="label_12">
+       <property name="text">
+        <string>Overlap blur factor</string>
+       </property>
+      </widget>
+     </item>
+     <item row="7" column="1">
+      <widget class="QSpinBox" name="buffSpin">
+       <property name="maximum">
+        <number>50</number>
+       </property>
+       <property name="value">
+        <number>1</number>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="0">
+      <widget class="QLabel" name="label_13">
+       <property name="text">
+        <string>Speed factor</string>
+       </property>
+      </widget>
+     </item>
+     <item row="11" column="1">
+      <widget class="QDoubleSpinBox" name="factorSpin">
+       <property name="decimals">
+        <number>3</number>
+       </property>
+       <property name="minimum">
+        <double>0.001000000000000</double>
+       </property>
+       <property name="singleStep">
+        <double>0.100000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <widget class="QDoubleSpinBox" name="velMax2">
+       <property name="value">
+        <double>0.100000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="18" column="0">
+      <widget class="QLabel" name="label_14">
+       <property name="text">
+        <string>Universal blur</string>
+       </property>
+      </widget>
+     </item>
+     <item row="18" column="1">
+      <widget class="QCheckBox" name="blurChk">
        <property name="text">
         <string/>
        </property>

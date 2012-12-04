@@ -7,6 +7,7 @@
 #include <QString>
 #include <QDir>
 #include <QFileDialog>
+#include <QStatusBar>
 #include "environmentclass.h"
 #include "environmentscene.h"
 
@@ -24,7 +25,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    
+
 private slots:
     void on_generateEnvironment_clicked();
 
@@ -34,22 +35,29 @@ private slots:
 
     void on_sMin_valueChanged(int arg1);
 
-    void on_velMax_valueChanged(int arg1);
+    void on_velMax2_valueChanged(double arg1);
 
     void on_cvelMax_valueChanged(int arg1);
 
+    void on_buffSpin_valueChanged(int arg1);
+
     void on_periodic_clicked(bool checked);
+
+    void on_blurChk_clicked(bool checked);
 
     void on_numGenerations_valueChanged(int arg1);
 
     void on_convergeAt_valueChanged(double arg1);
 
+    void on_factorSpin_valueChanged(double arg1);
+
     void on_pushButton_clicked();
 
     void on_checkBox_2_toggled(bool checked);
 
+
 private:
-    Ui::MainWindow *ui;
+
     QDockWidget *envOptions;
     environmentclass *environmentobject;
     EnvironmentScene *envscene;
@@ -58,8 +66,10 @@ private:
     QImage *env_image;
     int generations;
     bool save;
+    Ui::MainWindow *ui;
 
     void RefreshEnvironment();
 };
 
 #endif // MAINWINDOW_H
+

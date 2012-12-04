@@ -36,15 +36,17 @@ QMessageBox::warning(0,"Error","No settings implemented for static environment",
 
 //This is a really shitty way of getting access functions to work, but can't be arsed to look at polymorphism again right now. Fix... Sometime.
 void environmentclass::nseed_change(int value){}
+void environmentclass::buff_change(int value){}
 void environmentclass::maxsize_change(int value){}
 void environmentclass::sizevel_change(int value){}
-void environmentclass::maxvel_change(int value){}
+void environmentclass::maxvel_change(double value){}
 void environmentclass::maxcvel_change(int value){}
 void environmentclass::periodic_change(bool value){}
+void environmentclass::blur_change(bool value){}
 void environmentclass::converge_change(double value){}
 void environmentclass::numbGenerations_change(int value){}
 void environmentclass::initialiseSeeds(int number){}
-
+void environmentclass::fact_change(double){}
 bool environmentclass::accessSave(){return saveMe;}
 
 void environmentclass::path(QString files_directory, bool doSave)

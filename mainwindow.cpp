@@ -4,6 +4,7 @@
 #include <QDockWidget>
 #include <QDebug>
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -90,6 +91,12 @@ void MainWindow::RefreshEnvironment()
 
 }
 
+
+void MainWindow::on_buffSpin_valueChanged(int arg1)
+{
+   environmentobject->buff_change(arg1);
+}
+
 void MainWindow::on_numSeed_valueChanged(int arg1)
 {
    environmentobject->nseed_change(arg1);
@@ -102,11 +109,10 @@ void MainWindow::on_sMax_valueChanged(int arg1)
 
 void MainWindow::on_sMin_valueChanged(int arg1)
 {
-
     environmentobject->sizevel_change(arg1);
 }
 
-void MainWindow::on_velMax_valueChanged(int arg1)
+void MainWindow::on_velMax2_valueChanged(double arg1)
 {
     environmentobject->maxvel_change(arg1);
 }
@@ -121,6 +127,11 @@ void MainWindow::on_periodic_clicked(bool checked)
     environmentobject->periodic_change(checked);
 }
 
+void MainWindow::on_blurChk_clicked(bool checked)
+{
+    environmentobject->blur_change(checked);
+}
+
 void MainWindow::on_numGenerations_valueChanged(int arg1)
 {
     generations=arg1;
@@ -130,6 +141,18 @@ void MainWindow::on_convergeAt_valueChanged(double arg1)
 {
     environmentobject->converge_change(arg1);
 }
+
+void MainWindow::on_factorSpin_valueChanged(double arg1)
+{
+    environmentobject->fact_change(arg1);
+
+}
+
+/*void MainWindow::statBar(double arg1)
+{
+    QString prog = QString("Residual is currently %1 ").arg(arg1);
+    statusBar()->showMessage(prog);
+}*/
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -144,3 +167,4 @@ void MainWindow::on_checkBox_2_toggled(bool checked)
 {
     save=checked;
 }
+

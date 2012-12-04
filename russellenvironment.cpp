@@ -3,16 +3,17 @@
 #include <QTextStream>
 #include <QString>
 #include <QFile>
+#include <QApplication>
 #include <time.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 /*
   To do:
-      -- Implement background colour - this will initialse the image to the background colour selected.
-         It should only have an effect if convergence is set to low, so I'm not entirely sure if it's worth implementing.
-         I guess it will be if we want abrupt environment boundaries to investigate what these do...
+ -- At some point move GUI code to here to get rid of crappy access functions in main
+ -- Similarly - add blur option to gui? Pretty easy...
 */
+
 
 
 russellenvironment::russellenvironment()
@@ -23,16 +24,20 @@ russellenvironment::russellenvironment()
    saveMe=false;
    nseed=4;
    maxsize=14;
-   initialiseSeeds(nseed);
-
-
 
    sizevel=5;
-   maxvel=5;
+
+   maxvel=.1;
+   maxacc=1;
+
    maxcvel=5;
    converge=.1;
    periodic=true;
+   blur = false;
+   buffer=1;
+   factor=1.;
 
+   initialiseSeeds(nseed);
    //Interpolate
    laplace();
 }
@@ -42,8 +47,10 @@ void russellenvironment::initialiseSeeds(int number)
     for (int i=0;i<number;i++)
           {
           for (int j=0;j<3;j++)seeds[i].colour[j]=Rand8();
-          seeds[i].n=(int)(Rand8()*(GRID_X/256.));
-          seeds[i].m=(int)(Rand8()*(GRID_Y/256.));
+          seeds[i].n=(Rand8()*(GRID_X/256.));
+          seeds[i].m=(Rand8()*(GRID_Y/256.));
+          seeds[i].nv=0.;
+          seeds[i].mv=0.;
           int r=Rand8();
           seeds[i].size=(r * maxsize)/256;
           }
@@ -55,27 +62,46 @@ void russellenvironment::regenerate()
     //This code iterates the environment - for each it adds the required factors for an iteration
     for (int i=0;i<nseed;i++)
           {
-          for (int j=0;j<3;j++)seeds[i].colour[j]+=((double)((Rand8()-128)*((float)maxcvel/128.)));
+          //na to be added to velocity n - first come up with this iteration's value
+          //+/-RAND    //limit it to max acceleration //apply factor
+          na = (Rand8()-128.)*((float)maxacc/128.)*factor;
+          //Apply soft limit if velocity is above/below max and acc is in wrong direction//
+          if (fabs(seeds[i].nv)>maxvel && (seeds[i].nv*na)>0)na*=(1/((fabs(seeds[i].nv)-maxvel+1)*5));
+          // 5 == 'strength' of soft limit
+
+          ma = (Rand8()-128.)*((float)maxacc/128.)*factor;
+          if (fabs(seeds[i].mv)>maxvel && (seeds[i].mv*ma)>0)ma*=(1/((fabs(seeds[i].mv)-maxvel+1)*5));
+
+          //Accelerations to apply to nv/mv are now sorted.... Apply next
+          seeds[i].nv+=na;
+          seeds[i].mv+=ma;
+
+          seeds[i].n+=(seeds[i].nv*factor);
+          seeds[i].m+=(seeds[i].mv*factor);
+          for (int j=0;j<3;j++)seeds[i].colour[j]+=factor*((double)((Rand8()-128)*((float)maxcvel/128.)));
           for (int j=0;j<3;j++)if((int)seeds[i].colour[j]>255)seeds[i].colour[j]=255.;
           for (int j=0;j<3;j++)if((int)seeds[i].colour[j]<=0)seeds[i].colour[j]=0.;
-          seeds[i].n+=(int)((Rand8()-128)*((float)maxvel/128.));
-          if(periodic){if(seeds[i].n>(GRID_X-1))seeds[i].n=0;
-                       if(seeds[i].n<1)seeds[i].n=(GRID_X-1);}
-          else        {if(seeds[i].n>(GRID_X-1))seeds[i].n=(GRID_X-1);
-                       if(seeds[i].n<1)seeds[i].n=0;}
-          seeds[i].m+=(int)((Rand8()-128)*((float)maxvel/128.));
-          if(periodic){if(seeds[i].m>(GRID_Y-1))seeds[i].m=0;
-                       if(seeds[i].m<1)seeds[i].m=(GRID_Y-1);}
-          else        {if(seeds[i].m>(GRID_Y-1))seeds[i].m=(GRID_Y-1);
-                       if(seeds[i].m<1)seeds[i].m=0;}
-          seeds[i].size+=(int)((Rand8()-128)*((float)sizevel/128.));
+          seeds[i].size+=factor*((Rand8()-128)*((float)sizevel/128.));
+
+
+          if(periodic){if(seeds[i].n>(GRID_X-.1))seeds[i].n=0.;
+                       if(seeds[i].n<0)seeds[i].n=(GRID_X-.1);}
+          else        {if(seeds[i].n>(GRID_X-.1))seeds[i].n=(GRID_X-.1);
+                       if(seeds[i].n<0)seeds[i].n=0.;}
+
+          if(periodic){if(seeds[i].m>(GRID_Y-.1))seeds[i].m=0.;
+                       if(seeds[i].m<0)seeds[i].m=(GRID_Y-.1);}
+          else        {if(seeds[i].m>(GRID_Y-.1))seeds[i].m=(GRID_Y-.1);
+                       if(seeds[i].m<0)seeds[i].m=0.;}
+
           if(seeds[i].size>maxsize)seeds[i].size=maxsize;
           if(seeds[i].size<1)seeds[i].size=1;
+
+
           }
 
-    //Then interpolation occurs in the laplace function
+    //Interpolation then occurs in the laplace function
      laplace();
-
 }
 
 int russellenvironment::Rand8()
@@ -92,6 +118,10 @@ void russellenvironment::nseed_change(int value)
 nseed= value;
 initialiseSeeds(nseed);
 }
+void  russellenvironment::buff_change (int value)
+{
+buffer= value;
+}
 void russellenvironment::maxsize_change(int value)
 {
 maxsize= value;
@@ -100,7 +130,7 @@ void russellenvironment::sizevel_change(int value)
 {
 sizevel= value;
 }
-void russellenvironment::maxvel_change(int value)
+void russellenvironment::maxvel_change(double value)
 {
 maxvel=value;
 }
@@ -112,6 +142,10 @@ void russellenvironment::periodic_change(bool value)
 {
 periodic=value;
 }
+void russellenvironment::blur_change(bool value)
+{
+blur=value;
+}
 void russellenvironment::converge_change(double value)
 {
 converge=value;
@@ -121,6 +155,10 @@ void russellenvironment::numbGenerations_change(int value)
 numbGenerations=value;
 }
 
+void russellenvironment::fact_change(double value)
+{
+factor=value;
+}
 
 void russellenvironment::laplace()
 {
@@ -130,7 +168,7 @@ void russellenvironment::laplace()
     //First fill colours
     double colourMap[GRID_X][GRID_Y][3];
     //Do it all in double colourMap so don't get errors from using environment (integers)
-    bool laplace[GRID_X][GRID_Y];
+    int laplace[GRID_X][GRID_Y];
     double eTotal, e[3];
     //Laplacian = residual, total and then residual for R,G and B
 
@@ -138,13 +176,18 @@ void russellenvironment::laplace()
     for (int n=0; n<GRID_X; n++)
        for (int m=0; m<GRID_Y; m++)
             {
-            laplace[n][m]=true;
+            laplace[n][m]=0;
             for (int i=0;i<3;i++)colourMap[n][m][i]=environment[n][m][i];
             }
 
    double x,y;
    for (int l=0;l<nseed;l++)
    {
+   bool templaplace[GRID_X][GRID_Y];
+   for (int n=0; n<GRID_X; n++)
+      for (int m=0; m<GRID_Y; m++)
+           templaplace[n][m]=false;
+
     for(double z=-PI;z<PI;z+=.01)
     {
             //Draw circles...
@@ -153,57 +196,82 @@ void russellenvironment::laplace()
 
             if(periodic)
                 {
-                if(y>(GRID_Y-1))y-=(GRID_Y-1);
+                if(y>(GRID_Y-1)) y-=(GRID_Y-1);
                 if(y<0)y+=(GRID_Y-1);
                 }
 
-                int radius=seeds[l].n-x;
+            int radius=seeds[l].n-x;
 
-                for(double newX=x;newX<seeds[l].n+radius;newX++)
+            for(double newX=x;newX<seeds[l].n+radius;newX++)
+                {
+                if(newX>(GRID_X-1))
                     {
-                    if(newX>(GRID_X-1))
+                    if(periodic)
                         {
-                        if(periodic)
-                            {
-                            laplace[(int)newX-(GRID_X-1)][(int)y]=false;
-                            for (int i=0;i<3;i++)colourMap[(int)newX-(GRID_X-1)][(int)y][i]=seeds[l].colour[i];
-                            }
-                   }
-                    else if(newX<0)
-                        {
-                        if(periodic)
-                            {
-                            laplace[(int)newX+(GRID_X-1)][(int)y]=false;
-                            for (int i=0;i<3;i++)colourMap[(int)newX+(GRID_X-1)][(int)y][i]=seeds[l].colour[i];
-                            }
-                        }
-                    else{
-                        if(y>0 && y<GRID_Y)
-                            {
-                            laplace[(int)newX][(int)y]=false;
-                            for (int i=0;i<3;i++)colourMap[(int)newX][(int)y][i]=seeds[l].colour[i];
-                            }
+                        templaplace[(int)newX-(GRID_X-1)][(int)y]=true;
+                        for (int i=0;i<3;i++)colourMap[(int)newX-(GRID_X-1)][(int)y][i]=seeds[l].colour[i];
                         }
                     }
 
+                else if(newX<0)
+                    {
+                    if(periodic)
+                        {
+                        templaplace[(int)newX+(GRID_X-1)][(int)y]=true;
+                        for (int i=0;i<3;i++)colourMap[(int)newX+(GRID_X-1)][(int)y][i]=seeds[l].colour[i];
+                        }
+                    }
+
+                else
+                    {
+                    if(y>0 && y<GRID_Y)
+                        {
+                        templaplace[(int)newX][(int)y]=true;
+                        for (int i=0;i<3;i++)colourMap[(int)newX][(int)y][i]=seeds[l].colour[i];
+                        }
+                    }
+                }
+
              }
 
-    }
+    //Create laplace matrix which counts how many spots are overlapping in any given area
+    for (int n=0; n<GRID_X; n++)
+       for (int m=0; m<GRID_Y; m++)
+           if(templaplace[n][m])laplace[n][m]++;
+
+    if(buffer==0) //But not if buffer is set to zero - easy way of turning off system
+        for (int n=0; n<GRID_X; n++)
+           for (int m=0; m<GRID_Y; m++)
+                if (laplace[n][m]>1)laplace[n][m]=1;
+
+    if(blur) //Set all pixels to laplace
+        for (int n=0; n<GRID_X; n++)
+           for (int m=0; m<GRID_Y; m++)
+                laplace[n][m]=0;
+   }
+
+
+//Dilate overlapped selection if needed
+    for (int n=0; n<GRID_X; n++)
+      for (int m=0; m<GRID_Y; m++)
+          if(laplace[n][m]>1)
+                //Current implementation is simple square which enlarges each overlapping pixel by amount buffer
+                for (int i=(n-buffer);i<(n+buffer);i++)
+                    for (int j=(m-buffer);j<(m+buffer);j++)
+                        if(!periodic && i>0 && j>0 && i<(GRID_X-1) && j<(GRID_Y-1) && laplace[i][j]==1)laplace[i][j]=-1;
+                        else laplace[(i+GRID_X)%GRID_X][(j+GRID_Y)%GRID_Y]=-1;
 
 //Now smooth/interpolate
     int count=0;
     do
     {
-            eTotal=0.0;
+            eTotal=0.0;//This is the residual
             for (int n=0; n<GRID_X; n++)
                for (int m=0; m<GRID_Y; m++)
-                            if ((n+m)%2==count%2)
-                            //Calculate it chess-board style
-                            {
-                                 if (laplace[n][m])//If needs to be laplaced
-                                    {
-                                            for (int i=0;i<3;i++)
-                                            { //Average difference four pixels above and to sides. Modulus to make periodic == laplacian residual
+                            if ((n+m)%2==count%2)//Calculate it chess-board style
+                                if (laplace[n][m]!=1)//If needs to be laplaced
+                                          for (int i=0;i<3;i++)
+                                            { //Average difference surounding four pixels. Modulus to make periodic. Calculate laplacian residual.
                                                     if(periodic)e[i]=colourMap[(n+1)%(GRID_X-1)][m][i]+colourMap[(n-1+(GRID_X-1))%(GRID_X-1)][m][i]+
                                                             colourMap[n][(m+1)%(GRID_Y-1)][i]+colourMap[n][(m-1+(GRID_Y-1))%(GRID_Y-1)][i]
                                                                     -4.0*colourMap[n][m][i];
@@ -220,15 +288,21 @@ void russellenvironment::laplace()
                                                              colourMap[n][m+1][i]+colourMap[n][m-1][i]
                                                                      -4.0*colourMap[n][m][i];
                                                         }
-                                                  colourMap[n][m][i]+=1.2*e[i]/4.0;//Colour = average
-                                                   //1.2 = factor to speed up - can't find correct value.
+                                                  colourMap[n][m][i]+=1.2*e[i]/4.0;//Colour = average of surrounding pixels
+                                                   //1.2 == factor to speed up the calculation. I can't find correct value.
                                                    eTotal+=fabs(e[i]);
                                             }
-                                    }
-                            }
+
 
             count++;
             eTotal=eTotal/(3.0*((double) GRID_X)*((double) GRID_Y));
+
+            //Ideally still need to implement some kind of status bar / update
+            /*if (count%1000==0)
+            {
+            QString prog = QString("Residual is currently %1 ").arg(eTotal);
+            ui->statusBar()->showMessage(prog);
+            }*/
     }
   while (eTotal>converge);
 
@@ -240,96 +314,3 @@ void russellenvironment::laplace()
              }
 
 }
-
-/* Old code for square seeds
-for (int n=0; n<GRID_X; n++)
-   for (int m=0; m<GRID_Y; m++)
-            {
-                    test=false;
-                    int seedmatch;
-                    for (int l=0;l<NSEED;l++)//test if seed
-                            if ((n>=seeds[l].n && n<=(seeds[l].n+seeds[l].size)) && (m>=seeds[l].m && m<=(seeds[l].m+seeds[l].size)))
-                            {
-                                    test=true;
-                                    seedmatch=l;
-                                    break;
-                            }
-                    if (test)//if true make colour=seed
-                            for (int i=0;i<3;i++)colourMap[n][m][i]=seeds[seedmatch].colour[i];
-                    else//else set colour to average R/G/B level for the thing
-                            for (int i=0;i<3;i++)colourMap[n][m][i]=environment[n][m][i];//0;//e[i];
-                    //e is average, 0 is black
-            }
-
-    int x[50],y[50],size[50];//size=base multiplier
-    int r[50],g[50],b[50];//influence factors
-
-    for (int i=0;i<50;i++)
-    {
-    r[i]=(TheSimManager->Rand8()-128)*.4;
-    g[i]=(TheSimManager->Rand8()-128)*.4;
-    b[i]=(TheSimManager->Rand8()-128)*.4;
-
-    size[i]=(TheSimManager->Rand8()*0.234375)+70;
-qDebug()<<size[i];
-    x[i]=(int)(TheSimManager->Rand8()*0.390625);
-    y[i]=(int)(TheSimManager->Rand8()*0.390625);
-    //qDebug()<<r[i]<<g[i]<<b[i]<<x[i]<<y[i];
-    }
-
-    for (int n=0; n<GRID_X; n++)
-       for (int m=0; m<GRID_Y; m++)
-       {
-
-       int tr=128,tg=128,tb=128, flag=0;
-
-       for (int i=0;i<50;i++)
-            {
-            double distance=sqrt((double)(((n-x[i])*(n-x[i]))+((m-y[i])*(m-y[i]))));
-            tr+=(int)(((size[i]/(distance/500))*r[i])/1000);//random number for now
-            tg+=(int)(((size[i]/(distance/500))*g[i])/1000);
-            tb+=(int)(((size[i]/(distance/500))*b[i])/1000);
-            if(x[i]==n&&y[i]==m)
-                {
-                flag=i;
-                }
-            }
-//qDebug()<<n<<m<<tr<<tg<<tb<<"*";
-       if(tr>256)tr=256;if(tg>256)tg=256;if(tb>256)tb=256;
-       if(tr<0)tr=0;if(tg<0)tg=0;if(tb<0)tb=0;
-//qDebug()<<n<<m<<tr<<tg<<tb;
-       //if(flag==0)
-           {
-           environment[n][m][0]=(quint8)tr;
-           environment[n][m][1]=(quint8)tg;
-           environment[n][m][2]=(quint8)tb;
-           qDebug()<<n<<m<<tr<<tg<<tb;
-            }
-       else {
-            for (int i=0;i<50;i++)
-                    {
-                    if(flag==i)
-                            {
-                            environment[n][m][0]=(quint8)r[i];
-                            environment[n][m][1]=(quint8)g[i];
-                            environment[n][m][2]=(quint8)b[i];
-                            }
-                        }
-            }
-
-       }
-
-
-    int r;
-
-           for (int n=0; n<GRID_X; n++)
-           for (int m=0; m<GRID_Y; m++)
-           {
-               if (m>70) r=0; else {if (m<30) r=200; else r=100;}
-               environment[n][m][0]=(quint8)r;
-               environment[n][m][1]=(quint8)r;
-               environment[n][m][2]=(quint8)r;
-           }
-*/
-
-

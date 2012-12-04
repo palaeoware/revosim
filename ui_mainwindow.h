@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Tue 20. Mar 14:16:10 2012
-**      by: Qt User Interface Compiler version 4.8.0
+** Created: Thu 22. Nov 20:22:11 2012
+**      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -58,7 +58,6 @@ public:
     QLabel *label_3;
     QSpinBox *sMin;
     QLabel *label_4;
-    QSpinBox *velMax;
     QLabel *label_6;
     QSpinBox *cvelMax;
     QLabel *label_8;
@@ -75,6 +74,13 @@ public:
     QTextBrowser *textBrowser_2;
     QLabel *label_10;
     QCheckBox *checkBox_2;
+    QLabel *label_12;
+    QSpinBox *buffSpin;
+    QLabel *label_13;
+    QDoubleSpinBox *factorSpin;
+    QDoubleSpinBox *velMax2;
+    QLabel *label_14;
+    QCheckBox *blurChk;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -113,7 +119,7 @@ public:
         MainWindow->setStatusBar(statusBar);
         envSettings = new QDockWidget(MainWindow);
         envSettings->setObjectName(QString::fromUtf8("envSettings"));
-        envSettings->setMinimumSize(QSize(285, 610));
+        envSettings->setMinimumSize(QSize(331, 625));
         dockWidgetContents_3 = new QWidget();
         dockWidgetContents_3->setObjectName(QString::fromUtf8("dockWidgetContents_3"));
         dockWidgetContents_3->setMaximumSize(QSize(16777215, 600));
@@ -174,12 +180,6 @@ public:
 
         gridLayout->addWidget(label_4, 5, 0, 1, 1);
 
-        velMax = new QSpinBox(dockWidgetContents_3);
-        velMax->setObjectName(QString::fromUtf8("velMax"));
-        velMax->setValue(5);
-
-        gridLayout->addWidget(velMax, 5, 1, 1, 1);
-
         label_6 = new QLabel(dockWidgetContents_3);
         label_6->setObjectName(QString::fromUtf8("label_6"));
 
@@ -194,18 +194,18 @@ public:
         label_8 = new QLabel(dockWidgetContents_3);
         label_8->setObjectName(QString::fromUtf8("label_8"));
 
-        gridLayout->addWidget(label_8, 7, 0, 1, 1);
+        gridLayout->addWidget(label_8, 8, 0, 1, 1);
 
         periodic = new QCheckBox(dockWidgetContents_3);
         periodic->setObjectName(QString::fromUtf8("periodic"));
         periodic->setChecked(true);
 
-        gridLayout->addWidget(periodic, 7, 1, 1, 1);
+        gridLayout->addWidget(periodic, 8, 1, 1, 1);
 
         label_9 = new QLabel(dockWidgetContents_3);
         label_9->setObjectName(QString::fromUtf8("label_9"));
 
-        gridLayout->addWidget(label_9, 8, 0, 1, 1);
+        gridLayout->addWidget(label_9, 10, 0, 1, 1);
 
         convergeAt = new QDoubleSpinBox(dockWidgetContents_3);
         convergeAt->setObjectName(QString::fromUtf8("convergeAt"));
@@ -213,23 +213,24 @@ public:
         convergeAt->setMinimum(0);
         convergeAt->setMaximum(1);
         convergeAt->setSingleStep(0.001);
+        convergeAt->setValue(0.1);
 
-        gridLayout->addWidget(convergeAt, 8, 1, 1, 1);
+        gridLayout->addWidget(convergeAt, 10, 1, 1, 1);
 
         checkBox = new QCheckBox(dockWidgetContents_3);
         checkBox->setObjectName(QString::fromUtf8("checkBox"));
 
-        gridLayout->addWidget(checkBox, 9, 0, 1, 1);
+        gridLayout->addWidget(checkBox, 12, 0, 1, 1);
 
         colourbutton = new QPushButton(dockWidgetContents_3);
         colourbutton->setObjectName(QString::fromUtf8("colourbutton"));
 
-        gridLayout->addWidget(colourbutton, 9, 1, 1, 1);
+        gridLayout->addWidget(colourbutton, 12, 1, 1, 1);
 
         label_5 = new QLabel(dockWidgetContents_3);
         label_5->setObjectName(QString::fromUtf8("label_5"));
 
-        gridLayout->addWidget(label_5, 10, 0, 1, 1);
+        gridLayout->addWidget(label_5, 13, 0, 1, 1);
 
         numGenerations = new QSpinBox(dockWidgetContents_3);
         numGenerations->setObjectName(QString::fromUtf8("numGenerations"));
@@ -237,22 +238,22 @@ public:
         numGenerations->setMaximum(100000);
         numGenerations->setValue(500);
 
-        gridLayout->addWidget(numGenerations, 10, 1, 1, 1);
+        gridLayout->addWidget(numGenerations, 13, 1, 1, 1);
 
         generateEnvironment = new QPushButton(dockWidgetContents_3);
         generateEnvironment->setObjectName(QString::fromUtf8("generateEnvironment"));
 
-        gridLayout->addWidget(generateEnvironment, 12, 0, 1, 1);
+        gridLayout->addWidget(generateEnvironment, 15, 0, 1, 1);
 
         pushButton = new QPushButton(dockWidgetContents_3);
         pushButton->setObjectName(QString::fromUtf8("pushButton"));
 
-        gridLayout->addWidget(pushButton, 12, 1, 1, 1);
+        gridLayout->addWidget(pushButton, 15, 1, 1, 1);
 
         label_7 = new QLabel(dockWidgetContents_3);
         label_7->setObjectName(QString::fromUtf8("label_7"));
 
-        gridLayout->addWidget(label_7, 13, 0, 1, 1);
+        gridLayout->addWidget(label_7, 16, 0, 1, 1);
 
         textBrowser_2 = new QTextBrowser(dockWidgetContents_3);
         textBrowser_2->setObjectName(QString::fromUtf8("textBrowser_2"));
@@ -263,18 +264,61 @@ public:
         textBrowser_2->setSizePolicy(sizePolicy);
         textBrowser_2->setMaximumSize(QSize(150, 50));
 
-        gridLayout->addWidget(textBrowser_2, 13, 1, 1, 1);
+        gridLayout->addWidget(textBrowser_2, 16, 1, 1, 1);
 
         label_10 = new QLabel(dockWidgetContents_3);
         label_10->setObjectName(QString::fromUtf8("label_10"));
 
-        gridLayout->addWidget(label_10, 14, 0, 1, 1);
+        gridLayout->addWidget(label_10, 17, 0, 1, 1);
 
         checkBox_2 = new QCheckBox(dockWidgetContents_3);
         checkBox_2->setObjectName(QString::fromUtf8("checkBox_2"));
         checkBox_2->setChecked(false);
 
-        gridLayout->addWidget(checkBox_2, 14, 1, 1, 1);
+        gridLayout->addWidget(checkBox_2, 17, 1, 1, 1);
+
+        label_12 = new QLabel(dockWidgetContents_3);
+        label_12->setObjectName(QString::fromUtf8("label_12"));
+
+        gridLayout->addWidget(label_12, 7, 0, 1, 1);
+
+        buffSpin = new QSpinBox(dockWidgetContents_3);
+        buffSpin->setObjectName(QString::fromUtf8("buffSpin"));
+        buffSpin->setMaximum(50);
+        buffSpin->setValue(1);
+
+        gridLayout->addWidget(buffSpin, 7, 1, 1, 1);
+
+        label_13 = new QLabel(dockWidgetContents_3);
+        label_13->setObjectName(QString::fromUtf8("label_13"));
+
+        gridLayout->addWidget(label_13, 11, 0, 1, 1);
+
+        factorSpin = new QDoubleSpinBox(dockWidgetContents_3);
+        factorSpin->setObjectName(QString::fromUtf8("factorSpin"));
+        factorSpin->setDecimals(3);
+        factorSpin->setMinimum(0.001);
+        factorSpin->setSingleStep(0.1);
+        factorSpin->setValue(1);
+
+        gridLayout->addWidget(factorSpin, 11, 1, 1, 1);
+
+        velMax2 = new QDoubleSpinBox(dockWidgetContents_3);
+        velMax2->setObjectName(QString::fromUtf8("velMax2"));
+        velMax2->setValue(0.1);
+
+        gridLayout->addWidget(velMax2, 5, 1, 1, 1);
+
+        label_14 = new QLabel(dockWidgetContents_3);
+        label_14->setObjectName(QString::fromUtf8("label_14"));
+
+        gridLayout->addWidget(label_14, 18, 0, 1, 1);
+
+        blurChk = new QCheckBox(dockWidgetContents_3);
+        blurChk->setObjectName(QString::fromUtf8("blurChk"));
+        blurChk->setChecked(false);
+
+        gridLayout->addWidget(blurChk, 18, 1, 1, 1);
 
         envSettings->setWidget(dockWidgetContents_3);
         MainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(2), envSettings);
@@ -301,7 +345,7 @@ public:
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Please enter the settings for the dynamic environment below. Most are obvious. Convergence sets the amount of smoothing between spots and background.</span></p></body></html>", 0, QApplication::UnicodeUTF8));
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">Please enter the settings for the dynamic environment below. Most are obvious. Convergence sets the amount of smoothing between spots and background. 0.01 is very smooth, but will initially take about a minute to create environment.</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "Seeds:", 0, QApplication::UnicodeUTF8));
         label_11->setText(QApplication::translate("MainWindow", "Number", 0, QApplication::UnicodeUTF8));
         label_2->setText(QApplication::translate("MainWindow", "Max size", 0, QApplication::UnicodeUTF8));
@@ -324,6 +368,10 @@ public:
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:8pt;\">C:/tmp/</span></p></body></html>", 0, QApplication::UnicodeUTF8));
         label_10->setText(QApplication::translate("MainWindow", "Save images?", 0, QApplication::UnicodeUTF8));
         checkBox_2->setText(QString());
+        label_12->setText(QApplication::translate("MainWindow", "Overlap blur factor", 0, QApplication::UnicodeUTF8));
+        label_13->setText(QApplication::translate("MainWindow", "Speed factor", 0, QApplication::UnicodeUTF8));
+        label_14->setText(QApplication::translate("MainWindow", "Universal blur", 0, QApplication::UnicodeUTF8));
+        blurChk->setText(QString());
     } // retranslateUi
 
 };
