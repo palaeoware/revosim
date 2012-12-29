@@ -8,60 +8,58 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-/*
-  To do:
- -- At some point move GUI code to here to get rid of crappy access functions in main
- -- Similarly - add blur option to gui? Pretty easy...
-*/
-
-
-
 russellenvironment::russellenvironment()
 {
 
     //Setup
    qsrand(time(NULL));
    saveMe=false;
-   nseed=4;
-   maxsize=14;
 
-   sizevel=5;
+   readSettings();
 
-   maxvel=.1;
-   maxacc=1;
-
-   maxcvel=5;
-   converge=.1;
-   periodic=true;
-   blur = false;
-   buffer=1;
-   factor=1.;
-
-   initialiseSeeds(nseed);
-   //Interpolate
-   laplace();
 }
 
-void russellenvironment::initialiseSeeds(int number)
+
+void russellenvironment::readSettings()
 {
-    for (int i=0;i<number;i++)
-          {
-          for (int j=0;j<3;j++)seeds[i].colour[j]=Rand8();
-          seeds[i].n=(Rand8()*(GRID_X/256.));
-          seeds[i].m=(Rand8()*(GRID_Y/256.));
-          seeds[i].nv=0.;
-          seeds[i].mv=0.;
-          int r=Rand8();
-          seeds[i].size=(r * maxsize)/256;
-          }
 
+    nseed=MainWin->ui->numSeed->value();
+    buffer=MainWin->ui->buffSpin->value();
+    maxsize=MainWin->ui->sMax->value();
+    sizevel=MainWin->ui->sMin->value();
+    maxvel=MainWin->ui->velMax2->value();
+    periodic=MainWin->ui->periodic->isChecked();
+    blur=MainWin->ui->blurChk->isChecked();
+    converge=MainWin->ui->convergeAt->value();
+    numbGenerations=MainWin->ui->numGenerations->value();
+    factor=MainWin->ui->factorSpin->value();    
+    maxacc=1;
 }
+
+
 
 void russellenvironment::regenerate()
 {
+    readSettings();
+
     //This code iterates the environment - for each it adds the required factors for an iteration
     for (int i=0;i<nseed;i++)
           {
+
+           //Check initialised
+           int test=0;
+           for (int j=0;j<3;j++)test+=seeds[i].colour[j];
+           if(test==0 &&  seeds[i].n ==0 &&  seeds[i].m ==0)
+               {
+               for (int j=0;j<3;j++)seeds[i].colour[j]=Rand8();
+               seeds[i].n=(Rand8()*(MainWin->ui->spinSize->value()/256.));
+               seeds[i].m=(Rand8()*(MainWin->ui->spinSize->value()/256.));
+               seeds[i].nv=0.;
+               seeds[i].mv=0.;
+               int r=Rand8();
+               seeds[i].size=(r * maxsize)/256;
+               }
+
           //na to be added to velocity n - first come up with this iteration's value
           //+/-RAND    //limit it to max acceleration //apply factor
           na = (Rand8()-128.)*((float)maxacc/128.)*factor;
@@ -84,14 +82,14 @@ void russellenvironment::regenerate()
           seeds[i].size+=factor*((Rand8()-128)*((float)sizevel/128.));
 
 
-          if(periodic){if(seeds[i].n>(GRID_X-.1))seeds[i].n=0.;
-                       if(seeds[i].n<0)seeds[i].n=(GRID_X-.1);}
-          else        {if(seeds[i].n>(GRID_X-.1))seeds[i].n=(GRID_X-.1);
+          if(periodic){if(seeds[i].n>(MainWin->ui->spinSize->value()-.1))seeds[i].n=0.;
+                       if(seeds[i].n<0)seeds[i].n=(MainWin->ui->spinSize->value()-.1);}
+          else        {if(seeds[i].n>(MainWin->ui->spinSize->value()-.1))seeds[i].n=(MainWin->ui->spinSize->value()-.1);
                        if(seeds[i].n<0)seeds[i].n=0.;}
 
-          if(periodic){if(seeds[i].m>(GRID_Y-.1))seeds[i].m=0.;
-                       if(seeds[i].m<0)seeds[i].m=(GRID_Y-.1);}
-          else        {if(seeds[i].m>(GRID_Y-.1))seeds[i].m=(GRID_Y-.1);
+          if(periodic){if(seeds[i].m>(MainWin->ui->spinSize->value()-.1))seeds[i].m=0.;
+                       if(seeds[i].m<0)seeds[i].m=(MainWin->ui->spinSize->value()-.1);}
+          else        {if(seeds[i].m>(MainWin->ui->spinSize->value()-.1))seeds[i].m=(MainWin->ui->spinSize->value()-.1);
                        if(seeds[i].m<0)seeds[i].m=0.;}
 
           if(seeds[i].size>maxsize)seeds[i].size=maxsize;
@@ -110,71 +108,21 @@ int russellenvironment::Rand8()
     return (quint8)(qrand() & 255);
 }
 
-//Access functions because I couldn't find a better way to get the UI to communicate with the Russell Environment
-//version of the class. There will be one, but I have forgotten polymorphism and was a little too lazy to look it up..
-
-void russellenvironment::nseed_change(int value)
-{   
-nseed= value;
-initialiseSeeds(nseed);
-}
-void  russellenvironment::buff_change (int value)
-{
-buffer= value;
-}
-void russellenvironment::maxsize_change(int value)
-{
-maxsize= value;
-}
-void russellenvironment::sizevel_change(int value)
-{
-sizevel= value;
-}
-void russellenvironment::maxvel_change(double value)
-{
-maxvel=value;
-}
-void russellenvironment::maxcvel_change(int value)
-{
-maxcvel=value;
-}
-void russellenvironment::periodic_change(bool value)
-{
-periodic=value;
-}
-void russellenvironment::blur_change(bool value)
-{
-blur=value;
-}
-void russellenvironment::converge_change(double value)
-{
-converge=value;
-}
-void russellenvironment::numbGenerations_change(int value)
-{
-numbGenerations=value;
-}
-
-void russellenvironment::fact_change(double value)
-{
-factor=value;
-}
-
 void russellenvironment::laplace()
 {
 
 
     //Interpolate
     //First fill colours
-    double colourMap[GRID_X][GRID_Y][3];
+    double colourMap[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()][3];
     //Do it all in double colourMap so don't get errors from using environment (integers)
-    int laplace[GRID_X][GRID_Y];
+    int laplace[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()];
     double eTotal, e[3];
     //Laplacian = residual, total and then residual for R,G and B
 
     //Initialise colourmap from environment to make laplacian faster
-    for (int n=0; n<GRID_X; n++)
-       for (int m=0; m<GRID_Y; m++)
+    for (int n=0; n<MainWin->ui->spinSize->value(); n++)
+       for (int m=0; m<MainWin->ui->spinSize->value(); m++)
             {
             laplace[n][m]=0;
             for (int i=0;i<3;i++)colourMap[n][m][i]=environment[n][m][i];
@@ -183,9 +131,9 @@ void russellenvironment::laplace()
    double x,y;
    for (int l=0;l<nseed;l++)
    {
-   bool templaplace[GRID_X][GRID_Y];
-   for (int n=0; n<GRID_X; n++)
-      for (int m=0; m<GRID_Y; m++)
+   bool templaplace[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()];
+   for (int n=0; n<MainWin->ui->spinSize->value(); n++)
+      for (int m=0; m<MainWin->ui->spinSize->value(); m++)
            templaplace[n][m]=false;
 
     for(double z=-PI;z<PI;z+=.01)
@@ -196,20 +144,20 @@ void russellenvironment::laplace()
 
             if(periodic)
                 {
-                if(y>(GRID_Y-1)) y-=(GRID_Y-1);
-                if(y<0)y+=(GRID_Y-1);
+                if(y>(MainWin->ui->spinSize->value()-1)) y-=(MainWin->ui->spinSize->value()-1);
+                if(y<0)y+=(MainWin->ui->spinSize->value()-1);
                 }
 
             int radius=seeds[l].n-x;
 
             for(double newX=x;newX<seeds[l].n+radius;newX++)
                 {
-                if(newX>(GRID_X-1))
+                if(newX>(MainWin->ui->spinSize->value()-1))
                     {
                     if(periodic)
                         {
-                        templaplace[(int)newX-(GRID_X-1)][(int)y]=true;
-                        for (int i=0;i<3;i++)colourMap[(int)newX-(GRID_X-1)][(int)y][i]=seeds[l].colour[i];
+                        templaplace[(int)newX-(MainWin->ui->spinSize->value()-1)][(int)y]=true;
+                        for (int i=0;i<3;i++)colourMap[(int)newX-(MainWin->ui->spinSize->value()-1)][(int)y][i]=seeds[l].colour[i];
                         }
                     }
 
@@ -217,14 +165,14 @@ void russellenvironment::laplace()
                     {
                     if(periodic)
                         {
-                        templaplace[(int)newX+(GRID_X-1)][(int)y]=true;
-                        for (int i=0;i<3;i++)colourMap[(int)newX+(GRID_X-1)][(int)y][i]=seeds[l].colour[i];
+                        templaplace[(int)newX+(MainWin->ui->spinSize->value()-1)][(int)y]=true;
+                        for (int i=0;i<3;i++)colourMap[(int)newX+(MainWin->ui->spinSize->value()-1)][(int)y][i]=seeds[l].colour[i];
                         }
                     }
 
                 else
                     {
-                    if(y>0 && y<GRID_Y)
+                    if(y>0 && y<MainWin->ui->spinSize->value())
                         {
                         templaplace[(int)newX][(int)y]=true;
                         for (int i=0;i<3;i++)colourMap[(int)newX][(int)y][i]=seeds[l].colour[i];
@@ -235,55 +183,55 @@ void russellenvironment::laplace()
              }
 
     //Create laplace matrix which counts how many spots are overlapping in any given area
-    for (int n=0; n<GRID_X; n++)
-       for (int m=0; m<GRID_Y; m++)
+    for (int n=0; n<MainWin->ui->spinSize->value(); n++)
+       for (int m=0; m<MainWin->ui->spinSize->value(); m++)
            if(templaplace[n][m])laplace[n][m]++;
 
     if(buffer==0) //But not if buffer is set to zero - easy way of turning off system
-        for (int n=0; n<GRID_X; n++)
-           for (int m=0; m<GRID_Y; m++)
+        for (int n=0; n<MainWin->ui->spinSize->value(); n++)
+           for (int m=0; m<MainWin->ui->spinSize->value(); m++)
                 if (laplace[n][m]>1)laplace[n][m]=1;
 
     if(blur) //Set all pixels to laplace
-        for (int n=0; n<GRID_X; n++)
-           for (int m=0; m<GRID_Y; m++)
+        for (int n=0; n<MainWin->ui->spinSize->value(); n++)
+           for (int m=0; m<MainWin->ui->spinSize->value(); m++)
                 laplace[n][m]=0;
    }
 
 
 //Dilate overlapped selection if needed
-    for (int n=0; n<GRID_X; n++)
-      for (int m=0; m<GRID_Y; m++)
+    for (int n=0; n<MainWin->ui->spinSize->value(); n++)
+      for (int m=0; m<MainWin->ui->spinSize->value(); m++)
           if(laplace[n][m]>1)
                 //Current implementation is simple square which enlarges each overlapping pixel by amount buffer
                 for (int i=(n-buffer);i<(n+buffer);i++)
                     for (int j=(m-buffer);j<(m+buffer);j++)
-                        if(!periodic && i>0 && j>0 && i<(GRID_X-1) && j<(GRID_Y-1) && laplace[i][j]==1)laplace[i][j]=-1;
-                        else laplace[(i+GRID_X)%GRID_X][(j+GRID_Y)%GRID_Y]=-1;
+                        if(!periodic && i>0 && j>0 && i<(MainWin->ui->spinSize->value()-1) && j<(MainWin->ui->spinSize->value()-1) && laplace[i][j]==1)laplace[i][j]=-1;
+                        else laplace[(i+MainWin->ui->spinSize->value())%MainWin->ui->spinSize->value()][(j+MainWin->ui->spinSize->value())%MainWin->ui->spinSize->value()]=-1;
 
 //Now smooth/interpolate
     int count=0;
     do
     {
             eTotal=0.0;//This is the residual
-            for (int n=0; n<GRID_X; n++)
-               for (int m=0; m<GRID_Y; m++)
+            for (int n=0; n<MainWin->ui->spinSize->value(); n++)
+               for (int m=0; m<MainWin->ui->spinSize->value(); m++)
                             if ((n+m)%2==count%2)//Calculate it chess-board style
                                 if (laplace[n][m]!=1)//If needs to be laplaced
                                           for (int i=0;i<3;i++)
                                             { //Average difference surounding four pixels. Modulus to make periodic. Calculate laplacian residual.
-                                                    if(periodic)e[i]=colourMap[(n+1)%(GRID_X-1)][m][i]+colourMap[(n-1+(GRID_X-1))%(GRID_X-1)][m][i]+
-                                                            colourMap[n][(m+1)%(GRID_Y-1)][i]+colourMap[n][(m-1+(GRID_Y-1))%(GRID_Y-1)][i]
+                                                    if(periodic)e[i]=colourMap[(n+1)%(MainWin->ui->spinSize->value()-1)][m][i]+colourMap[(n-1+(MainWin->ui->spinSize->value()-1))%(MainWin->ui->spinSize->value()-1)][m][i]+
+                                                            colourMap[n][(m+1)%(MainWin->ui->spinSize->value()-1)][i]+colourMap[n][(m-1+(MainWin->ui->spinSize->value()-1))%(MainWin->ui->spinSize->value()-1)][i]
                                                                     -4.0*colourMap[n][m][i];
                                                     else{
                                                         if(n==0&&m==0)e[i]=(colourMap[n][m+1][i]+colourMap[n+1][m][i])-2*colourMap[n][m][i];
-                                                        else if (n==(GRID_X-1)&&m==0)e[i]=(colourMap[n-1][m][i]+colourMap[n][m+1][i])-2*colourMap[n][m][i];
-                                                        else if (n==0&&m==(GRID_Y-1))e[i]=(colourMap[n][m-1][i]+colourMap[n+1][m][i])-2*colourMap[n][m][i];
-                                                        else if (n==(GRID_X-1)&&m==(GRID_Y-1))e[i]=(colourMap[n-1][m][i]+colourMap[n][m-1][i])-2*colourMap[n][m][i];
+                                                        else if (n==(MainWin->ui->spinSize->value()-1)&&m==0)e[i]=(colourMap[n-1][m][i]+colourMap[n][m+1][i])-2*colourMap[n][m][i];
+                                                        else if (n==0&&m==(MainWin->ui->spinSize->value()-1))e[i]=(colourMap[n][m-1][i]+colourMap[n+1][m][i])-2*colourMap[n][m][i];
+                                                        else if (n==(MainWin->ui->spinSize->value()-1)&&m==(MainWin->ui->spinSize->value()-1))e[i]=(colourMap[n-1][m][i]+colourMap[n][m-1][i])-2*colourMap[n][m][i];
                                                         else if (n==0)e[i]=(colourMap[n][m+1][i]+colourMap[n][m-1][i]+colourMap[n+1][m][i])-3*colourMap[n][m][i];
                                                         else if (m==0)e[i]=(colourMap[n][m+1][i]+colourMap[n-1][m][i]+colourMap[n+1][m][i])-3*colourMap[n][m][i];
-                                                        else if (n==(GRID_X-1))e[i]=(colourMap[n][m+1][i]+colourMap[n-1][m][i]+colourMap[n][m-1][i])-3*colourMap[n][m][i];
-                                                        else if (m==(GRID_Y-1))e[i]=(colourMap[n-1][m][i]+colourMap[n+1][m][i]+colourMap[n][m-1][i])-3*colourMap[n][m][i];
+                                                        else if (n==(MainWin->ui->spinSize->value()-1))e[i]=(colourMap[n][m+1][i]+colourMap[n-1][m][i]+colourMap[n][m-1][i])-3*colourMap[n][m][i];
+                                                        else if (m==(MainWin->ui->spinSize->value()-1))e[i]=(colourMap[n-1][m][i]+colourMap[n+1][m][i]+colourMap[n][m-1][i])-3*colourMap[n][m][i];
                                                         else e[i]=colourMap[n+1][m][i]+colourMap[n-1][m][i]+
                                                              colourMap[n][m+1][i]+colourMap[n][m-1][i]
                                                                      -4.0*colourMap[n][m][i];
@@ -295,19 +243,19 @@ void russellenvironment::laplace()
 
 
             count++;
-            eTotal=eTotal/(3.0*((double) GRID_X)*((double) GRID_Y));
+            eTotal=eTotal/(3.0*((double) MainWin->ui->spinSize->value())*((double) MainWin->ui->spinSize->value()));
 
             //Ideally still need to implement some kind of status bar / update
-            /*if (count%1000==0)
+            if (count%1000==0)
             {
             QString prog = QString("Residual is currently %1 ").arg(eTotal);
-            ui->statusBar()->showMessage(prog);
-            }*/
+            MainWin->ui->statusBar->showMessage(prog);
+            }
     }
   while (eTotal>converge);
 
-  for (int n=0; n<GRID_X; n++)
-       for (int m=0; m<GRID_Y; m++)
+  for (int n=0; n<MainWin->ui->spinSize->value(); n++)
+       for (int m=0; m<MainWin->ui->spinSize->value(); m++)
            for(int i=0; i<3; i++)
              {
                 environment[n][m][i]=(quint8)colourMap[n][m][i];

@@ -15,13 +15,23 @@ SOURCES += \
     mainwindow.cpp \
     main.cpp \
     environmentscene.cpp \
-    environmentclass.cpp
+    environmentclass.cpp \
+    markenvironment.cpp \
+    noiseenvironment.cpp \
+    combine.cpp \
+    colour.cpp \
+    makestack.cpp
 HEADERS  += \
     ui_mainwindow.h \
     ui_dialog.h \
     mainwindow.h \
     environmentscene.h \
-    environmentclass.h
+    environmentclass.h \
+    markenvironment.h \
+    noiseenvironment.h \
+    combine.h \
+    colour.h \
+    makestack.h
 
 FORMS    += \
     mainwindow.ui
