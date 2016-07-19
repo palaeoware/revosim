@@ -2,6 +2,7 @@
 #define ENVIRONMENTCLASS_H
 
 #define PI 3.141592654
+
 #include <QMessageBox>
 #include <QString>
 #include "math.h"
