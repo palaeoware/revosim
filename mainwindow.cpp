@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QProgressDialog>
 #include <QColorDialog>
+#include <QStandardPaths>
 
 MainWindow *MainWin;
 
@@ -22,7 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
    stackOneSize=0;
    stackTwoSize=0;
 
-   Directory.setPath("C:/tmp/");
+   Directory.setPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+   ui->path->setText(Directory.path());
 
    envscene = new EnvironmentScene;
    ui->enviroView->setScene(envscene);
@@ -38,7 +40,6 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->pushButtonStackTwo->setEnabled(false);
    ui->combineEnd->setEnabled(false);
 }
-
 
 MainWindow::~MainWindow()
 {
@@ -149,7 +150,7 @@ void MainWindow::on_pushButton_clicked()
     "d:/", QFileDialog::ShowDirsOnly);
     if (files_directory=="") return;
     else Directory=files_directory;
-    ui->textBrowser_2->setText(Directory.path());
+    ui->path->setText(Directory.path());
 }
 
 void MainWindow::on_pushButtonStackOne_clicked()

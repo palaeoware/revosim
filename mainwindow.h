@@ -33,20 +33,12 @@ public:
 
 private slots:
     void on_generateEnvironment_clicked();
-
     void on_pushButton_clicked();
-
     void on_checkBox_2_toggled(bool checked);
-
     void on_pushButtonStackOne_clicked();
-
     void on_pushButtonStackTwo_clicked();
-
     void on_combineStart_valueChanged(int arg1);
-
     void on_selectColour_clicked();
-
-
     void on_sFromImPushbutton_clicked();
 
 private:
