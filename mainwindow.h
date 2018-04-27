@@ -56,16 +56,17 @@ public:
     QDockWidget* createSimulationSettingsDock();
     QDockWidget* createOutputSettingsDock();
     QDockWidget* createOrganismSettingsDock();
+    void createMainToolbar();
 
     int RefreshRate;
 
 protected:
     void changeEvent(QEvent *e);
-    void resizeEvent(QResizeEvent *event);
+    void resizeEvent(QResizeEvent *e);
 
 private:
     int ScaleFails(int fails, float gens);
-    void closeEvent(QCloseEvent *event);
+    void closeEvent(QCloseEvent *e);
     void Report();
     void RunSetUp();
     void FinishRun();
@@ -85,7 +86,7 @@ private:
     QDockWidget *simulationSettingsDock, *organismSettingsDock, *outputSettingsDock;
 
     //RJG - GUI buttons and settings docker options which need to be accessible via slots, especially for load settings function
-    QAction *startButton, *stopButton, *pauseButton, *runForButton, *resetButton, *reseedButton, *runForBatchButton, *settingsButton, *aboutButton;
+    QAction *startButton, *stopButton, *pauseButton, *runForButton, *resetButton, *reseedButton, *runForBatchButton, *genomeComparisonButton, *settingsButton, *aboutButton;
     //RJG - Save images checkboxes
     QCheckBox *gui_checkbox, *save_population_count, *save_mean_fitness, *save_coding_genome_as_colour, *save_species, *save_non_coding_genome_as_colour, *save_gene_frequencies, *save_settles, *save_fails_settles, *save_environment, *interpolateCheckbox;
     //RJG - other checkboxes
@@ -124,7 +125,7 @@ private slots:
     void on_actionSettings_triggered();
     void on_actionCount_Peaks_triggered();
     void on_actionMisc_triggered();
-    void report_mode_changed(QAction *);
+    void report_mode_changed(QAction *a);
     void gui_checkbox_state_changed(bool);
     void save_all_checkbox_state_changed(bool);
     void dump_run_data();
@@ -159,6 +160,8 @@ private slots:
     void on_populationWindowComboBox_currentIndexChanged(int index);
     void on_actionCode_on_GitHub_triggered();
     void on_actionOnline_User_Manual_triggered();
+    void on_actionSettings_Dock_triggered();
+    void on_actionGenomeComparison_triggered(bool checked);
 };
 
 
