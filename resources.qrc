@@ -1,0 +1,59 @@
+<RCC>
+    <qresource prefix="/toolbar">
+        <file alias="startButton-Enabled.png">resources/toolbar/startButton-Enabled.png</file>
+        <file alias="pauseButton-Enabled.png">resources/toolbar/pauseButton-Enabled.png</file>
+        <file alias="resetButton-Enabled.png">resources/toolbar/resetButton-Enabled.png</file>
+        <file alias="runForButton-Enabled.png">resources/toolbar/runForButton-Enabled.png</file>
+        <file alias="resetButton_knowngenome-Enabled.png">resources/toolbar/resetButton_knowngenome-Enabled.png</file>
+        <file alias="runForBatchButton-Enabled.png">resources/toolbar/runForBatchButton-Enabled.png</file>
+        <file alias="settingsButton-Enabled.png">resources/toolbar/settingsButton-Enabled.png</file>
+        <file alias="globesettingsButton-Enabled.png">resources/toolbar/globesettingsButton-Enabled.png</file>
+        <file alias="aboutButton-Enabled.png">resources/toolbar/aboutButton-Enabled.png</file>
+        <file alias="logButton-Enabled.png">resources/toolbar/logButton-Enabled.png</file>
+        <file alias="stopButton-Enabled.png">resources/toolbar/stopButton-Enabled.png</file>
+        <file alias="aboutButton-Enabled-white.png">resources/toolbar/aboutButton-Enabled_white.png</file>
+        <file alias="globesettingsButton-Enabled-white.png">resources/toolbar/globesettingsButton-Enabled-white.png</file>
+        <file alias="logButton-Enabled-white.png">resources/toolbar/logButton-Enabled-white.png</file>
+        <file alias="settingsButton-Enabled-white.png">resources/toolbar/settingsButton-Enabled-white.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file alias="randoms.dat">resources/randoms.dat</file>
+        <file alias="EvoSim_default_env.png">resources/EvoSim_default_env.png</file>
+        <file alias="img.png">resources/img.png</file>
+        <file alias="gplV3Logo">resources/gplv3-127x51.png</file>
+        <file alias="icon.png">resources/icon.png</file>
+        <file alias="builtWithQTLogo">resources/Built_with_Qt_RGB_logo.png</file>
+    </qresource>
+    <qresource prefix="/darkstyle">
+        <file alias="stylesheet_dark.qss">resources/darkstyle/stylesheet_dark.qss</file>
+        <file alias="icon_branch_closed.png">resources/darkstyle/icon_branch_closed.png</file>
+        <file alias="icon_branch_end.png">resources/darkstyle/icon_branch_end.png</file>
+        <file alias="icon_branch_more.png">resources/darkstyle/icon_branch_more.png</file>
+        <file alias="icon_branch_open.png">resources/darkstyle/icon_branch_open.png</file>
+        <file alias="icon_checkbox_checked.png">resources/darkstyle/icon_checkbox_checked.png</file>
+        <file alias="icon_checkbox_checked_disabled.png">resources/darkstyle/icon_checkbox_checked_disabled.png</file>
+        <file alias="icon_checkbox_checked_pressed.png">resources/darkstyle/icon_checkbox_checked_pressed.png</file>
+        <file alias="icon_checkbox_indeterminate.png">resources/darkstyle/icon_checkbox_indeterminate.png</file>
+        <file alias="icon_checkbox_indeterminate_disabled.png">resources/darkstyle/icon_checkbox_indeterminate_disabled.png</file>
+        <file alias="icon_checkbox_indeterminate_pressed.png">resources/darkstyle/icon_checkbox_indeterminate_pressed.png</file>
+        <file alias="icon_checkbox_unchecked.png">resources/darkstyle/icon_checkbox_unchecked.png</file>
+        <file alias="icon_checkbox_unchecked_disabled.png">resources/darkstyle/icon_checkbox_unchecked_disabled.png</file>
+        <file alias="icon_checkbox_unchecked_pressed.png">resources/darkstyle/icon_checkbox_unchecked_pressed.png</file>
+        <file alias="icon_close.png">resources/darkstyle/icon_close.png</file>
+        <file alias="icon_radiobutton_checked.png">resources/darkstyle/icon_radiobutton_checked.png</file>
+        <file alias="icon_radiobutton_checked_disabled.png">resources/darkstyle/icon_radiobutton_checked_disabled.png</file>
+        <file alias="icon_radiobutton_pressed.png">resources/darkstyle/icon_radiobutton_checked_pressed.png</file>
+        <file alias="icon_radiobutton_unchecked.png">resources/darkstyle/icon_radiobutton_unchecked.png</file>
+        <file alias="icon_radiobutton_disabled.png">resources/darkstyle/icon_radiobutton_unchecked_disabled.png</file>
+        <file alias="icon_radiobutton_unchecked_pressed.png">resources/darkstyle/icon_radiobutton_unchecked_pressed.png</file>
+        <file alias="icon_restore.png">resources/darkstyle/icon_restore.png</file>
+        <file alias="icon_undock.png">resources/darkstyle/icon_undock.png</file>
+        <file alias="icon_vline.png">resources/darkstyle/icon_vline.png</file>
+    </qresource>
+    <qresource prefix="/frameless">
+        <file alias="icon_window_close.png">resources/frameless/icon_window_close.png</file>
+        <file alias="icon_window_maximize.png">resources/frameless/icon_window_maximize.png</file>
+        <file alias="icon_window_minimize.png">resources/frameless/icon_window_minimize.png</file>
+        <file alias="icon_window_restore.png">resources/frameless/icon_window_restore.png</file>
+    </qresource>
+</RCC>
