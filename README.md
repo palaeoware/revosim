@@ -1,5 +1,5 @@
 
-REVOSIM
+REvoSim
 =======
 **[R]apid [Evo]lutionary [Sim]ulator**
  
