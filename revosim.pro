@@ -2,7 +2,7 @@
 # Project created by QtCreator 2010-02-10T13:30:03
 # -------------------------------------------------
 QT += widgets concurrent
-TARGET = EvolutionSim
+TARGET = revosim
 TEMPLATE = app
 SOURCES += main.cpp \
     mainwindow.cpp \
