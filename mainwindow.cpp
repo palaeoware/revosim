@@ -519,7 +519,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     connect(settleTolerance_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) { settleTolerance=i; });
 
     recalcFitness_checkbox = new QCheckBox("Recalculate fitness");
-    recalcFitness_checkbox->setChecked(toroidal);
+    recalcFitness_checkbox->setChecked(recalcFitness);
     recalcFitness_checkbox->setToolTip("<font>Turning on recalculates the fitness of each organism every iteration.</font>");
     simulationSettingsGrid->addWidget(recalcFitness_checkbox,4,1,1,2);
     connect(recalcFitness_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { recalcFitness=i; });
