@@ -44,6 +44,7 @@ private slots:
     void combineStart_valueChanged();
     void on_selectColour_clicked();
     void on_sFromImPushbutton_clicked();
+    void about();
 
 private:
 
@@ -55,7 +56,7 @@ private:
     QImage *env_image;
     int generations, stackOneSize, stackTwoSize;
     bool save;
-    QAction *startButton;
+    QAction *startButton, *stopButton, *aboutButton;
 
     void combinelimits(int startPoint, int stkOne, int stkTwo);
     void RefreshEnvironment();

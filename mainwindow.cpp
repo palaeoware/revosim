@@ -67,12 +67,23 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->settings_tab_widget->setCurrentIndex(0);
 
    //RJG - Sort GUI
-   startButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_play_button_green.png")), QString("Run"), this);
-   startButton->setEnabled(true);
-   startButton->setToolTip(tr("<font>Use this button to generate and environment.</font>"));
    ui->toolBar->setIconSize(QSize(25,25));
+
+   startButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_play_button_green.png")), QString("Run"), this);
+   startButton->setToolTip(tr("<font>Use this button to generate an environment.</font>"));
    ui->toolBar->addAction(startButton);
    QObject::connect(startButton, SIGNAL(triggered()), this, SLOT(generateEnvironment()));
+
+   stopButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_stop_button_red.png")), QString("Stop"), this);
+   stopButton->setToolTip(tr("<font>Use this button stop the environmental generation.</font>"));
+   ui->toolBar->addAction(stopButton);
+   //TODO - implimenet stop button
+
+   aboutButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_about_button.png")), QString("About"), this);
+   aboutButton->setToolTip(tr("<font>Use this button to view information about this program.</font>"));
+   ui->toolBar->addAction(aboutButton);
+   QObject::connect(aboutButton, SIGNAL (triggered()), this, SLOT (about()));
+
 
    //RJG - Load random numbers
    simulation_randoms = new randoms();
@@ -284,4 +295,10 @@ void MainWindow::on_sFromImPushbutton_clicked()
     original.load(file_name);
 
     ui->spinSize->setValue(original.width());
+}
+
+void MainWindow::about()
+{
+    About adialogue;
+    adialogue.exec();
 }
