@@ -26,7 +26,9 @@
 
 #include "mainwindow.h"
 
-
+/*!
+ * \brief species::species
+ */
 species::species()
 {
     type=0;
@@ -38,11 +40,18 @@ species::species()
     logspeciesstructure=(LogSpecies*)0;
 }
 
+/*!
+ * \brief Analyser::Analyser
+ */
 Analyser::Analyser()
 {
     genomes_total_count=0;
 }
 
+/*!
+ * \brief Analyser::AddGenome_Fast
+ * \param genome
+ */
 void Analyser::AddGenome_Fast(quint64 genome)
 {
     //adds genome to sorted list. Use halving algorithm to find insertion point
@@ -54,7 +63,6 @@ void Analyser::AddGenome_Fast(quint64 genome)
         genomes_total_count++;
         return;
     }
-
 
     int minp=0;
     int maxp=genome_list.count()-1;
@@ -141,33 +149,37 @@ done:
     return;
 }
 
-
+/*!
+ * \brief Analyser::Groups_2017
+ *
+ * This is new code that uses the genealogical tracking of species since last analysis.
+ *
+ * Algorithm is:
+ *
+ * 1. Go through all critters, making sets of genomes for each species, and recording
+ * positions of all occurrences of each genome (for writing back changes).
+ *
+ * 2. For each species:
+ * 2a - Loop through all pairwise comparisons of genomes, looping from 0 to n-2 for
+ * 'first', first+1 to n-1 for second. Each time round loop, if first and second are
+ * close enough to group, place second into group of first, move on...; if second was
+ * already in a group, update ALL of that group to group of first, and move on...
+ * 2b - If only one group - do nothing except copy new species with new size if multiple
+ * groups - create new species from those with fewer unique genomes.
+ * 2c - Go through and write back new species IDs into cells.
+ */
 void Analyser::Groups_2017()
-//this is new code that uses the genealogical tracking of species since last analysis
-//Algorithm is:
-//1. Go through all critters, making sets of genomes for each species, and recording positions of all occurrences of
-//              each genome (for writing back changes)
-//2. For each species:
-//       2a. Loop through all pairwise comparisons of genomes, looping from 0 to n-2 for 'first', first+1 to n-1 for second.
-//              if each 'first' is not in a group, place it in a new one
-//       Each time round loop, if first and second are close enough to group, place second into group of first, move on
-//              if second was already in a group, update ALL of that group to group of first, and move on
-//
-//       2b. If only one group - do nothing except copy new species with new size
-//              if multiple groups - create new species from those with fewer unique genomes
-//
-//       2c. Go through and write back new species IDs into cells
 {
     QTime t;
-    t.start(); //for debug timing purposes
+    t.start(); //for debug/user warning timing purposes
 
     QHash<quint64,QSet<quint64> *> genomedata; //key is speciesID, set is all unique genomes within that species
 
+    //Horrible container structure to store all locations of particular genomes, for rapid write-back of new species
+    //first key is speciesid
+    //second key is gemome
+    //qlist is of quint32s which are packed x,y,z as x*65536+y*256+z
     QHash<quint64,QHash<quint64, QList<quint32> *> *> slotswithgenome;
-        //Horrible container structure to store all locations of particular genomes, for rapid write-back of new species
-        //first key is speciesid
-        //second key is gemome
-        //qlist is of quint32s which are packed x,y,z as x*65536+y*256+z
 
     QHash<quint64,qint32> speciessizes; //number of occurrences of particular species - key is speciesID
 
@@ -216,12 +228,10 @@ void Analyser::Groups_2017()
                 //add 1 to count of occurrences for this speciesID - by end it will be correct - pre-splitting
                 //later if species are split off, their counts will be removed from this
                 speciessizes[critters[n][m][c].speciesid]=speciessizes.value(critters[n][m][c].speciesid,0)+1;
-
             }
         }
     }
     //Done - all data retrieved and ready to process
-    //qDebug()<<"... data collected in "<<t.elapsed(); //print out time taken
 
     //Next. Go through each species and do all the pairwise comparisons. This is 2 above.
     QHashIterator<quint64,QSet<quint64> *> ii(genomedata); //iterator to loop over all species and their genome sets
@@ -262,6 +272,7 @@ void Analyser::Groups_2017()
                                                         //the MAX_GENOME_COUNT can be raised of course
             exit(0);
         }
+
         foreach(quint64 g,*speciesset) //copy genomes into static array and set groupcodes to 'not assigned' (-1)
         {
             genomes[arraymax]=g;
@@ -271,10 +282,8 @@ void Analyser::Groups_2017()
         }
         //arraymax is not numbe of items in the static array
 
-        //qDebug()<<"Starting PWC for "<<ii.key()<<"in "<<t.elapsed(); //print out time taken
         //now do ALL the possible pairwise comparisons
         //THIS is the slow bit, when there are not many species - not really any faster with index group merging
-
         for (int first=0; first<(arraymax-1); first++)
         {
             //if this isn't in a group - put it in a new one
@@ -297,7 +306,7 @@ void Analyser::Groups_2017()
                     if (gcs==firstgroupcode) continue;
                     //Already in same group - so no work to do, onto next iteration
                 }
-                //do comparison using standard (for EVOSIM) xor/bitcount code. By nd, t1 is bit-distance.
+                //do comparison using standard (for REvoSim) xor/bitcount code. By nd, t1 is bit-distance.
                 //maxDiff is set by user in the settings dialog
                 quint64 g1x = firstgenome ^ genomes[second]; //XOR the two to compare
                 quint32 g1xl = quint32(g1x & ((quint64)65536*(quint64)65536-(quint64)1)); //lower 32 bits
@@ -317,19 +326,13 @@ void Analyser::Groups_2017()
                             //It was in a group - but not same group as first or
                             //would have been caught by first line of loop
                             //so merge this group into group of first
-
                             grouplookup[gcs]=firstgroupcode;
-                            //old slow loop approach
-                            /*
-                            qint32 groupcodetomerge=groupcodes[second];
-                            countloop++;
-                            for (int i=0; i<arraymax; i++) if (groupcodes[i]==groupcodetomerge) groupcodes[i]=firstgroupcode;
-                            */
                         }
                     }
                 }
             }
         }
+
         int maxcode=-1;
         for (int i=0; i<arraymax; i++) //fix all groups
         {
@@ -342,8 +345,6 @@ void Analyser::Groups_2017()
         //if (groupcodes[i]==groupcodetomerge) groupcodes[i]=firstgroupcode;
         //after this loop - everything should be in groups - if there is more than one we need to split the species
         //one group will be old species, others will become new species
-        //qDebug()<<"Done PWC for "<<ii.key()<<" in "<<t.elapsed();
-
 
         //first - find out how many groups we have and how many genomes each has
         QHash<qint32,qint32> groups; //key is group code, value is number of genomes in that group
@@ -374,18 +375,15 @@ void Analyser::Groups_2017()
         QVector<LogSpecies *>logspeciespointers;
         logspeciespointers.resize(maxcode+1);
 
-       // qDebug()<<"WB";
-       jj.toFront(); //reuse same iterator for groups
+        jj.toFront(); //reuse same iterator for groups
         while (jj.hasNext())
         {
             jj.next();
             if (jj.key()!=maxcountkey) //if this ISN'T the one we picked to keep the old ID
             {
                 qint32 groupcode=jj.key(); //get its code
-
                 quint64 speciessize=0; //zero its size
                 quint64 samplegenome;  //will have to pick a genome for 'type' - it goes here
-
 
                 for (int iii=0; iii<arraymax; iii++) //go through static arrays -
                                                     //find all genome entries for this group
@@ -393,7 +391,7 @@ void Analyser::Groups_2017()
                 if (groupcodes[iii]==groupcode)
                 {
                      QList<quint32> *updatelist=slotswithgenome.value(speciesid)->value(genomes[iii]);
-                        //retrieve the list of positions for this genome
+                     //retrieve the list of positions for this genome
                      speciessize+=updatelist->count(); //add its count to size
                      foreach (quint32 v,*updatelist) //go through list and set critters data to new species
                      {
@@ -453,7 +451,6 @@ void Analyser::Groups_2017()
                         newsp = oldspecieslist[j];
                         if (species_mode>=SPECIES_MODE_PHYLOGENY)
                         {
-
                             logspeciespointers[jj.key()]=newsp.logspeciesstructure;
                             newsp.logspeciesstructure->time_of_last_appearance=generation;
                             LogSpeciesDataItem *newdata = new LogSpeciesDataItem;
@@ -474,7 +471,6 @@ void Analyser::Groups_2017()
                 //and put copied species (with new type) into the new species list
                 newspecieslist.append(newsp);
             }
-
         }
 
         if (species_mode==SPECIES_MODE_PHYLOGENY_AND_METRICS)
@@ -516,7 +512,6 @@ void Analyser::Groups_2017()
                  int maxy=-1;
                  int miny=256;
 
-
                  for (int iii=0; iii<arraymax; iii++) //go through static arrays -
                                                      //find all genome entries for this group
                                                      //and fix data in critters for them
@@ -527,7 +522,6 @@ void Analyser::Groups_2017()
                           QList<quint32> *updatelist=slotswithgenome.value(speciesid)->value(genomes[iii]);
                              //retrieve the list of positions for this genome
                           speciessize+=updatelist->count(); //add its count to size
-
 
                           foreach (quint32 v,*updatelist) //go through list and set critters data to new species
                           {
@@ -562,15 +556,12 @@ void Analyser::Groups_2017()
                               sumcol[1]+=(quint64)g;
                               sumcol[2]+=(quint64)b;
 
-
                               //TODO - allow for toroidal!
-
                               //to do - put correct data in this item
 
-//                              newdata->centroid_range_x=n; // mean of all x's - but allow for toroidal somehow
-//                              newdata->centroid_range_y=m;
-//                              newdata->geographical_range=0;  //max (max-min x, max-min y), but allow for toroidal
-
+                              //newdata->centroid_range_x=n; // mean of all x's - but allow for toroidal somehow
+                              //newdata->centroid_range_y=m;
+                              //newdata->geographical_range=0;  //max (max-min x, max-min y), but allow for toroidal
                           }
                           samplegenome=genomes[iii];
                      }
@@ -610,14 +601,12 @@ void Analyser::Groups_2017()
         }
         //also in maxsize for species fluff culling
     }
-    //qDebug()<<"Species done in "<<t.elapsed(); //print out time taken
 
     oldspecieslist=newspecieslist; //copy new list over old one
 
     //delete all data - not simple for the slotswithgenome hash of hashes, but this works!
     qDeleteAll(genomedata);
     QHashIterator<quint64, QHash<quint64, QList<quint32>* > *> iter(slotswithgenome);
-
     while (iter.hasNext())
     {
         iter.next();
@@ -628,32 +617,41 @@ void Analyser::Groups_2017()
 }
 
 
-//this was last functional version pre-2017. Now superceded by Groups_2017()
+//
+/*!
+ * \brief Analyser::Groups_With_History_Modal
+ *
+ * This was last functional version pre-2017. Now superceded by Groups_2017().
+ *
+ * Implementation of new search mechanism based around using modal genome as core of species.
+ *
+ * 1. Take ordered genomes from addgroups_fast
+ * 2. Set up an array for each which has a species number - default is 0 (not assigned).
+ * Set N (next species number) to 1
+ * 3. Find largest count not yet assigned to a species (perhaps do by sorting, but probably fine
+ * to just go through and find biggest). If everything is assigned, go to DONE
+ * 4. Compare this to ALL other genomes, whether assigned to a species or not. If they are close
+ * enough, mark them down as species N (will include self), or if they are already assigned to a
+ * species, note somewhere that those two species are equivalent
+ * 5. go through and fix up equivalent species
+ * 6. Go to 3
+ *
+ * Species still merge a little too easily.
+ * How about - only implement a species merge if we find a decent number of connections
+ * Now does this, but looks at not absolute size but connection size wrt overall size of the
+ * to-be-merged species
+ * Setting in dialog for sensitivity is percentage ratio between link size and my size. Normally around
+ * 100 - so small will tend to link to big, but
+ * big won't link to small. Seems to work pretty well.
+ *
+ * Next modification - matching up with species from different time-slices
+ *
+ * Then - do comparison with last time - not yet implemented
+ *
+ * \see Analyser::Groups_2017()
+ */
 void Analyser::Groups_With_History_Modal()
-//Implementation of new search mechanism based around using modal genome as core of species
-/*
-
-1. Take ordered genomes from addgroups_fast
-2. Set up an array for each which has a species number - default is 0 (not assigned). Set N (next species number) to 1
-3. Find largest count not yet assigned to a species (perhaps do by sorting, but probably fine to just go through and find biggest). If everything is assigned, go to DONE
-4. Compare this to ALL other genomes, whether assigned to a species or not. If they are close enough, mark them down as species N (will include self), or if they are already assigned to a species, note somewhere that those two species are equivalent
-5. go through and fix up equivalent species
-6. Go to 3
-
-Species still merge a little too easily.
-How about - only implement a species merge if we find a decent number of connections
-Now does this, but looks at not absolute size but connection size wrt overall size of the to-be-merged species
-Setting in dialog for sensitivity is percentage ratio between link size and my size. Normally around 100 - so small will tend to link to big, but
-big won't link to small. Seems to work pretty well.
-
-
-Next modification - matching up with species from different time-slices
-
-
-Then - do comparison with last time - not yet implemented
-*/
 {
-
     //QTime t;
     //t.start();
 
@@ -671,7 +669,6 @@ Then - do comparison with last time - not yet implemented
     species_type.append(0);
 
     //Calculate mergethreshold - how many cross links to merge a species?
-
     species_id.clear();
     for (int i=0; i<genome_list_count; i++) species_id.append(0);
 
@@ -680,7 +677,6 @@ Then - do comparison with last time - not yet implemented
 
     //List to hold the species translations
     QHash<int,int> merge_species; //second int is count of finds
-
 
     //3. Find largest count
     do
@@ -699,11 +695,9 @@ Then - do comparison with last time - not yet implemented
 
         if (largest==-1) break; // if all assigned - break out of do-while
 
-        //qDebug()<<"Species "<<next_id<<" size is "<<largest;
         //4. Compare this to ALL other genomes, whether assigned to a species or not.
         //If they are close enough, mark them down as species N (will include self),
         //or if they are already assigned to a species, note somewhere that those two species are equivalent
-
         int this_species_size=0;
         quint64 mygenome=genome_list[largest_index];
         for (int i=0; i<genome_list_count; i++)
@@ -733,12 +727,10 @@ Then - do comparison with last time - not yet implemented
             }
         }
 
-
         //5. go through and fix up equivalent species
         //merge any species that need merging
         //iterate over set, convert all examples to this species
         //Also check for the correct type specimen for this species - the one with highest count basically
-
         QHashIterator<int,int> j(merge_species);
         int highestcount=largest;
         int highestcountindex=largest_index;
@@ -746,14 +738,10 @@ Then - do comparison with last time - not yet implemented
         {
             j.next();
             int tomerge=j.key();
-            //OLD int senscalc= ((j.value())*100) / this_species_size; //work out percentage of link size to species size
             int usesize = qMin(this_species_size,species_sizes[tomerge]); //use ratio of links to SMALLEST of the two populations
             int senscalc= ((j.value())*100) / usesize;
-            //qDebug()<<"senscalc "<<senscalc<<"  size of link is "<<j.value()<<"  "<< " size of this species is "<<this_species_size<< " size of other species is "<<species_sizes[tomerge];
             if (senscalc >= speciesSensitivity)
            {
-
-                //qDebug()<<"Merging "<<tomerge<<" ...";
 
                 if (genome_count[species_type[tomerge]]>highestcount)
                 {
@@ -771,11 +759,8 @@ Then - do comparison with last time - not yet implemented
         merge_species.clear();
         species_type.append(highestcountindex);
         species_sizes.append(this_species_size); //store size
-//        qDebug()<<"species sizes: "<<species_sizes;
         next_id++;
     } while (true);
-
-//    qDebug()<<"Done species fine, elapsed "<<t.elapsed();
 
 
     //OK, now to match up with last time
@@ -894,7 +879,6 @@ Then - do comparison with last time - not yet implemented
         for (int j=0; j<oldspecieslist_combined.count(); j++)
         {
             //for every old species
-
             if (childcounts.contains(j))
             {
                 newspecieslist[primarychild[j]].ID=oldspecieslist_combined[j].ID;
@@ -902,8 +886,7 @@ Then - do comparison with last time - not yet implemented
                 newspecieslist[primarychild[j]].origintime=oldspecieslist_combined[j].origintime;
 
             }
-//                else //apparently went extinct, currently do nothing
-//                qDebug()<<"Species ID "<<oldspecieslist_combined[j].ID<<" apparently extinct: Size was "<<oldspecieslist_combined[j].size<<"  Time alive was "<<generation-oldspecieslist_combined[j].origintime;
+            // else //apparently went extinct, currently do nothing
 
         }
 
@@ -914,8 +897,6 @@ Then - do comparison with last time - not yet implemented
             newspecieslist[i].ID=nextspeciesid++;
             newspecieslist[i].parent=oldspecieslist_combined[parents[i]].ID;
             newspecieslist[i].origintime=generation;
-
-
         }
 
     }
@@ -928,7 +909,6 @@ Then - do comparison with last time - not yet implemented
             newspecieslist[i].origintime=generation;
         }
     }
-//    qDebug()<<"Done species linking, elapsed "<<t.elapsed();
 
     //straighten out parents in new array, and any other persistent info
     QHashIterator<int,int> ip(parents);
@@ -962,9 +942,13 @@ Then - do comparison with last time - not yet implemented
                                 // TO DO - note species going extinct here?
     }
     oldspecieslist=newspecieslist;
-//    qDebug()<<"Done last bits, elapsed "<<t.elapsed();
 }
 
+/*!
+ * \brief Analyser::SpeciesIndex
+ * \param genome
+ * \return lookup_persistant_species_id or -1
+ */
 int Analyser::SpeciesIndex(quint64 genome)
 //returns index (in genome_count, genome_list, species_id) for genome
 {
@@ -973,266 +957,5 @@ int Analyser::SpeciesIndex(quint64 genome)
     if (i==genome_list.end())
         return -1;
     else
-        return lookup_persistent_species_ID[species_id[i - genome_list.begin()]]; // this is QT bodgy way to get index apparentlty
-}
-
-//----------------------------------------------------------------------
-//OLDER CODE BELOW - for older reporting system - probably now obsolete
-//---------------------------------------------------------------------
-
-void Analyser::AddGenome(quint64 genome, int fitness)
-{
-    for (int j=0; j<genomes.count(); j++)
-    {
-        if (genomes[j].genome==genome) {genomes[j].count++; return;}
-    }
-    genomes.append(sortablegenome(genome, fitness,1));
-}
-
-QString Analyser::SortedSummary()
-//Pass this a list of genomes pre-grouped
-{
-    QString line;
-    QTextStream sout(&line);
-
-    qSort(genomes.begin(),genomes.end());
-
-    for (int i=0; i<genomes.count(); i++)
-    {
-        if (genomes[i].count<10) sout<<" "<<genomes[i].count<<": "; else  sout<<genomes[i].count<<": ";
-        for (int j=0; j<32; j++)
-            if (tweakers64[63-j] & genomes[i].genome) sout<<"1"; else sout<<"0";
-        sout<<" ";
-        for (int j=32; j<64; j++)
-            if (tweakers64[63-j] & genomes[i].genome) sout<<"1"; else sout<<"0";
-
-        sout<<"  fitness: "<<genomes[i].fit;
-
-        sout<<"\n";
-    }
-    return line;
-}
-
-int Analyser::Spread(int position, int group)
-//Old version of function
-//return value for next group!
-{
-    QList <int> joingroups;
-
-    genomes[position].group=group;
-    quint64 mygenome=genomes[position].genome;
-
-    for (int i=0; i<genomes.count(); i++)
-    {
-        if (joingroups.indexOf(genomes[i].group)==-1)
-        {
-            quint64 g1x = mygenome ^ genomes[i].genome; //XOR the two to compare
-            quint32 g1xl = quint32(g1x & ((quint64)65536*(quint64)65536-(quint64)1)); //lower 32 bits
-            int t1 = bitcounts[g1xl/(quint32)65536] +  bitcounts[g1xl & (quint32)65535];
-            if (t1<=maxDiff)
-            {
-                quint32 g1xu = quint32(g1x / ((quint64)65536*(quint64)65536)); //upper 32 bits
-                t1+= bitcounts[g1xu/(quint32)65536] +  bitcounts[g1xu & (quint32)65535];
-                if (t1<=maxDiff)
-                {
-                    if (genomes[i].group==0) genomes[i].group=group;
-                    else
-                    {
-                        if (i!=position)  {joingroups.append(genomes[i].group); unusedgroups.append(genomes[i].group);}
-                    }
-                }
-            }
-        }
-    }
-
-    for (int i=0; i<genomes.count(); i++) if (joingroups.indexOf(genomes[i].group)!=-1) genomes[i].group=group;
-    //OK, should now
-    //newnum should be lowest group to use next time
-    return group+1;
-}
-
-
-QString Analyser::Groups()
-//Works out species
-//Pass this a list of genomes pre-grouped
-{
-    if (genomes.count()==0) return "Nothing to analyse";
-
-    //Sort the genomes. There are 10000 of these - might be slow - but it does seem to speed matters
-    qSort(genomes.begin(),genomes.end());
-
-    //make sure the 'unused' list is empty - this list is going to contain indices of lists that have been amalgamated and are no longer needed
-    unusedgroups.clear();
-
-    //start flood-fill style spread algorithm on position 0, for group 1. Basically go through all genomes that are unplaced and place them
-    int group=1; //first group to use (0 means ungrouped).
-    bool done=false;
-    while (done==false) //keep going until all are placed
-    {
-        done=true;
-        for (int i=0; i<genomes.count(); i++)
-            if (genomes[i].group==0)
-            {
-                group=Spread(i,group); //return next group number (current one +1). This is the recursive algorithm that assigns all genomes it can to the group
-                done=false; break;
-            }
-    }
-
-
-    //Sort out the list - handle all the joined groups basically. Nothing too computationally expensive here
-    qSort(unusedgroups.begin(), unusedgroups.end());
-    unusedgroups.append(-1); //to avoid check failing
-    //Unused groups now holds
-    QList <int> GroupTranslate;
-    int unusedpos=0;
-    int realpos=1;
-    GroupTranslate.append(-1);
-    for (int i=1; i<=group; i++)
-    {
-        if (unusedgroups[unusedpos]==i)
-        {
-            GroupTranslate.append(-1);
-            unusedpos++;
-        }
-        else
-            GroupTranslate.append(realpos++);
-    }
-
-
-    QString line;
-    QTextStream sout(&line);
-
-/*
-    for (int i=0; i<genomes.count(); i++)
-    {
-        if (genomes[i].count<10) sout<<" "<<genomes[i].count<<": "; else  sout<<genomes[i].count<<": ";
-        for (int j=0; j<32; j++)
-            if (tweakers64[63-j] & genomes[i].genome) sout<<"1"; else sout<<"0";
-        sout<<" ";
-        for (int j=32; j<64; j++)
-            if (tweakers64[63-j] & genomes[i].genome) sout<<"1"; else sout<<"0";
-
-        sout<<"  fitness: "<<genomes[i].fit<< "  Group: "<<GroupTranslate[genomes[i].group];
-
-        sout<<"\n";
-    }
-    sout<<"\n";
-
-    sout<<"Group count"<<group;
-*/
-
-    //Stuff from now on is about the output... not necessarily critical
-
-    //OK, now we want to find the modal occurrence for each group - as they are sorted this is FIRST occurence
-    QVector <int> modal(group+1);
-    for (int i=1; i<=group; i++)
-        if (GroupTranslate[i]!=-1)
-        for (int j=0; j<genomes.count(); j++)
-              if (genomes[j].group==i) {modal[i]=j; break;}
-
-
-    //For each group work out and output some stats
-    for (int i=group-1; i>=1; i--)
-    {
-        if (GroupTranslate[i]!=-1)
-        {
-            int minfit=999999, maxfit=-1, maxspread=-1;
-            double meanfit=0, meanspread=0;
-            int count=0;
-            //work out summary stats
-
-            int changes[64];
-            for (int j=0; j<64; j++) changes[j]=0;
-            quint64 refgenome=genomes[modal[i]].genome;
-            for (int j=0; j<genomes.count(); j++)
-            {
-                if (genomes[j].group==i)
-                {
-                    count+=genomes[j].count;
-                    meanfit+=genomes[j].fit*genomes[j].count;
-
-                    if (genomes[j].fit<minfit) minfit=genomes[j].fit;
-                    if (genomes[j].fit>maxfit) maxfit=genomes[j].fit;
-
-                    quint64 g1x=refgenome ^ genomes[j].genome;
-                    quint32 g1xl = quint32(g1x & ((quint64)65536*(quint64)65536-(quint64)1)); //lower 32 bits
-                    int t1 = bitcounts[g1xl/(quint32)65536] +  bitcounts[g1xl & (quint32)65535];
-
-                    quint32 g1xu = quint32(g1x / ((quint64)65536*(quint64)65536)); //upper 32 bits
-                    t1+= bitcounts[g1xu/(quint32)65536] +  bitcounts[g1xu & (quint32)65535];
-                    meanspread+=t1*genomes[j].count;
-                    if (t1>maxspread) maxspread=t1;
-
-                    for (int k=0; k<64; k++) if (tweakers64[k] & g1x) changes[k]+=genomes[j].count;
-                }
-
-            }
-            meanfit/=count;
-            meanspread/=count;
-
-            if (count<((genomes.count()/100))) continue;
-
-            sout<<"Group: "<<GroupTranslate[i]<<"\nGenome:   ";
-
-            for (int k=0; k<4; k++)
-            {
-                for (int j=k*16; j<(k+1)*16; j++) if (tweakers64[63-j] & genomes[modal[i]].genome) sout<<"1"; else sout<<"0";
-                sout<<" ";
-            }
-            sout<<" Dec: "<<genomes[modal[i]].genome;
-            /*
-            sout<<" Slots: ";
-            //breed slots used
-            quint32 gen2 = genomes[modal[i]].genome>>32;
-            quint32 ugenecombo = (gen2>>16) ^ (gen2 & 65535);
-
-            for (int j=0; j<16; j++) if (tweakers[j] & ugenecombo) sout<<"1"; else sout<<"0";
-            */
-            sout<<"\n";
-
-            sout<<"Changes:  ";
-
-            for (int j=0; j<64; j++)
-            {
-                if (changes[j]==0) changes[j]=-1;
-                else
-                {
-                    changes[j]*=10;
-                    changes[j]/=count;
-                }
-            }
-            for (int k=0; k<4; k++)
-            {
-                for (int j=k*16; j<(k+1)*16; j++) if (changes[63-j]<0) sout<<" "; else sout<<changes[63-j];
-                sout<<" ";
-            }
-            sout<<"\n";
-
-            sout<<"Total: "<<count<<"  MinFit: "<<minfit<<"  MaxFit: "<<maxfit<<"  MeanFit: "<<meanfit<<"  MaxSpread: "<<maxspread<<"  MeanSpread: "<<meanspread<<"\n\n";
-        }
-    }
-
-/*
-    //Finally work out distances to each other center - and breed time overlaps
-
-    for (int i=1; i<=group; i++)
-    for (int j=i+1; j<=group; j++)
-    {
-
-        quint64 g1x = genomes[modal[i]].genome ^ genomes[modal[j]].genome; //XOR the two to compare
-        quint32 g1xl = quint32(g1x & ((quint64)65536*(quint64)65536-(quint64)1)); //lower 32 bits
-        int t1 = bitcounts[g1xl/(quint32)65536] +  bitcounts[g1xl & (quint32)65535];
-
-        quint32 g1xu = quint32(g1x / ((quint64)65536*(quint64)65536)); //upper 32 bits
-        t1+= bitcounts[g1xu/(quint32)65536] +  bitcounts[g1xu & (quint32)65535];
-
-        quint32 gen2 = genomes[modal[i]].genome>>32;
-        quint32 ugenecombo = (gen2>>16) ^ (gen2 & 65535);
-        quint32 gen3=genomes[modal[j]].genome>>32;
-        sout<<"Distance between groups "<<i<<"->"<<j<<": "<<t1<<"  Breed time overlaps: "<<bitcounts[ugenecombo & ((gen3>>16) ^ (gen3 & 65535))]<<"\n";
-    }
-*/
-
-
-    return line;
+        return lookup_persistent_species_ID[species_id[i - genome_list.begin()]]; // this is QT bodgy way to get index apparently
 }

@@ -114,6 +114,8 @@ private:
     Analyser *a;
     QString print_settings();
 
+
+
 private slots:
     void on_actionReset_triggered();
     void on_actionReseed_triggered();
@@ -122,15 +124,13 @@ private slots:
     void on_actionBatch_triggered();
     void on_actionPause_Sim_triggered();
     void on_actionStop_Sim_triggered();
-    void on_actionSettings_triggered();
     void on_actionCount_Peaks_triggered();
-    void on_actionMisc_triggered();
-    void report_mode_changed(QAction *a);
     void gui_checkbox_state_changed(bool);
     void save_all_checkbox_state_changed(bool);
     void dump_run_data();
+    void actionSettings_triggered();
     void redoImages(int oldrows, int oldcols);
-    bool on_actionEnvironment_Files_triggered();
+    bool actionEnvironment_Files_triggered();
     void on_actionSave_triggered();
     void on_actionLoad_triggered();
     void load_settings();
@@ -149,8 +149,7 @@ private slots:
     void on_actionRates_of_Change_triggered();
     void on_actionStasis_triggered();
     void on_actionLoad_Random_Numbers_triggered();
-    void on_SelectLogFile_pressed();
-    void species_mode_changed(int change_species_mode);
+    void species_mode_changed(int change_species_mode, bool update_gui);
     void environment_mode_changed(int change_environment_mode, bool update_gui);
     void on_actionGenerate_NWK_tree_file_triggered();
     void on_actionSpecies_sizes_triggered();
