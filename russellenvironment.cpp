@@ -206,8 +206,10 @@ void russellenvironment::laplace()
                 //Current implementation is simple square which enlarges each overlapping pixel by amount buffer
                 for (int i=(n-buffer);i<(n+buffer);i++)
                     for (int j=(m-buffer);j<(m+buffer);j++)
+                    {
                         if(!periodic && i>0 && j>0 && i<(MainWin->ui->spinSize->value()-1) && j<(MainWin->ui->spinSize->value()-1) && laplace[i][j]==1)laplace[i][j]=-1;
                         else laplace[(i+MainWin->ui->spinSize->value())%MainWin->ui->spinSize->value()][(j+MainWin->ui->spinSize->value())%MainWin->ui->spinSize->value()]=-1;
+                    }
 
 //Now smooth/interpolate
     int count=0;

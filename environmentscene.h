@@ -14,9 +14,12 @@ public:
         MainWindow *mw;
 
 protected:
+     /*
+     //RJG - These are here in case mouse clicks are needed down the line, I think.
      void mousePressEvent(QGraphicsSceneMouseEvent *event);
      void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
      void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
+     */
 
  private slots:
      void ScreenUpdate();

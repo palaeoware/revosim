@@ -7,6 +7,13 @@
 #include <QColorDialog>
 #include <QStandardPaths>
 
+/*
+ * -- load random numbers- take from treesim
+ * --
+ *
+ *
+ */
+
 MainWindow *MainWin;
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -14,9 +21,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
    ui->setupUi(this);
-   this->setWindowTitle("EvoSim Environmental Generator");
+   this->setWindowTitle("REvoSim Environmental Generator");
+   setWindowIcon(QIcon (":/icon.png"));
+
    ui->envSettings->setWindowTitle("Environmental Settings");
 
+   //RJG - Globals for simulation
    generations=500;
    currentGeneration=0;
    save=false;
@@ -26,16 +36,19 @@ MainWindow::MainWindow(QWidget *parent) :
    Directory.setPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
    ui->path->setText(Directory.path());
 
-   envscene = new EnvironmentScene;
-   ui->enviroView->setScene(envscene);
-   envscene->mw=this;
-
    MainWin=this;
-   env_item= new QGraphicsPixmapItem();
+
+   env_image=new QImage(":/palaeoware_logo_square.png");
+
+   env_item= new QGraphicsPixmapItem(QPixmap::fromImage(*env_image));
+
+   envscene = new EnvironmentScene;
+   envscene->mw=this;
    envscene->addItem(env_item);
-   env_image=new QImage(MainWin->ui->spinSize->value(), MainWin->ui->spinSize->value(), QImage::Format_RGB32);
-   env_image->fill(0);
-   env_item->setPixmap(QPixmap::fromImage(*env_image));
+
+   ui->enviroView->setScene(envscene);
+   QBrush brush(QColor(42,42,42));
+   ui->enviroView->setBackgroundBrush(brush);
 
    ui->pushButtonStackTwo->setEnabled(false);
    ui->combineEnd->setEnabled(false);
@@ -49,12 +62,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::newEnvironmentImage()
 {
-    //Add images to the scenes
-
+    //RJG - Add images to the scenes
     if(!env_image->isNull())delete env_image;
     env_image=new QImage(MainWin->ui->spinSize->value(), MainWin->ui->spinSize->value(), QImage::Format_RGB32);
     env_image->fill(0);
-
     env_item->setPixmap(QPixmap::fromImage(*env_image));
 }
 
@@ -196,7 +207,7 @@ void MainWindow::on_pushButtonStackTwo_clicked()
     ui->combineEnd->setEnabled(true);
 }
 
-void MainWindow::on_combineStart_valueChanged(int arg1)
+void MainWindow::combineStart_valueChanged()
 {
     QString stackOneTextLength(MainWin->ui->stackTwoText->toPlainText());
     if (stackOneTextLength.length()>0)

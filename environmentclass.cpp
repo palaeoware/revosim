@@ -18,6 +18,12 @@ environmentclass::environmentclass()
    saveMe=false;
 }
 
+environmentclass::~environmentclass()
+{
+
+}
+
+
 void environmentclass::regenerate()
 {
 

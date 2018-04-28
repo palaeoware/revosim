@@ -18,11 +18,13 @@ EnvironmentScene::EnvironmentScene() : QGraphicsScene()
     ;
 }
 
-
+/*
 void EnvironmentScene::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 //this gets string of calls if mouse button is held
 {
+
     QPointF position=event->scenePos();
+
     int x,y;
 
     x=(int)position.x();
@@ -59,5 +61,6 @@ void EnvironmentScene::mouseReleaseEvent ( QGraphicsSceneMouseEvent * event )
 
     //TODO - do something!
     return;
-}
+}*/
+
 

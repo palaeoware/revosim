@@ -21,6 +21,7 @@ SOURCES += \
     combine.cpp \
     colour.cpp \
     makestack.cpp
+
 HEADERS  += \
     ui_mainwindow.h \
     ui_dialog.h \
@@ -35,3 +36,10 @@ HEADERS  += \
 
 FORMS    += \
     mainwindow.ui
+
+RESOURCES += \
+    resources.qrc
+
+#Needed to use C++ lamda functions
+CONFIG += c++11
+

@@ -4,6 +4,7 @@
         <file alias="img.png">resources/img.png</file>
         <file alias="gplV3Logo">resources/gplv3-127x51.png</file>
         <file alias="icon.png">resources/icon.png</file>
+        <file alias="palaeoware_logo_square.png">resources/palaeoware_logo_square.png</file>
         <file alias="builtWithQTLogo">resources/Built_with_Qt_RGB_logo.png</file>
     </qresource>
     <qresource prefix="/darkstyle">

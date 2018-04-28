@@ -16,6 +16,8 @@ class environmentclass
 
 public:
     environmentclass();
+    virtual ~environmentclass();
+
     virtual void regenerate();
 
     bool accessSave();
