@@ -490,21 +490,6 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QDockWidget" name="fossRecDock">
-   <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::AllDockWidgetAreas</set>
-   </property>
-   <property name="windowTitle">
-    <string>Fossil Record</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>4</number>
-   </attribute>
-   <widget class="QWidget" name="fossRecDockContents"/>
-  </widget>
   <widget class="QDockWidget" name="genomeComparisonDock">
    <property name="minimumSize">
     <size>
@@ -671,55 +656,6 @@
     <string>Genome Comparison Dock</string>
    </property>
   </action>
-  <action name="actionFossil_Record">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Fossil Record Dock</string>
-   </property>
-  </action>
-  <action name="actionChoose_Log_Directory">
-   <property name="text">
-    <string>Choose Log Directory...</string>
-   </property>
-  </action>
-  <action name="actionShow_positions">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Show selected positions</string>
-   </property>
-  </action>
-  <action name="actionAdd_Random">
-   <property name="text">
-    <string>Add Random...</string>
-   </property>
-  </action>
-  <action name="actionAdd_Regular">
-   <property name="text">
-    <string>Add Regular...</string>
-   </property>
-  </action>
-  <action name="actionSet_Sparsity">
-   <property name="text">
-    <string>Set Sparsity...</string>
-   </property>
-  </action>
-  <action name="actionSet_Active">
-   <property name="text">
-    <string>Set Active</string>
-   </property>
-  </action>
-  <action name="actionSet_Inactive">
-   <property name="text">
-    <string>Set Inactive</string>
-   </property>
-  </action>
   <action name="actionGo_Slow">
    <property name="checkable">
     <bool>true</bool>
@@ -842,22 +778,6 @@
     <hint type="destinationlabel">
      <x>369</x>
      <y>770</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionFossil_Record</sender>
-   <signal>triggered(bool)</signal>
-   <receiver>fossRecDock</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>490</x>
-     <y>60</y>
     </hint>
    </hints>
   </connection>

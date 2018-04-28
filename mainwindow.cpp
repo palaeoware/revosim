@@ -2367,7 +2367,6 @@ void MainWindow::on_actionSave_triggered()
 
     //And some window state stuff
     out<<saveState(); //window state
-    out<<ui->actionFossil_Record->isChecked();
     out<<ui->actionGenomeComparison->isChecked();
 
     //interpolate environment stuff
@@ -2629,7 +2628,6 @@ void MainWindow::on_actionLoad_triggered()
     restoreState(Temp); //window state
 
     bool btemp;
-    in>>btemp; ui->actionFossil_Record->setChecked(btemp);
     in>>btemp; ui->actionGenomeComparison->setChecked(btemp);
 
     //interpolate environment stuff
