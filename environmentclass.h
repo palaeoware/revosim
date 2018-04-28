@@ -11,6 +11,7 @@
 //#define GRID_X 100
 //#define GRID_Y 100
 
+//RJG This is the base class that a bunch of the environmental generators inheret, which includes save and random number functions
 class environmentclass
 {
 
@@ -31,52 +32,9 @@ public:
 protected:
     QString dir;
     bool saveMe;
+    quint8 Rand8();
 
 private:
-
-};
-
-class russellenvironment : public environmentclass
-{
-public:
-    russellenvironment();
-    void regenerate();
-
-private:
-    typedef struct
-    {
-            double n,m;
-            double colour[3];
-            double size;
-            double nv, mv;
-    } seed;
-
-    seed seeds[1000];
-
-    void laplace();
-    void readSettings();
-
-    int Rand8();
-    int buffer;
-    int nseed;
-
-    int maxsize;
-
-    int sizevel;
-
-    float maxvel;
-    int minvel;
-
-    int maxacc;
-
-    int maxcvel;
-    bool periodic;
-    bool blur;
-    double converge;
-    double factor;
-    int numbGenerations;
-
-    float na, ma;
 
 };
 

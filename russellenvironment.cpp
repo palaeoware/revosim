@@ -5,8 +5,10 @@
 #include <QFile>
 #include <QApplication>
 #include <time.h>
+
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "russellenvironment.h"
 
 russellenvironment::russellenvironment()
 {
@@ -100,12 +102,6 @@ void russellenvironment::regenerate()
 
     //Interpolation then occurs in the laplace function
      laplace();
-}
-
-int russellenvironment::Rand8()
-{
-    //Randon 8bit number
-    return (quint8)(qrand() & 255);
 }
 
 void russellenvironment::laplace()

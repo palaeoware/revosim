@@ -10,7 +10,6 @@ public:
 private:
     void ReadSettings();
     int nMin,nMax;
-    int Rand8();
 };
 
 #endif // NOISEENVIRONMENT_H

@@ -9,6 +9,8 @@
 #include <QFileDialog>
 #include <QStatusBar>
 #include <QColor>
+#include <QDebug>
+
 #include "environmentclass.h"
 #include "environmentscene.h"
 #include "markenvironment.h"
@@ -16,6 +18,8 @@
 #include "combine.h"
 #include "colour.h"
 #include "makestack.h"
+#include "randoms.h"
+#include "russellenvironment.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,7 +36,7 @@ public:
     int currentGeneration;
 
 private slots:
-    void on_generateEnvironment_clicked();
+    void generateEnvironment();
     void on_pushButton_clicked();
     void on_checkBox_2_toggled(bool checked);
     void on_pushButtonStackOne_clicked();
@@ -51,6 +55,7 @@ private:
     QImage *env_image;
     int generations, stackOneSize, stackTwoSize;
     bool save;
+    QAction *startButton;
 
     void combinelimits(int startPoint, int stkOne, int stkTwo);
     void RefreshEnvironment();

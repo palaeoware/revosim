@@ -1,10 +1,9 @@
 #include "environmentclass.h"
-#include <QDebug>
+
 #include <QTextStream>
 #include <QString>
 #include <QFile>
 #include <QApplication>
-#include <time.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "markenvironment.h"
@@ -151,13 +150,7 @@ quint8 markenvironment::add_and_limit(int oldvalue, int color, float dist, float
     if (retval>255) return 255; else return (quint8)retval;
 }
 
-quint8 markenvironment::Rand8()
-{
-    //Random 8bit number
-    return (quint8)(qrand() & 255);
-}
-
 float markenvironment::RandFloat()
 {
-    return(float)rand()/(float)RAND_MAX;
+    return simulation_randoms->gen_float();
 }

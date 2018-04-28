@@ -36,9 +36,3 @@ void noiseenvironment::regenerate()
             }
 
 }
-
-int noiseenvironment::Rand8()//Random 0 - 256
-{
-    //Randon 8bit number
-    return (quint8)(qrand() & 255);
-}

@@ -2,19 +2,17 @@
 #include "ui_mainwindow.h"
 
 #include <QDockWidget>
-#include <QDebug>
 #include <QProgressDialog>
 #include <QColorDialog>
 #include <QStandardPaths>
 
 /*
- * -- load random numbers- take from treesim
- * --
  *
  *
  */
 
 MainWindow *MainWin;
+randoms *simulation_randoms;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,8 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->setupUi(this);
    this->setWindowTitle("REvoSim Environmental Generator");
    setWindowIcon(QIcon (":/icon.png"));
-
-   ui->envSettings->setWindowTitle("Environmental Settings");
+   showMaximized();
 
    //RJG - Globals for simulation
    generations=500;
@@ -49,9 +46,36 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->enviroView->setScene(envscene);
    QBrush brush(QColor(42,42,42));
    ui->enviroView->setBackgroundBrush(brush);
+   //ui->enviroView->setAlignment(Qt::AlignCenter);
+   ui->enviroView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+   ui->enviroView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
    ui->pushButtonStackTwo->setEnabled(false);
    ui->combineEnd->setEnabled(false);
+
+   //RJG - Populate labels in GUI as required
+   ui->envSettings->setWindowTitle("Environmental Settings");
+
+   ui->russell_label->setAlignment(Qt::AlignJustify);
+   ui->russell_label->setWordWrap(true);
+   ui->russell_label->setText("Please enter the settings for the dynamic environment below. Most are obvious. Convergence sets the amount of smoothing between spots and background. 0.01 is very smooth, but will initially take about a minute to create environment.");
+
+   ui->combine_label->setAlignment(Qt::AlignJustify);
+   ui->combine_label->setWordWrap(true);
+   ui->combine_label->setText("Combines stack two with stack one from  Start Slice to End Slice. Percentage start and end for influence of stack one, interpolate between. Limit for End Slice is end of stack one. If number of generations is larger than this it will duplicate stack two. If start and end slice are maximum it will concatenate two stacks.");
+
+   ui->settings_tab_widget->setCurrentIndex(0);
+
+   //RJG - Sort GUI
+   startButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_play_button_green.png")), QString("Run"), this);
+   startButton->setEnabled(true);
+   startButton->setToolTip(tr("<font>Use this button to generate and environment.</font>"));
+   ui->toolBar->setIconSize(QSize(25,25));
+   ui->toolBar->addAction(startButton);
+   QObject::connect(startButton, SIGNAL(triggered()), this, SLOT(generateEnvironment()));
+
+   //RJG - Load random numbers
+   simulation_randoms = new randoms();
 }
 
 MainWindow::~MainWindow()
@@ -69,19 +93,22 @@ void MainWindow::newEnvironmentImage()
     env_item->setPixmap(QPixmap::fromImage(*env_image));
 }
 
-void MainWindow::on_generateEnvironment_clicked()
+void MainWindow::generateEnvironment()
 {
     if(!Directory.exists()&&save){QMessageBox::warning(0,"Error","No such directory.", QMessageBox::Ok);return;}
 
     newEnvironmentImage();
 
-    if (ui->tabWidget->currentIndex()==0) //russellenv
+    //ui->enviroView->resetMatrix();
+    //ui->enviroView->resetTransform();
+
+    if (ui->settings_tab_widget->currentIndex()==0) //russellenv
         environmentobject = new russellenvironment;
 
-    if (ui->tabWidget->currentIndex()==1) //markenv
+    if (ui->settings_tab_widget->currentIndex()==1) //markenv
         environmentobject = new markenvironment;
 
-    if (ui->tabWidget->currentIndex()==2) //noise
+    if (ui->settings_tab_widget->currentIndex()==2) //noise
     {
         environmentobject = new noiseenvironment;
         if(MainWin->ui->noiseMin->value()>=MainWin->ui->noiseMax->value())
@@ -91,13 +118,13 @@ void MainWindow::on_generateEnvironment_clicked()
         }
     }
 
-    if (ui->tabWidget->currentIndex()==3) //combine
+    if (ui->settings_tab_widget->currentIndex()==3) //combine
         environmentobject = new combine;
 
-    if (ui->tabWidget->currentIndex()==4) //colour
+    if (ui->settings_tab_widget->currentIndex()==4) //colour
         environmentobject = new colour;
 
-    if (ui->tabWidget->currentIndex()==5) //stack
+    if (ui->settings_tab_widget->currentIndex()==5) //stack
         environmentobject = new makestack;
 
     generations=MainWin->ui->numGenerations->value();
@@ -105,7 +132,6 @@ void MainWindow::on_generateEnvironment_clicked()
     QProgressDialog prDialogue("Progress of generation","Cancel",0,generations);
     prDialogue.show();
 
-    MainWin->ui->generateEnvironment->setEnabled(false);
     for(int i=0;i<generations;i++)
     {
         currentGeneration=i;
@@ -122,6 +148,7 @@ void MainWindow::on_generateEnvironment_clicked()
                 for (int m=0; m<MainWin->ui->spinSize->value(); m++)
                     saveImage.setPixel(n,m,qRgb(environmentobject->environment[n][m][0], environmentobject->environment[n][m][1], environmentobject->environment[n][m][2]));
             QString dir2;
+            //TODO - update this to be sensible
             if(i<10)dir2 = QString(Directory.path() + "/000%1.bmp").arg(i);
             if(i>9&&i<100)dir2 = QString(Directory.path() + "/00%1.bmp").arg(i);
             if(i>99&&i<1000)dir2 = QString(Directory.path() + "/0%1.bmp").arg(i);
@@ -132,7 +159,6 @@ void MainWindow::on_generateEnvironment_clicked()
         if (prDialogue.wasCanceled()) break;
 
     }
-    MainWin->ui->generateEnvironment->setEnabled(true);
 
     delete environmentobject;
 }
@@ -143,16 +169,12 @@ void MainWindow::RefreshEnvironment()
         for (int m=0; m<MainWin->ui->spinSize->value(); m++)
            env_image->setPixel(n,m,qRgb(environmentobject->environment[n][m][0], environmentobject->environment[n][m][1], environmentobject->environment[n][m][2]));
 
-    if (ui->actionResize_environment->isChecked())
-    {
-         env_item->setPixmap(QPixmap::fromImage(*env_image));
-         ui->enviroView->fitInView(env_item,Qt::KeepAspectRatio);
-    }
-    else
-    {
-        env_item->setPixmap(QPixmap::fromImage(*env_image));
-        ui->enviroView->resetMatrix();
-    }
+    env_item->setPixmap(QPixmap::fromImage(*env_image));
+
+    ui->enviroView->resetMatrix();
+    if (ui->actionResize_environment->isChecked()) ui->enviroView->fitInView(env_item,Qt::KeepAspectRatio);
+    float middle = (float)(ui->spinSize->value())/2.;
+    ui->enviroView->centerOn(0.,0.);
 }
 
 void MainWindow::on_pushButton_clicked()

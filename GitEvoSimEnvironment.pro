@@ -20,7 +20,9 @@ SOURCES += \
     noiseenvironment.cpp \
     combine.cpp \
     colour.cpp \
-    makestack.cpp
+    makestack.cpp \
+    randoms.cpp \
+    darkstyletheme.cpp
 
 HEADERS  += \
     ui_mainwindow.h \
@@ -32,7 +34,11 @@ HEADERS  += \
     noiseenvironment.h \
     combine.h \
     colour.h \
-    makestack.h
+    makestack.h \
+    randoms.h \
+    russellenvironment.h \
+    version.h \
+    darkstyletheme.h
 
 FORMS    += \
     mainwindow.ui

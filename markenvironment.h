@@ -12,7 +12,6 @@ public:
 
 
 private:
-    quint8 Rand8();
     float RandFloat();
     quint8 add_and_limit(int oldvalue, int color, float dist, float maxdist, float tightness);
     void ReadSettings();
