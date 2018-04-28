@@ -572,34 +572,20 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuFossil_Record">
-    <property name="title">
-     <string>Fossil Record</string>
-    </property>
-    <addaction name="actionFossil_Record"/>
-    <addaction name="separator"/>
-    <addaction name="actionChoose_Log_Directory"/>
-    <addaction name="actionShow_positions"/>
-    <addaction name="separator"/>
-    <addaction name="actionAdd_Random"/>
-    <addaction name="actionAdd_Regular"/>
-    <addaction name="actionSet_Sparsity"/>
-    <addaction name="actionSet_Active"/>
-    <addaction name="actionSet_Inactive"/>
-   </widget>
-   <widget class="QMenu" name="menuSpecies">
-    <property name="title">
-     <string>Custom logging</string>
-    </property>
-    <addaction name="actionFitness_logging_to_File"/>
-    <addaction name="actionRecombination_logging"/>
-   </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
      <string>Tools</string>
     </property>
+    <widget class="QMenu" name="menuCustom_Logging">
+     <property name="title">
+      <string>Custom Logging</string>
+     </property>
+     <addaction name="actionFitness_logging_to_File"/>
+     <addaction name="actionRecombination_logging"/>
+    </widget>
     <addaction name="actionGenomeComparison"/>
     <addaction name="actionSettings_Dock"/>
+    <addaction name="menuCustom_Logging"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -611,8 +597,6 @@
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuCommands"/>
-   <addaction name="menuFossil_Record"/>
-   <addaction name="menuSpecies"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -660,11 +644,6 @@
     <string>Alt+R</string>
    </property>
   </action>
-  <action name="actionCount_Peaks">
-   <property name="text">
-    <string>Count Peaks</string>
-   </property>
-  </action>
   <action name="actionSave">
    <property name="text">
     <string>Save...</string>
@@ -698,14 +677,6 @@
    </property>
    <property name="text">
     <string>Fossil Record Dock</string>
-   </property>
-  </action>
-  <action name="actionReport_Viewer">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Analysis Tools Dock</string>
    </property>
   </action>
   <action name="actionChoose_Log_Directory">
@@ -749,24 +720,6 @@
     <string>Set Inactive</string>
    </property>
   </action>
-  <action name="actionGenerate_Tree_from_Log_File">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Generate Tree from Log (Deprecated)...</string>
-   </property>
-  </action>
-  <action name="actionExtinction_and_Origination_Data">
-   <property name="text">
-    <string>Extinction and Origination Data...</string>
-   </property>
-  </action>
-  <action name="actionRates_of_Change">
-   <property name="text">
-    <string>Rates of Change...</string>
-   </property>
-  </action>
   <action name="actionGo_Slow">
    <property name="checkable">
     <bool>true</bool>
@@ -778,11 +731,6 @@
   <action name="actionLoad_Random_Numbers">
    <property name="text">
     <string>Load Random Numbers...</string>
-   </property>
-  </action>
-  <action name="actionStasis">
-   <property name="text">
-    <string>Stasis...</string>
    </property>
   </action>
   <action name="actionFitness_logging_to_File">
@@ -807,16 +755,6 @@
   <action name="actionBatch">
    <property name="text">
     <string>Batch</string>
-   </property>
-  </action>
-  <action name="actionGenerate_NWK_tree_file">
-   <property name="text">
-    <string>Generate NWK tree file</string>
-   </property>
-  </action>
-  <action name="actionSpecies_sizes">
-   <property name="text">
-    <string>Dump logged data</string>
    </property>
   </action>
   <action name="actionRecombination_logging">

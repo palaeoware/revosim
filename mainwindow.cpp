@@ -19,7 +19,6 @@
 #include "ui_mainwindow.h"
 #include "reseed.h"
 #include "analyser.h"
-#include "fossrecwidget.h"
 #include "resizecatcher.h"
 
 #include <QTextStream>
@@ -140,24 +139,17 @@ MainWindow::MainWindow(QWidget *parent) :
     tabifyDockWidget(organismSettingsDock,simulationSettingsDock);
     tabifyDockWidget(simulationSettingsDock,outputSettingsDock);
 
-    //ARST - Hide docks by default
+    //Hide docks by default
     organismSettingsDock->hide();
     simulationSettingsDock->hide();
     outputSettingsDock->hide();
 
-    //ARTS - Add Genome Comparison UI
+    //Add Genome Comparison UI Dock
     ui->genomeComparisonDock->hide();
     genoneComparison = new GenomeComparison;
     QVBoxLayout *genomeLayout = new QVBoxLayout;
     genomeLayout->addWidget(genoneComparison);
     ui->genomeComparisonContent->setLayout(genomeLayout);
-
-    //MDS - as above for fossil record dock and report dock
-    ui->fossRecDock->hide();
-    FRW = new FossRecWidget();
-    QVBoxLayout *frwLayout = new QVBoxLayout;
-    frwLayout->addWidget(FRW);
-    ui->fossRecDockContents->setLayout(frwLayout);
 
     //create scenes, add to the GVs
     envscene = new EnvironmentScene;
@@ -1024,7 +1016,6 @@ void MainWindow::on_actionStart_Sim_triggered()
 
         //ARTS - set Stop flag to returns true if reached end... but why? It will fire the FinishRun() function at the end.
         if (TheSimManager->iterate(environment_mode,enviroment_interpolate)) stopflag=true;
-        FRW->MakeRecords();
     }
 
     FinishRun();
@@ -1066,7 +1057,6 @@ void MainWindow::on_actionRun_for_triggered()
         qApp->processEvents();
 
         if (TheSimManager->iterate(environment_mode,enviroment_interpolate)) stopflag=true;
-        FRW->MakeRecords();
         i--;
     }
 
@@ -1192,7 +1182,6 @@ void MainWindow::on_actionBatch_triggered()
             qApp->processEvents();
 
             TheSimManager->iterate(environment_mode,enviroment_interpolate);
-            FRW->MakeRecords();
             i--;
         }
 
@@ -1418,8 +1407,6 @@ void MainWindow::Report()
     //do species stuff
     if(!gui)RefreshPopulations();
     if(!gui)RefreshEnvironment();
-    FRW->RefreshMe();
-    FRW->WriteFiles();
 
     WriteLog();
 
@@ -1907,9 +1894,6 @@ void MainWindow::RefreshEnvironment()
     if(save_environment->isChecked())
         if(save_dir.mkpath("environment/"))
             env_image->save(QString(save_dir.path()+"/environment/EvoSim_environment_it_%1.png").arg(generation, 7, 10, QChar('0')));
-
-    //Draw on fossil records
-    envscene->DrawLocations(FRW->FossilRecords,ui->actionShow_positions->isChecked());
 }
 
 /*!
@@ -2240,21 +2224,6 @@ bool MainWindow::actionEnvironment_Files_triggered()
 }
 
 /*!
- * \brief MainWindow::on_actionChoose_Log_Directory_triggered
- *
- * Action to select the fossil log save directory
- */
-void MainWindow::on_actionChoose_Log_Directory_triggered()
-{
-    QString dirname = QFileDialog::getExistingDirectory(this,"Select directory to log fossil record to");
-
-    if (dirname.length()==0) return;
-    FRW->LogDirectory=dirname;
-    FRW->LogDirectoryChosen=true;
-    FRW->HideWarnLabel();
-}
-
-/*!
  * \brief MainWindow::on_actionSave_triggered
  *
  * Action to save the current settings and simulation to an .evosim file.
@@ -2454,12 +2423,6 @@ void MainWindow::on_actionSave_triggered()
     //now random number array
     for (int i=0; i<65536; i++)
         out<<randoms[i];
-
-    //and fossil record stuff
-    FRW->WriteFiles(); //make sure all is flushed
-    out<<FRW->SaveState();
-    //Some more fossil record stuff
-    out<<ui->actionShow_positions->isChecked();
 
     outfile.close();
 }
@@ -2740,14 +2703,6 @@ void MainWindow::on_actionLoad_triggered()
     for (int i=0; i<65536; i++)
         in>>randoms[i];
 
-    //Fossil Record stuff
-    in>>Temp;
-    FRW->RestoreState(Temp);
-    //Some more fossil record stuff
-
-    in>>btemp;
-    ui->actionShow_positions->setChecked(btemp);
-
     infile.close();
     NextRefresh=0;
     ResizeImageObjects();
@@ -2779,71 +2734,6 @@ bool MainWindow::genomeComparisonAdd()
         }
     }
     return false;
-}
-
-/*!
- * \brief MainWindow::on_actionAdd_Regular_triggered
- */
-void MainWindow::on_actionAdd_Regular_triggered()
-{
-    int count;
-    bool ok;
-    count=QInputDialog::getInt(this,"","Grid Density?",2,2,10,1,&ok);
-    if (!ok) return;
-
-    for (int x=0; x<count; x++)
-    for (int y=0; y<count; y++)
-    {
-        int rx=(int)((((float)gridX/(float)count)/(float)2 + (float)gridX/(float)count * (float)x)+.5);
-        int ry=(int)((((float)gridY/(float)count)/(float)2 + (float)gridY/(float)count * (float)y)+.5);
-        FRW->NewItem(rx,ry,10);
-    }
-}
-
-/*!
- * \brief MainWindow::on_actionAdd_Random_triggered
- */
-void MainWindow::on_actionAdd_Random_triggered()
-{
-    int count;
-    bool ok;
-    count=QInputDialog::getInt(this,"","Number of records to add?",1,1,100,1,&ok);
-    if (!ok) return;
-    for (int i=0; i<count; i++)
-    {
-        int rx=TheSimManager->portable_rand() % gridX;
-        int ry=TheSimManager->portable_rand() % gridY;
-        FRW->NewItem(rx,ry,10);
-    }
-}
-
-/*!
- * \brief MainWindow::on_actionSet_Active_triggered
- */
-void MainWindow::on_actionSet_Active_triggered()
-{
-    FRW->SelectedActive(true);
-}
-
-/*!
- * \brief MainWindow::on_actionSet_Inactive_triggered
- */
-void MainWindow::on_actionSet_Inactive_triggered()
-{
-    FRW->SelectedActive(false);
-}
-
-/*!
- * \brief MainWindow::on_actionSet_Sparsity_triggered
- */
-void MainWindow::on_actionSet_Sparsity_triggered()
-{
-    bool ok;
-
-    int value=QInputDialog::getInt(this,"","Sparsity",10,1,100000,1,&ok);
-    if (!ok) return;
-
-    FRW->SelectedSparse(value);
 }
 
 /*!

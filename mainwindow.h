@@ -31,7 +31,6 @@
 #include "populationscene.h"
 #include "environmentscene.h"
 #include "genomecomparison.h"
-#include "fossrecwidget.h"
 #include "about.h"
 
 extern MainWindow *MainWin;
@@ -45,7 +44,6 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    FossRecWidget *FRW;
     GenomeComparison *genoneComparison;
     bool genomeComparisonAdd();
     void RefreshReport();
@@ -114,8 +112,6 @@ private:
     Analyser *a;
     QString print_settings();
 
-
-
 private slots:
     void on_actionReset_triggered();
     void on_actionReseed_triggered();
@@ -136,12 +132,6 @@ private slots:
     void load_settings();
     void update_gui_from_variables();
     void save_settings();
-    void on_actionChoose_Log_Directory_triggered();
-    void on_actionAdd_Regular_triggered();
-    void on_actionAdd_Random_triggered();
-    void on_actionSet_Active_triggered();
-    void on_actionSet_Inactive_triggered();
-    void on_actionSet_Sparsity_triggered();
     void on_actionShow_positions_triggered();
     void on_actionFitness_logging_to_File_triggered();
     void on_actionGenerate_Tree_from_Log_File_triggered();
@@ -162,7 +152,5 @@ private slots:
     void on_actionSettings_Dock_triggered();
     void on_actionGenomeComparison_triggered(bool checked);
 };
-
-
 
 #endif // MAINWINDOW_H
