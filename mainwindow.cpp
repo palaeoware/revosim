@@ -673,10 +673,10 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     textLogInfo3Label->setWordWrap(true);
     fileLoggingGrid->addWidget(textLogInfo3Label,8,1,1,2);
 
-    exclude_without_issue_checkbox = new QCheckBox("Exclude species without issue");
-    exclude_without_issue_checkbox->setChecked(allowexcludewithissue);
-    fileLoggingGrid->addWidget(exclude_without_issue_checkbox,9,1,1,1);
-    connect(exclude_without_issue_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { allowexcludewithissue=i; });
+    exclude_without_descendants_checkbox = new QCheckBox("Exclude species without descendants");
+    exclude_without_descendants_checkbox->setChecked(allowExcludeWithDescendants);
+    fileLoggingGrid->addWidget(exclude_without_descendants_checkbox,9,1,1,1);
+    connect(exclude_without_descendants_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { allowExcludeWithDescendants=i; });
 
     QLabel *Min_species_size_label = new QLabel("Minimum species size:");
     QSpinBox *Min_species_size_spin = new QSpinBox;
@@ -894,7 +894,7 @@ void MainWindow::changepath_triggered()
  * \brief MainWindow::waitUntilPauseSignalIsEmitted
  * \return QEventLoop
  *
- * Adds a null loop to the simulation iteration run when pause button/command is issued
+ * Adds a null loop to the simulation iteration run when pause button/command is descendantsd
  * this loop is removed on the next tiggered() signal send from either one.
  */
 int MainWindow::waitUntilPauseSignalIsEmitted() {
@@ -1368,7 +1368,7 @@ void MainWindow::Report()
     QString out;
     QTextStream o(&out);
 
-    o<<generation; //need to use to avoid int64 issues
+    o<<generation; //need to use to avoid int64 descendantss
     ui->LabelIteration->setText(out);
 
     out.sprintf("%.3f",(3600000/atime)/1000000);
@@ -1775,7 +1775,7 @@ void MainWindow::RefreshPopulations()
         if(currentSelectedMode==7)pop_item->setPixmap(QPixmap::fromImage(*pop_image));
         if(save_settles->isChecked())
             if(save_dir.mkpath("settles/"))
-                pop_image_colour->save(QString(save_dir.path()+"/settles/EvoSim_settles_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                pop_image->save(QString(save_dir.path()+"/settles/EvoSim_settles_it_%1.png").arg(generation, 7, 10, QChar('0')));
     }
 
     // (8) Settle Fails === Fails
@@ -2281,7 +2281,7 @@ void MainWindow::on_actionSave_triggered()
     out<<breedspecies;
     out<<path_on;
     out<<variableMutate;
-    out<<allowexcludewithissue;
+    out<<allowExcludeWithDescendants;
     out<<sexual;
     out<<asexual;
     out<<variableBreed;
@@ -2494,7 +2494,7 @@ void MainWindow::on_actionLoad_triggered()
     in>>breedspecies;
     in>>path_on;
     in>>variableMutate;
-    in>>allowexcludewithissue;
+    in>>allowExcludeWithDescendants;
     in>>sexual;
     in>>asexual;
     in>>variableBreed;
@@ -2871,7 +2871,7 @@ void MainWindow::WriteLog()
                 out<<"-- Species parent\n";
                 out<<"-- Species current size (number of individuals)\n";
                 out<<"-- Species current genome (for speed this is the genome of a randomly sampled individual, not the modal organism)\n\n";
-                out<<"**Note that this excludes species with less individuals than Minimum species size, but is not able to exlude species without issue, which can only be achieved with the end-run log.**\n\n";
+                out<<"**Note that this excludes species with less individuals than Minimum species size, but is not able to exlude species without descendants, which can only be achieved with the end-run log.**\n\n";
                 out<<"===================\n\n";
                 outputfile.close();
             }
@@ -2889,7 +2889,7 @@ void MainWindow::WriteLog()
                     //----RJG: Manually count breed stufffor grid
                     gridBreedEntries+=breedattempts[i][j];
                     gridBreedFails+=breedfails[i][j];
-                    //----RJG: Manually count number alive thanks to maxused issue
+                    //----RJG: Manually count number alive thanks to maxused descendants
                     for  (int k=0; k<slotsPerSq; k++)if(critters[i][j][k].fitness)gridNumberAlive++;
                     }
         double mean_fitness=(double)gridTotalFitness/(double)gridNumberAlive;
@@ -2899,7 +2899,7 @@ void MainWindow::WriteLog()
         //----RJG: And species details for each iteration
         for (int i=0; i<oldspecieslist.count(); i++)
         {
-            //----RJG: Unable to exclude species without issue, for obvious reasons.
+            //----RJG: Unable to exclude species without descendants, for obvious reasons.
             if(oldspecieslist[i].size>minspeciessize)
             {
                 out<<"[S] ";
@@ -3014,7 +3014,7 @@ void MainWindow::WriteLog()
 
                     //----RJG: Number alive per square - output with +1 due to c numbering, zero is one critter, etc.
                     //out<<maxused[i][j]+1;
-                    // ---- RJG: Note, however, there is an issue that when critters die they remain in cell list for iteration
+                    // ---- RJG: Note, however, there is an descendants that when critters die they remain in cell list for iteration
                     // ---- RJG: Easiest to account for this by removing those which are dead from alive count, or recounting - rather than dealing with death system
                     // int numberalive=0;
 
@@ -3027,7 +3027,7 @@ void MainWindow::WriteLog()
 
                     int critters_alive=0;
 
-                     //----RJG: Manually count number alive thanks to maxused issue
+                     //----RJG: Manually count number alive thanks to maxused descendants
                     for  (int k=0; k<slotsPerSq; k++)if(critters[i][j][k].fitness)
                                     {
                                     //numberalive++;
@@ -3135,12 +3135,12 @@ QString MainWindow::HandleAnalysisTool(int code)
             }
 
         case ANALYSIS_TOOL_CODE_MAKE_NEWICK:
-            if (phylogeny_button->isChecked()||phylogeny_and_metrics_button->isChecked())OutputString = a.MakeNewick(rootspecies, minspeciessize, allowexcludewithissue);
+            if (phylogeny_button->isChecked()||phylogeny_and_metrics_button->isChecked())OutputString = a.MakeNewick(rootspecies, minspeciessize, allowExcludeWithDescendants);
             else OutputString = "Species tracking is not enabled.";
             break;
 
         case ANALYSIS_TOOL_CODE_DUMP_DATA:
-            if (phylogeny_and_metrics_button->isChecked())OutputString = a.DumpData(rootspecies, minspeciessize, allowexcludewithissue);
+            if (phylogeny_and_metrics_button->isChecked())OutputString = a.DumpData(rootspecies, minspeciessize, allowExcludeWithDescendants);
             else OutputString = "Species tracking is not enabled, or is set to phylogeny only.";
             break;
 
@@ -3213,7 +3213,7 @@ QString MainWindow::print_settings()
     settings_out<<"-- Only breed within species:"<<breedspecies<<"\n";
     settings_out<<"-- Pathogens enabled:"<<path_on<<"\n";
     settings_out<<"-- Variable mutate:"<<variableMutate<<"\n";
-    settings_out<<"-- Exclude species without issue:"<<allowexcludewithissue<<"\n";
+    settings_out<<"-- Exclude species without descendants:"<<allowExcludeWithDescendants<<"\n";
     settings_out<<"-- Breeding: ";
     if(sexual)settings_out<<"sexual"<<"\n";
     else if (asexual)settings_out<<"asexual"<<"\n";
@@ -3284,7 +3284,7 @@ void MainWindow::load_settings()
                          if(settings_file_in.name() == "breedspecies")breedspecies=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "path_on")path_on=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "variableMutate")variableMutate=settings_file_in.readElementText().toInt();
-                         if(settings_file_in.name() == "allowexcludewithissue")allowexcludewithissue=settings_file_in.readElementText().toInt();
+                         if(settings_file_in.name() == "allowExcludeWithDescendants")allowExcludeWithDescendants=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "sexual")sexual=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "asexual")asexual=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "variableBreed")variableBreed=settings_file_in.readElementText().toInt();
@@ -3356,7 +3356,7 @@ void MainWindow::update_gui_from_variables()
     breedspecies_checkbox->setChecked(breedspecies);
     pathogens_checkbox->setChecked(path_on);
     variable_mutation_checkbox->setChecked(variableMutate);
-    exclude_without_issue_checkbox->setChecked(allowexcludewithissue);
+    exclude_without_descendants_checkbox->setChecked(allowExcludeWithDescendants);
     sexual_radio->setChecked(sexual);
     asexual_radio->setChecked(asexual);
     variableBreed_radio->setChecked(variableBreed);
@@ -3505,8 +3505,8 @@ void MainWindow::save_settings()
         settings_file_out.writeCharacters(QString("%1").arg(variableMutate));
         settings_file_out.writeEndElement();
 
-        settings_file_out.writeStartElement("allowexcludewithissue");
-        settings_file_out.writeCharacters(QString("%1").arg(allowexcludewithissue));
+        settings_file_out.writeStartElement("allowExcludeWithDescendants");
+        settings_file_out.writeCharacters(QString("%1").arg(allowExcludeWithDescendants));
         settings_file_out.writeEndElement();
 
         settings_file_out.writeStartElement("sexual");

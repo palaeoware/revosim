@@ -173,7 +173,7 @@ QString AnalysisTools::SpeciesRatesOfChange(QString filename)
           out << "Species: "<<ID << ": " << spe.start << "-"<<spe.end<<" Parent "<<spe.parent<<"  maxsize "<<spe.maxsize<<"  Av size "<<(spe.totalsize/spe.occurrences)<< "  %missing "<<100-pval<< endl;
       }
 
-      //Now cull  extinct species without issue
+      //Now cull  extinct species without descendants
 
       count=0;
       int speccount=species_list.count();
@@ -190,10 +190,10 @@ QString AnalysisTools::SpeciesRatesOfChange(QString filename)
      while (i.hasNext())
      {
          i.next();
-         bool issue=false; if (parents.contains(i.key())) issue=true;  //if it is in parents list it should survive cull
-         //does it have issue?
+         bool descendants=false; if (parents.contains(i.key())) descendants=true;  //if it is in parents list it should survive cull
+         //does it have descendants?
 
-         if (i.value().end != lasttime  && issue==false)  //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
+         if (i.value().end != lasttime  && descendants==false)  //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
             i.remove();
 
          count++;
@@ -210,7 +210,7 @@ QString AnalysisTools::SpeciesRatesOfChange(QString filename)
 
      //Output it
      out<<endl<<"============================================================="<<endl;
-     out<<endl<<"Culled data (extinct species with no issue removed)"<<endl;
+     out<<endl<<"Culled data (extinct species with no descendants removed)"<<endl;
      out<<endl<<"============================================================="<<endl;
     i.toFront();
      while (i.hasNext())
@@ -519,7 +519,7 @@ QString AnalysisTools::Stasis(QString filename, int slot_count, float percentile
             Q_UNUSED(pval);
       }
 
-      //Now cull  extinct species without issue
+      //Now cull  extinct species without descendants
 
       count=0;
       int speccount=species_list.count();
@@ -536,10 +536,10 @@ QString AnalysisTools::Stasis(QString filename, int slot_count, float percentile
      while (i.hasNext())
      {
          i.next();
-         bool issue=false; if (parents.contains(i.key())) issue=true;  //if it is in parents list it should survive cull
-         //does it have issue?
+         bool descendants=false; if (parents.contains(i.key())) descendants=true;  //if it is in parents list it should survive cull
+         //does it have descendants?
 
-         if (i.value().end != lasttime  && issue==false)  //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
+         if (i.value().end != lasttime  && descendants==false)  //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
             i.remove();
 
          count++;
@@ -943,7 +943,7 @@ QString AnalysisTools::GenerateTree(QString filename)
 //Generates output to the report dock
 //Currently assumes start at time 0, with species 1
 //1. Generates list of all species to have lived, together with time-range, parent, etc
-//2. Culls this list to exclude all species than went extinct without issue
+//2. Culls this list to exclude all species than went extinct without descendants
 //3. Generates a phylogram showing ranges of species and their parent
 {
     QMap <quint64, logged_species> species_list;  //main list of species list, filed by Species ID
@@ -1050,7 +1050,7 @@ QString AnalysisTools::GenerateTree(QString filename)
           out << "Species: "<<ID << ": " << spe.start << "-"<<spe.end<<" Parent "<<spe.parent<<"  maxsize "<<spe.maxsize<<"  Av size "<<(spe.totalsize/spe.occurrences)<< "  %missing "<<100-pval<< endl;
       }
 
-      //Now cull  extinct species without issue
+      //Now cull  extinct species without descendants
 
       count=0;
       int speccount=species_list.count();
@@ -1067,10 +1067,10 @@ QString AnalysisTools::GenerateTree(QString filename)
      while (i.hasNext())
      {
          i.next();
-         bool issue=false; if (parents.contains(i.key())) issue=true;  //if it is in parents list it should survive cull
-         //does it have issue?
+         bool descendants=false; if (parents.contains(i.key())) descendants=true;  //if it is in parents list it should survive cull
+         //does it have descendants?
 
-         if (i.value().end != lasttime  && issue==false)  //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
+         if (i.value().end != lasttime  && descendants==false)  //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
             i.remove();
 
          count++;
@@ -1088,7 +1088,7 @@ QString AnalysisTools::GenerateTree(QString filename)
 
      //Output it
      out<<endl<<"============================================================="<<endl;
-     out<<endl<<"Culled data (extinct species with no issue removed)"<<endl;
+     out<<endl<<"Culled data (extinct species with no descendants removed)"<<endl;
      out<<endl<<"============================================================="<<endl;
     i.toFront();
      while (i.hasNext())
@@ -1357,7 +1357,7 @@ QString AnalysisTools::MakeNewick(LogSpecies *root, quint64 min_speciessize, boo
 {
     ids=0;
     minspeciessize=min_speciessize;
-    allowexcludewithissue=allowexclude;
+    allowExcludeWithDescendants=allowexclude;
 
     if (root)
     return root->newickstring(0,0,true);
@@ -1372,8 +1372,8 @@ QString AnalysisTools::DumpData(LogSpecies *root, quint64 min_speciessize, bool 
 
     quint64 ID;
     LogSpecies *parent;
-    quint64 time_of_first_appearance;
-    quint64 time_of_last_appearance;
+    quint64 timeOfFirstAppearance;
+    quint64 timeOfLastAppearance;
     QList<LogSpeciesDataItem *>data_items;
     QList<LogSpecies *>children;
     quint32 maxsize;
@@ -1394,7 +1394,7 @@ QString AnalysisTools::DumpData(LogSpecies *root, quint64 min_speciessize, bool 
 
 
     minspeciessize=min_speciessize;
-    allowexcludewithissue=allowexclude;
+    allowExcludeWithDescendants=allowexclude;
     if (root)
     return "ID,ParentID,generation,size,sample_genome,sample_genome_binary,diversity,cells_occupied,geog_range,centroid_x,centroid_y,mean_fit,min_env_red,min_env_green,min_env_blue,max_env_red,max_env_green,max_env_blue,mean_env_red,mean_env_green,mean_env_blue\n"+
             root->dump_data(0,0,true);
@@ -1406,8 +1406,8 @@ QString AnalysisTools::DumpData(LogSpecies *root, quint64 min_speciessize, bool 
     //ARTS - compiler warning supression
     Q_UNUSED(ID);
     Q_UNUSED(parent);
-    Q_UNUSED(time_of_first_appearance);
-    Q_UNUSED(time_of_last_appearance);
+    Q_UNUSED(timeOfFirstAppearance);
+    Q_UNUSED(timeOfLastAppearance);
     Q_UNUSED(maxsize);
     Q_UNUSED(generation);
     Q_UNUSED(sample_genome);

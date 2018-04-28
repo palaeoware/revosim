@@ -424,8 +424,8 @@ void Analyser::Groups_2017()
                     newdata->generation=generation;
 
                     newlogspecies->ID=nextspeciesid;
-                    newlogspecies->time_of_first_appearance=generation;
-                    newlogspecies->time_of_last_appearance=generation;
+                    newlogspecies->timeOfFirstAppearance=generation;
+                    newlogspecies->timeOfLastAppearance=generation;
                     newlogspecies->parent=thislogspecies;
                     newlogspecies->maxsize=speciessize;
                     thislogspecies->children.append(newlogspecies);
@@ -452,7 +452,7 @@ void Analyser::Groups_2017()
                         if (species_mode>=SPECIES_MODE_PHYLOGENY)
                         {
                             logspeciespointers[jj.key()]=newsp.logspeciesstructure;
-                            newsp.logspeciesstructure->time_of_last_appearance=generation;
+                            newsp.logspeciesstructure->timeOfLastAppearance=generation;
                             LogSpeciesDataItem *newdata = new LogSpeciesDataItem;
                             newdata->generation=generation;
                             newsp.logspeciesstructure->data_items.append(newdata);
