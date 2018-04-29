@@ -21,6 +21,7 @@
 #include "randoms.h"
 #include "russellenvironment.h"
 #include "about.h"
+#include "version.h"
 
 namespace Ui {
 class MainWindow;
@@ -45,6 +46,7 @@ private slots:
     void on_selectColour_clicked();
     void on_sFromImPushbutton_clicked();
     void about();
+    void stop();
 
 private:
 
@@ -56,10 +58,12 @@ private:
     QImage *env_image;
     int generations, stackOneSize, stackTwoSize;
     QAction *startButton, *stopButton, *aboutButton;
+    bool stop_flag;
 
     void combinelimits(int startPoint, int stkOne, int stkTwo);
     void RefreshEnvironment();
     void newEnvironmentImage();
+    void reset_gui();
 };
 
 extern MainWindow *MainWin;

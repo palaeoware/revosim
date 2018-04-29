@@ -3,13 +3,13 @@
 
 #include <QDockWidget>
 #include <QProgressDialog>
+#include <QProgressBar>
 #include <QColorDialog>
 #include <QStandardPaths>
 
 /*
  * To do:
  *
- * Update window title to match revosim
  * Add labels to other tabs to explain what they do
  * Sort out stop button
  * Move progress bar to status bar
@@ -30,7 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
    ui->setupUi(this);
-   this->setWindowTitle("REvoSim Environmental Generator");
+   QString version;
+   version.sprintf("%d.%d.%d",MAJORVERSION,MINORVERSION,PATCHVERSION);
+   this->setWindowTitle(QString(PRODUCTNAME)+" v"+version+" - compiled - "+__DATE__);
    setWindowIcon(QIcon (":/icon.png"));
    showMaximized();
 
@@ -54,9 +56,6 @@ MainWindow::MainWindow(QWidget *parent) :
    envscene->addItem(env_item);
 
    ui->enviroView->setScene(envscene);
-   //ui->enviroView->setAlignment(Qt::AlignCenter);
-   ui->enviroView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-   ui->enviroView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
    ui->pushButtonStackTwo->setEnabled(false);
    ui->combineEnd->setEnabled(false);
@@ -85,6 +84,7 @@ MainWindow::MainWindow(QWidget *parent) :
    stopButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_stop_button_red.png")), QString("Stop"), this);
    stopButton->setToolTip(tr("<font>Use this button stop the environmental generation.</font>"));
    ui->toolBar->addAction(stopButton);
+   QObject::connect(stopButton, SIGNAL (triggered()), this, SLOT (stop()));
 
    aboutButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_about_button.png")), QString("About"), this);
    aboutButton->setToolTip(tr("<font>Use this button to view information about this program.</font>"));
@@ -94,6 +94,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
    //RJG - Load random numbers
    simulation_randoms = new randoms();
+
+   stop_flag=false;
 }
 
 MainWindow::~MainWindow()
@@ -109,7 +111,8 @@ void MainWindow::newEnvironmentImage()
     env_image=new QImage(MainWin->ui->spinSize->value(), MainWin->ui->spinSize->value(), QImage::Format_RGB32);
     env_image->fill(0);
     env_item->setPixmap(QPixmap::fromImage(*env_image));
-
+    //RJG - flag secene for deletion later, and then create a new one
+    //If you don't do this the scene is too large, and doesn't center correctly.
     envscene->deleteLater();
     envscene = new EnvironmentScene;
     envscene->addItem(env_item);
@@ -122,9 +125,7 @@ void MainWindow::generateEnvironment()
     if (ui->settings_tab_widget->currentIndex()==0){QMessageBox::warning(0,"Nope","Select one of the tabs to the right to tell the software what kind of environment you would like to generate.", QMessageBox::Ok);return;}
 
     newEnvironmentImage();
-
-    //ui->enviroView->resetMatrix();
-    //ui->enviroView->resetTransform();
+    stop_flag=false;
 
     if (ui->settings_tab_widget->currentIndex()==1) //russellenv
         environmentobject = new russellenvironment;
@@ -153,18 +154,20 @@ void MainWindow::generateEnvironment()
 
     generations=MainWin->ui->numGenerations->value();
 
-    QProgressDialog prDialogue("Progress of generation","Cancel",0,generations);
-    prDialogue.show();
+    QProgressBar prBar;
+    prBar.setRange(0,ui->numGenerations->value());
+    ui->statusBar->addPermanentWidget(&prBar);
 
     for(int i=0;i<generations;i++)
     {
         currentGeneration=i;
         environmentobject->regenerate();
-        prDialogue.setValue(i);
 
+        prBar.setValue(i);
         RefreshEnvironment();
 
         qApp->processEvents();
+
         if(ui->save_images_checkbox->isChecked())
         {
             QImage saveImage(MainWin->ui->spinSize->value(),MainWin->ui->spinSize->value(),QImage::Format_RGB32);
@@ -175,10 +178,11 @@ void MainWindow::generateEnvironment()
             saveImage.save(save_directory);
         }
 
-        if (prDialogue.wasCanceled()) break;
+        if(stop_flag){stop_flag=false; break;}
 
     }
 
+    ui->statusBar->removeWidget(&prBar);
     delete environmentobject;
 }
 
@@ -192,7 +196,6 @@ void MainWindow::RefreshEnvironment()
 
     ui->enviroView->resetMatrix();
     if (ui->actionResize_environment->isChecked()) ui->enviroView->fitInView(env_item,Qt::KeepAspectRatio);
-    //float middle = (float)(ui->spinSize->value())/2.;
     ui->enviroView->centerOn(0.,0.);
 }
 
@@ -304,4 +307,15 @@ void MainWindow::about()
 {
     About adialogue;
     adialogue.exec();
+}
+
+
+void MainWindow::stop()
+{
+    stop_flag=true;
+}
+
+void MainWindow::reset_gui()
+{
+
 }
