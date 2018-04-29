@@ -6,20 +6,12 @@
 #include <QProgressBar>
 #include <QColorDialog>
 #include <QStandardPaths>
+#include <QShortcut>
 
 /*
  * To do:
  *
- * Add labels to other tabs to explain what they do
- * Sort out stop button
- * Move progress bar to status bar
- * Add messages to status bar
- * Add keyboard shortcuts
  * Test with different image sizes
- * Sort out menus as required - move resize to a docker?
- * Add spacer to move about to right hand side?
- * Menu option to reopen docker, or don't let it be closed?
- *
  */
 
 MainWindow *MainWin;
@@ -41,7 +33,8 @@ MainWindow::MainWindow(QWidget *parent) :
    currentGeneration=0;
    stackOneSize=0;
    stackTwoSize=0;
-
+   stop_flag=false;
+   pause_flag=false;
    Directory.setPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
    ui->path->setText(Directory.path());
 
@@ -62,19 +55,36 @@ MainWindow::MainWindow(QWidget *parent) :
 
    //RJG - Populate labels in GUI as required
    ui->envSettings->setWindowTitle("Environmental Settings");
+   ui->display_label->setStyleSheet("font-weight: bold");
+   ui->output_label->setStyleSheet("font-weight: bold");
 
    ui->russell_label->setAlignment(Qt::AlignJustify);
    ui->russell_label->setWordWrap(true);
    ui->russell_label->setText("Please enter the settings for the dynamic environment below. Most are obvious. Convergence sets the amount of smoothing between spots and background. 0.01 is very smooth, but will initially take about a minute to create environment.");
 
+   ui->m_environment_label->setAlignment(Qt::AlignJustify);
+   ui->m_environment_label->setWordWrap(true);
+   ui->m_environment_label->setText("Please enter the settings for the dynamic environment below. Most are obvious.");
+
+   ui->noise_label->setAlignment(Qt::AlignJustify);
+   ui->noise_label->setWordWrap(true);
+   ui->noise_label->setText("This will provide a stack of noise images, which could be of utility for combining with other kinds of image stacks.");
+
+   //stack_label
+
    ui->combine_label->setAlignment(Qt::AlignJustify);
    ui->combine_label->setWordWrap(true);
    ui->combine_label->setText("Combines stack two with stack one from  Start Slice to End Slice. Percentage start and end for influence of stack one, interpolate between. Limit for End Slice is end of stack one. If number of generations is larger than this it will duplicate stack two. If start and end slice are maximum it will concatenate two stacks.");
 
-   ui->settings_tab_widget->setCurrentIndex(0);
+   ui->instructions_label->setAlignment(Qt::AlignJustify);
+   ui->instructions_label->setWordWrap(true);
+   ui->instructions_label->setText("Select output options here, and then one of the tabs to the right in order to define what type of environment is generated when you press play.");
+
 
    //RJG - Sort GUI
    ui->toolBar->setIconSize(QSize(25,25));
+   ui->statusBar->setMinimumHeight(25);
+   ui->settings_tab_widget->setCurrentIndex(0);
 
    startButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_play_button_green.png")), QString("Run"), this);
    startButton->setToolTip(tr("<font>Use this button to generate an environment.</font>"));
@@ -85,17 +95,35 @@ MainWindow::MainWindow(QWidget *parent) :
    stopButton->setToolTip(tr("<font>Use this button stop the environmental generation.</font>"));
    ui->toolBar->addAction(stopButton);
    QObject::connect(stopButton, SIGNAL (triggered()), this, SLOT (stop()));
+   stopButton->setEnabled(false);
 
+   pauseButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_pause_button_orange.png")), QString("Pause"), this);
+   pauseButton->setToolTip(tr("<font>Use this button to pause the environmental generation. Press again to unpause.</font>"));
+   ui->toolBar->addAction(pauseButton);
+   QObject::connect(pauseButton, SIGNAL (triggered()), this, SLOT (pause()));
+   pauseButton->setEnabled(false);
+
+    ui->toolBar->addSeparator();
+   settingsButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_settings_1_button.png")), QString("Settings"), this);
+   settingsButton->setToolTip(tr("<font>Use this button to open the Settings Dock.</font>"));
+   ui->toolBar->addAction(settingsButton);
+   QObject::connect(settingsButton, SIGNAL (triggered()), this, SLOT (settings()));
+   settingsButton->setCheckable(true);
+   settingsButton->setChecked(true);
+
+   ui->toolBar->addSeparator();
    aboutButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_about_button.png")), QString("About"), this);
    aboutButton->setToolTip(tr("<font>Use this button to view information about this program.</font>"));
    ui->toolBar->addAction(aboutButton);
    QObject::connect(aboutButton, SIGNAL (triggered()), this, SLOT (about()));
 
-
    //RJG - Load random numbers
    simulation_randoms = new randoms();
 
-   stop_flag=false;
+   //RJG - shortcuts
+   new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, SLOT(generateEnvironment()));
+   new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_P), this, SLOT(pause()));
+   new QShortcut(QKeySequence(Qt::Key_Escape), this, SLOT(stop()));
 }
 
 MainWindow::~MainWindow()
@@ -103,29 +131,17 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
-void MainWindow::newEnvironmentImage()
-{   
-    //RJG - Add images to the scenes
-    if(!env_image->isNull())delete env_image;
-    env_image=new QImage(MainWin->ui->spinSize->value(), MainWin->ui->spinSize->value(), QImage::Format_RGB32);
-    env_image->fill(0);
-    env_item->setPixmap(QPixmap::fromImage(*env_image));
-    //RJG - flag secene for deletion later, and then create a new one
-    //If you don't do this the scene is too large, and doesn't center correctly.
-    envscene->deleteLater();
-    envscene = new EnvironmentScene;
-    envscene->addItem(env_item);
-    ui->enviroView->setScene(envscene);
-}
-
 void MainWindow::generateEnvironment()
 {
     if(!Directory.exists() && ui->save_images_checkbox->isChecked()){QMessageBox::warning(0,"Error","No such directory.", QMessageBox::Ok);return;}
     if (ui->settings_tab_widget->currentIndex()==0){QMessageBox::warning(0,"Nope","Select one of the tabs to the right to tell the software what kind of environment you would like to generate.", QMessageBox::Ok);return;}
+    ui->output_tab->setEnabled(false);
 
     newEnvironmentImage();
     stop_flag=false;
+    startButton->setEnabled(false);
+    pauseButton->setEnabled(true);
+    stopButton->setEnabled(true);
 
     if (ui->settings_tab_widget->currentIndex()==1) //russellenv
         environmentobject = new russellenvironment;
@@ -154,12 +170,15 @@ void MainWindow::generateEnvironment()
 
     generations=MainWin->ui->numGenerations->value();
 
+    //RJG - add progress bar
     QProgressBar prBar;
-    prBar.setRange(0,ui->numGenerations->value());
+    prBar.setRange(0,generations);
+    prBar.setAlignment(Qt::AlignCenter);
     ui->statusBar->addPermanentWidget(&prBar);
 
     for(int i=0;i<generations;i++)
     {
+
         currentGeneration=i;
         environmentobject->regenerate();
 
@@ -178,13 +197,38 @@ void MainWindow::generateEnvironment()
             saveImage.save(save_directory);
         }
 
-        if(stop_flag){stop_flag=false; break;}
+        if(pause_flag)
+            while(pause_flag && !stop_flag)
+                qApp->processEvents();
+
+        if(stop_flag){stop_flag=false; generations=-1; break;}
 
     }
 
     ui->statusBar->removeWidget(&prBar);
+    if (generations<0)ui->statusBar->showMessage("Generation cancelled.");
+    else if (ui->save_images_checkbox->isChecked())ui->statusBar->showMessage(QString("Generation complete: %1 images were saved.").arg(generations));
+    else ui->statusBar->showMessage("Generation complete; no images saved as save is not selected in the out tab.");
+
+    reset_gui();
     delete environmentobject;
 }
+
+void MainWindow::newEnvironmentImage()
+{
+    //RJG - Add images to the scenes
+    if(!env_image->isNull())delete env_image;
+    env_image=new QImage(MainWin->ui->spinSize->value(), MainWin->ui->spinSize->value(), QImage::Format_RGB32);
+    env_image->fill(0);
+    env_item->setPixmap(QPixmap::fromImage(*env_image));
+    //RJG - flag secene for deletion later, and then create a new one
+    //If you don't do this the scene is too large, and doesn't center correctly.
+    envscene->deleteLater();
+    envscene = new EnvironmentScene;
+    envscene->addItem(env_item);
+    ui->enviroView->setScene(envscene);
+}
+
 
 void MainWindow::RefreshEnvironment()
 {
@@ -195,9 +239,38 @@ void MainWindow::RefreshEnvironment()
     env_item->setPixmap(QPixmap::fromImage(*env_image));
 
     ui->enviroView->resetMatrix();
-    if (ui->actionResize_environment->isChecked()) ui->enviroView->fitInView(env_item,Qt::KeepAspectRatio);
+    if (ui->resize->isChecked()) ui->enviroView->fitInView(env_item,Qt::KeepAspectRatio);
     ui->enviroView->centerOn(0.,0.);
 }
+
+
+void MainWindow::reset_gui()
+{
+
+    //RJG - Add images to the scenes
+    if(!env_image->isNull())delete env_image;
+    env_image=new QImage(":/palaeoware_logo_square.png");
+    env_item->setPixmap(QPixmap::fromImage(*env_image));
+
+    envscene->deleteLater();
+
+    envscene = new EnvironmentScene;
+    envscene->mw=this;
+    envscene->addItem(env_item);
+    ui->enviroView->resetMatrix();
+    ui->enviroView->setScene(envscene);
+
+    //RJG - Sort flags
+    pause_flag=false;
+    stop_flag=false;
+
+    //RJG - Sort buttons and GUI
+    startButton->setEnabled(true);
+    pauseButton->setEnabled(false);
+    stopButton->setEnabled(false);
+    ui->output_tab->setEnabled(true);
+}
+
 
 void MainWindow::on_pushButton_clicked()
 {
@@ -309,13 +382,27 @@ void MainWindow::about()
     adialogue.exec();
 }
 
-
 void MainWindow::stop()
 {
     stop_flag=true;
 }
 
-void MainWindow::reset_gui()
+void MainWindow::pause()
 {
+    pause_flag=!pause_flag;
+}
 
+
+void MainWindow::settings()
+{
+    if(ui->settings_tab_widget->isVisible())
+        {
+            ui->envSettings->hide();
+            settingsButton->setChecked(false);
+        }
+    else
+        {
+            ui->envSettings->show();
+            settingsButton->setChecked(true);
+        }
 }

@@ -47,6 +47,8 @@ private slots:
     void on_sFromImPushbutton_clicked();
     void about();
     void stop();
+    void pause();
+    void settings();
 
 private:
 
@@ -57,8 +59,8 @@ private:
     QGraphicsPixmapItem *env_item;
     QImage *env_image;
     int generations, stackOneSize, stackTwoSize;
-    QAction *startButton, *stopButton, *aboutButton;
-    bool stop_flag;
+    QAction *startButton, *stopButton, *aboutButton, *pauseButton, *settingsButton;
+    bool stop_flag, pause_flag;
 
     void combinelimits(int startPoint, int stkOne, int stkTwo);
     void RefreshEnvironment();
