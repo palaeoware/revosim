@@ -7,7 +7,18 @@
 #include <QStandardPaths>
 
 /*
+ * To do:
  *
+ * Update window title to match revosim
+ * Add labels to other tabs to explain what they do
+ * Sort out stop button
+ * Move progress bar to status bar
+ * Add messages to status bar
+ * Add keyboard shortcuts
+ * Test with different image sizes
+ * Sort out menus as required - move resize to a docker?
+ * Add spacer to move about to right hand side?
+ * Menu option to reopen docker, or don't let it be closed?
  *
  */
 
@@ -26,7 +37,6 @@ MainWindow::MainWindow(QWidget *parent) :
    //RJG - Globals for simulation
    generations=500;
    currentGeneration=0;
-   save=false;
    stackOneSize=0;
    stackTwoSize=0;
 
@@ -44,8 +54,6 @@ MainWindow::MainWindow(QWidget *parent) :
    envscene->addItem(env_item);
 
    ui->enviroView->setScene(envscene);
-   QBrush brush(QColor(42,42,42));
-   ui->enviroView->setBackgroundBrush(brush);
    //ui->enviroView->setAlignment(Qt::AlignCenter);
    ui->enviroView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
    ui->enviroView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -77,7 +85,6 @@ MainWindow::MainWindow(QWidget *parent) :
    stopButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_stop_button_red.png")), QString("Stop"), this);
    stopButton->setToolTip(tr("<font>Use this button stop the environmental generation.</font>"));
    ui->toolBar->addAction(stopButton);
-   //TODO - implimenet stop button
 
    aboutButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_about_button.png")), QString("About"), this);
    aboutButton->setToolTip(tr("<font>Use this button to view information about this program.</font>"));
@@ -96,30 +103,36 @@ MainWindow::~MainWindow()
 
 
 void MainWindow::newEnvironmentImage()
-{
+{   
     //RJG - Add images to the scenes
     if(!env_image->isNull())delete env_image;
     env_image=new QImage(MainWin->ui->spinSize->value(), MainWin->ui->spinSize->value(), QImage::Format_RGB32);
     env_image->fill(0);
     env_item->setPixmap(QPixmap::fromImage(*env_image));
+
+    envscene->deleteLater();
+    envscene = new EnvironmentScene;
+    envscene->addItem(env_item);
+    ui->enviroView->setScene(envscene);
 }
 
 void MainWindow::generateEnvironment()
 {
-    if(!Directory.exists()&&save){QMessageBox::warning(0,"Error","No such directory.", QMessageBox::Ok);return;}
+    if(!Directory.exists() && ui->save_images_checkbox->isChecked()){QMessageBox::warning(0,"Error","No such directory.", QMessageBox::Ok);return;}
+    if (ui->settings_tab_widget->currentIndex()==0){QMessageBox::warning(0,"Nope","Select one of the tabs to the right to tell the software what kind of environment you would like to generate.", QMessageBox::Ok);return;}
 
     newEnvironmentImage();
 
     //ui->enviroView->resetMatrix();
     //ui->enviroView->resetTransform();
 
-    if (ui->settings_tab_widget->currentIndex()==0) //russellenv
+    if (ui->settings_tab_widget->currentIndex()==1) //russellenv
         environmentobject = new russellenvironment;
 
-    if (ui->settings_tab_widget->currentIndex()==1) //markenv
+    if (ui->settings_tab_widget->currentIndex()==2) //markenv
         environmentobject = new markenvironment;
 
-    if (ui->settings_tab_widget->currentIndex()==2) //noise
+    if (ui->settings_tab_widget->currentIndex()==3) //noise
     {
         environmentobject = new noiseenvironment;
         if(MainWin->ui->noiseMin->value()>=MainWin->ui->noiseMax->value())
@@ -129,13 +142,13 @@ void MainWindow::generateEnvironment()
         }
     }
 
-    if (ui->settings_tab_widget->currentIndex()==3) //combine
+    if (ui->settings_tab_widget->currentIndex()==4) //combine
         environmentobject = new combine;
 
-    if (ui->settings_tab_widget->currentIndex()==4) //colour
+    if (ui->settings_tab_widget->currentIndex()==5) //colour
         environmentobject = new colour;
 
-    if (ui->settings_tab_widget->currentIndex()==5) //stack
+    if (ui->settings_tab_widget->currentIndex()==6) //stack
         environmentobject = new makestack;
 
     generations=MainWin->ui->numGenerations->value();
@@ -152,19 +165,14 @@ void MainWindow::generateEnvironment()
         RefreshEnvironment();
 
         qApp->processEvents();
-        if(save)
+        if(ui->save_images_checkbox->isChecked())
         {
             QImage saveImage(MainWin->ui->spinSize->value(),MainWin->ui->spinSize->value(),QImage::Format_RGB32);
             for (int n=0; n<MainWin->ui->spinSize->value(); n++)
                 for (int m=0; m<MainWin->ui->spinSize->value(); m++)
                     saveImage.setPixel(n,m,qRgb(environmentobject->environment[n][m][0], environmentobject->environment[n][m][1], environmentobject->environment[n][m][2]));
-            QString dir2;
-            //TODO - update this to be sensible
-            if(i<10)dir2 = QString(Directory.path() + "/000%1.bmp").arg(i);
-            if(i>9&&i<100)dir2 = QString(Directory.path() + "/00%1.bmp").arg(i);
-            if(i>99&&i<1000)dir2 = QString(Directory.path() + "/0%1.bmp").arg(i);
-            if(i>999)dir2 = QString(Directory.path() + "/%1.bmp").arg(i);
-            saveImage.save(dir2);
+            QString save_directory=QString(Directory.path()+"/%1.png").arg(i, 4, 10, QChar('0'));
+            saveImage.save(save_directory);
         }
 
         if (prDialogue.wasCanceled()) break;
@@ -184,7 +192,7 @@ void MainWindow::RefreshEnvironment()
 
     ui->enviroView->resetMatrix();
     if (ui->actionResize_environment->isChecked()) ui->enviroView->fitInView(env_item,Qt::KeepAspectRatio);
-    float middle = (float)(ui->spinSize->value())/2.;
+    //float middle = (float)(ui->spinSize->value())/2.;
     ui->enviroView->centerOn(0.,0.);
 }
 
@@ -262,11 +270,6 @@ void MainWindow::combinelimits(int startPoint, int stkOne, int stkTwo)
     ui->combineEnd->setValue(minSize);
 
     ui->combineStart->setMaximum(stkOne);
-}
-
-void MainWindow::on_checkBox_2_toggled(bool checked)
-{
-    save=checked;
 }
 
 void MainWindow::on_selectColour_clicked()

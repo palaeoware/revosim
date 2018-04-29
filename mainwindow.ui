@@ -136,7 +136,7 @@
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
-             <widget class="QCheckBox" name="checkBox_2">
+             <widget class="QCheckBox" name="save_images_checkbox">
               <property name="text">
                <string>Save images</string>
               </property>

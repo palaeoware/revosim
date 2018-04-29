@@ -22,7 +22,9 @@ SOURCES += \
     colour.cpp \
     makestack.cpp \
     randoms.cpp \
-    darkstyletheme.cpp
+    darkstyletheme.cpp \
+    about.cpp
+
 
 HEADERS  += \
     ui_mainwindow.h \
@@ -38,10 +40,12 @@ HEADERS  += \
     randoms.h \
     russellenvironment.h \
     version.h \
-    darkstyletheme.h
+    darkstyletheme.h \
+    about.h
 
 FORMS    += \
-    mainwindow.ui
+    mainwindow.ui \
+    about.ui
 
 RESOURCES += \
     resources.qrc

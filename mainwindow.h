@@ -20,6 +20,7 @@
 #include "makestack.h"
 #include "randoms.h"
 #include "russellenvironment.h"
+#include "about.h"
 
 namespace Ui {
 class MainWindow;
@@ -38,7 +39,6 @@ public:
 private slots:
     void generateEnvironment();
     void on_pushButton_clicked();
-    void on_checkBox_2_toggled(bool checked);
     void on_pushButtonStackOne_clicked();
     void on_pushButtonStackTwo_clicked();
     void combineStart_valueChanged();
@@ -55,7 +55,6 @@ private:
     QGraphicsPixmapItem *env_item;
     QImage *env_image;
     int generations, stackOneSize, stackTwoSize;
-    bool save;
     QAction *startButton, *stopButton, *aboutButton;
 
     void combinelimits(int startPoint, int stkOne, int stkTwo);

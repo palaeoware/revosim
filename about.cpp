@@ -43,7 +43,7 @@ About::About(QWidget *parent) :
 
     ui->textLabel_2->setWordWrap(true);
     ui->textLabel_2->setText("This version of " + QString(PRODUCTNAME) + " was compiled on the date shown above. It was coded by:"
-                       "<br><br><b>Mark Sutton</b> (m.sutton@imperial.ac.uk)<br><b>Russell Garwood</b> (russell.garwood@manchester.ac.uk)<br><b>Alan R.T. Spencer</b> (alan.spencer@imperial.ac.uk)"
+                       "<br><br><b>Russell Garwood</b> (russell.garwood@manchester.ac.uk)<br><b>Mark Sutton</b> (m.sutton@imperial.ac.uk)<br><b>Alan R.T. Spencer</b> (alan.spencer@imperial.ac.uk)"
                        "<br><br>Reports are appreciated, and comments, suggestions, and feature requests are welcome.");
     ui->textLabel_2->setAlignment(Qt::AlignCenter);
 
