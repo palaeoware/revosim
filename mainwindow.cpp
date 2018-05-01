@@ -8,12 +8,6 @@
 #include <QStandardPaths>
 #include <QShortcut>
 
-/*
- * To do:
- *
- * Test with different image sizes
- */
-
 MainWindow *MainWin;
 randoms *simulation_randoms;
 
@@ -28,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent) :
    setWindowIcon(QIcon (":/icon.png"));
    showMaximized();
 
+   MainWin=this;
+
    //RJG - Globals for simulation
    generations=500;
    currentGeneration=0;
@@ -38,10 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
    Directory.setPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
    ui->path->setText(Directory.path());
 
-   MainWin=this;
-
+   //RJG - set up graphics
    env_image=new QImage(":/palaeoware_logo_square.png");
-
    env_item= new QGraphicsPixmapItem(QPixmap::fromImage(*env_image));
 
    envscene = new EnvironmentScene;
@@ -49,9 +43,6 @@ MainWindow::MainWindow(QWidget *parent) :
    envscene->addItem(env_item);
 
    ui->enviroView->setScene(envscene);
-
-   ui->pushButtonStackTwo->setEnabled(false);
-   ui->combineEnd->setEnabled(false);
 
    //RJG - Populate labels in GUI as required
    ui->envSettings->setWindowTitle("Environmental Settings");
@@ -70,8 +61,6 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->noise_label->setWordWrap(true);
    ui->noise_label->setText("This will provide a stack of noise images, which could be of utility for combining with other kinds of image stacks.");
 
-   //stack_label
-
    ui->combine_label->setAlignment(Qt::AlignJustify);
    ui->combine_label->setWordWrap(true);
    ui->combine_label->setText("Combines stack two with stack one from  Start Slice to End Slice. Percentage start and end for influence of stack one, interpolate between. Limit for End Slice is end of stack one. If number of generations is larger than this it will duplicate stack two. If start and end slice are maximum it will concatenate two stacks.");
@@ -84,7 +73,9 @@ MainWindow::MainWindow(QWidget *parent) :
    //RJG - Sort GUI
    ui->toolBar->setIconSize(QSize(25,25));
    ui->statusBar->setMinimumHeight(25);
-   ui->settings_tab_widget->setCurrentIndex(0);
+   ui->settings_tab_widget->setCurrentIndex(0);   
+   ui->pushButtonStackTwo->setEnabled(false);
+   ui->combineEnd->setEnabled(false);
 
    startButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_play_button_green.png")), QString("Run"), this);
    startButton->setToolTip(tr("<font>Use this button to generate an environment.</font>"));
@@ -117,6 +108,8 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->toolBar->addAction(aboutButton);
    QObject::connect(aboutButton, SIGNAL (triggered()), this, SLOT (about()));
 
+   QObject::connect(ui->change_path, SIGNAL (clicked()), this, SLOT (change_path()));
+
    //RJG - Load random numbers
    simulation_randoms = new randoms();
 
@@ -131,6 +124,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+//RJG - Generates environment based on which tab is selected in the tab dock widget.
 void MainWindow::generateEnvironment()
 {
     if(!Directory.exists() && ui->save_images_checkbox->isChecked()){QMessageBox::warning(0,"Error","No such directory.", QMessageBox::Ok);return;}
@@ -138,11 +132,14 @@ void MainWindow::generateEnvironment()
     ui->output_tab->setEnabled(false);
 
     newEnvironmentImage();
+
+    //RJG - Sort out GUI and pause/stop
     stop_flag=false;
     startButton->setEnabled(false);
     pauseButton->setEnabled(true);
     stopButton->setEnabled(true);
 
+    //RJG - Select which kind of environment object to create - all inheret environmentclass, which has the random number and save functions in it
     if (ui->settings_tab_widget->currentIndex()==1) //russellenv
         environmentobject = new russellenvironment;
 
@@ -154,7 +151,7 @@ void MainWindow::generateEnvironment()
         environmentobject = new noiseenvironment;
         if(MainWin->ui->noiseMin->value()>=MainWin->ui->noiseMax->value())
         {
-        QMessageBox::warning(0,"Error","Min is greater than Max - fix.", QMessageBox::Ok);
+        QMessageBox::warning(0,"Error","Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
         return;
         }
     }
@@ -170,12 +167,13 @@ void MainWindow::generateEnvironment()
 
     generations=MainWin->ui->numGenerations->value();
 
-    //RJG - add progress bar
+    //RJG - Add a progress bar
     QProgressBar prBar;
     prBar.setRange(0,generations);
     prBar.setAlignment(Qt::AlignCenter);
     ui->statusBar->addPermanentWidget(&prBar);
 
+    //RJG - Generate the environment
     for(int i=0;i<generations;i++)
     {
 
@@ -197,20 +195,24 @@ void MainWindow::generateEnvironment()
             saveImage.save(save_directory);
         }
 
+        //RJG - Deal with pause
         if(pause_flag)
             while(pause_flag && !stop_flag)
                 qApp->processEvents();
-
+        //RJG - and stop.
         if(stop_flag){stop_flag=false; generations=-1; break;}
 
     }
 
+    //RJG - Reet GUI and inform user.
     ui->statusBar->removeWidget(&prBar);
     if (generations<0)ui->statusBar->showMessage("Generation cancelled.");
     else if (ui->save_images_checkbox->isChecked())ui->statusBar->showMessage(QString("Generation complete: %1 images were saved.").arg(generations));
     else ui->statusBar->showMessage("Generation complete; no images saved as save is not selected in the out tab.");
 
     reset_gui();
+
+    //RJG - Free memory
     delete environmentobject;
 }
 
@@ -232,6 +234,7 @@ void MainWindow::newEnvironmentImage()
 
 void MainWindow::RefreshEnvironment()
 {
+    //RJG - Update the environment display (which is then used to save image)
     for (int n=0; n<MainWin->ui->spinSize->value(); n++)
         for (int m=0; m<MainWin->ui->spinSize->value(); m++)
            env_image->setPixel(n,m,qRgb(environmentobject->environment[n][m][0], environmentobject->environment[n][m][1], environmentobject->environment[n][m][2]));
@@ -247,7 +250,7 @@ void MainWindow::RefreshEnvironment()
 void MainWindow::reset_gui()
 {
 
-    //RJG - Add images to the scenes
+    //RJG - Add logo to the scene
     if(!env_image->isNull())delete env_image;
     env_image=new QImage(":/palaeoware_logo_square.png");
     env_item->setPixmap(QPixmap::fromImage(*env_image));
@@ -271,8 +274,8 @@ void MainWindow::reset_gui()
     ui->output_tab->setEnabled(true);
 }
 
-
-void MainWindow::on_pushButton_clicked()
+//RJG -Change save path
+void MainWindow::change_path()
 {
     QString files_directory = QFileDialog::getExistingDirectory(this, tr("Select folder containing image files"),
     "d:/", QFileDialog::ShowDirsOnly);
@@ -281,6 +284,7 @@ void MainWindow::on_pushButton_clicked()
     ui->path->setText(Directory.path());
 }
 
+//RJG - Load stack one
 void MainWindow::on_pushButtonStackOne_clicked()
 {
     QString files_directory = QFileDialog::getExistingDirectory(this, tr("Select folder containing image files"),
@@ -302,6 +306,7 @@ void MainWindow::on_pushButtonStackOne_clicked()
     ui->pushButtonStackTwo->setEnabled(true);
 }
 
+//RJG - Load stack two
 void MainWindow::on_pushButtonStackTwo_clicked()
 {
     QString files_directory = QFileDialog::getExistingDirectory(this, tr("Select folder containing image files"),
@@ -324,6 +329,7 @@ void MainWindow::on_pushButtonStackTwo_clicked()
     ui->combineEnd->setEnabled(true);
 }
 
+//RJG - signal for change in combine start value
 void MainWindow::combineStart_valueChanged()
 {
     QString stackOneTextLength(MainWin->ui->stackTwoText->toPlainText());
@@ -333,7 +339,7 @@ void MainWindow::combineStart_valueChanged()
 
 void MainWindow::combinelimits(int startPoint, int stkOne, int stkTwo)
 {
-    //Make limits of combine in combined environment sensible
+    //RJG - Make limits of combine in combined environment sensible
     //Set current value to best guess (but values within sensible limits can be changed)
     int maxSize=startPoint+stkTwo;
     if(stkOne>maxSize) maxSize=stkOne;
@@ -348,6 +354,7 @@ void MainWindow::combinelimits(int startPoint, int stkOne, int stkTwo)
     ui->combineStart->setMaximum(stkOne);
 }
 
+//RJG - select colour
 void MainWindow::on_selectColour_clicked()
 {
     QColor mainWinColour(ui->spinRed->value(),ui->spinGreen->value(),ui->spinBlue->value());
@@ -361,6 +368,7 @@ void MainWindow::on_selectColour_clicked()
     }
 }
 
+//RJG - Load image to create stack from
 void MainWindow::on_sFromImPushbutton_clicked()
 {
     QString file_name = QFileDialog::getOpenFileName(this, tr("Select image file"),
@@ -376,12 +384,14 @@ void MainWindow::on_sFromImPushbutton_clicked()
     ui->spinSize->setValue(original.width());
 }
 
+//RJG - Launch about dialogue
 void MainWindow::about()
 {
     About adialogue;
     adialogue.exec();
 }
 
+//RJG - Stop and pause rely on flags, which are toggled here
 void MainWindow::stop()
 {
     stop_flag=true;
@@ -392,7 +402,7 @@ void MainWindow::pause()
     pause_flag=!pause_flag;
 }
 
-
+//RJG - Show and hide settings docker
 void MainWindow::settings()
 {
     if(ui->settings_tab_widget->isVisible())

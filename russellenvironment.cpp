@@ -4,7 +4,6 @@
 #include <QString>
 #include <QFile>
 #include <QApplication>
-#include <time.h>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -14,7 +13,6 @@ russellenvironment::russellenvironment()
 {
 
     //Setup
-   qsrand(time(NULL));
    saveMe=false;
 
    readSettings();

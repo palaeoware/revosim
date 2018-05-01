@@ -39,7 +39,6 @@ public:
 
 private slots:
     void generateEnvironment();
-    void on_pushButton_clicked();
     void on_pushButtonStackOne_clicked();
     void on_pushButtonStackTwo_clicked();
     void combineStart_valueChanged();
@@ -49,6 +48,7 @@ private slots:
     void stop();
     void pause();
     void settings();
+    void change_path();
 
 private:
 
