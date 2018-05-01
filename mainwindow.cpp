@@ -35,7 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->path->setText(Directory.path());
 
    //RJG - set up graphics
-   env_image=new QImage(":/palaeoware_logo_square.png");
+   //env_image=new QImage(":/palaeoware_logo_square.png");
+   env_image=new QImage(100,100,QImage::Format_RGB32);
+   env_image->fill(QColor(42,42,42));
    env_item= new QGraphicsPixmapItem(QPixmap::fromImage(*env_image));
 
    envscene = new EnvironmentScene;
