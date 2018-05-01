@@ -31,8 +31,6 @@ private:
     int sizevel;
 
     float maxvel;
-    int minvel;
-
     int maxacc;
 
     int maxcvel;
