@@ -16,6 +16,7 @@ private:
             double colour[3];
             double size;
             double nv, mv;
+            bool initialised=false;
     } seed;
 
     seed seeds[1000];

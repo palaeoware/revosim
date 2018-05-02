@@ -121,7 +121,7 @@
         <item>
          <widget class="QTabWidget" name="settings_tab_widget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>4</number>
           </property>
           <widget class="QWidget" name="output_tab">
            <attribute name="title">
@@ -956,20 +956,6 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <widget class="QSpinBox" name="combineStart">
-              <property name="maximum">
-               <number>10000</number>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QLabel" name="label_32">
-              <property name="text">
-               <string>End slice +1:</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QSpinBox" name="combineEnd">
               <property name="maximum">
                <number>10000</number>
               </property>

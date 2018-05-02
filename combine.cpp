@@ -13,18 +13,27 @@ combine::combine()
     ReadSettings();
 }
 
+void combine::ReadSettings()
+{
+    stackOne.setPath(MainWin->ui->stackOneText->toPlainText());
+    stackTwo.setPath(MainWin->ui->stackTwoText->toPlainText());
+    start=MainWin->ui->combineStart->value();
+    currentGen=MainWin->currentGeneration;
+    percentStart=MainWin->ui->percentStartSpin->value();
+    percentEnd=MainWin->ui->percentEndSpin->value();
+}
+
 void combine::regenerate()
 {
         ReadSettings();
 
-        QString stackOneTextLength(MainWin->ui->stackTwoText->toPlainText());
-        if (stackOneTextLength.length()<5)return;
+        if(!stackOne.exists()||!stackTwo.exists()){QMessageBox::warning(0,"Error","Either stack one or two has failed to load.", QMessageBox::Ok);return;}
 
         //Blank environment so it's obvious if something has gone wrong
         for (int n=0; n<MainWin->ui->spinSize->value(); n++)
            for (int m=0; m<MainWin->ui->spinSize->value(); m++)
                 for (int i=0;i<3;i++)
-                    environment[n][m][i]=255;
+                    environment[n][m][i]=0;
 
         //Create new QImages
         QStringList filterList, dirList, dirList2;
@@ -34,6 +43,8 @@ void combine::regenerate()
         QImage stackOneImage;
         if(currentGen<dirList.count())
                     stackOneImage.load(stackOne.absolutePath() + "/" + dirList[currentGen]);
+
+        end=dirList.length();
 
         dirList2 = stackTwo.entryList(filterList,QDir::Files, QDir::Name);
         QImage stackTwoImage;
@@ -70,16 +81,4 @@ void combine::combineImages(QImage sOne, double pOne, QImage sTwo)
            environment[n][m][2]=(int)((double)nmPixelOne.blue()*pOne)+((double)nmPixelTwo.blue()*(1.-pOne));
         }
 
-}
-
-
-void combine::ReadSettings()
-{
-    stackOne.setPath(MainWin->ui->stackOneText->toPlainText());
-    stackTwo.setPath(MainWin->ui->stackTwoText->toPlainText());
-    start=MainWin->ui->combineStart->value();
-    end=MainWin->ui->combineEnd->value();
-    currentGen=MainWin->currentGeneration;
-    percentStart=MainWin->ui->percentStartSpin->value();
-    percentEnd=MainWin->ui->percentEndSpin->value();
 }

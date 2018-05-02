@@ -17,6 +17,18 @@ russellenvironment::russellenvironment()
 
    readSettings();
 
+   for (int i=0;i<nseed;i++)
+         {
+           //Initialise here for seeds at start
+           for (int j=0;j<3;j++)seeds[i].colour[j]=(double)Rand8();
+           seeds[i].n=((double)Rand8()*((double)MainWin->ui->spinSize->value()/256.));
+           seeds[i].m=((double)Rand8()*((double)MainWin->ui->spinSize->value()/256.));
+           seeds[i].nv=0.;
+           seeds[i].mv=0.;
+           int r=Rand8();
+           seeds[i].size=((double)r * (double)maxsize)/256.;
+           seeds[i].initialised=true;
+        }
 }
 
 
@@ -46,29 +58,27 @@ void russellenvironment::regenerate()
     for (int i=0;i<nseed;i++)
           {
 
-           //Check initialised
-           int test=0;
-           for (int j=0;j<3;j++)test+=seeds[i].colour[j];
-           if(test==0 && seeds[i].n ==0 && seeds[i].m ==0)
+           //Check initialised - do this so can add more seeds during run if needed
+           if(!seeds[i].initialised)
                {
-               for (int j=0;j<3;j++)seeds[i].colour[j]=Rand8();
-               seeds[i].n=(Rand8()*(MainWin->ui->spinSize->value()/256.));
-               seeds[i].m=(Rand8()*(MainWin->ui->spinSize->value()/256.));
+               for (int j=0;j<3;j++)seeds[i].colour[j]=(double)Rand8();
+               seeds[i].n=((double)Rand8()*((double)MainWin->ui->spinSize->value()/256.));
+               seeds[i].m=((double)Rand8()*((double)MainWin->ui->spinSize->value()/256.));
                seeds[i].nv=0.;
                seeds[i].mv=0.;
                int r=Rand8();
-               seeds[i].size=(r * maxsize)/256;
+               seeds[i].size=((double)r * (double)maxsize)/256.;
                }
 
           //na to be added to velocity n - first come up with this iteration's value
           //+/-RAND    //limit it to max acceleration //apply factor
-          na = (Rand8()-128.)*((float)maxacc/128.)*factor;
+          na = ((double)Rand8()-128.)*((double)maxacc/128.)*factor;
           //Apply soft limit if velocity is above/below max and acc is in wrong direction//
-          if (fabs(seeds[i].nv)>maxvel && (seeds[i].nv*na)>0)na*=(1/((fabs(seeds[i].nv)-maxvel+1)*5));
+          if (fabs(seeds[i].nv)>maxvel && (seeds[i].nv*na)>0)na*=(1./((fabs(seeds[i].nv)-maxvel+1)*5.));
           // 5 == 'strength' of soft limit
 
-          ma = (Rand8()-128.)*((float)maxacc/128.)*factor;
-          if (fabs(seeds[i].mv)>maxvel && (seeds[i].mv*ma)>0)ma*=(1/((fabs(seeds[i].mv)-maxvel+1)*5));
+          ma = ((double)Rand8()-128.)*((double)maxacc/128.)*factor;
+          if (fabs(seeds[i].mv)>maxvel && (seeds[i].mv*ma)>0)ma*=(1./((fabs(seeds[i].mv)-maxvel+1)*5.));
 
           //Accelerations to apply to nv/mv are now sorted.... Apply next
           seeds[i].nv+=na;
@@ -76,7 +86,7 @@ void russellenvironment::regenerate()
 
           seeds[i].n+=(seeds[i].nv*factor);
           seeds[i].m+=(seeds[i].mv*factor);
-          for (int j=0;j<3;j++)seeds[i].colour[j]+=factor*((double)((Rand8()-128)*((float)maxcvel/128.)));
+          for (int j=0;j<3;j++)seeds[i].colour[j]+=factor*((double)((Rand8()-128.)*((double)maxcvel/128.)));
           for (int j=0;j<3;j++)if((int)seeds[i].colour[j]>255)seeds[i].colour[j]=255.;
           for (int j=0;j<3;j++)if((int)seeds[i].colour[j]<=0)seeds[i].colour[j]=0.;
           seeds[i].size+=factor*((Rand8()-128)*((float)sizevel/128.));
@@ -92,10 +102,8 @@ void russellenvironment::regenerate()
           else        {if(seeds[i].m>(MainWin->ui->spinSize->value()-.1))seeds[i].m=(MainWin->ui->spinSize->value()-.1);
                        if(seeds[i].m<0)seeds[i].m=0.;}
 
-          if(seeds[i].size>maxsize)seeds[i].size=maxsize;
-          if(seeds[i].size<1)seeds[i].size=1;
-
-
+          if(seeds[i].size>maxsize)seeds[i].size=(double)maxsize;
+          if(seeds[i].size<1)seeds[i].size=1.;
           }
 
     //Interpolation then occurs in the laplace function
@@ -233,7 +241,7 @@ void russellenvironment::laplace()
                                                                      -4.0*colourMap[n][m][i];
                                                         }
                                                   colourMap[n][m][i]+=1.2*e[i]/4.0;//Colour = average of surrounding pixels
-                                                   //1.2 == factor to speed up the calculation. I can't find correct value.
+                                                   //1.2 == factor to speed up the calculation.
                                                    eTotal+=fabs(e[i]);
                                             }
 

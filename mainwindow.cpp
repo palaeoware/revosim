@@ -65,7 +65,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
    ui->combine_label->setAlignment(Qt::AlignJustify);
    ui->combine_label->setWordWrap(true);
-   ui->combine_label->setText("Combines stack two with stack one from  Start Slice to End Slice. Percentage start and end for influence of stack one, interpolate between. Limit for End Slice is end of stack one. If number of generations is larger than this it will duplicate stack two. If start and end slice are maximum it will concatenate two stacks.");
+   ui->combine_label->setText("Combines two stacks between the start and end slice. If start slice is greater than zero, "
+                              "it will copy stack one to start slice, and then combine stack two from that point on. "
+                              "Percentage start and end dictate influence of stack one for slices which are combined, and "
+                              "the programme interpolates between these. If stack one ends, stack two will be copied to "
+                              "the end. This can also be used to concatenate stacks by setting start to the size of stack one.");
 
    ui->instructions_label->setAlignment(Qt::AlignJustify);
    ui->instructions_label->setWordWrap(true);
@@ -77,7 +81,6 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->statusBar->setMinimumHeight(25);
    ui->settings_tab_widget->setCurrentIndex(0);   
    ui->pushButtonStackTwo->setEnabled(false);
-   ui->combineEnd->setEnabled(false);
 
    startButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_play_button_green.png")), QString("Run"), this);
    startButton->setToolTip(tr("<font>Use this button to generate an environment.</font>"));
@@ -141,6 +144,9 @@ void MainWindow::generateEnvironment()
     pauseButton->setEnabled(true);
     stopButton->setEnabled(true);
 
+    generations=MainWin->ui->numGenerations->value();
+    int store_generations = generations;
+
     //RJG - Select which kind of environment object to create - all inheret environmentclass, which has the random number and save functions in it
     if (ui->settings_tab_widget->currentIndex()==1) //russellenv
         environmentobject = new russellenvironment;
@@ -159,15 +165,16 @@ void MainWindow::generateEnvironment()
     }
 
     if (ui->settings_tab_widget->currentIndex()==4) //combine
+    {
+        generations=MainWin->ui->combineStart->value()+stackTwoSize;
         environmentobject = new combine;
+    }
 
     if (ui->settings_tab_widget->currentIndex()==5) //colour
         environmentobject = new colour;
 
     if (ui->settings_tab_widget->currentIndex()==6) //stack
         environmentobject = new makestack;
-
-    generations=MainWin->ui->numGenerations->value();
 
     //RJG - Add a progress bar
     QProgressBar prBar;
@@ -213,6 +220,7 @@ void MainWindow::generateEnvironment()
     else ui->statusBar->showMessage("Generation complete; no images saved as save is not selected in the out tab.");
 
     reset_gui();
+    generations=store_generations;
 
     //RJG - Free memory
     delete environmentobject;
@@ -304,7 +312,6 @@ void MainWindow::on_pushButtonStackOne_clicked()
     else ui->stackOneText->setText(files_directory);
     stackOneSize=dirList.count();
 
-    combinelimits(MainWin->ui->combineStart->value(),stackOneSize,stackTwoSize);
     ui->pushButtonStackTwo->setEnabled(true);
 }
 
@@ -326,34 +333,6 @@ void MainWindow::on_pushButtonStackTwo_clicked()
     else ui->stackTwoText->setText(files_directory);
 
     stackTwoSize=dirList.count();
-
-    combinelimits(MainWin->ui->combineStart->value(),stackOneSize,stackTwoSize);
-    ui->combineEnd->setEnabled(true);
-}
-
-//RJG - signal for change in combine start value
-void MainWindow::combineStart_valueChanged()
-{
-    QString stackOneTextLength(MainWin->ui->stackTwoText->toPlainText());
-    if (stackOneTextLength.length()>0)
-        combinelimits(MainWin->ui->combineStart->value(),stackOneSize,stackTwoSize);
-}
-
-void MainWindow::combinelimits(int startPoint, int stkOne, int stkTwo)
-{
-    //RJG - Make limits of combine in combined environment sensible
-    //Set current value to best guess (but values within sensible limits can be changed)
-    int maxSize=startPoint+stkTwo;
-    if(stkOne>maxSize) maxSize=stkOne;
-    ui->numGenerations->setMaximum(maxSize);
-    ui->numGenerations->setValue(maxSize);
-
-    int minSize=startPoint+stkTwo;
-    if(stkOne<minSize) minSize=stkOne;
-    ui->combineEnd->setMaximum(minSize);
-    ui->combineEnd->setValue(minSize);
-
-    ui->combineStart->setMaximum(stkOne);
 }
 
 //RJG - select colour

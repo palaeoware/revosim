@@ -41,7 +41,6 @@ private slots:
     void generateEnvironment();
     void on_pushButtonStackOne_clicked();
     void on_pushButtonStackTwo_clicked();
-    void combineStart_valueChanged();
     void on_selectColour_clicked();
     void on_sFromImPushbutton_clicked();
     void about();
@@ -62,7 +61,6 @@ private:
     QAction *startButton, *stopButton, *aboutButton, *pauseButton, *settingsButton;
     bool stop_flag, pause_flag;
 
-    void combinelimits(int startPoint, int stkOne, int stkTwo);
     void RefreshEnvironment();
     void newEnvironmentImage();
     void reset_gui();
