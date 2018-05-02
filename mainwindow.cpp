@@ -279,7 +279,7 @@ void MainWindow::reset_gui()
 //RJG -Change save path
 void MainWindow::change_path()
 {
-    QString files_directory = QFileDialog::getExistingDirectory(this, tr("Select folder containing image files"),
+    QString files_directory = QFileDialog::getExistingDirectory(this, tr("Select folder in which you would like to save image files"),
     "d:/", QFileDialog::ShowDirsOnly);
     if (files_directory=="") return;
     else Directory=files_directory;

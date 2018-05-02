@@ -48,7 +48,7 @@ saveImage.save(dir2);
 
 quint8 environmentclass::Rand8()
 {
-    //Random 8bit number
+    //RJG - Random 8 bit number
     return simulation_randoms->gen_Rand8();
 }
 

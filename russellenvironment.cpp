@@ -49,7 +49,7 @@ void russellenvironment::regenerate()
            //Check initialised
            int test=0;
            for (int j=0;j<3;j++)test+=seeds[i].colour[j];
-           if(test==0 &&  seeds[i].n ==0 &&  seeds[i].m ==0)
+           if(test==0 && seeds[i].n ==0 && seeds[i].m ==0)
                {
                for (int j=0;j<3;j++)seeds[i].colour[j]=Rand8();
                seeds[i].n=(Rand8()*(MainWin->ui->spinSize->value()/256.));
