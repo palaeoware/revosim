@@ -132,20 +132,10 @@ MainWindow::~MainWindow()
 //RJG - Generates environment based on which tab is selected in the tab dock widget.
 void MainWindow::generateEnvironment()
 {
+
     if(!Directory.exists() && ui->save_images_checkbox->isChecked()){QMessageBox::warning(0,"Error","No such directory.", QMessageBox::Ok);return;}
     if (ui->settings_tab_widget->currentIndex()==0){QMessageBox::warning(0,"Nope","Select one of the tabs to the right to tell the software what kind of environment you would like to generate.", QMessageBox::Ok);return;}
     ui->output_tab->setEnabled(false);
-
-    newEnvironmentImage();
-
-    //RJG - Sort out GUI and pause/stop
-    stop_flag=false;
-    startButton->setEnabled(false);
-    pauseButton->setEnabled(true);
-    stopButton->setEnabled(true);
-
-    generations=MainWin->ui->numGenerations->value();
-    int store_generations = generations;
 
     //RJG - Select which kind of environment object to create - all inheret environmentclass, which has the random number and save functions in it
     if (ui->settings_tab_widget->currentIndex()==1) //russellenv
@@ -168,6 +158,7 @@ void MainWindow::generateEnvironment()
     {
         generations=MainWin->ui->combineStart->value()+stackTwoSize;
         environmentobject = new combine;
+        if (environmentobject->error)return;
     }
 
     if (ui->settings_tab_widget->currentIndex()==5) //colour
@@ -175,6 +166,19 @@ void MainWindow::generateEnvironment()
 
     if (ui->settings_tab_widget->currentIndex()==6) //stack
         environmentobject = new makestack;
+
+    //RJG - Set up new environment image
+    newEnvironmentImage();
+
+    //RJG - Sort out GUI and pause/stop
+    stop_flag=false;
+    startButton->setEnabled(false);
+    pauseButton->setEnabled(true);
+    stopButton->setEnabled(true);
+
+    //RJG - Sort generations (required for combine)
+    generations=MainWin->ui->numGenerations->value();
+    int store_generations = generations;
 
     //RJG - Add a progress bar
     QProgressBar prBar;

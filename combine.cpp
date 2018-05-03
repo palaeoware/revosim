@@ -11,6 +11,19 @@
 combine::combine()
 {
     ReadSettings();
+    if(!stackOne.exists()||!stackTwo.exists()){QMessageBox::warning(0,"Error","Either stack one or two has failed to load.", QMessageBox::Ok);return;}
+
+    //Create new QImages to then check the relative size of stacks
+    QStringList filterList, dirList, dirList2;
+    filterList << "*.bmp" << "*.jpg" << "*.jpeg" << "*.png";
+
+    dirList = stackOne.entryList(filterList,QDir::Files, QDir::Name);
+    QImage stackOneImage(stackOne.absolutePath() + "/" + dirList[0]);
+
+    dirList2 = stackTwo.entryList(filterList,QDir::Files, QDir::Name);
+    QImage stackTwoImage(stackTwo.absolutePath() + "/" + dirList2[0]);
+
+    if(stackOneImage.size()!=stackTwoImage.size()){QMessageBox::warning(0,"No dice","Stack images are or a different size, and "+QString(PRODUCTNAME)+" is not yet set up to deal with this. To request this feature, please email RJG (details in about window)", QMessageBox::Ok);error=true;}
 }
 
 void combine::ReadSettings()

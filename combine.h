@@ -12,6 +12,7 @@ private:
    void combineImages(QImage sOne, double pOne, QImage sTwo);
    QDir stackOne, stackTwo;
    int start, end, currentGen, percentStart, percentEnd;
+   bool combine_error;
 };
 
 #endif // COMBINE_H
