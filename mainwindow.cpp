@@ -315,6 +315,7 @@ void MainWindow::on_pushButtonStackOne_clicked()
            }
     else ui->stackOneText->setText(files_directory);
     stackOneSize=dirList.count();
+    ui->combineStart->setMaximum(stackOneSize);
 
     ui->pushButtonStackTwo->setEnabled(true);
 }

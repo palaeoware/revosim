@@ -911,8 +911,11 @@ p, li { white-space: pre-wrap; }
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>30</height>
+                <height>50</height>
                </size>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::NoTextInteraction</set>
               </property>
              </widget>
             </item>
@@ -935,8 +938,11 @@ p, li { white-space: pre-wrap; }
               <property name="maximumSize">
                <size>
                 <width>16777215</width>
-                <height>30</height>
+                <height>50</height>
                </size>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::NoTextInteraction</set>
               </property>
              </widget>
             </item>
