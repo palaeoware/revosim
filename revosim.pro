@@ -13,8 +13,6 @@ SOURCES += main.cpp \
     sortablegenome.cpp \
     analyser.cpp \
     genomecomparison.cpp \
-    fossilrecord.cpp \
-    fossrecwidget.cpp \
     resizecatcher.cpp \
     analysistools.cpp \
     reseed.cpp \
@@ -30,8 +28,6 @@ HEADERS += mainwindow.h \
     sortablegenome.h \
     analyser.h \
     genomecomparison.h \
-    fossilrecord.h \
-    fossrecwidget.h \
     resizecatcher.h \
     analysistools.h \
     version.h \
@@ -41,7 +37,6 @@ HEADERS += mainwindow.h \
     about.h \
     darkstyletheme.h
 FORMS += mainwindow.ui \
-    fossrecwidget.ui \
     genomecomparison.ui \
     reseed.ui \
     about.ui

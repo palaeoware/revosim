@@ -173,7 +173,7 @@ extern quint8 environment_mode;
 extern bool enviroment_interpolate;
 
 extern quint64 minspeciessize;
-extern bool allowexcludewithissue;
+extern bool allowExcludeWithDescendants;
 extern quint64 ids;
 
 //This is what we are aiming for overall for total bitcount

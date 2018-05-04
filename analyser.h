@@ -41,7 +41,6 @@ class Analyser
 {
 public:
     Analyser();
-    void AddGenome(quint64 genome, int fitness);
     void AddGenome_Fast(quint64 genome);
     QString SortedSummary();
     QString Groups();
@@ -70,7 +69,5 @@ private:
     int Spread(int position, int group);
     int Spread_Fast(int position, int group);
 };
-
-
 
 #endif // ANALYSER_H

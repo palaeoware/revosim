@@ -31,8 +31,8 @@ public:
 
     quint64 ID;
     LogSpecies *parent;
-    quint64 time_of_first_appearance;
-    quint64 time_of_last_appearance;
+    quint64 timeOfFirstAppearance;
+    quint64 timeOfLastAppearance;
     QList<LogSpeciesDataItem *>data_items;
     QList<LogSpecies *>children;
     quint32 maxsize;

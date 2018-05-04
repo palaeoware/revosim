@@ -16,9 +16,21 @@
  */
 
 #include <QApplication>
+#include <QSplashScreen>
+#include <QString>
+#include <QStyle>
+#include <QDesktopWidget>
+
+#include "version.h"
 #include "mainwindow.h"
 #include "darkstyletheme.h"
 
+/*!
+ * \brief qMain
+ * \param argc
+ * \param argv
+ * \return The application
+ */
 int main(int argc, char *argv[])
 {
     //This has the app draw at HiDPI scaling on HiDPI displays, usually two pixels for every one logical pixel
@@ -26,29 +38,26 @@ int main(int argc, char *argv[])
 
     //This has QPixmap images use the @2x images when available
     //See this bug for more details on how to get this right: https://bugreports.qt.io/browse/QTBUG-44486#comment-327410
-    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    #if (QT_VERSION >= 0x050600)
+        QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+    #endif
+    QApplication application(argc, argv);
 
-    QApplication a(argc, argv);
+    //Close on last window close
+    application.setQuitOnLastWindowClosed(true);
 
-    //A common feature is to save your app's geometry on close such that you can draw in the same place on relaunch
-    //Thus this project supports specifying the X/Y/Width/Height in a cross-platform manner
-    int windowXPos, windowYPos, windowWidth, windowHeight;
-    windowXPos = 100;
-    windowYPos = 100;
-    windowWidth = 1024;
-    windowHeight = 768;
+    //Style program with our dark style
+    application.setStyle(new DarkStyleTheme);
 
-    // CLose on last window close
-    a.setQuitOnLastWindowClosed(true);
+    QPixmap splashPixmap(":/palaeoware_logo_square.png");
+    QSplashScreen splash(splashPixmap,Qt::WindowStaysOnTopHint);
+    splash.show();
+    splash.showMessage("<font><b>" + QString(PRODUCTNAME) + " - " + QString(PRODUCTTAG) + "</b></font>",Qt::AlignHCenter,Qt::white);
+    application.processEvents();
 
-    // Style program with our dark style
-    a.setStyle(new DarkStyleTheme);
+    MainWindow window;
 
-    MainWindow w;
+    window.show();
 
-    w.setGeometry(windowXPos, windowYPos, windowWidth, windowHeight);
-
-    w.show();
-
-    return a.exec();
+    return application.exec();
 }

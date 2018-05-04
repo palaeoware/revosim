@@ -132,7 +132,7 @@ quint64 ids; //used in tree export -
 quint8 environment_mode;
 
 quint64 minspeciessize;
-bool allowexcludewithissue;
+bool allowExcludeWithDescendants;
 
 QMutex *mutexes[GRID_X][GRID_Y]; //set up array of mutexes
 
@@ -562,8 +562,8 @@ void SimManager::SetupRun()
 
     rootspecies->maxsize=AliveCount;
     rootspecies->ID=nextspeciesid;
-    rootspecies->time_of_first_appearance=0;
-    rootspecies->time_of_last_appearance=0;
+    rootspecies->timeOfFirstAppearance=0;
+    rootspecies->timeOfLastAppearance=0;
     rootspecies->parent=(LogSpecies *)0;
     LogSpeciesDataItem *newdata = new LogSpeciesDataItem;
     newdata->centroid_range_x=n;

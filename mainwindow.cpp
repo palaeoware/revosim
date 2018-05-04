@@ -19,7 +19,6 @@
 #include "ui_mainwindow.h"
 #include "reseed.h"
 #include "analyser.h"
-#include "fossrecwidget.h"
 #include "resizecatcher.h"
 
 #include <QTextStream>
@@ -41,6 +40,7 @@
 #include <QFile>
 #include <QXmlStreamReader>
 #include <QDesktopServices>
+#include <QPushButton>
 
 #include "analysistools.h"
 #include "version.h"
@@ -139,35 +139,17 @@ MainWindow::MainWindow(QWidget *parent) :
     tabifyDockWidget(organismSettingsDock,simulationSettingsDock);
     tabifyDockWidget(simulationSettingsDock,outputSettingsDock);
 
-    //ARST - Hide docks by default
+    //Hide docks by default
     organismSettingsDock->hide();
     simulationSettingsDock->hide();
     outputSettingsDock->hide();
 
-    //ARTS - Add Genome Comparison UI
+    //Add Genome Comparison UI Dock
     ui->genomeComparisonDock->hide();
     genoneComparison = new GenomeComparison;
     QVBoxLayout *genomeLayout = new QVBoxLayout;
     genomeLayout->addWidget(genoneComparison);
     ui->genomeComparisonContent->setLayout(genomeLayout);
-
-    //MDS - as above for fossil record dock and report dock
-    ui->fossRecDock->hide();
-    FRW = new FossRecWidget();
-    QVBoxLayout *frwLayout = new QVBoxLayout;
-    frwLayout->addWidget(FRW);
-    ui->fossRecDockContents->setLayout(frwLayout);
-    ui->reportViewerDock->hide();
-
-    viewgroup2 = new QActionGroup(this);
-    // These actions were created via qt designer
-    viewgroup2->addAction(ui->actionNone);
-    viewgroup2->addAction(ui->actionSorted_Summary);
-    viewgroup2->addAction(ui->actionGroups);
-    viewgroup2->addAction(ui->actionGroups2);
-    viewgroup2->addAction(ui->actionSimple_List);
-
-    QObject::connect(viewgroup2, SIGNAL(triggered(QAction *)), this, SLOT(report_mode_changed(QAction *)));
 
     //create scenes, add to the GVs
     envscene = new EnvironmentScene;
@@ -357,7 +339,7 @@ void MainWindow::createMainToolbar()
     QObject::connect(reseedButton, SIGNAL(triggered()), this, SLOT(on_actionReseed_triggered()));
     QObject::connect(runForBatchButton, SIGNAL(triggered()), this, SLOT(on_actionBatch_triggered()));
     QObject::connect(genomeComparisonButton, SIGNAL(triggered(bool)), this, SLOT(on_actionGenomeComparison_triggered(bool)));
-    QObject::connect(settingsButton, SIGNAL(triggered()), this, SLOT(on_actionSettings_triggered()));
+    QObject::connect(settingsButton, SIGNAL(triggered()), this, SLOT(actionSettings_triggered()));
     QObject::connect(aboutButton, SIGNAL (triggered()), this, SLOT (on_actionAbout_triggered()));
 }
 
@@ -387,7 +369,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     changeEnvironmentFilesButton->setObjectName("changeEnvironmentFilesButton");
     changeEnvironmentFilesButton->setToolTip("<font>REvoSim allow you to customise the enviroment by loading one or more image files.</font>");
     environmentSettingsGrid->addWidget(changeEnvironmentFilesButton,1,1,1,2);
-    connect(changeEnvironmentFilesButton, SIGNAL (clicked()), this, SLOT(on_actionEnvironment_Files_triggered()));
+    connect(changeEnvironmentFilesButton, SIGNAL (clicked()), this, SLOT(actionEnvironment_Files_triggered()));
 
     QLabel *environment_rate_label = new QLabel("Environment refresh rate:");
     environment_rate_label->setToolTip("<font>This is the rate of change for the selected enviromental images.</font>");
@@ -519,7 +501,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     connect(settleTolerance_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) { settleTolerance=i; });
 
     recalcFitness_checkbox = new QCheckBox("Recalculate fitness");
-    recalcFitness_checkbox->setChecked(toroidal);
+    recalcFitness_checkbox->setChecked(recalcFitness);
     recalcFitness_checkbox->setToolTip("<font>Turning on recalculates the fitness of each organism every iteration.</font>");
     simulationSettingsGrid->addWidget(recalcFitness_checkbox,4,1,1,2);
     connect(recalcFitness_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { recalcFitness=i; });
@@ -533,9 +515,13 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
 
     QGridLayout *phylogeny_grid = new QGridLayout;
     phylogeny_off_button = new QRadioButton("Off");
+    phylogeny_off_button->setToolTip("<font>Turns phylogeny logging off.</font>");
     basic_phylogeny_button = new QRadioButton("Basic");
+    basic_phylogeny_button->setToolTip("<font>Turns on basic phylogeny logging.</font>");
     phylogeny_button = new QRadioButton("Phylogeny");
+    phylogeny_button->setToolTip("<font>Turns on phylogeny logging.</font>");
     phylogeny_and_metrics_button = new QRadioButton("Phylogeny and metrics");
+    phylogeny_and_metrics_button->setToolTip("<font>Turns on phylogeny and metrics logging.</font>");
     QButtonGroup* phylogeny_button_group = new QButtonGroup;
     phylogeny_button_group->addButton(phylogeny_off_button,SPECIES_MODE_NONE);
     phylogeny_button_group->addButton(basic_phylogeny_button,SPECIES_MODE_BASIC);
@@ -546,7 +532,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     phylogeny_grid->addWidget(basic_phylogeny_button,1,2,1,2);
     phylogeny_grid->addWidget(phylogeny_button,2,1,1,2);
     phylogeny_grid->addWidget(phylogeny_and_metrics_button,2,2,1,2);
-    connect(phylogeny_button_group, (void(QButtonGroup::*)(int))&QButtonGroup::buttonClicked,[=](const int &i) { species_mode_changed(i); });
+    connect(phylogeny_button_group, (void(QButtonGroup::*)(int))&QButtonGroup::buttonClicked,[=](const int &i) { species_mode_changed(i, false); });
     phylogenySettingsGrid->addLayout(phylogeny_grid,1,1,1,2);
 
     //ARTS - Dock Grid Layout
@@ -686,10 +672,10 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     textLogInfo3Label->setWordWrap(true);
     fileLoggingGrid->addWidget(textLogInfo3Label,8,1,1,2);
 
-    exclude_without_issue_checkbox = new QCheckBox("Exclude species without issue");
-    exclude_without_issue_checkbox->setChecked(allowexcludewithissue);
-    fileLoggingGrid->addWidget(exclude_without_issue_checkbox,9,1,1,1);
-    connect(exclude_without_issue_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { allowexcludewithissue=i; });
+    exclude_without_descendants_checkbox = new QCheckBox("Exclude species without descendants");
+    exclude_without_descendants_checkbox->setChecked(allowExcludeWithDescendants);
+    fileLoggingGrid->addWidget(exclude_without_descendants_checkbox,9,1,1,1);
+    connect(exclude_without_descendants_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { allowExcludeWithDescendants=i; });
 
     QLabel *Min_species_size_label = new QLabel("Minimum species size:");
     QSpinBox *Min_species_size_spin = new QSpinBox;
@@ -907,7 +893,7 @@ void MainWindow::changepath_triggered()
  * \brief MainWindow::waitUntilPauseSignalIsEmitted
  * \return QEventLoop
  *
- * Adds a null loop to the simulation iteration run when pause button/command is issued
+ * Adds a null loop to the simulation iteration run when pause button/command is descendantsd
  * this loop is removed on the next tiggered() signal send from either one.
  */
 int MainWindow::waitUntilPauseSignalIsEmitted() {
@@ -943,8 +929,6 @@ void MainWindow::on_actionReset_triggered()
     NextRefresh=0;
 
     //ARTS - Update views based on the new reset simulation
-    RefreshReport();
-    //UpdateTitles();
     RefreshPopulations();
 }
 
@@ -1009,7 +993,7 @@ void MainWindow::on_actionStart_Sim_triggered()
     if (CurrentEnvFile==-1)
     {
         QMessageBox::critical(0,"","Cannot start simulation without environment");
-        if (on_actionEnvironment_Files_triggered() == false) {
+        if (actionEnvironment_Files_triggered() == false) {
             return;
         }
     }
@@ -1031,7 +1015,6 @@ void MainWindow::on_actionStart_Sim_triggered()
 
         //ARTS - set Stop flag to returns true if reached end... but why? It will fire the FinishRun() function at the end.
         if (TheSimManager->iterate(environment_mode,enviroment_interpolate)) stopflag=true;
-        FRW->MakeRecords();
     }
 
     FinishRun();
@@ -1047,7 +1030,7 @@ void MainWindow::on_actionRun_for_triggered()
     if (CurrentEnvFile==-1)
     {
         QMessageBox::critical(0,"","Cannot start simulation without environment");
-        if (on_actionEnvironment_Files_triggered() == false) {
+        if (actionEnvironment_Files_triggered() == false) {
             return;
         }
     }
@@ -1073,7 +1056,6 @@ void MainWindow::on_actionRun_for_triggered()
         qApp->processEvents();
 
         if (TheSimManager->iterate(environment_mode,enviroment_interpolate)) stopflag=true;
-        FRW->MakeRecords();
         i--;
     }
 
@@ -1181,7 +1163,7 @@ void MainWindow::on_actionBatch_triggered()
         if (CurrentEnvFile==-1)
         {
             QMessageBox::critical(0,"","Cannot start simulation without environment");
-            if (on_actionEnvironment_Files_triggered() == false) {
+            if (actionEnvironment_Files_triggered() == false) {
                 return;
             }
         }
@@ -1199,7 +1181,6 @@ void MainWindow::on_actionBatch_triggered()
             qApp->processEvents();
 
             TheSimManager->iterate(environment_mode,enviroment_interpolate);
-            FRW->MakeRecords();
             i--;
         }
 
@@ -1303,9 +1284,6 @@ void MainWindow::RunSetUp()
 
     if(logging && species_mode==SPECIES_MODE_NONE)QMessageBox::warning(this,"Be aware","Species tracking is off, so the log files won't show species information");
 
-    ui->actionSettings->setEnabled(false); /* unused */
-    ui->actionEnvironment_Files->setEnabled(false);
-
     timer.restart();
     NextRefresh=RefreshRate;
 
@@ -1346,9 +1324,6 @@ void MainWindow::FinishRun()
     // Reseed action
     ui->actionReseed->setEnabled(true);
     reseedButton->setEnabled(true);
-
-    ui->actionSettings->setEnabled(true); /* unused */
-    ui->actionEnvironment_Files->setEnabled(true);
 }
 
 /*!
@@ -1392,7 +1367,7 @@ void MainWindow::Report()
     QString out;
     QTextStream o(&out);
 
-    o<<generation; //need to use to avoid int64 issues
+    o<<generation; //need to use to avoid int64 descendantss
     ui->LabelIteration->setText(out);
 
     out.sprintf("%.3f",(3600000/atime)/1000000);
@@ -1428,13 +1403,9 @@ void MainWindow::Report()
     }
     ui->LabelSpecies->setText(out);
 
-    RefreshReport();
-
     //do species stuff
     if(!gui)RefreshPopulations();
     if(!gui)RefreshEnvironment();
-    FRW->RefreshMe();
-    FRW->WriteFiles();
 
     WriteLog();
 
@@ -1447,90 +1418,6 @@ void MainWindow::Report()
         settles[n2][m2]=0;
         settlefails[n2][m2]=0;
     }
-}
-
-/*!
- * \brief MainWindow::RefreshReport
- *
- * Refreshs the report.
- */
-void MainWindow::RefreshReport()
-{
-
-    QTime refreshtimer;
-    refreshtimer.restart();
-
-    if (ui->actionNone->isChecked()) return;
-
-    QString line;
-    QTextStream sout(&line);
-    int x=popscene->selectedx;
-    int y=popscene->selectedy;
-    int maxuse=maxused[x][y];
-    ui->plainTextEdit->clear();
-    Analyser a;
-
-    if (ui->actionSimple_List->isChecked()) //old crappy code
-    {
-
-
-       for (int i=0; i<=maxuse; i++)
-        {
-            if (i<10) sout<<" "<<i<<": "; else  sout<<i<<": ";
-            if (critters[x][y][i].age > 0 )
-            {
-                for (int j=0; j<32; j++)
-                    if (tweakers64[63-j] & critters[x][y][i].genome) sout<<"1"; else sout<<"0";
-                sout<<" ";
-                for (int j=32; j<64; j++)
-                    if (tweakers64[63-j] & critters[x][y][i].genome) sout<<"1"; else sout<<"0";
-                sout<<"  decimal: "<<critters[x][y][i].genome<<"  fitness: "<<critters[x][y][i].fitness;
-            }
-            else sout<<" EMPTY";
-            sout<<"\n";
-        }
-    }
-
-    if (ui->actionSorted_Summary->isChecked())
-    {
-
-        for (int i=0; i<=maxuse; i++) if (critters[x][y][i].age > 0) a.AddGenome(critters[x][y][i].genome,critters[x][y][i].fitness);
-        sout<<a.SortedSummary();
-    }
-
-    if (ui->actionGroups->isChecked())
-    {
-        for (int i=0; i<=maxuse; i++) if (critters[x][y][i].age > 0) a.AddGenome(critters[x][y][i].genome,critters[x][y][i].fitness);
-        sout<<a.Groups();
-    }
-
-    if (ui->actionGroups2->isChecked())
-    {
-        //Code to sample all 10000 squares
-
-        for (int n=0; n<gridX; n++)
-        for (int m=0; m<gridY; m++)
-        {
-            if (totalfit[n][m]==0) continue;
-            for (int c=0; c<slotsPerSq; c++)
-            {
-                if (critters[n][m][c].age>0)
-                {
-                    a.AddGenome_Fast(critters[n][m][c].genome);
-                    break;
-                }
-            }
-        }
-        //TO DO - new report
-        //sout<<a.Groups_Report();
-        sout<<"Currently no code here!";
-
-    }
-
-    sout<<"\n\nTime for report: "<<refreshtimer.elapsed()<<"ms";
-
-    ui->plainTextEdit->appendPlainText(line);
-
 }
 
 /*!
@@ -1887,7 +1774,7 @@ void MainWindow::RefreshPopulations()
         if(currentSelectedMode==7)pop_item->setPixmap(QPixmap::fromImage(*pop_image));
         if(save_settles->isChecked())
             if(save_dir.mkpath("settles/"))
-                pop_image_colour->save(QString(save_dir.path()+"/settles/EvoSim_settles_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                pop_image->save(QString(save_dir.path()+"/settles/EvoSim_settles_it_%1.png").arg(generation, 7, 10, QChar('0')));
     }
 
     // (8) Settle Fails === Fails
@@ -2006,9 +1893,6 @@ void MainWindow::RefreshEnvironment()
     if(save_environment->isChecked())
         if(save_dir.mkpath("environment/"))
             env_image->save(QString(save_dir.path()+"/environment/EvoSim_environment_it_%1.png").arg(generation, 7, 10, QChar('0')));
-
-    //Draw on fossil records
-    envscene->DrawLocations(FRW->FossilRecords,ui->actionShow_positions->isChecked());
 }
 
 /*!
@@ -2110,13 +1994,12 @@ void MainWindow::environment_mode_changed(int change_environment_mode, bool upda
     if (change_environment_mode==ENV_MODE_BOUNCE) new_environment_mode=ENV_MODE_BOUNCE;
 
     if(update_gui)
-        {
+    {
         if (change_environment_mode==ENV_MODE_STATIC)environmentModeStaticButton->setChecked(true);
         if (change_environment_mode==ENV_MODE_ONCE)environmentModeOnceButton->setChecked(true);
         if (change_environment_mode==ENV_MODE_LOOP)environmentModeLoopButton->setChecked(true);
         if (change_environment_mode==ENV_MODE_BOUNCE)environmentModeBounceButton->setChecked(true);
-
-        }
+    }
 
     environment_mode=new_environment_mode;
 }
@@ -2127,7 +2010,7 @@ void MainWindow::environment_mode_changed(int change_environment_mode, bool upda
  *
  * Sets the species mode on change.
  */
-void MainWindow::species_mode_changed(int change_species_mode)
+void MainWindow::species_mode_changed(int change_species_mode, bool update_gui)
 {
     int new_species_mode=SPECIES_MODE_NONE;
     if (change_species_mode==SPECIES_MODE_PHYLOGENY) new_species_mode=SPECIES_MODE_PHYLOGENY;
@@ -2161,27 +2044,15 @@ void MainWindow::species_mode_changed(int change_species_mode)
         //all other combinations are OK - hopefully
     }
 
-    //uncheck species visualisation if needbe
-    if (change_species_mode==SPECIES_MODE_NONE)
+    if(update_gui)
     {
-        if (ui->actionSpecies->isChecked()) ui->actionGenome_as_colour->setChecked(true);
-        ui->actionSpecies->setEnabled(false);
+        if (change_species_mode==SPECIES_MODE_BASIC)basic_phylogeny_button->setChecked(true);
+        if (change_species_mode==SPECIES_MODE_PHYLOGENY_AND_METRICS)phylogeny_and_metrics_button->setChecked(true);
+        if (change_species_mode==SPECIES_MODE_PHYLOGENY)phylogeny_button->setChecked(true);
+        if (change_species_mode==SPECIES_MODE_NONE)phylogeny_off_button->setChecked(true);
     }
-    else ui->actionSpecies->setEnabled(true);
 
     species_mode=new_species_mode;
-}
-
-/*!
- * \brief MainWindow::report_mode_changed
- *
- * Refreshes the report on mode change.
- */
-void MainWindow::report_mode_changed(QAction * a)
-{
-    Q_UNUSED(a);
-
-    RefreshReport();
 }
 
 /*!
@@ -2254,11 +2125,11 @@ void MainWindow::redoImages(int oldrows, int oldcols)
 }
 
 /*!
- * \brief MainWindow::on_actionSettings_triggered
+ * \brief MainWindow::actionSettings_triggered
  *
  * Triggered action to open/close the Settings Dock.
  */
-void MainWindow::on_actionSettings_triggered()
+void MainWindow::actionSettings_triggered()
 {
     if(simulationSettingsDock->isVisible())
     {
@@ -2275,16 +2146,6 @@ void MainWindow::on_actionSettings_triggered()
         settingsButton->setChecked(true);
         ui->actionSettings_Dock->setChecked(true);
     }
-}
-
-/*!
- * \brief MainWindow::on_actionMisc_triggered
- *
- * Not in use - should be removed.
- */
-void MainWindow::on_actionMisc_triggered()
-{
-    TheSimManager->testcode();
 }
 
 /*!
@@ -2317,12 +2178,12 @@ void MainWindow::on_actionCount_Peaks_triggered()
 }
 
 /*!
- * \brief MainWindow::on_actionEnvironment_Files_triggered
+ * \brief MainWindow::actionEnvironment_Files_triggered
  * \return bool
  *
  * Action to allow new enviromental files to be loaded from the local filesystem.
  */
-bool MainWindow::on_actionEnvironment_Files_triggered()
+bool MainWindow::actionEnvironment_Files_triggered()
 {
     //Select files
     QStringList files = QFileDialog::getOpenFileNames(
@@ -2362,21 +2223,6 @@ bool MainWindow::on_actionEnvironment_Files_triggered()
 }
 
 /*!
- * \brief MainWindow::on_actionChoose_Log_Directory_triggered
- *
- * Action to select the fossil log save directory
- */
-void MainWindow::on_actionChoose_Log_Directory_triggered()
-{
-    QString dirname = QFileDialog::getExistingDirectory(this,"Select directory to log fossil record to");
-
-    if (dirname.length()==0) return;
-    FRW->LogDirectory=dirname;
-    FRW->LogDirectoryChosen=true;
-    FRW->HideWarnLabel();
-}
-
-/*!
  * \brief MainWindow::on_actionSave_triggered
  *
  * Action to save the current settings and simulation to an .evosim file.
@@ -2389,7 +2235,7 @@ void MainWindow::on_actionSave_triggered()
                             this,
                             "Save file",
                             "",
-                            "EVOSIM files (*.evosim)");
+                            "REvoSim files (*.revosim)");
 
     if (filename.length()==0) return;
 
@@ -2399,9 +2245,8 @@ void MainWindow::on_actionSave_triggered()
 
     QDataStream out(&outfile);
 
-    out<<QString("EVOSIM file");
+    out<<QString("REvoSim Format File");
     out<<(int)FILEVERSION;
-
 
     //Ints
     out<<gridX;
@@ -2425,6 +2270,7 @@ void MainWindow::on_actionSave_triggered()
     out<<speciesSensitivity;
     out<<timeSliceConnect;
     out<<minspeciessize;
+    out<<species_mode;
 
     //Bools
     out<<recalcFitness;
@@ -2434,7 +2280,7 @@ void MainWindow::on_actionSave_triggered()
     out<<breedspecies;
     out<<path_on;
     out<<variableMutate;
-    out<<allowexcludewithissue;
+    out<<allowExcludeWithDescendants;
     out<<sexual;
     out<<asexual;
     out<<variableBreed;
@@ -2456,21 +2302,9 @@ void MainWindow::on_actionSave_triggered()
     //Strings
     out<<path->text();
 
-    //Environment mode
-    out<<environment_mode;
-
     int vmode=0;
     vmode = ui->populationWindowComboBox->itemData(ui->populationWindowComboBox->currentIndex()).toInt();
-
     out<<vmode;
-
-    int rmode=0;
-    if (ui->actionNone->isChecked()) rmode=0;
-    if (ui->actionSorted_Summary->isChecked()) rmode=1;
-    if (ui->actionGroups->isChecked()) rmode=2;
-    if (ui->actionGroups2->isChecked()) rmode=3;
-    if (ui->actionSimple_List->isChecked()) rmode=4;
-    out<<rmode;
 
     //file list
     out<<EnvFiles.count();
@@ -2478,7 +2312,6 @@ void MainWindow::on_actionSave_triggered()
         out<<EnvFiles[i];
 
     //now the big arrays
-
     for (int i=0; i<gridX; i++)
     for (int j=0; j<gridY; j++)
     for (int k=0; k<slotsPerSq; k++)
@@ -2521,13 +2354,6 @@ void MainWindow::on_actionSave_triggered()
     //ARTS - Genome Comparison Saving
     out<<genoneComparison->saveComparison();
 
-    //and fossil record stuff
-    FRW->WriteFiles(); //make sure all is flushed
-    out<<FRW->SaveState();
-
-    //Some more stuff that was missing from first version
-    out<<ui->actionShow_positions->isChecked();
-
     for (int i=0; i<gridX; i++)
     for (int j=0; j<gridY; j++)
     {
@@ -2540,8 +2366,6 @@ void MainWindow::on_actionSave_triggered()
 
     //And some window state stuff
     out<<saveState(); //window state
-    out<<ui->actionFossil_Record->isChecked();
-    out<<ui->actionReport_Viewer->isChecked();
     out<<ui->actionGenomeComparison->isChecked();
 
     //interpolate environment stuff
@@ -2598,8 +2422,6 @@ void MainWindow::on_actionSave_triggered()
     for (int i=0; i<65536; i++)
         out<<randoms[i];
 
-    out<<species_mode;
-
     outfile.close();
 }
 
@@ -2612,12 +2434,11 @@ void MainWindow::on_actionSave_triggered()
  */
 void MainWindow::on_actionLoad_triggered()
 {
-
     QString filename = QFileDialog::getOpenFileName(
                             this,
                             "Save file",
                             "",
-                            "EVOSIM files (*.evosim)");
+                            "REvoSim files (*.revosim)");
 
     if (filename.length()==0) return;
 
@@ -2629,15 +2450,15 @@ void MainWindow::on_actionLoad_triggered()
 
     QDataStream in(&infile);
 
-    QString temp;
-    in>>temp;
-    if (temp!="EVOSIM file")
-    {QMessageBox::warning(this,"","Not an REvoSim file"); return;}
+    QString strtemp;
+    in>>strtemp;
+    if (strtemp!="REvoSim Format File")
+    {QMessageBox::warning(this,"","Not an REvoSim Format File."); return;}
 
     int version;
     in>>version;
     if (version>FILEVERSION)
-    {QMessageBox::warning(this,"","Version too high - will try to read, but may go horribly wrong");}
+    {QMessageBox::warning(this,"","Version too high - will try to read, but may go horribly wrong.");}
 
     //Ints
     in>>gridX;
@@ -2661,6 +2482,7 @@ void MainWindow::on_actionLoad_triggered()
     in>>speciesSensitivity;
     in>>timeSliceConnect;
     in>>minspeciessize;
+    in>>species_mode;
 
     //Bools
     in>>recalcFitness;
@@ -2670,7 +2492,7 @@ void MainWindow::on_actionLoad_triggered()
     in>>breedspecies;
     in>>path_on;
     in>>variableMutate;
-    in>>allowexcludewithissue;
+    in>>allowExcludeWithDescendants;
     in>>sexual;
     in>>asexual;
     in>>variableBreed;
@@ -2734,14 +2556,6 @@ void MainWindow::on_actionLoad_triggered()
        ui->populationWindowComboBox->setCurrentIndex(index);
     }
 
-    int rmode;
-    in>>rmode;
-    if (rmode==0) ui->actionNone->setChecked(true);
-    if (rmode==1) ui->actionSorted_Summary->setChecked(true);
-    if (rmode==2) ui->actionGroups->setChecked(true);
-    if (rmode==3) ui->actionGroups2->setChecked(true);
-    if (rmode==4) ui->actionSimple_List->setChecked(true);
-
     int count;
 
     //file list
@@ -2756,7 +2570,6 @@ void MainWindow::on_actionLoad_triggered()
     }
 
     //now the big arrays
-
     for (int i=0; i<gridX; i++)
     for (int j=0; j<gridY; j++)
     for (int k=0; k<slotsPerSq; k++)
@@ -2794,19 +2607,11 @@ void MainWindow::on_actionLoad_triggered()
         in>>xormasks[i][j];
     }
 
-    //---- ARTS Genome Comparison Loading
+    //Genome Comparison Loading
     QByteArray Temp;
     in>>Temp;
     genoneComparison->loadComparison(Temp);
 
-    //and fossil record stuff
-    in>>Temp;
-    FRW->RestoreState(Temp);
-
-    //Some more stuff that was missing from first version
-    bool btemp;
-    in>>btemp;
-    ui->actionShow_positions->setChecked(btemp);
 
     for (int i=0; i<gridX; i++)
     for (int j=0; j<gridY; j++)
@@ -2821,8 +2626,7 @@ void MainWindow::on_actionLoad_triggered()
     in>>Temp;
     restoreState(Temp); //window state
 
-    in>>btemp; ui->actionFossil_Record->setChecked(btemp);
-    in>>btemp; ui->actionReport_Viewer->setChecked(btemp);
+    bool btemp;
     in>>btemp; ui->actionGenomeComparison->setChecked(btemp);
 
     //interpolate environment stuff
@@ -2845,70 +2649,56 @@ void MainWindow::on_actionLoad_triggered()
         in>>environmentnext[i][j][2];
     }
 
-    if (!(in.atEnd())) in>>speciesSamples;
-    if (!(in.atEnd())) in>>speciesSensitivity;
-    if (!(in.atEnd())) in>>timeSliceConnect;
+    in>>speciesSamples;
+    in>>speciesSensitivity;
+    in>>timeSliceConnect;
 
     //now the species archive
     archivedspecieslists.clear();
     oldspecieslist.clear();
 
-    if (!(in.atEnd()))
+    int temp;
+    in>>temp; //oldspecieslist.count();
+    for (int j=0; j<temp; j++)
     {
-        int temp;
-        in>>temp; //oldspecieslist.count();
-        for (int j=0; j<temp; j++)
-        {
-             species s;
-             in>>s.ID;
-             in>>s.type;
-             in>>s.origintime;
-             in>>s.parent;
-             in>>s.size;
-             in>>s.internalID;
-             oldspecieslist.append(s);
-        }
-
-        in>>temp; //archivedspecieslists.count();
-
-        for (int i=0; i<temp; i++)
-        {
-            int temp2;
-            in>>temp2; //archivedspecieslists.count();
-            QList<species> ql;
-            for (int j=0; j<temp2; j++)
-            {
-                species s;
-                in>>s.ID;
-                in>>s.type;
-                in>>s.origintime;
-                in>>s.parent;
-                in>>s.size;
-                in>>s.internalID;
-                ql.append(s);
-            }
-            archivedspecieslists.append(ql);
-        }
-        in>>nextspeciesid;
-        in>>lastSpeciesCalc; //actually no - if we import this it will assume an 'a' object exists.
-        //bodge
-        lastSpeciesCalc--;
+         species s;
+         in>>s.ID;
+         in>>s.type;
+         in>>s.origintime;
+         in>>s.parent;
+         in>>s.size;
+         in>>s.internalID;
+         oldspecieslist.append(s);
     }
 
+    in>>temp; //archivedspecieslists.count();
+
+    for (int i=0; i<temp; i++)
+    {
+        int temp2;
+        in>>temp2; //archivedspecieslists.count();
+        QList<species> ql;
+        for (int j=0; j<temp2; j++)
+        {
+            species s;
+            in>>s.ID;
+            in>>s.type;
+            in>>s.origintime;
+            in>>s.parent;
+            in>>s.size;
+            in>>s.internalID;
+            ql.append(s);
+        }
+        archivedspecieslists.append(ql);
+    }
+    in>>nextspeciesid;
+    in>>lastSpeciesCalc; //actually no - if we import this it will assume an 'a' object exists.
+    //bodge
+    lastSpeciesCalc--;
+
     //now random array
-    if (!(in.atEnd()))
-        for (int i=0; i<65536; i++)
-            in>>randoms[i];
-
-    species_mode=SPECIES_MODE_BASIC;
-    if (!(in.atEnd()))
-        in>>species_mode;
-    if (rmode==0) ui->actionOff->setChecked(true);
-    if (rmode==1) ui->actionSorted_Summary->setChecked(true);
-    if (rmode==2) ui->actionGroups->setChecked(true);
-    if (rmode==3) ui->actionGroups2->setChecked(true);
-    if (rmode==4) ui->actionSimple_List->setChecked(true);
-
+    for (int i=0; i<65536; i++)
+        in>>randoms[i];
 
     infile.close();
     NextRefresh=0;
@@ -2941,71 +2731,6 @@ bool MainWindow::genomeComparisonAdd()
         }
     }
     return false;
-}
-
-/*!
- * \brief MainWindow::on_actionAdd_Regular_triggered
- */
-void MainWindow::on_actionAdd_Regular_triggered()
-{
-    int count;
-    bool ok;
-    count=QInputDialog::getInt(this,"","Grid Density?",2,2,10,1,&ok);
-    if (!ok) return;
-
-    for (int x=0; x<count; x++)
-    for (int y=0; y<count; y++)
-    {
-        int rx=(int)((((float)gridX/(float)count)/(float)2 + (float)gridX/(float)count * (float)x)+.5);
-        int ry=(int)((((float)gridY/(float)count)/(float)2 + (float)gridY/(float)count * (float)y)+.5);
-        FRW->NewItem(rx,ry,10);
-    }
-}
-
-/*!
- * \brief MainWindow::on_actionAdd_Random_triggered
- */
-void MainWindow::on_actionAdd_Random_triggered()
-{
-    int count;
-    bool ok;
-    count=QInputDialog::getInt(this,"","Number of records to add?",1,1,100,1,&ok);
-    if (!ok) return;
-    for (int i=0; i<count; i++)
-    {
-        int rx=TheSimManager->portable_rand() % gridX;
-        int ry=TheSimManager->portable_rand() % gridY;
-        FRW->NewItem(rx,ry,10);
-    }
-}
-
-/*!
- * \brief MainWindow::on_actionSet_Active_triggered
- */
-void MainWindow::on_actionSet_Active_triggered()
-{
-    FRW->SelectedActive(true);
-}
-
-/*!
- * \brief MainWindow::on_actionSet_Inactive_triggered
- */
-void MainWindow::on_actionSet_Inactive_triggered()
-{
-    FRW->SelectedActive(false);
-}
-
-/*!
- * \brief MainWindow::on_actionSet_Sparsity_triggered
- */
-void MainWindow::on_actionSet_Sparsity_triggered()
-{
-    bool ok;
-
-    int value=QInputDialog::getInt(this,"","Sparsity",10,1,100000,1,&ok);
-    if (!ok) return;
-
-    FRW->SelectedSparse(value);
 }
 
 /*!
@@ -3125,11 +2850,25 @@ void MainWindow::WriteLog()
                 QTextStream out(&outputfile);
                 out<<"New run ";
                 QDateTime t(QDateTime::currentDateTime());
-                out<<t.toString(Qt::ISODate)<< "\n\n===================\n\n"<<print_settings()<<"\n\n===================\n";
-                out<<"\nFor each iteration, this log features:\n";
-                out<<"Iteration\nFor the grid - Number of living digital organisms\tMean fitness of living digital organisms\tNumber of entries on the breed list\tNumber of failed breed attempts\n";
-                out<<"Species ID\tSpecies origin (iterations)\tSpecies parent\tSpecies current size (number of individuals)\tSpecies current genome (for speed this is the genome of a randomly sampled individual, not the modal organism)\n";
-                out<<"Note that this excludes species with less individuals than Minimum species size, but is not able to exlude species without issue, which can only be achieved with the end-run log.\n\n";
+                out<<t.toString(Qt::ISODate)<< "\n\n";
+                out<<"===================\n\n";
+                out<<print_settings();
+                out<<"\n\n";
+                out<<"===================\n";
+                out<<"\nFor each iteration, this log features:\n\n";
+                out<<"- [I] Iteration Number\n";
+                out<<"- [P] Population Grid Data:\n";
+                out<<"-- Number of living digital organisms\n";
+                out<<"-- Mean fitness of living digital organisms\n";
+                out<<"-- Number of entries on the breed list\n";
+                out<<"-- Number of failed breed attempts\n";
+                out<<"- [S] Species Data:\n";
+                out<<"-- Species ID\n";
+                out<<"-- Species origin (iterations)\n";
+                out<<"-- Species parent\n";
+                out<<"-- Species current size (number of individuals)\n";
+                out<<"-- Species current genome (for speed this is the genome of a randomly sampled individual, not the modal organism)\n\n";
+                out<<"**Note that this excludes species with less individuals than Minimum species size, but is not able to exlude species without descendants, which can only be achieved with the end-run log.**\n\n";
                 out<<"===================\n\n";
                 outputfile.close();
             }
@@ -3137,7 +2876,7 @@ void MainWindow::WriteLog()
        outputfile.open(QIODevice::Append|QIODevice::Text);
        QTextStream out(&outputfile);
 
-        out<<"Iteration\t"<<generation<<"\n";
+        out<<"[I] "<<generation<<"\n";
 
         int gridNumberAlive=0, gridTotalFitness=0, gridBreedEntries=0, gridBreedFails=0;
         for (int i=0; i<gridX; i++)
@@ -3147,28 +2886,30 @@ void MainWindow::WriteLog()
                     //----RJG: Manually count breed stufffor grid
                     gridBreedEntries+=breedattempts[i][j];
                     gridBreedFails+=breedfails[i][j];
-                    //----RJG: Manually count number alive thanks to maxused issue
+                    //----RJG: Manually count number alive thanks to maxused descendants
                     for  (int k=0; k<slotsPerSq; k++)if(critters[i][j][k].fitness)gridNumberAlive++;
                     }
         double mean_fitness=(double)gridTotalFitness/(double)gridNumberAlive;
 
-        out<<gridNumberAlive<<"\t"<<mean_fitness<<"\t"<<gridBreedEntries<<"\t"<<gridBreedFails<<"\n";
+        out<<"[P] "<<gridNumberAlive<<","<<mean_fitness<<","<<gridBreedEntries<<","<<gridBreedFails<<","<<oldspecieslist.count()<<"\n";
 
         //----RJG: And species details for each iteration
         for (int i=0; i<oldspecieslist.count(); i++)
-           //----RJG: Unable to exclude species without issue, for obvious reasons.
-           if(oldspecieslist[i].size>minspeciessize)
-           {
-            out<<(oldspecieslist[i].ID)<<"\t";
-            out<<oldspecieslist[i].origintime<<"\t";
-            out<<oldspecieslist[i].parent<<"\t";
-            out<<oldspecieslist[i].size<<"\t";
-            //---- RJG - output binary genome if needed
-            out<<"\t";
-            for (int j=0; j<63; j++)if (tweakers64[63-j] & oldspecieslist[i].type) out<<"1"; else out<<"0";
-            if (tweakers64[0] & oldspecieslist[i].type) out<<"1"; else out<<"0";
-            out<<"\n";
+        {
+            //----RJG: Unable to exclude species without descendants, for obvious reasons.
+            if(oldspecieslist[i].size>minspeciessize)
+            {
+                out<<"[S] ";
+                out<<(oldspecieslist[i].ID)<<",";
+                out<<oldspecieslist[i].origintime<<",";
+                out<<oldspecieslist[i].parent<<",";
+                out<<oldspecieslist[i].size<<",";
+                //---- RJG - output binary genome if needed
+                for (int j=0; j<63; j++)if (tweakers64[63-j] & oldspecieslist[i].type) out<<"1"; else out<<"0";
+                if (tweakers64[0] & oldspecieslist[i].type) out<<"1"; else out<<"0";
+                out<<"\n";
             }
+        }
         out<<"\n";
         outputfile.close();
       }
@@ -3270,7 +3011,7 @@ void MainWindow::WriteLog()
 
                     //----RJG: Number alive per square - output with +1 due to c numbering, zero is one critter, etc.
                     //out<<maxused[i][j]+1;
-                    // ---- RJG: Note, however, there is an issue that when critters die they remain in cell list for iteration
+                    // ---- RJG: Note, however, there is an descendants that when critters die they remain in cell list for iteration
                     // ---- RJG: Easiest to account for this by removing those which are dead from alive count, or recounting - rather than dealing with death system
                     // int numberalive=0;
 
@@ -3283,7 +3024,7 @@ void MainWindow::WriteLog()
 
                     int critters_alive=0;
 
-                     //----RJG: Manually count number alive thanks to maxused issue
+                     //----RJG: Manually count number alive thanks to maxused descendants
                     for  (int k=0; k<slotsPerSq; k++)if(critters[i][j][k].fitness)
                                     {
                                     //numberalive++;
@@ -3360,17 +3101,6 @@ void MainWindow::on_actionLoad_Random_Numbers_triggered()
 }
 
 /*!
- * \brief MainWindow::on_SelectLogFile_pressed
- */
-void MainWindow::on_SelectLogFile_pressed()
-{
-    QString filename = QFileDialog::getOpenFileName(this,"Select log file","","*.csv");
-    if (filename.length()==0) return;
-
-    ui->LogFile->setText(filename);
-}
-
-/*!
  * \brief MainWindow::HandleAnalysisTool
  * \param code
  * \return text
@@ -3386,35 +3116,8 @@ QString MainWindow::HandleAnalysisTool(int code)
     AnalysisTools a;
     QString OutputString, FilenameString;
 
-    if (a.doesthiscodeneedafile(code))
-    {
-        QFile f(ui->LogFile->text());
-        if (!(f.exists()))
-        {
-            QMessageBox::warning(this,"Error","No valid input file set");
-            return QString("Error, No valid input file set");
-        }
-    }
-
     switch (code)
     {
-        case ANALYSIS_TOOL_CODE_GENERATE_TREE:
-            OutputString = a.GenerateTree(ui->LogFile->text()); //deprecated - log file generator now removed
-            break;
-
-        case ANALYSIS_TOOL_CODE_RATES_OF_CHANGE://Needs to be recoded
-            OutputString = a.SpeciesRatesOfChange(ui->LogFile->text());
-            break;
-
-        case ANALYSIS_TOOL_CODE_EXTINCT_ORIGIN://Needs to be recoded
-            OutputString = a.ExtinctOrigin(ui->LogFile->text());
-            break;
-
-        case ANALYSIS_TOOL_CODE_STASIS:
-            OutputString = a.Stasis(ui->LogFile->text(),ui->StasisBins->value() //Needs to be recoded
-                                ,((float)ui->StasisPercentile->value())/100.0,ui->StasisQualify->value());
-            break;
-
         case ANALYSIS_TOOL_CODE_COUNT_PEAKS:
             {
             bool ok;
@@ -3429,12 +3132,12 @@ QString MainWindow::HandleAnalysisTool(int code)
             }
 
         case ANALYSIS_TOOL_CODE_MAKE_NEWICK:
-            if (phylogeny_button->isChecked()||phylogeny_and_metrics_button->isChecked())OutputString = a.MakeNewick(rootspecies, minspeciessize, allowexcludewithissue);
+            if (phylogeny_button->isChecked()||phylogeny_and_metrics_button->isChecked())OutputString = a.MakeNewick(rootspecies, minspeciessize, allowExcludeWithDescendants);
             else OutputString = "Species tracking is not enabled.";
             break;
 
         case ANALYSIS_TOOL_CODE_DUMP_DATA:
-            if (phylogeny_and_metrics_button->isChecked())OutputString = a.DumpData(rootspecies, minspeciessize, allowexcludewithissue);
+            if (phylogeny_and_metrics_button->isChecked())OutputString = a.DumpData(rootspecies, minspeciessize, allowExcludeWithDescendants);
             else OutputString = "Species tracking is not enabled, or is set to phylogeny only.";
             break;
 
@@ -3476,37 +3179,42 @@ QString MainWindow::print_settings()
     QString settings;
     QTextStream settings_out(&settings);
 
-    settings_out<<"EvoSim settings. Integers - Grid X: "<<gridX;
-    settings_out<<"; Grid Y: "<<gridY;
-    settings_out<<"; Settle tolerance: "<<settleTolerance;
-    settings_out<<"; Start age: "<<startAge;
-    settings_out<<"; Disperal: "<<dispersal;
-    settings_out<<"; Food: "<<food;
-    settings_out<<"; Breed cost: "<<breedCost;
-    settings_out<<"; Mutate: "<<mutate;
-    settings_out<<"; Pathogen mutate: "<<pathogen_mutate;
-    settings_out<<"; Pathogen frequency: "<<pathogen_frequency;
-    settings_out<<"; Max diff to breed: "<<maxDiff;
-    settings_out<<"; Breed threshold: "<<breedThreshold;
-    settings_out<<"; Slots per square: "<<slotsPerSq;
-    settings_out<<"; Fitness target: "<<target;
-    settings_out<<"; Environmental change rate: "<<envchangerate;
-    settings_out<<"; Minimum species size:"<<minspeciessize;
-    settings_out<<"; Environment mode:"<<environment_mode;
+    settings_out<<"EvoSim settings:\n\n";
 
-    settings_out<<". Bools - recalculate fitness: "<<recalcFitness;
-    settings_out<<"; Toroidal environment: "<<toroidal;
-    settings_out<<"; Interpolate environment: "<<enviroment_interpolate;
-    settings_out<<"; Nonspatial setling: "<<nonspatial;
-    settings_out<<"; Enforce max diff to breed:"<<breeddiff;
-    settings_out<<"; Only breed within species:"<<breedspecies;
-    settings_out<<"; Pathogens enabled:"<<path_on;
-    settings_out<<"; Variable mutate:"<<variableMutate;
-    settings_out<<"; Exclude species without issue:"<<allowexcludewithissue;
-    settings_out<<"; Breeding:";
-    if(sexual)settings_out<<" sexual.";
-    else if (asexual)settings_out<<" asexual.";
-    else settings_out<<" variable.";
+    settings_out<<"- Integers:\n";
+    settings_out<<"-- Grid X: "<<gridX<<"\n";
+    settings_out<<"-- Grid Y: "<<gridY<<"\n";
+    settings_out<<"-- Settle tolerance: "<<settleTolerance<<"\n";
+    settings_out<<"-- Start age: "<<startAge<<"\n";
+    settings_out<<"-- Disperal: "<<dispersal<<"\n";
+    settings_out<<"-- Food: "<<food<<"\n";
+    settings_out<<"-- Breed cost: "<<breedCost<<"\n";
+    settings_out<<"-- Mutate: "<<mutate<<"\n";
+    settings_out<<"-- Pathogen mutate: "<<pathogen_mutate<<"\n";
+    settings_out<<"-- Pathogen frequency: "<<pathogen_frequency<<"\n";
+    settings_out<<"-- Max diff to breed: "<<maxDiff<<"\n";
+    settings_out<<"-- Breed threshold: "<<breedThreshold<<"\n";
+    settings_out<<"-- Slots per square: "<<slotsPerSq<<"\n";
+    settings_out<<"-- Fitness target: "<<target<<"\n";
+    settings_out<<"-- Environmental change rate: "<<envchangerate<<"\n";
+    settings_out<<"-- Minimum species size:"<<minspeciessize<<"\n";
+    settings_out<<"-- Environment mode:"<<environment_mode<<"\n";
+    settings_out<<"-- Speices mode:"<<species_mode<<"\n";
+
+    settings_out<<"\n- Bools:\n";
+    settings_out<<"-- Recalculate fitness: "<<recalcFitness<<"\n";
+    settings_out<<"-- Toroidal environment: "<<toroidal<<"\n";
+    settings_out<<"-- Interpolate environment: "<<enviroment_interpolate<<"\n";
+    settings_out<<"-- Nonspatial setling: "<<nonspatial<<"\n";
+    settings_out<<"-- Enforce max diff to breed:"<<breeddiff<<"\n";
+    settings_out<<"-- Only breed within species:"<<breedspecies<<"\n";
+    settings_out<<"-- Pathogens enabled:"<<path_on<<"\n";
+    settings_out<<"-- Variable mutate:"<<variableMutate<<"\n";
+    settings_out<<"-- Exclude species without descendants:"<<allowExcludeWithDescendants<<"\n";
+    settings_out<<"-- Breeding: ";
+    if(sexual)settings_out<<"sexual"<<"\n";
+    else if (asexual)settings_out<<"asexual"<<"\n";
+    else settings_out<<"variable"<<"\n";
 
     return settings;
 }
@@ -3563,6 +3271,7 @@ void MainWindow::load_settings()
                          if(settings_file_in.name() == "speciesSensitivity")speciesSensitivity=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "timeSliceConnect")timeSliceConnect=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "minspeciessize")minspeciessize=settings_file_in.readElementText().toInt();
+                         if(settings_file_in.name() == "species_mode")minspeciessize=settings_file_in.readElementText().toInt();
 
                          //Bools
                          if(settings_file_in.name() == "recalcFitness")recalcFitness=settings_file_in.readElementText().toInt();
@@ -3572,7 +3281,7 @@ void MainWindow::load_settings()
                          if(settings_file_in.name() == "breedspecies")breedspecies=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "path_on")path_on=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "variableMutate")variableMutate=settings_file_in.readElementText().toInt();
-                         if(settings_file_in.name() == "allowexcludewithissue")allowexcludewithissue=settings_file_in.readElementText().toInt();
+                         if(settings_file_in.name() == "allowExcludeWithDescendants")allowExcludeWithDescendants=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "sexual")sexual=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "asexual")asexual=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "variableBreed")variableBreed=settings_file_in.readElementText().toInt();
@@ -3615,38 +3324,42 @@ void MainWindow::load_settings()
 void MainWindow::update_gui_from_variables()
 {
     //Ints
-         gridX_spin->setValue(gridX);
-         gridY_spin->setValue(gridY);
-         settleTolerance_spin->setValue(settleTolerance);
-         slots_spin->setValue(slotsPerSq);
-         startAge_spin->setValue(startAge);
-         dispersal_spin->setValue(dispersal);
-         energy_spin->setValue(food);
-         breedCost_spin->setValue(breedCost);
-         mutate_spin->setValue(mutate);
-         pathogen_mutate_spin->setValue(pathogen_mutate);
-         pathogen_frequency_spin->setValue(pathogen_frequency);
-         maxDiff_spin->setValue(maxDiff);
-         breedThreshold_spin->setValue(breedThreshold);
-         target_spin->setValue(target);
-         environment_rate_spin->setValue(envchangerate);
-         refreshRateSpin->setValue(RefreshRate);
+    gridX_spin->setValue(gridX);
+    gridY_spin->setValue(gridY);
+    settleTolerance_spin->setValue(settleTolerance);
+    slots_spin->setValue(slotsPerSq);
+    startAge_spin->setValue(startAge);
+    dispersal_spin->setValue(dispersal);
+    energy_spin->setValue(food);
+    breedCost_spin->setValue(breedCost);
+    mutate_spin->setValue(mutate);
+    pathogen_mutate_spin->setValue(pathogen_mutate);
+    pathogen_frequency_spin->setValue(pathogen_frequency);
+    maxDiff_spin->setValue(maxDiff);
+    breedThreshold_spin->setValue(breedThreshold);
+    target_spin->setValue(target);
+    environment_rate_spin->setValue(envchangerate);
+    refreshRateSpin->setValue(RefreshRate);
+    // Add species_mode
+    species_mode_changed(species_mode, true);
+    // Add environment_mode
+    environment_mode_changed(environment_mode, true);
 
     //Bools
-         recalcFitness_checkbox->setChecked(recalcFitness);
-         toroidal_checkbox->setChecked(toroidal);
-         nonspatial_checkbox->setChecked(nonspatial);
-         breeddiff_checkbox->setChecked(breeddiff);
-         breedspecies_checkbox->setChecked(breedspecies);
-         pathogens_checkbox->setChecked(path_on);
-         variable_mutation_checkbox->setChecked(variableMutate);
-         exclude_without_issue_checkbox->setChecked(allowexcludewithissue);
-         sexual_radio->setChecked(sexual);
-         asexual_radio->setChecked(asexual);
-         variableBreed_radio->setChecked(variableBreed);
-         logging_checkbox->setChecked(logging);
-         gui_checkbox->setChecked(gui);
-         interpolateCheckbox->setChecked(enviroment_interpolate);
+    recalcFitness_checkbox->setChecked(recalcFitness);
+    toroidal_checkbox->setChecked(toroidal);
+    nonspatial_checkbox->setChecked(nonspatial);
+    breeddiff_checkbox->setChecked(breeddiff);
+    breedspecies_checkbox->setChecked(breedspecies);
+    pathogens_checkbox->setChecked(path_on);
+    variable_mutation_checkbox->setChecked(variableMutate);
+    exclude_without_descendants_checkbox->setChecked(allowExcludeWithDescendants);
+    sexual_radio->setChecked(sexual);
+    asexual_radio->setChecked(asexual);
+    variableBreed_radio->setChecked(variableBreed);
+    logging_checkbox->setChecked(logging);
+    gui_checkbox->setChecked(gui);
+    interpolateCheckbox->setChecked(enviroment_interpolate);
 }
 
 /*!
@@ -3756,6 +3469,10 @@ void MainWindow::save_settings()
         settings_file_out.writeCharacters(QString("%1").arg(minspeciessize));
         settings_file_out.writeEndElement();
 
+        settings_file_out.writeStartElement("species_mode");
+        settings_file_out.writeCharacters(QString("%1").arg(species_mode));
+        settings_file_out.writeEndElement();
+
         //Bools
         settings_file_out.writeStartElement("recalcFitness");
         settings_file_out.writeCharacters(QString("%1").arg(recalcFitness));
@@ -3785,8 +3502,8 @@ void MainWindow::save_settings()
         settings_file_out.writeCharacters(QString("%1").arg(variableMutate));
         settings_file_out.writeEndElement();
 
-        settings_file_out.writeStartElement("allowexcludewithissue");
-        settings_file_out.writeCharacters(QString("%1").arg(allowexcludewithissue));
+        settings_file_out.writeStartElement("allowExcludeWithDescendants");
+        settings_file_out.writeCharacters(QString("%1").arg(allowExcludeWithDescendants));
         settings_file_out.writeEndElement();
 
         settings_file_out.writeStartElement("sexual");
@@ -3906,7 +3623,7 @@ void MainWindow::on_actionOnline_User_Manual_triggered()
  */
 void MainWindow::on_actionSettings_Dock_triggered()
 {
-    on_actionSettings_triggered();
+    actionSettings_triggered();
 }
 
 /*!

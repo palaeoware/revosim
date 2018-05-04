@@ -490,250 +490,6 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <widget class="QDockWidget" name="fossRecDock">
-   <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::AllDockWidgetAreas</set>
-   </property>
-   <property name="windowTitle">
-    <string>Fossil Record</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>4</number>
-   </attribute>
-   <widget class="QWidget" name="fossRecDockContents"/>
-  </widget>
-  <widget class="QDockWidget" name="reportViewerDock">
-   <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::AllDockWidgetAreas</set>
-   </property>
-   <property name="windowTitle">
-    <string>Analysis Tools</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="repViewContents">
-    <layout class="QVBoxLayout" name="verticalLayout_3">
-     <item>
-      <widget class="QPushButton" name="SelectLogFile">
-       <property name="text">
-        <string>Select Log File...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="LogFile"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="SelectOutputFile">
-       <property name="text">
-        <string>Select Output File...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="OutputFile"/>
-     </item>
-     <item>
-      <widget class="QTabWidget" name="AnalysisToolsSettingsTabWidget">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="currentIndex">
-        <number>2</number>
-       </property>
-       <widget class="QWidget" name="tab">
-        <attribute name="title">
-         <string>Stasis</string>
-        </attribute>
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="3">
-          <widget class="QSpinBox" name="StasisBins">
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>1000</number>
-           </property>
-           <property name="value">
-            <number>20</number>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0" colspan="3">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>percentile max species length for all bins</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="3">
-          <widget class="QSpinBox" name="StasisPercentile">
-           <property name="suffix">
-            <string>%</string>
-           </property>
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>100</number>
-           </property>
-           <property name="value">
-            <number>95</number>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Bins to qualify</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="3">
-          <widget class="QSpinBox" name="StasisQualify">
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>1000</number>
-           </property>
-           <property name="value">
-            <number>2</number>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Total Bins</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="tab_2">
-        <attribute name="title">
-         <string>Count Peaks</string>
-        </attribute>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="1">
-          <widget class="QSpinBox" name="PeaksRed">
-           <property name="maximum">
-            <number>255</number>
-           </property>
-           <property name="value">
-            <number>128</number>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="1">
-          <widget class="QSpinBox" name="PeaksBlue">
-           <property name="maximum">
-            <number>255</number>
-           </property>
-           <property name="value">
-            <number>128</number>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QSpinBox" name="PeaksGreen">
-           <property name="maximum">
-            <number>255</number>
-           </property>
-           <property name="value">
-            <number>128</number>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_6">
-           <property name="text">
-            <string>Red</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Green</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="QLabel" name="label_8">
-           <property name="text">
-            <string>Blue</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-       <widget class="QWidget" name="phylo_tab">
-        <attribute name="title">
-         <string>Phylogeny</string>
-        </attribute>
-        <layout class="QVBoxLayout" name="verticalLayout_6">
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <item>
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>Minimum species size</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QSpinBox" name="minSpeciesSize">
-             <property name="maximum">
-              <number>1000000</number>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="chkExcludeWithChildren">
-           <property name="layoutDirection">
-            <enum>Qt::RightToLeft</enum>
-           </property>
-           <property name="text">
-            <string>Allow exclusion of species with issue?</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPlainTextEdit" name="plainTextEdit">
-       <property name="font">
-        <font>
-         <family>Courier New</family>
-         <pointsize>9</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <widget class="QDockWidget" name="genomeComparisonDock">
    <property name="minimumSize">
     <size>
@@ -769,7 +525,7 @@
      <x>0</x>
      <y>0</y>
      <width>1220</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuCommands">
@@ -801,56 +557,21 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
-   <widget class="QMenu" name="menuFossil_Record">
-    <property name="title">
-     <string>Fossil Record</string>
-    </property>
-    <addaction name="actionFossil_Record"/>
-    <addaction name="separator"/>
-    <addaction name="actionChoose_Log_Directory"/>
-    <addaction name="actionShow_positions"/>
-    <addaction name="separator"/>
-    <addaction name="actionAdd_Random"/>
-    <addaction name="actionAdd_Regular"/>
-    <addaction name="actionSet_Sparsity"/>
-    <addaction name="actionSet_Active"/>
-    <addaction name="actionSet_Inactive"/>
-   </widget>
-   <widget class="QMenu" name="menuSpecies">
-    <property name="title">
-     <string>Custom logging</string>
-    </property>
-    <addaction name="actionFitness_logging_to_File"/>
-    <addaction name="actionRecombination_logging"/>
-   </widget>
-   <widget class="QMenu" name="menuAnalysis_Tools">
-    <property name="title">
-     <string>Analysis Tools</string>
-    </property>
-    <widget class="QMenu" name="menuPhylogeny_Data_Tools">
-     <property name="title">
-      <string>Phylogeny Data Tools</string>
-     </property>
-     <addaction name="actionGenerate_NWK_tree_file"/>
-     <addaction name="actionSpecies_sizes"/>
-    </widget>
-    <addaction name="actionReport_Viewer"/>
-    <addaction name="separator"/>
-    <addaction name="actionCount_Peaks"/>
-    <addaction name="actionGenerate_Tree_from_Log_File"/>
-    <addaction name="actionExtinction_and_Origination_Data"/>
-    <addaction name="actionRates_of_Change"/>
-    <addaction name="actionStasis"/>
-    <addaction name="separator"/>
-    <addaction name="menuPhylogeny_Data_Tools"/>
-   </widget>
    <widget class="QMenu" name="menuTools">
-+    <property name="title">
-+     <string>Tools</string>
-+    </property>
-+    <addaction name="actionGenomeComparison"/>
-+    <addaction name="actionSettings_Dock"/>
-+   </widget>
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <widget class="QMenu" name="menuCustom_Logging">
+     <property name="title">
+      <string>Custom Logging</string>
+     </property>
+     <addaction name="actionFitness_logging_to_File"/>
+     <addaction name="actionRecombination_logging"/>
+    </widget>
+    <addaction name="actionGenomeComparison"/>
+    <addaction name="actionSettings_Dock"/>
+    <addaction name="menuCustom_Logging"/>
+   </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
@@ -861,10 +582,6 @@
     <addaction name="actionAbout"/>
    </widget>
    <addaction name="menuCommands"/>
-   <addaction name="menuFossil_Record"/>
-   <addaction name="menuDocks"/>
-   <addaction name="menuAnalysis_Tools"/>
-   <addaction name="menuSpecies"/>
    <addaction name="menuTools"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -912,196 +629,6 @@
     <string>Alt+R</string>
    </property>
   </action>
-  <action name="actionSettings">
-   <property name="text">
-    <string>Settings...</string>
-   </property>
-  </action>
-  <action name="actionRefresh_Rate">
-   <property name="text">
-    <string>Refresh/Polling Rate...</string>
-   </property>
-  </action>
-  <action name="actionSEnvironment">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Complex environment</string>
-   </property>
-  </action>
-  <action name="actionDEnvironment">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Simple environment</string>
-   </property>
-  </action>
-  <action name="actionPopulation_Count">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Population Count</string>
-   </property>
-  </action>
-  <action name="actionMean_fitness">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Mean fitness</string>
-   </property>
-  </action>
-  <action name="actionGenome_as_colour">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Coding genome as colour</string>
-   </property>
-  </action>
-  <action name="actionGene_Frequencies_012">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Gene Frequencies (012)</string>
-   </property>
-  </action>
-  <action name="actionGene_Frequencies_345">
-   <property name="text">
-    <string>Gene Frequencies (345)</string>
-   </property>
-  </action>
-  <action name="actionBreed_Attempts">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Breed Attempts</string>
-   </property>
-   <property name="visible">
-    <bool>false</bool>
-   </property>
-  </action>
-  <action name="actionBreed_Fails">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Breed Fails</string>
-   </property>
-   <property name="visible">
-    <bool>false</bool>
-   </property>
-  </action>
-  <action name="actionSettles">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Settles</string>
-   </property>
-  </action>
-  <action name="actionSettle_Fails">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Fails (R=Breed, G=Settle)</string>
-   </property>
-  </action>
-  <action name="actionCount_Peaks">
-   <property name="text">
-    <string>Count Peaks</string>
-   </property>
-  </action>
-  <action name="actionNone">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>None</string>
-   </property>
-  </action>
-  <action name="actionSimple_List">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Simple List</string>
-   </property>
-  </action>
-  <action name="actionSorted_Summary">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Sorted Summary</string>
-   </property>
-  </action>
-  <action name="actionGroups">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Groups (local)</string>
-   </property>
-  </action>
-  <action name="actionNonCoding_genome_as_colour">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>NonCoding genome as colour</string>
-   </property>
-  </action>
-  <action name="actionGroups2">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Groups (global)</string>
-   </property>
-  </action>
-  <action name="actionBreed_Fails_2">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Breed Fails</string>
-   </property>
-  </action>
-  <action name="actionMisc">
-   <property name="text">
-    <string>Misc</string>
-   </property>
-  </action>
-  <action name="actionEnvironment_Files">
-   <property name="text">
-    <string>Environment Files...</string>
-   </property>
-  </action>
   <action name="actionSave">
    <property name="text">
     <string>Save...</string>
@@ -1118,17 +645,6 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionInformation">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Information</string>
-   </property>
-  </action>
   <action name="actionGenomeComparison">
    <property name="checkable">
     <bool>true</bool>
@@ -1138,140 +654,6 @@
    </property>
    <property name="text">
     <string>Genome Comparison Dock</string>
-   </property>
-  </action>
-  <action name="actionFossil_Record">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Fossil Record Dock</string>
-   </property>
-  </action>
-  <action name="actionReport_Viewer">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Analysis Tools Dock</string>
-   </property>
-  </action>
-  <action name="actionChoose_Log_Directory">
-   <property name="text">
-    <string>Choose Log Directory...</string>
-   </property>
-  </action>
-  <action name="actionShow_positions">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Show selected positions</string>
-   </property>
-  </action>
-  <action name="actionSelect_Report_Position">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Select Report Position</string>
-   </property>
-  </action>
-  <action name="actionAdd_Genome">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Add Genome</string>
-   </property>
-  </action>
-  <action name="actionFossil_Record_2">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Fossil Record</string>
-   </property>
-  </action>
-  <action name="actionAdd_Random">
-   <property name="text">
-    <string>Add Random...</string>
-   </property>
-  </action>
-  <action name="actionAdd_Regular">
-   <property name="text">
-    <string>Add Regular...</string>
-   </property>
-  </action>
-  <action name="actionSet_Sparsity">
-   <property name="text">
-    <string>Set Sparsity...</string>
-   </property>
-  </action>
-  <action name="actionSet_Active">
-   <property name="text">
-    <string>Set Active</string>
-   </property>
-  </action>
-  <action name="actionSet_Inactive">
-   <property name="text">
-    <string>Set Inactive</string>
-   </property>
-  </action>
-  <action name="actionSpecies">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Species</string>
-   </property>
-  </action>
-  <action name="actionDEBUG_PAUSE">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>DEBUG PAUSE</string>
-   </property>
-  </action>
-  <action name="actionLogging">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Species logging to File</string>
-   </property>
-  </action>
-  <action name="actionSet_Logging_File">
-   <property name="text">
-    <string>Set Logging File...</string>
-   </property>
-  </action>
-  <action name="actionGenerate_Tree_from_Log_File">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Generate Tree from Log (Deprecated)...</string>
-   </property>
-  </action>
-  <action name="actionExtinction_and_Origination_Data">
-   <property name="text">
-    <string>Extinction and Origination Data...</string>
-   </property>
-  </action>
-  <action name="actionRates_of_Change">
-   <property name="text">
-    <string>Rates of Change...</string>
    </property>
   </action>
   <action name="actionGo_Slow">
@@ -1287,27 +669,6 @@
     <string>Load Random Numbers...</string>
    </property>
   </action>
-  <action name="actionStasis">
-   <property name="text">
-    <string>Stasis...</string>
-   </property>
-  </action>
-  <action name="actionNon_static_fitness">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Non-static fitness</string>
-   </property>
-  </action>
-  <action name="actionAnalysis_in_Linux">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Logs Linux --&gt; Windows</string>
-   </property>
-  </action>
   <action name="actionFitness_logging_to_File">
    <property name="checkable">
     <bool>true</bool>
@@ -1317,14 +678,6 @@
    </property>
    <property name="text">
     <string>Fitness logging</string>
-   </property>
-  </action>
-  <action name="actionDon_t_update_gui">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Don't update GUI</string>
    </property>
   </action>
   <action name="actionReseed">
@@ -1338,147 +691,6 @@
   <action name="actionBatch">
    <property name="text">
     <string>Batch</string>
-   </property>
-  </action>
-  <action name="actionOff">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Off</string>
-   </property>
-  </action>
-  <action name="actionBasic">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Basic</string>
-   </property>
-  </action>
-  <action name="actionPhylogeny">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Phylogeny</string>
-   </property>
-  </action>
-  <action name="actionPhylogeny_metrics">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Phylogeny and metrics</string>
-   </property>
-  </action>
-  <action name="actionGenerate_NWK_tree_file">
-   <property name="text">
-    <string>Generate NWK tree file</string>
-   </property>
-  </action>
-  <action name="actionSpecies_sizes">
-   <property name="text">
-    <string>Dump logged data</string>
-   </property>
-  </action>
-  <action name="save_population_count">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Population count</string>
-   </property>
-  </action>
-  <action name="save_mean_fitness">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Mean fitness</string>
-   </property>
-  </action>
-  <action name="save_coding_genome_as_colour">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Coding genome as colour</string>
-   </property>
-  </action>
-  <action name="save_non_coding_genome_as_colour">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>NonCoding genome as colour</string>
-   </property>
-  </action>
-  <action name="save_gene_frequencies">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Gene Frequencies (012)</string>
-   </property>
-  </action>
-  <action name="save_settles">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Settles</string>
-   </property>
-  </action>
-  <action name="save_species">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Species</string>
-   </property>
-  </action>
-  <action name="save_fails_settles">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Fails (R=Breed, G=Settle)</string>
-   </property>
-  </action>
-  <action name="save_environment">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Environment</string>
-   </property>
-  </action>
-  <action name="save_all">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>All</string>
-   </property>
-  </action>
-  <action name="actionSpecies_logging">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Species logging</string>
-   </property>
-  </action>
-  <action name="actionWrite_phylogeny">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Phylogeny logging</string>
    </property>
   </action>
   <action name="actionRecombination_logging">
@@ -1542,13 +754,13 @@
    </property>
   </action>
   <action name="actionSettings_Dock">
-+   <property name="checkable">
-+    <bool>true</bool>
-+   </property>
-+   <property name="text">
-+    <string>Settings Dock</string>
-+   </property>
-+  </action>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Settings Dock</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
@@ -1566,38 +778,6 @@
     <hint type="destinationlabel">
      <x>369</x>
      <y>770</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionFossil_Record</sender>
-   <signal>triggered(bool)</signal>
-   <receiver>fossRecDock</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>490</x>
-     <y>60</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionReport_Viewer</sender>
-   <signal>triggered(bool)</signal>
-   <receiver>reportViewerDock</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>936</x>
-     <y>345</y>
     </hint>
    </hints>
   </connection>

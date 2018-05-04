@@ -31,7 +31,6 @@
 #include "populationscene.h"
 #include "environmentscene.h"
 #include "genomecomparison.h"
-#include "fossrecwidget.h"
 #include "about.h"
 
 extern MainWindow *MainWin;
@@ -45,7 +44,6 @@ class MainWindow : public QMainWindow {
 public:
     MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    FossRecWidget *FRW;
     GenomeComparison *genoneComparison;
     bool genomeComparisonAdd();
     void RefreshReport();
@@ -90,7 +88,7 @@ private:
     //RJG - Save images checkboxes
     QCheckBox *gui_checkbox, *save_population_count, *save_mean_fitness, *save_coding_genome_as_colour, *save_species, *save_non_coding_genome_as_colour, *save_gene_frequencies, *save_settles, *save_fails_settles, *save_environment, *interpolateCheckbox;
     //RJG - other checkboxes
-    QCheckBox *recalcFitness_checkbox, *toroidal_checkbox, *nonspatial_checkbox, *breeddiff_checkbox, *breedspecies_checkbox, *pathogens_checkbox, *variable_mutation_checkbox, *exclude_without_issue_checkbox, *logging_checkbox, *autodump_checkbox;
+    QCheckBox *recalcFitness_checkbox, *toroidal_checkbox, *nonspatial_checkbox, *breeddiff_checkbox, *breedspecies_checkbox, *pathogens_checkbox, *variable_mutation_checkbox, *exclude_without_descendants_checkbox, *logging_checkbox, *autodump_checkbox;
     //RJG - radios and spins
     QRadioButton *phylogeny_off_button, *basic_phylogeny_button, *phylogeny_button, *phylogeny_and_metrics_button, *sexual_radio, *asexual_radio, *variableBreed_radio, *environmentModeBounceButton, *environmentModeLoopButton, *environmentModeOnceButton, *environmentModeStaticButton;
     QSpinBox *mutate_spin, *refreshRateSpin, *pathogen_mutate_spin, *pathogen_frequency_spin , *maxDiff_spin, *breedThreshold_spin, *target_spin , *environment_rate_spin, *gridX_spin , *gridY_spin, *settleTolerance_spin, *slots_spin, *startAge_spin, *dispersal_spin, *energy_spin, *breedCost_spin;
@@ -122,26 +120,18 @@ private slots:
     void on_actionBatch_triggered();
     void on_actionPause_Sim_triggered();
     void on_actionStop_Sim_triggered();
-    void on_actionSettings_triggered();
     void on_actionCount_Peaks_triggered();
-    void on_actionMisc_triggered();
-    void report_mode_changed(QAction *a);
     void gui_checkbox_state_changed(bool);
     void save_all_checkbox_state_changed(bool);
     void dump_run_data();
+    void actionSettings_triggered();
     void redoImages(int oldrows, int oldcols);
-    bool on_actionEnvironment_Files_triggered();
+    bool actionEnvironment_Files_triggered();
     void on_actionSave_triggered();
     void on_actionLoad_triggered();
     void load_settings();
     void update_gui_from_variables();
     void save_settings();
-    void on_actionChoose_Log_Directory_triggered();
-    void on_actionAdd_Regular_triggered();
-    void on_actionAdd_Random_triggered();
-    void on_actionSet_Active_triggered();
-    void on_actionSet_Inactive_triggered();
-    void on_actionSet_Sparsity_triggered();
     void on_actionShow_positions_triggered();
     void on_actionFitness_logging_to_File_triggered();
     void on_actionGenerate_Tree_from_Log_File_triggered();
@@ -149,8 +139,7 @@ private slots:
     void on_actionRates_of_Change_triggered();
     void on_actionStasis_triggered();
     void on_actionLoad_Random_Numbers_triggered();
-    void on_SelectLogFile_pressed();
-    void species_mode_changed(int change_species_mode);
+    void species_mode_changed(int change_species_mode, bool update_gui);
     void environment_mode_changed(int change_environment_mode, bool update_gui);
     void on_actionGenerate_NWK_tree_file_triggered();
     void on_actionSpecies_sizes_triggered();
@@ -163,7 +152,5 @@ private slots:
     void on_actionSettings_Dock_triggered();
     void on_actionGenomeComparison_triggered(bool checked);
 };
-
-
 
 #endif // MAINWINDOW_H

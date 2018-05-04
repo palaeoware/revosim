@@ -32,6 +32,7 @@
 
 //Programme Name
 #define PRODUCTNAME "REvoSim"
+#define PRODUCTTAG "The [R]apid [Evo]lutionary [Sim]ulator"
 
 //Github
 //ARTS - This will need to be changed once we settle on a name for the programme

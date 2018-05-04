@@ -18,28 +18,41 @@
 #include "logspecies.h"
 #include "simmanager.h"
 #include "analysistools.h"
-#include <QTextStream>
-extern quint64 generation;
-
-
 #include "mainwindow.h"
 
+#include <QTextStream>
+
+extern quint64 generation;
+
+/*!
+ * \brief LogSpecies::LogSpecies
+ */
 LogSpecies::LogSpecies()
 {
 
 }
 
+/*!
+ * \brief LogSpecies::~LogSpecies
+ */
 LogSpecies::~LogSpecies()
 {
     qDeleteAll(data_items);
     qDeleteAll(children);
 }
 
-
-
-//Reporting recursive functions below
+/*!
+ * \brief LogSpecies::my_data_line
+ *
+ * Dump actually multiple lines of data for this species
+ *
+ * \param start
+ * \param end
+ * \param myid
+ * \param pid
+ * \return QString
+ */
 QString LogSpecies::my_data_line(quint64 start, quint64 end,quint64 myid, quint64 pid)
-//dump actually multiple lines of data for this species
 {
     QString outstring;
     QTextStream out(&outstring);
@@ -62,14 +75,25 @@ QString LogSpecies::my_data_line(quint64 start, quint64 end,quint64 myid, quint6
     return outstring;
 }
 
+/*!
+ * \brief LogSpecies::dump_data
+ *
+ * Dumps the data as a string
+ *
+ * \param childindex
+ * \param last_time_base
+ * \param killfluff
+ * \param parentid
+ * \return QString
+ */
 QString LogSpecies::dump_data(int childindex, quint64 last_time_base, bool killfluff, quint64 parentid)
 {
     //modelled on newickstring
     int cc=children.count();
     quint64 myid=ids++;
-    if (last_time_base==0) last_time_base=time_of_first_appearance;
+    if (last_time_base==0) last_time_base=timeOfFirstAppearance;
     if (cc<=childindex)
-        return my_data_line(last_time_base,time_of_last_appearance,myid,parentid);
+        return my_data_line(last_time_base,timeOfLastAppearance,myid,parentid);
     else
     {
         int nextchildindex=cc; //for if it runs off the end
@@ -77,12 +101,12 @@ QString LogSpecies::dump_data(int childindex, quint64 last_time_base, bool killf
         bool genvalid=false;
         for (int i=childindex; i<cc; i++)
         {
-            if (!genvalid || children[i]->time_of_first_appearance==thisgeneration)
+            if (!genvalid || children[i]->timeOfFirstAppearance==thisgeneration)
             {
                 if (!(children[i]->isfluff()))
                 {
                     genvalid=true;
-                    thisgeneration=children[i]->time_of_first_appearance;
+                    thisgeneration=children[i]->timeOfFirstAppearance;
                 }
             }
             else
@@ -92,7 +116,7 @@ QString LogSpecies::dump_data(int childindex, quint64 last_time_base, bool killf
             }
         }
 
-       if (!genvalid) return my_data_line(last_time_base,time_of_last_appearance,myid,parentid);
+       if (!genvalid) return my_data_line(last_time_base,timeOfLastAppearance,myid,parentid);
 
         //now recurse onto (a) this with new settings, and (b) the children
         QString s;
@@ -111,55 +135,78 @@ QString LogSpecies::dump_data(int childindex, quint64 last_time_base, bool killf
     return "ERROR"; //shouldn't get here!
 }
 
-
+/*!
+ * \brief LogSpecies::maxsize_inc_children
+ *
+ * Finds maxsize of this AND all child lineages - for fluff removal
+ *
+ * \return int recurseMaxSize
+ */
 int LogSpecies::maxsize_inc_children()
 {
-    //find maxsize of this AND all child lineages - for fluff removal
-    int recursemaxsize=maxsize;
+    int recurseMaxSize=maxsize;
     for (int i=0; i<children.count(); i++)
     {
-        int ms=children[i]->maxsize_inc_children();
-        if (ms>recursemaxsize) recursemaxsize=ms;
+        int maxSize=children[i]->maxsize_inc_children();
+        if (maxSize>recurseMaxSize) recurseMaxSize=maxSize;
     }
-    return recursemaxsize;
+    return recurseMaxSize;
 }
 
+/*!
+ * \brief LogSpecies::isfluff
+ *
+ * Tests if a species has become 'extinct', this will return TRUE if:
+ * a) the species is only fetured in one iteration
+ * b) one has no descendants and is smaller than minspeciessize (used by Newick string)
+ * Will return FALSE otherwise
+ *
+ * \return bool
+ */
 bool LogSpecies::isfluff()
 {
-    if (time_of_first_appearance==time_of_last_appearance) return true; //always fluff if only in one iteration
+    // Always fluff if only in one iteration
+    if (timeOfFirstAppearance==timeOfLastAppearance) return true;
 
-    //is this a 'fluff' species - i.e. one has no issue and is smaller than minspeciessize?
-    //used by filter of newickstring and other recursives
-    if (children.count()!=0 && allowexcludewithissue==false)
+    // Is this a 'fluff' species - i.e. one has no descendants and is smaller than minspeciessize?
+    // Used by filter of newickstring and other recursives
+    if (children.count()!=0 && allowExcludeWithDescendants==false)
         return false;
 
-    int recursemaxsize=maxsize;
-    if (allowexcludewithissue) recursemaxsize=maxsize_inc_children();
+    int recurseMaxSize=maxsize;
+    if (allowExcludeWithDescendants) recurseMaxSize=maxsize_inc_children();
 
-    if (recursemaxsize<=minspeciessize) return true;
+    if (recurseMaxSize<=minspeciessize) return true;
 
     return false;
-
 }
 
+/*!
+ * \brief LogSpecies::newickstring
+ *
+ * childindex is a bodge to allow recursive calls on the same item
+ * moving up through list of children, grouping by creation time
+ * send it a 0 initially
+ * and last_time_base needs to be timeOfFirstAppearance initially too.
+ * no, it can be 0 - picked up in functoin
+ * killfluff flag - ignore any children that have a single generation life and no children of their own
+ *
+ * \param childindex
+ * \param last_time_base
+ * \param killfluff
+ * \return
+ */
 QString LogSpecies::newickstring(int childindex, quint64 last_time_base, bool killfluff)
-//childindex is a bodge to allow recursive calls on the same item
-//moving up through list of children, grouping by creation time
-//send it a 0 initially
-//and last_time_base needs to be time_of_first_appearance initially too.
-//no, it can be 0 - picked up in functoin
-//killfluff flag - ignore any children that have a single generation life and no children of their own
 {
     //recursively generate Newick-format text description of tree
-
     //bl is branch length. For simple nodes - just last appearance time - first
     int cc=children.count();
     int bl;
     quint64 myid=ids++;
-    if (last_time_base==0) last_time_base=time_of_first_appearance;
+    if (last_time_base==0) last_time_base=timeOfFirstAppearance;
     if (cc<=childindex)
     {
-        bl=time_of_last_appearance-last_time_base;
+        bl=timeOfLastAppearance-last_time_base;
         QString s;
         s.sprintf("ID%ld-%d:%d",myid,maxsize,bl);
         return s;
@@ -171,12 +218,12 @@ QString LogSpecies::newickstring(int childindex, quint64 last_time_base, bool ki
         bool genvalid=false;
         for (int i=childindex; i<cc; i++)
         {
-            if (!genvalid || children[i]->time_of_first_appearance==thisgeneration)
+            if (!genvalid || children[i]->timeOfFirstAppearance==thisgeneration)
             {
                 if (!(children[i]->isfluff()))
                 {
                     genvalid=true;
-                    thisgeneration=children[i]->time_of_first_appearance;
+                    thisgeneration=children[i]->timeOfFirstAppearance;
                 }
             }
             else
@@ -190,7 +237,7 @@ QString LogSpecies::newickstring(int childindex, quint64 last_time_base, bool ki
         if (!genvalid)
         {
             //actually no children
-            bl=time_of_last_appearance-last_time_base;
+            bl=timeOfLastAppearance-last_time_base;
             QString s;
             s.sprintf("ID%ld-%d:%d",myid,maxsize,bl);
             return s;
