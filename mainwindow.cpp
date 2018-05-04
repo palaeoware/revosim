@@ -646,7 +646,6 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     images_grid->addWidget(saveAllImagesCheckbox,7,2,1,1);
     QObject::connect(saveAllImagesCheckbox, SIGNAL (toggled(bool)), this, SLOT(save_all_checkbox_state_changed(bool)));
 
-
     //ARTS - Logging to text file
     QGridLayout *fileLoggingGrid = new QGridLayout;
 
@@ -695,7 +694,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     QLabel *Min_species_size_label = new QLabel("Minimum species size:");
     QSpinBox *Min_species_size_spin = new QSpinBox;
     Min_species_size_spin->setMinimum(0);
-    Min_species_size_spin->setMaximum(10000);
+    Min_species_size_spin->setMaximum(1000000);
     Min_species_size_spin->setValue(minspeciessize);
     fileLoggingGrid->addWidget(Min_species_size_label,10,1);
     fileLoggingGrid->addWidget(Min_species_size_spin,10,2);
