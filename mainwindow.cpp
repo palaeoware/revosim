@@ -2227,7 +2227,6 @@ bool MainWindow::actionEnvironment_Files_triggered()
  *
  * Action to save the current settings and simulation to an .evosim file.
  *
- * \todo RJG - Fitness logging to file not sorted on save as yet.
  */
 void MainWindow::on_actionSave_triggered()
 {
@@ -3067,6 +3066,17 @@ void MainWindow::WriteLog()
 void MainWindow::setStatusBarText(QString text)
 {
     ui->statusBar->showMessage(text);
+}
+
+void MainWindow::statusProgressBar(QProgressBar *prBar,bool add)
+{
+ if (add)
+    {
+     ui->statusBar->clearMessage();
+     setStatusBarText("Calculating species...");
+     ui->statusBar->addPermanentWidget(prBar);
+    }
+ else ui->statusBar->removeWidget(prBar);
 }
 
 /*!

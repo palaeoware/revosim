@@ -163,6 +163,8 @@ SimManager::SimManager()
      EnvChangeForward=true;
      nextspeciesid=1;
      rootspecies=(LogSpecies *)0;
+
+     warning_count=0;
 }
 
 
@@ -610,6 +612,9 @@ void SimManager::SetupRun()
             for (int m=0; m<256; m++)
                 //RJG - Seed pathogen layer with 64 bit randoms too
                 pathogens[n][m]=Rand64();
+
+    //RJG - reset warning system
+    warning_count=0;
 }
 
 int SimManager::iterate_parallel(int firstx, int lastx, int newgenomecount_local, int *KillCount_local)
@@ -833,6 +838,21 @@ int SimManager::settle_parallel(int newgenomecounts_start, int newgenomecounts_e
 bool SimManager::iterate(int emode, bool interpolate)
 {
     generation++;
+
+    //RJG - Provide user with warning if the system is grinding through so many species it's taking>5 seconds.Option to turn off species mode.
+    if(warning_count==1)
+    {
+      if(QMessageBox::question(0, "A choice awaits...", "The last species search took more than five seconds."
+                               " This suggests the settings you are using lend themselves towards speciation, and the species system is a bottleneck."
+                               " Would you like to switch off the species system? If you select no, a progress bar will appear to give you an idea of how long it is taking."
+                               "If you click yes, the system will be disabled. You will only see this warning once per run.",
+                               QMessageBox::Yes|QMessageBox::No, QMessageBox::Yes)==QMessageBox::Yes)
+                                            {
+                                            species_mode=0;
+                                            MainWin->update_gui_from_variables();
+                                            }
+       warning_count++;
+    }
 
     if (regenerateEnvironment(emode, interpolate)==true) return true;
 

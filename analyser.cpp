@@ -23,8 +23,10 @@
 #include <QSet>
 #include <QHashIterator>
 #include <QTime>
+#include <QMessageBox>
 
 #include "mainwindow.h"
+#include "version.h"
 
 /*!
  * \brief species::species
@@ -188,7 +190,6 @@ void Analyser::Groups_2017()
     for (int m=0; m<gridY; m++)
     {
         if (totalfit[n][m]==0) continue; //nothing alive in the cell - skip
-
         for (int c=0; c<slotsPerSq; c++)
         {
             if (critters[n][m][c].age>0) //if critter is alive
@@ -233,15 +234,38 @@ void Analyser::Groups_2017()
     }
     //Done - all data retrieved and ready to process
 
-    //Next. Go through each species and do all the pairwise comparisons. This is 2 above.
+    //MDS - Next. Go through each species and do all the pairwise comparisons. This is 2 above.
+    //RJG - this is the really time consuming bit of the process especially when many species. Add progress bar if it's slow.
+
     QHashIterator<quint64,QSet<quint64> *> ii(genomedata); //iterator to loop over all species and their genome sets
 
     QList<species> newspecieslist; // will eventually replace the global oldspecieslist
                                    // convenient to build into  a new list, then copy at the end
 
+    //RJG - Add a progress bar
+       QProgressBar prBar;
+    //Work out limits
+       int count=0;
+       if(TheSimManager->warning_count>0)
+           {
+           while (ii.hasNext()){count++;ii.next();}
+           prBar.setRange(0,count);
+           prBar.setAlignment(Qt::AlignCenter);
+           MainWin->statusProgressBar(&prBar,true);
+           count=0;
+           ii.toFront();
+           }
+
     while (ii.hasNext()) //for each entry in genomedata hash
     {
         ii.next();
+
+        if(TheSimManager->warning_count>0)
+            {
+            count++;
+            prBar.setValue(count);
+            }
+
         QSet<quint64> *speciesset=ii.value(); // Get the set of genomes
         quint64 speciesid=ii.key();  //get the speciesID
         LogSpecies *thislogspecies;
@@ -251,7 +275,7 @@ void Analyser::Groups_2017()
             thislogspecies= LogSpeciesById.value(speciesid,(LogSpecies*)0);
             if (!thislogspecies)
             {
-                qDebug()<<"Internal error - species not found in log hash";
+                QMessageBox::warning(MainWin,"Oops","Internal error - species not found in log hash. Please email MDS / RJG with this message");
                 exit(0);
             }
         }
@@ -268,7 +292,8 @@ void Analyser::Groups_2017()
 
         if (speciesset->count()>=MAX_GENOME_COUNT) //check it actually fits in the static array
         {
-            qDebug()<<"ERROR - static array too small"; //Hopefully this won't ever happen - if it does
+            QMessageBox::warning(MainWin,"Oops","Species static array too small - you have more species than "+QString(PRODUCTNAME)+" was designed to handle. Pleasee email MDS / RJG with this message for a fix. " + QString(PRODUCTNAME) + " will now close." );
+            //Hopefully this won't ever happen - if it does
                                                         //the MAX_GENOME_COUNT can be raised of course
             exit(0);
         }
@@ -280,7 +305,7 @@ void Analyser::Groups_2017()
             grouplookup[arraymax]=arraymax; //not merged - just itself
             arraymax++;
         }
-        //arraymax is not numbe of items in the static array
+        //arraymax is not number of items in the static array
 
         //now do ALL the possible pairwise comparisons
         //THIS is the slow bit, when there are not many species - not really any faster with index group merging
@@ -587,7 +612,9 @@ void Analyser::Groups_2017()
 
     }
 
-    //Nearly there! Just need to put size data into correct species
+    if(TheSimManager->warning_count>0) MainWin->statusProgressBar(&prBar,false);
+
+//Nearly there! Just need to put size data into correct species
     for(int f=0; f<newspecieslist.count(); f++) //go through new species list
     {
         quint32 newsize=(quint32)speciessizes[newspecieslist[f].ID];
@@ -602,6 +629,7 @@ void Analyser::Groups_2017()
         //also in maxsize for species fluff culling
     }
 
+
     oldspecieslist=newspecieslist; //copy new list over old one
 
     //delete all data - not simple for the slotswithgenome hash of hashes, but this works!
@@ -614,6 +642,9 @@ void Analyser::Groups_2017()
         delete (iter.value());
     }
     //Done!
+
+//RJG - need to give user heads up if species ID is taking > 5 seconds, and allow them to turn it off.
+if(t.elapsed()>5000)TheSimManager->warning_count++;
 }
 
 
