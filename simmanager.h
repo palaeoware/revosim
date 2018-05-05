@@ -198,6 +198,9 @@ public:
 
     int portable_rand();
 
+    //---- RJG - this is used to give users a heads up when species system is being slow
+    int warning_count;
+
 private:
     void MakeLookups();
     QList<QFuture<int>*> FuturesList;

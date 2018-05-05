@@ -26,6 +26,7 @@
 #include <QSpinBox>
 #include <QRadioButton>
 #include <QShortcut>
+#include <QProgressBar>
 
 #include "simmanager.h"
 #include "populationscene.h"
@@ -50,11 +51,14 @@ public:
     void Resize();
     void RefreshEnvironment();
     void setStatusBarText(QString text);
+    void statusProgressBar(QProgressBar *prBar,bool add);
     Ui::MainWindow *ui;
     QDockWidget* createSimulationSettingsDock();
     QDockWidget* createOutputSettingsDock();
     QDockWidget* createOrganismSettingsDock();
     void createMainToolbar();
+    //RJG - This needs to be called from SimManager...
+    void update_gui_from_variables();
 
     int RefreshRate;
 
@@ -130,7 +134,6 @@ private slots:
     void on_actionSave_triggered();
     void on_actionLoad_triggered();
     void load_settings();
-    void update_gui_from_variables();
     void save_settings();
     void on_actionShow_positions_triggered();
     void on_actionFitness_logging_to_File_triggered();
