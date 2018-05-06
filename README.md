@@ -5,7 +5,7 @@ REVOSIM
  
 Coded by:
  - Mark Sutton (m.sutton@imperial.ac.uk)
- - Russell Garwood (russell.garwood@manchester.ac.uk)
+ - Russell Garwood (russell.garwood@gmail.com)
  - Alan R.T. Spencer (alan.spencer@imperial.ac.uk)
 
 
