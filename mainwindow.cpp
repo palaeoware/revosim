@@ -62,8 +62,8 @@ To do for paper:
 To remove prior to release, but after all changes are complete:
 -- Dual reseed
 -- Remove all custom logging options (RJG is using these for research and projects, so needs to keep them in master fork).
--- Fossil record - down the line we need to work out that this actually does check it actually works. For release, just remove option
--- Entirely lose the Analysis Tools menu, and analysis docker. Phylogeny settings will become part of settings.
+-- Variable breeding  (RJG is using these for research and projects, so needs to keep them in master fork).
+-- Pathogens Layer  (RJG is using these for research and projects, so needs to keep them in master fork).
 
 To do in revisions:
 -- Further comment code
