@@ -59,26 +59,18 @@ MainWindow *MainWin;
 
 To do for paper:
 
-Coding:
--- Load and Save don't include everything - they need to!
--- Timer on calculting species - add progress bar and escape warning if needed to prevent crash
--- Add Keyboard shortcuts where required
-
-Visualisation:
--- Settles - does this work at all?
--- Fails - check green scaling
-
 To remove prior to release, but after all changes are complete:
 -- Dual reseed
 -- Remove all custom logging options (RJG is using these for research and projects, so needs to keep them in master fork).
 -- Fossil record - down the line we need to work out that this actually does check it actually works. For release, just remove option
 -- Entirely lose the Analysis Tools menu, and analysis docker. Phylogeny settings will become part of settings.
 
-
 To do in revisions:
 -- Further comment code
 -- Standardise case throughout the code, and also variable names in a sensible fashion
 -- Rename "generations" variable "iterations", which is more correct
+-- Settles vis - does this work at all?
+-- Fails vis - check green scaling
 
 To do long term:
 -- Add variable mutation rate depent on population density:
@@ -3647,4 +3639,9 @@ void MainWindow::on_actionGenomeComparison_triggered(bool checked)
     ui->genomeComparisonDock->setVisible(checked);
     ui->actionGenomeComparison->setChecked(checked);
     genomeComparisonButton->setChecked(checked);
+}
+
+void MainWindow::process_app_events()
+{
+        qApp->processEvents();
 }

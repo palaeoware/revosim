@@ -59,6 +59,8 @@ public:
     void createMainToolbar();
     //RJG - This needs to be called from SimManager...
     void update_gui_from_variables();
+    //RJG - And this to update gui from analyser when species ID slow
+    void process_app_events();
 
     int RefreshRate;
 

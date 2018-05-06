@@ -264,6 +264,7 @@ void Analyser::Groups_2017()
             {
             count++;
             prBar.setValue(count);
+            MainWin->process_app_events();
             }
 
         QSet<quint64> *speciesset=ii.value(); // Get the set of genomes
