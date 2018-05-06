@@ -565,8 +565,10 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     QString program_path(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
     program_path.append("/");
     path = new QLineEdit(program_path);
+    path->setToolTip("<font>System path where all logs, images, and output data is saved.</font>");
     savePathGrid->addWidget(path,2,1,1,2);
     QPushButton *changePathButton = new QPushButton("&Change");
+    changePathButton->setToolTip("<font>System path where all logs, images, and output data is saved.</font>");
     changePathButton->setObjectName("changePathButton");
     savePathGrid->addWidget(changePathButton,3,1,1,2);
     connect(changePathButton, SIGNAL (clicked()), this, SLOT(changepath_triggered()));
@@ -580,10 +582,12 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     RefreshRate=50;
     QLabel *refreshRateLabel = new QLabel("Refresh/polling rate:");
     refreshRateLabel->setObjectName("refreshRateLabel");
+    refreshRateLabel->setToolTip("<font>Number of iteration between each logging and screen data refresh event.</font>");
     refreshRateSpin = new QSpinBox;
     refreshRateSpin->setMinimum(1);
     refreshRateSpin->setMaximum(10000);
     refreshRateSpin->setValue(RefreshRate);
+    refreshRateSpin->setToolTip("<font>Number of iteration between each logging and screen data refresh event.</font>");
     pollingRateGrid->addWidget(refreshRateLabel,2,1);
     pollingRateGrid->addWidget(refreshRateSpin,2,2);
     connect(refreshRateSpin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) { RefreshRate=i; });
@@ -595,33 +599,38 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     imagesLabel->setObjectName("imagesLabel");
     images_grid->addWidget(imagesLabel,1,1,1,2);
 
-    QLabel *imagesInfoLabel= new QLabel("Turn on/off these logging options to save images of the population/environment windows every refresh/poll.");
-    imagesInfoLabel->setObjectName("imagesInfoLabel");
-    imagesInfoLabel->setWordWrap(true);
-    images_grid->addWidget(imagesInfoLabel,2,1,1,2);
-
     save_population_count = new QCheckBox("Population count");
-    images_grid->addWidget(save_population_count,3,1,1,1);
+    save_population_count->setToolTip("<font>Turn on/off to log the 'Population Count' as an image.</font>");
+    images_grid->addWidget(save_population_count,2,1,1,1);
     save_mean_fitness = new QCheckBox("Mean fitness");
-    images_grid->addWidget(save_mean_fitness,3,2,1,1);
+    save_mean_fitness->setToolTip("<font>Turn on/off to log the 'Mean Fitness' as an image.</font>");
+    images_grid->addWidget(save_mean_fitness,2,2,1,1);
     save_coding_genome_as_colour = new QCheckBox("Coding genome");
-    images_grid->addWidget(save_coding_genome_as_colour,4,1,1,1);
+    save_coding_genome_as_colour->setToolTip("<font>Turn on/off to log the 'Coding Genome' as an image.</font>");
+    images_grid->addWidget(save_coding_genome_as_colour,3,1,1,1);
     save_non_coding_genome_as_colour = new QCheckBox("Noncoding genome");
-    images_grid->addWidget(save_non_coding_genome_as_colour,4,2,1,1);
+    save_non_coding_genome_as_colour->setToolTip("<font>Turn on/off to log the 'Noncoding Genome' as an image.</font>");
+    images_grid->addWidget(save_non_coding_genome_as_colour,3,2,1,1);
     save_species = new QCheckBox("Species");
-    images_grid->addWidget(save_species,5,1,1,1);
+    save_species->setToolTip("<font>Turn on/off to log the 'Species' as an image.</font>");
+    images_grid->addWidget(save_species,4,1,1,1);
     save_gene_frequencies = new QCheckBox("Gene frequencies");
-    images_grid->addWidget(save_gene_frequencies,5,2,1,1);
+    save_gene_frequencies->setToolTip("<font>Turn on/off to log the 'Gene Frequencies' as an image.</font>");
+    images_grid->addWidget(save_gene_frequencies,4,2,1,1);
     save_settles = new QCheckBox("Settles");
-    images_grid->addWidget(save_settles,6,1,1,1);
-    save_fails_settles = new QCheckBox("Fails + settles");
-    images_grid->addWidget(save_fails_settles,6,2,1,1);
+    save_settles->setToolTip("<font>Turn on/off to log the 'Settles' as an image.</font>");
+    images_grid->addWidget(save_settles,5,1,1,1);
+    save_fails_settles = new QCheckBox("Fails + Settles");
+    save_fails_settles->setToolTip("<font>Turn on/off to log the 'Fails + Settles' as an image.</font>");
+    images_grid->addWidget(save_fails_settles,5,2,1,1);
     save_environment = new QCheckBox("Environment");
-    images_grid->addWidget(save_environment,7,1,1,1);
+    save_environment->setToolTip("<font>Turn on/off to log the 'Environment' as an image.</font>");
+    images_grid->addWidget(save_environment,6,1,1,1);
 
     QCheckBox *saveAllImagesCheckbox = new QCheckBox("All");
     saveAllImagesCheckbox->setObjectName("saveAllImagesCheckbox");
-    images_grid->addWidget(saveAllImagesCheckbox,7,2,1,1);
+    saveAllImagesCheckbox->setToolTip("<font>Toggle all/none of the above checkboxes.</font>");
+    images_grid->addWidget(saveAllImagesCheckbox,6,2,1,1);
     QObject::connect(saveAllImagesCheckbox, SIGNAL (toggled(bool)), this, SLOT(save_all_checkbox_state_changed(bool)));
 
     //ARTS - Logging to text file
@@ -631,51 +640,37 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     outputSettingsLabel->setObjectName("outputSettingsLabel");
     fileLoggingGrid->addWidget(outputSettingsLabel,1,1,1,2);
 
-    QLabel *textLogInfoLabel= new QLabel("Turn on/off this option to write to a text log file every refresh/poll.");
-    textLogInfoLabel->setObjectName("textLogInfoLabel");
-    textLogInfoLabel->setWordWrap(true);
-    fileLoggingGrid->addWidget(textLogInfoLabel,2,1,1,2);
-
-    logging_checkbox = new QCheckBox("Write Text Log Files");
+    logging_checkbox = new QCheckBox("Write Log Files");
     logging_checkbox->setChecked(logging);
-    fileLoggingGrid->addWidget(logging_checkbox,3,1,1,2);
+    logging_checkbox->setToolTip("<font>Turn on/off this option to write to a text log file every refresh/poll.</font>");
+    fileLoggingGrid->addWidget(logging_checkbox,2,1,1,2);
     connect(logging_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { logging=i; });
-
-    QLabel *textLogInfo1Label= new QLabel("After a batched run has finished a more detailed log file (includding trees) can be automatically created.");
-    textLogInfo1Label->setObjectName("textLogInfo1Label");
-    textLogInfo1Label->setWordWrap(true);
-    fileLoggingGrid->addWidget(textLogInfo1Label,4,1,1,2);
 
     autodump_checkbox= new QCheckBox("Create automatically detailed log on batch runs");
     autodump_checkbox->setChecked(true);
-    fileLoggingGrid->addWidget(autodump_checkbox,5,1,1,2);
-
-    QLabel *textLogInfo2Label= new QLabel("...you can also manually create this detailed log file after any run.");
-    textLogInfo2Label->setObjectName("textLogInfo2Label");
-    textLogInfo2Label->setWordWrap(true);
-    fileLoggingGrid->addWidget(textLogInfo2Label,6,1,1,2);
+    autodump_checkbox->setToolTip("<font>Turn on/off this option to automatically write detailed log after batch runs</font>");
+    fileLoggingGrid->addWidget(autodump_checkbox,3,1,1,2);
 
     QPushButton *dump_nwk = new QPushButton("Write data (including tree) for current run");
-    fileLoggingGrid->addWidget(dump_nwk,7,1,1,2);
+    dump_nwk->setToolTip("<font>Use this option to manually trigger the writing of a detailed log after a run.</font>");
+    fileLoggingGrid->addWidget(dump_nwk,4,1,1,2);
     connect(dump_nwk , SIGNAL (clicked()), this, SLOT(dump_run_data()));
-
-    QLabel *textLogInfo3Label= new QLabel("More advanced options on what is included in the log files:");
-    textLogInfo3Label->setObjectName("textLogInfo3Label");
-    textLogInfo3Label->setWordWrap(true);
-    fileLoggingGrid->addWidget(textLogInfo3Label,8,1,1,2);
 
     exclude_without_descendants_checkbox = new QCheckBox("Exclude species without descendants");
     exclude_without_descendants_checkbox->setChecked(allowExcludeWithDescendants);
-    fileLoggingGrid->addWidget(exclude_without_descendants_checkbox,9,1,1,1);
+    exclude_without_descendants_checkbox->setToolTip("<font>Use this option to exclude species without descendents.</font>");
+    fileLoggingGrid->addWidget(exclude_without_descendants_checkbox,5,1,1,1);
     connect(exclude_without_descendants_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { allowExcludeWithDescendants=i; });
 
     QLabel *Min_species_size_label = new QLabel("Minimum species size:");
+    Min_species_size_label->setToolTip("<font>Selects the minimum number of organisms needed to define a species. Min = 0; Max = 1000000.</font>");
     QSpinBox *Min_species_size_spin = new QSpinBox;
+    Min_species_size_spin->setToolTip("<font>Selects the minimum number of organisms needed to define a species. Min = 0; Max = 1000000.</font>");
     Min_species_size_spin->setMinimum(0);
     Min_species_size_spin->setMaximum(1000000);
     Min_species_size_spin->setValue(minspeciessize);
-    fileLoggingGrid->addWidget(Min_species_size_label,10,1);
-    fileLoggingGrid->addWidget(Min_species_size_spin,10,2);
+    fileLoggingGrid->addWidget(Min_species_size_label,6,1);
+    fileLoggingGrid->addWidget(Min_species_size_spin,6,2);
     connect(Min_species_size_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) { minspeciessize=i; });
 
     //ARTS - Advanced
@@ -685,14 +680,10 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     advancedSettingsLabel->setObjectName("advancedSettingsLabel");
     advancedLoggingGrid->addWidget(advancedSettingsLabel,1,1,1,2);
 
-    QLabel *guiInfoLabel= new QLabel("If you turn off GUI update you cannot log the population/environment windows using saved images.");
-    guiInfoLabel->setObjectName("guiInfoLabel");
-    guiInfoLabel->setWordWrap(true);
-    advancedLoggingGrid->addWidget(guiInfoLabel,2,1,1,2);
-
     gui_checkbox = new QCheckBox("Don't update GUI on refresh/poll");
     gui_checkbox->setChecked(gui);
-    advancedLoggingGrid->addWidget(gui_checkbox,3,1,1,2);
+    gui_checkbox->setToolTip("<font>Note: If you turn off GUI update you cannot log the population/environment windows using saved images.</font>");
+    advancedLoggingGrid->addWidget(gui_checkbox,2,1,1,2);
     QObject::connect(gui_checkbox ,SIGNAL (toggled(bool)), this, SLOT(gui_checkbox_state_changed(bool)));
 
     //ARTS - Dock Grid Layout
@@ -728,24 +719,29 @@ QDockWidget *MainWindow::createOrganismSettingsDock() {
     org_settings_grid->addWidget(org_settings_label,1,1,1,2);
 
     QLabel *mutate_label = new QLabel("Chance of mutation:");
+    mutate_label->setToolTip("<font>Selects the chance of mutation. Min = 0; Max = 255.</font>");
     mutate_spin = new QSpinBox;
     mutate_spin->setMinimum(0);
     mutate_spin->setMaximum(255);
     mutate_spin->setValue(mutate);
+    mutate_spin->setToolTip("<font>Selects the chance of mutation. Min = 0; Max = 255.</font>");
     org_settings_grid->addWidget(mutate_label,2,1);
     org_settings_grid->addWidget(mutate_spin,2,2);
     connect(mutate_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {mutate=i;});
 
     variable_mutation_checkbox = new QCheckBox("Variable mutation");
+    variable_mutation_checkbox->setToolTip("<font>Turn on/off to toggle variable mutation. This overrides the selected mutation rate (above).</font>");
     org_settings_grid->addWidget(variable_mutation_checkbox,3,1,1,1);
     variable_mutation_checkbox->setChecked(variableMutate);
     connect(variable_mutation_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { variableMutate=i; mutate_spin->setEnabled(!i); });
 
     QLabel *startAge_label = new QLabel("Start age:");
+    startAge_label->setToolTip("<font>Sets the starting age for organisms. Min = 1; Max = 1000.</font>");
     startAge_spin = new QSpinBox;
     startAge_spin->setMinimum(1);
     startAge_spin->setMaximum(1000);
     startAge_spin->setValue(startAge);
+    startAge_spin->setToolTip("<font>Sets the starting age for organisms. Min = 1; Max = 1000.</font>");
     org_settings_grid->addWidget(startAge_label,4,1);
     org_settings_grid->addWidget(startAge_spin,4,2);
     connect(startAge_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {startAge=i;});
@@ -755,38 +751,46 @@ QDockWidget *MainWindow::createOrganismSettingsDock() {
     org_settings_grid->addWidget(breed_settings_label,5,1,1,2);
 
     QLabel *breedThreshold_label = new QLabel("Breed threshold:");
+    breedThreshold_label->setToolTip("<font>Sets the 'Breed Threshold'. Min = 0; Max = 5000.</font>");
     breedThreshold_spin = new QSpinBox;
     breedThreshold_spin->setMinimum(1);
     breedThreshold_spin->setMaximum(5000);
     breedThreshold_spin->setValue(breedThreshold);
+    breedThreshold_spin->setToolTip("<font>Sets the 'Breed Threshold'. Min = 0; Max = 5000.</font>");
     org_settings_grid->addWidget(breedThreshold_label,6,1);
     org_settings_grid->addWidget(breedThreshold_spin,6,2);
     connect(breedThreshold_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {breedThreshold=i;});
 
     QLabel *breedCost_label = new QLabel("Breed cost:");
+    breedCost_label->setToolTip("<font>Sets the 'Breed Cost'. Min = 0; Max = 10000.</font>");
     breedCost_spin = new QSpinBox;
     breedCost_spin->setMinimum(1);
     breedCost_spin->setMaximum(10000);
     breedCost_spin->setValue(breedCost);
+    breedCost_spin->setToolTip("<font>Sets the 'Breed Cost'. Min = 0; Max = 10000.</font>");
     org_settings_grid->addWidget(breedCost_label,7,1);
     org_settings_grid->addWidget(breedCost_spin,7,2);
     connect(breedCost_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {breedCost=i;});
 
     QLabel *maxDiff_label = new QLabel("Max difference to breed:");
+    maxDiff_label->setToolTip("<font>Sets the maximum difference between organisms to allow breeding. Min = 1; Max = 31.</font>");
     maxDiff_spin = new QSpinBox;
     maxDiff_spin->setMinimum(1);
     maxDiff_spin->setMaximum(31);
     maxDiff_spin->setValue(maxDiff);
+    maxDiff_spin->setToolTip("<font>Sets the maximum difference between organisms to allow breeding. Min = 1; Max = 31.</font>");
     org_settings_grid->addWidget(maxDiff_label,8,1);
     org_settings_grid->addWidget(maxDiff_spin,8,2);
     connect(maxDiff_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {maxDiff=i;});
 
     breeddiff_checkbox = new QCheckBox("Use max diff to breed");
+    breeddiff_checkbox->setToolTip("<font>Turn on/off the maximum difference between organisms test.</font>");
     org_settings_grid->addWidget(breeddiff_checkbox,9,1,1,1);
     breeddiff_checkbox->setChecked(breeddiff);
     connect(breeddiff_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { breeddiff=i;});
 
     breedspecies_checkbox = new QCheckBox("Breed only within species");
+    breedspecies_checkbox->setToolTip("<font>Turn on/off breeding only within the same species.</font>");
     org_settings_grid->addWidget(breedspecies_checkbox,10,1,1,1);
     breedspecies_checkbox->setChecked(breedspecies);
     connect(breedspecies_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { breedspecies=i;});
@@ -794,8 +798,11 @@ QDockWidget *MainWindow::createOrganismSettingsDock() {
     QLabel *breed_mode_label= new QLabel("Breed mode:");
     org_settings_grid->addWidget(breed_mode_label,11,1,1,2);
     sexual_radio = new QRadioButton("Sexual");
+    sexual_radio->setToolTip("<font>Select to use 'Sexual' breeding.</font>");
     asexual_radio = new QRadioButton("Asexual");
+    asexual_radio->setToolTip("<font>Select to use 'Asexual' breeding.</font>");
     variableBreed_radio = new QRadioButton("Variable");
+    variableBreed_radio->setToolTip("<font>Select to use 'Variable' breeding.</font>");
     QButtonGroup *breeding_button_group = new QButtonGroup;
     breeding_button_group->addButton(sexual_radio,0);
     breeding_button_group->addButton(asexual_radio,1);
@@ -818,15 +825,18 @@ QDockWidget *MainWindow::createOrganismSettingsDock() {
     org_settings_grid->addWidget(settle_settings_label,15,1,1,2);
 
     QLabel *dispersal_label = new QLabel("Dispersal:");
+    dispersal_label->setToolTip("<font>Set the maximum dispersal of offspring from parent. Min = 1; Max = 200.</font>");
     dispersal_spin = new QSpinBox;
     dispersal_spin->setMinimum(1);
     dispersal_spin->setMaximum(200);
     dispersal_spin->setValue(dispersal);
+    dispersal_spin->setToolTip("<font>Set the maximum dispersal of offspring from parent. Min = 1; Max = 200.</font>");
     org_settings_grid->addWidget(dispersal_label,16,1);
     org_settings_grid->addWidget(dispersal_spin,16,2);
     connect(dispersal_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {dispersal=i;});
 
     nonspatial_checkbox = new QCheckBox("Nonspatial settling");
+    nonspatial_checkbox->setToolTip("<font>Turn on/off nonspatial settling of offspring.</font>");
     org_settings_grid->addWidget(nonspatial_checkbox,17,1,1,2);
     nonspatial_checkbox->setChecked(nonspatial);
     connect(nonspatial_checkbox,&QCheckBox::stateChanged,[=](const bool &i) {nonspatial=i;});
@@ -835,25 +845,30 @@ QDockWidget *MainWindow::createOrganismSettingsDock() {
     pathogen_settings_label->setStyleSheet("font-weight: bold");
     org_settings_grid->addWidget(pathogen_settings_label,18,1,1,2);
 
-    pathogens_checkbox = new QCheckBox("Pathogens layer");
-    org_settings_grid->addWidget(pathogens_checkbox,19,1,1,2);
+    pathogens_checkbox = new QCheckBox("Pathogens layer");     
     pathogens_checkbox->setChecked(path_on);
+    pathogens_checkbox->setToolTip("<font>Turn on/off the 'Pathogens' layer.</font>");
+    org_settings_grid->addWidget(pathogens_checkbox,19,1,1,2);
     connect(pathogens_checkbox,&QCheckBox::stateChanged,[=](const bool &i) {path_on=i;});
 
     QLabel *pathogen_mutate_label = new QLabel("Pathogen mutation:");
+    pathogen_mutate_label->setToolTip("<font>Select the 'Pathogen Mutation' rate. Min = 1; Max = 255.</font>");
     pathogen_mutate_spin = new QSpinBox;
     pathogen_mutate_spin->setMinimum(1);
     pathogen_mutate_spin->setMaximum(255);
     pathogen_mutate_spin->setValue(pathogen_mutate);
+    pathogen_mutate_spin->setToolTip("<font>Select the 'Pathogen Mutation' rate. Min = 1; Max = 255.</font>");
     org_settings_grid->addWidget(pathogen_mutate_label,20,1);
     org_settings_grid->addWidget(pathogen_mutate_spin,20,2);
     connect(pathogen_mutate_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {pathogen_mutate=i;});
 
     QLabel *pathogen_frequency_label = new QLabel("Pathogen frequency:");
+    pathogen_frequency_label->setToolTip("<font>Select the 'Pathogen Fequency' rate. Min = 1; Max = 1000.</font>");
     pathogen_frequency_spin = new QSpinBox;
     pathogen_frequency_spin->setMinimum(1);
     pathogen_frequency_spin->setMaximum(1000);
     pathogen_frequency_spin->setValue(pathogen_frequency);
+    pathogen_frequency_spin->setToolTip("<font>Select the 'Pathogen Fequency' rate. Min = 1; Max = 1000.</font>");
     org_settings_grid->addWidget(pathogen_frequency_label,21,1);
     org_settings_grid->addWidget(pathogen_frequency_spin,21,2);
     connect(pathogen_frequency_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {pathogen_frequency=i;});
