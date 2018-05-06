@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to REvoSim's User Manual
+Welcome to EnviroGen's User Manual
 ================================
 
 The [Enviro]ment [Gen]erator program.
