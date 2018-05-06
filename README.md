@@ -1,7 +1,7 @@
 
-REVOSIM
+REvoSim
 =======
-**[R]apid [EVO]lutionary [SIM]ulator**
+**[R]apid [Evo]lutionary [Sim]ulator**
  
 Coded by:
  - Mark Sutton (m.sutton@imperial.ac.uk)
