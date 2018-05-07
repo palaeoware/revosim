@@ -48,6 +48,7 @@ private slots:
     void pause();
     void settings();
     void change_path();
+    void tab_changed(int index);
 
 private:
 

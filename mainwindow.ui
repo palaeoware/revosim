@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>669</width>
+    <width>719</width>
     <height>861</height>
    </rect>
   </property>
@@ -35,7 +35,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>669</width>
+     <width>719</width>
      <height>22</height>
     </rect>
    </property>
@@ -121,7 +121,7 @@
         <item>
          <widget class="QTabWidget" name="settings_tab_widget">
           <property name="currentIndex">
-           <number>4</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="output_tab">
            <attribute name="title">
@@ -228,6 +228,16 @@ p, li { white-space: pre-wrap; }
                <number>100</number>
               </property>
              </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="label_32">
+              <property name="text">
+               <string>Environment type:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="environment_comboBox"/>
             </item>
             <item>
              <widget class="QLabel" name="display_label">

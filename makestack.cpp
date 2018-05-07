@@ -9,12 +9,12 @@
 makestack::makestack()
 {
    readSettings();
+   if(filename.length()<5){QMessageBox::warning(0,"Error","Image failed to load.", QMessageBox::Ok);error=true;return;}
 }
 
 void makestack::regenerate()
 {
 readSettings();
-if(filename.length()<5)return;
 QImage original;
 original.load(filename);
 

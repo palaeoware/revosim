@@ -11,7 +11,7 @@
 combine::combine()
 {
     ReadSettings();
-    if(!stackOne.exists()||!stackTwo.exists()){QMessageBox::warning(0,"Error","Either stack one or two has failed to load.", QMessageBox::Ok);return;}
+    if(!stackOne.exists()||!stackTwo.exists()){QMessageBox::warning(0,"Error","Either stack one or two has failed to load.", QMessageBox::Ok);error=true;return;}
 
     //Create new QImages to then check the relative size of stacks
     QStringList filterList, dirList, dirList2;
@@ -39,8 +39,6 @@ void combine::ReadSettings()
 void combine::regenerate()
 {
         ReadSettings();
-
-        if(!stackOne.exists()||!stackTwo.exists()){QMessageBox::warning(0,"Error","Either stack one or two has failed to load.", QMessageBox::Ok);return;}
 
         //Blank environment so it's obvious if something has gone wrong
         for (int n=0; n<MainWin->ui->spinSize->value(); n++)

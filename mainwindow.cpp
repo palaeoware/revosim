@@ -8,6 +8,8 @@
 #include <QStandardPaths>
 #include <QShortcut>
 
+//To do - signal slot to sort out max and min of noise values.
+
 MainWindow *MainWin;
 randoms *simulation_randoms;
 
@@ -75,6 +77,13 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->instructions_label->setWordWrap(true);
    ui->instructions_label->setText("Select output options here, and then one of the tabs to the right in order to define what type of environment is generated when you press play.");
 
+   //RJG - And combo box
+   ui->environment_comboBox->addItem("Dynamic One");
+   ui->environment_comboBox->addItem("Dynamic Two");
+   ui->environment_comboBox->addItem("Noise");
+   ui->environment_comboBox->addItem("Combine stacks");
+   ui->environment_comboBox->addItem("Colour");
+   ui->environment_comboBox->addItem("Stack from image");
 
    //RJG - Sort GUI
    ui->toolBar->setIconSize(QSize(25,25));
@@ -113,7 +122,9 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->toolBar->addAction(aboutButton);
    QObject::connect(aboutButton, SIGNAL (triggered()), this, SLOT (about()));
 
+   //RJG - Other signal/slot connections
    QObject::connect(ui->change_path, SIGNAL (clicked()), this, SLOT (change_path()));
+   QObject::connect(ui->settings_tab_widget, SIGNAL (currentChanged(int)),this, SLOT (tab_changed(int)));
 
    //RJG - Load random numbers
    simulation_randoms = new randoms();
@@ -129,43 +140,55 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+
+//Add slot to update combo box to be the last selected tab
+
+void MainWindow::tab_changed(int index)
+{
+    if(index)ui->environment_comboBox->setCurrentIndex(index-1);
+}
+
 //RJG - Generates environment based on which tab is selected in the tab dock widget.
 void MainWindow::generateEnvironment()
 {
 
     if(!Directory.exists() && ui->save_images_checkbox->isChecked()){QMessageBox::warning(0,"Error","No such directory.", QMessageBox::Ok);return;}
-    if (ui->settings_tab_widget->currentIndex()==0){QMessageBox::warning(0,"Nope","Select one of the tabs to the right to tell the software what kind of environment you would like to generate.", QMessageBox::Ok);return;}
-    ui->output_tab->setEnabled(false);
 
     //RJG - Select which kind of environment object to create - all inheret environmentclass, which has the random number and save functions in it
-    if (ui->settings_tab_widget->currentIndex()==1) //russellenv
+    if(ui->environment_comboBox->currentIndex()==0)
         environmentobject = new russellenvironment;
 
-    if (ui->settings_tab_widget->currentIndex()==2) //markenv
+    if (ui->environment_comboBox->currentIndex()==1) //markenv
         environmentobject = new markenvironment;
 
-    if (ui->settings_tab_widget->currentIndex()==3) //noise
+    if (ui->environment_comboBox->currentIndex()==2) //noise
     {
         environmentobject = new noiseenvironment;
         if(MainWin->ui->noiseMin->value()>=MainWin->ui->noiseMax->value())
         {
         QMessageBox::warning(0,"Error","Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
+        reset_gui();
         return;
         }
     }
 
-    if (ui->settings_tab_widget->currentIndex()==4) //combine
+    if (ui->environment_comboBox->currentIndex()==3) //combine
     {
-        generations=MainWin->ui->combineStart->value()+stackTwoSize;
         environmentobject = new combine;
-        if (environmentobject->error)return;
+        if (environmentobject->error){reset_gui();return;}
+        generations=MainWin->ui->combineStart->value()+stackTwoSize;
     }
 
-    if (ui->settings_tab_widget->currentIndex()==5) //colour
+    if (ui->environment_comboBox->currentIndex()==4) //colour
         environmentobject = new colour;
 
-    if (ui->settings_tab_widget->currentIndex()==6) //stack
+    if (ui->environment_comboBox->currentIndex()==5) //stack
+        {
         environmentobject = new makestack;
+        if (environmentobject->error){reset_gui();return;}
+        }
+
+
 
     //RJG - Set up new environment image
     newEnvironmentImage();
@@ -175,6 +198,7 @@ void MainWindow::generateEnvironment()
     startButton->setEnabled(false);
     pauseButton->setEnabled(true);
     stopButton->setEnabled(true);
+    ui->output_tab->setEnabled(false);
 
     //RJG - Sort generations (required for combine)
     generations=MainWin->ui->numGenerations->value();
