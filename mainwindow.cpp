@@ -3083,7 +3083,11 @@ void MainWindow::statusProgressBar(QProgressBar *prBar,bool add)
      setStatusBarText("Calculating species...");
      ui->statusBar->addPermanentWidget(prBar);
     }
- else ui->statusBar->removeWidget(prBar);
+ else
+    {
+     ui->statusBar->removeWidget(prBar);
+     ui->statusBar->clearMessage();
+    }
 }
 
 /*!
