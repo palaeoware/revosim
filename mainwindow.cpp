@@ -186,6 +186,9 @@ void MainWindow::generateEnvironment()
     prBar.setAlignment(Qt::AlignCenter);
     ui->statusBar->addPermanentWidget(&prBar);
 
+    //RJG - Set up save directory
+    if(!Directory.mkpath("EnviroGen_images/")){QMessageBox::warning(this,"Error","Cant save images. Permissions issue?");return;}
+
     //RJG - Generate the environment
     for(int i=0;i<generations;i++)
     {
@@ -204,7 +207,7 @@ void MainWindow::generateEnvironment()
             for (int n=0; n<MainWin->ui->spinSize->value(); n++)
                 for (int m=0; m<MainWin->ui->spinSize->value(); m++)
                     saveImage.setPixel(n,m,qRgb(environmentobject->environment[n][m][0], environmentobject->environment[n][m][1], environmentobject->environment[n][m][2]));
-            QString save_directory=QString(Directory.path()+"/%1.png").arg(i, 4, 10, QChar('0'));
+            QString save_directory=QString(Directory.path()+"/EnviroGen_images/%1.png").arg(i, 4, 10, QChar('0'));
             saveImage.save(save_directory);
         }
 
