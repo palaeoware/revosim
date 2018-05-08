@@ -24,7 +24,7 @@
 #define PATCHVERSION 0
 
 //Legal Stuff
-#define COPYRIGHT "Copyright © 2018 Russell Garwood, Mark Sutton, Alan R.T.Spencer"
+#define COPYRIGHT "Copyright © 2018 Russell J Garwood, Mark Sutton, Alan R.T.Spencer"
 #define LICENCE "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under the conditions of the GPL v3  license"
 
 //Programme Name
@@ -32,9 +32,8 @@
 #define PRODUCTTAG "The [Enviro]nment [Gen]erator program"
 
 //Github
-//ARTS - This will need to be changed once we settle on a name for the programme
 #define GITHUB_URL "https://github.com/"
-#define GITREPOSITORY "/palaeoware/revosim"
+#define GITREPOSITORY "/palaeoware/envirogen"
 
 //Readthedocs
 #define READTHEDOCS_URL "https://envirogen.readthedocs.io/en/latest/"
