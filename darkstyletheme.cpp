@@ -69,18 +69,17 @@ void DarkStyleTheme::polish(QApplication *app)
   if (!app) return;
 
   //ARTS - Increase font size for better reading,
-  // setPointSize was reduced from +2 because when applied this way in Qt5, the font is larger than intended for some reason
   QFont defaultFont = QApplication::font();
   defaultFont.setPointSize(defaultFont.pointSize()+1);
   app->setFont(defaultFont);
 
   // Load CSS Stylesheet from resources
-  QFile qfDarkstyle(QStringLiteral(":/darkstyle/stylesheet_dark.qss"));
-  if (qfDarkstyle.open(QIODevice::ReadOnly | QIODevice::Text))
+  QFile darkstyle_qss(QStringLiteral(":/darkstyle/stylesheet_dark.qss"));
+  if (darkstyle_qss.open(QIODevice::ReadOnly | QIODevice::Text))
   {
     // Set stylesheet
-    QString qsStylesheet = QString::fromLatin1(qfDarkstyle.readAll());
-    app->setStyleSheet(qsStylesheet);
-    qfDarkstyle.close();
+    QString stylesheet_qss = QString::fromLatin1(darkstyle_qss.readAll());
+    app->setStyleSheet(stylesheet_qss);
+    darkstyle_qss.close();
   }
 }
