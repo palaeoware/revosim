@@ -8,8 +8,6 @@
 #include <QStandardPaths>
 #include <QShortcut>
 
-//To do - signal slot to sort out max and min of noise values.
-
 MainWindow *MainWin;
 randoms *simulation_randoms;
 
@@ -75,7 +73,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
    ui->instructions_label->setAlignment(Qt::AlignJustify);
    ui->instructions_label->setWordWrap(true);
-   ui->instructions_label->setText("Select output options here, and then one of the tabs to the right in order to define what type of environment is generated when you press play.");
+   ui->instructions_label->setText("Select output options here. You can define the type of environment you would like to generate either using the selection box below, or by choosing one of the tabs to the right, in which you can find the settings for each environment type. Press play to start generating.");
 
    //RJG - And combo box
    ui->environment_comboBox->addItem("Dynamic One");
@@ -125,6 +123,11 @@ MainWindow::MainWindow(QWidget *parent) :
    //RJG - Other signal/slot connections
    QObject::connect(ui->change_path, SIGNAL (clicked()), this, SLOT (change_path()));
    QObject::connect(ui->settings_tab_widget, SIGNAL (currentChanged(int)),this, SLOT (tab_changed(int)));
+   //RJG - these ones are pretty simple. Use lamdas.
+   connect(ui->noiseMin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {ui->noiseMax->setMinimum(i+1); });
+   connect(ui->noiseMax,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {ui->noiseMin->setMaximum(i-1); });
+   ui->noiseMin->setMaximum(ui->noiseMax->value()-1);
+   ui->noiseMax->setMinimum(ui->noiseMin->value()+1);
 
    //RJG - Load random numbers
    simulation_randoms = new randoms();

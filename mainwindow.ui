@@ -121,7 +121,7 @@
         <item>
          <widget class="QTabWidget" name="settings_tab_widget">
           <property name="currentIndex">
-           <number>0</number>
+           <number>3</number>
           </property>
           <widget class="QWidget" name="output_tab">
            <attribute name="title">
@@ -858,6 +858,9 @@ p, li { white-space: pre-wrap; }
             </item>
             <item row="2" column="1">
              <widget class="QSpinBox" name="noiseMax">
+              <property name="minimum">
+               <number>1</number>
+              </property>
               <property name="maximum">
                <number>255</number>
               </property>
