@@ -35,9 +35,8 @@
 #define PRODUCTTAG "The [R]apid [Evo]lutionary [Sim]ulator"
 
 //Github
-//ARTS - This will need to be changed once we settle on a name for the programme
 #define GITHUB_URL "https://github.com/"
-#define GITREPOSITORY "marksutton/EvoSim"
+#define GITREPOSITORY "palaeoware/revosim"
 
 //Readthedocs
 #define READTHEDOCS_URL "https://revosim.readthedocs.io/en/latest/"
