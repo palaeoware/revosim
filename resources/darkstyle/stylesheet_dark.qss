@@ -180,6 +180,11 @@ QDockWidget::float-button{
     right:25px;
 }
 
+QTableWidget
+{
+    color: palette(text);
+}
+
 QGroupBox{
     background-color:rgba(66,66,66,50%);
     margin-top:27px;
