@@ -214,7 +214,17 @@ void MainWindow::generateEnvironment()
     ui->statusBar->addPermanentWidget(&prBar);
 
     //RJG - Set up save directory
-    if(!Directory.mkpath("EnviroGen_images/")){QMessageBox::warning(this,"Error","Cant save images. Permissions issue?");return;}
+    Directory.setPath(ui->path->toPlainText());
+    if (!Directory.exists())
+        {
+             QMessageBox::warning(0, "Error!", "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is.");
+             QString program_path(QCoreApplication::applicationDirPath());
+             program_path.append(QDir::separator());
+             ui->path->setText(program_path);
+             Directory.setPath(program_path);
+        }
+    if(!Directory.mkpath(QString(PRODUCTNAME)+"_output")){QMessageBox::warning(this,"Error","Cant save images. Permissions issue?");return;}
+    else Directory.cd(QString(PRODUCTNAME)+"_output");
 
     //RJG - Generate the environment
     for(int i=0;i<generations;i++)
@@ -234,7 +244,7 @@ void MainWindow::generateEnvironment()
             for (int n=0; n<MainWin->ui->spinSize->value(); n++)
                 for (int m=0; m<MainWin->ui->spinSize->value(); m++)
                     saveImage.setPixel(n,m,qRgb(environmentobject->environment[n][m][0], environmentobject->environment[n][m][1], environmentobject->environment[n][m][2]));
-            QString save_directory=QString(Directory.path()+"/EnviroGen_images/%1.png").arg(i, 4, 10, QChar('0'));
+            QString save_directory=QString(Directory.path()+QDir::separator()+"%1.png").arg(i, 4, 10, QChar('0'));
             saveImage.save(save_directory);
         }
 
@@ -322,7 +332,7 @@ void MainWindow::reset_gui()
 void MainWindow::change_path()
 {
     QString files_directory = QFileDialog::getExistingDirectory(this, tr("Select folder in which you would like to save image files"),
-    "d:/", QFileDialog::ShowDirsOnly);
+    QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), QFileDialog::ShowDirsOnly);
     if (files_directory=="") return;
     else Directory=files_directory;
     ui->path->setText(Directory.path());
