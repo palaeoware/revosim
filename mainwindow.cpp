@@ -359,7 +359,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
 
     QPushButton *changeEnvironmentFilesButton = new QPushButton("&Change Enviroment Files");
     changeEnvironmentFilesButton->setObjectName("changeEnvironmentFilesButton");
-    changeEnvironmentFilesButton->setToolTip("<font>REvoSim allow you to customise the enviroment by loading one or more image files.</font>");
+    changeEnvironmentFilesButton->setToolTip("<font>REvoSim allows you to customise the enviroment by loading one or more image files.</font>");
     environmentSettingsGrid->addWidget(changeEnvironmentFilesButton,1,1,1,2);
     connect(changeEnvironmentFilesButton, SIGNAL (clicked()), this, SLOT(actionEnvironment_Files_triggered()));
 
@@ -646,7 +646,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     fileLoggingGrid->addWidget(logging_checkbox,2,1,1,2);
     connect(logging_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { logging=i; });
 
-    autodump_checkbox= new QCheckBox("Create automatically detailed log on batch runs");
+    autodump_checkbox= new QCheckBox("Automatically create detailed log on batch runs");
     autodump_checkbox->setChecked(true);
     autodump_checkbox->setToolTip("<font>Turn on/off this option to automatically write detailed log after batch runs</font>");
     fileLoggingGrid->addWidget(autodump_checkbox,3,1,1,2);
@@ -1290,6 +1290,25 @@ void MainWindow::RunSetUp()
     reseedButton->setEnabled(false);
 
     if(logging && species_mode==SPECIES_MODE_NONE)QMessageBox::warning(this,"Be aware","Species tracking is off, so the log files won't show species information");
+
+    //Sort out path
+    QString save_path_string(path->text());
+    if(!save_path_string.endsWith(QDir::separator()))path->setText(save_path_string+QDir::separator());
+    QDir save_path(path->text());
+    if (!save_path.exists())
+            {
+                 QMessageBox::warning(0, "Error!", "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is.");
+                 QString program_path(QCoreApplication::applicationDirPath());
+                 program_path.append(QDir::separator());
+                 path->setText(program_path);
+                 save_path.setPath(program_path);
+            }
+    //RJG - Set up save directory
+    if(!path->text().endsWith(QString(PRODUCTNAME)+"_output"+QDir::separator()))
+        {
+        if(!save_path.mkpath(QString(PRODUCTNAME)+"_output"+QDir::separator())){QMessageBox::warning(this,"Error","Cant save images. Permissions issue?");return;}
+        else path->setText(save_path.absolutePath()+QDir::separator()+QString(PRODUCTNAME)+"_output"+QDir::separator());
+        }
 
     timer.restart();
     NextRefresh=RefreshRate;
@@ -1968,7 +1987,7 @@ void MainWindow::dump_run_data()
 
     QString FinalLoggingFile(path->text());
     if(!FinalLoggingFile.endsWith(QDir::separator()))FinalLoggingFile.append(QDir::separator());
-    FinalLoggingFile.append("REvoSim_end_run_log");
+    FinalLoggingFile.append(QString(PRODUCTNAME)+"_end_run_log");
     if(batch_running)FinalLoggingFile.append(QString("_run_%1").arg(runs, 4, 10, QChar('0')));
     FinalLoggingFile.append(".txt");
     QFile outputfile(FinalLoggingFile);
@@ -2169,7 +2188,7 @@ void MainWindow::on_actionCount_Peaks_triggered()
 
     QString count_peaks_file(path->text());
     if(!count_peaks_file.endsWith(QDir::separator()))count_peaks_file.append(QDir::separator());
-    count_peaks_file.append("REvoSim_count_peaks.txt");
+    count_peaks_file.append(QString(PRODUCTNAME)+"_count_peaks.txt");
     QFile outputfile(count_peaks_file);
     outputfile.open(QIODevice::WriteOnly|QIODevice::Text);
     QTextStream out(&outputfile);
@@ -2845,7 +2864,7 @@ void MainWindow::WriteLog()
     {
         SpeciesLoggingFile=path->text();
         if(!SpeciesLoggingFile.endsWith(QDir::separator()))SpeciesLoggingFile.append(QDir::separator());
-        SpeciesLoggingFile.append("REvoSim_log");
+        SpeciesLoggingFile.append(QString(PRODUCTNAME)+"_log");
         if(batch_running)SpeciesLoggingFile.append(QString("_run_%1").arg(runs, 4, 10, QChar('0')));
         SpeciesLoggingFile.append(".txt");
         QFile outputfile(SpeciesLoggingFile);
@@ -2925,7 +2944,7 @@ void MainWindow::WriteLog()
     //Need to add this to GUI
     if (ui->actionRecombination_logging->isChecked())
     {
-        QString rFile(path->text()+"REvoSim_recombination");
+        QString rFile(path->text()+QString(PRODUCTNAME)+"_recombination");
         if(batch_running)
             rFile.append(QString("_run_%1").arg(runs, 4, 10, QChar('0')));
         rFile.append(".txt");
@@ -3388,7 +3407,7 @@ void MainWindow::update_gui_from_variables()
  */
 void MainWindow::save_settings()
 {
-    QString settings_filename=QFileDialog::getSaveFileName(this, tr("Save file as..."),QString(path->text()+"REvoSim_settings.xml"));
+    QString settings_filename=QFileDialog::getSaveFileName(this, tr("Save file as..."),QString(path->text()+QString(PRODUCTNAME)+"_settings.xml"));
     if(!settings_filename.endsWith(".xml"))settings_filename.append(".xml");
     QFile settings_file(settings_filename);
     if(!settings_file.open(QIODevice::WriteOnly|QIODevice::Text))
