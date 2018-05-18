@@ -298,7 +298,7 @@ void MainWindow::createMainToolbar()
     pauseButton->setToolTip(tr("<font>Use this button to pause any simulation run or batched run. Press again to unpause.</font>"));
     stopButton->setToolTip(tr("<font>Use this button stop any simulation or batched run.</font>"));
     resetButton->setToolTip(tr("<font>Use this button reset the simulation.</font>"));
-    reseedButton->setToolTip(tr("<font>Use this button reseed the simulation with a custom starting gemone.</font>"));
+    reseedButton->setToolTip(tr("<font>Use this button reseed the simulation with a custom starting genome.</font>"));
     genomeComparisonButton->setToolTip(tr("<font>Use this button to open the Genome Comparission Dock.</font>"));
     settingsButton->setToolTip(tr("<font>Use this button to open the Settings Dock.</font>"));
     aboutButton->setToolTip(tr("<font>Use this button to view information about this program.</font>"));
@@ -357,16 +357,16 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     environment_label->setStyleSheet("font-weight: bold");
     environmentSettingsGrid->addWidget(environment_label,0,1,1,2);
 
-    QPushButton *changeEnvironmentFilesButton = new QPushButton("&Change Enviroment Files");
+    QPushButton *changeEnvironmentFilesButton = new QPushButton("&Change Environment Files");
     changeEnvironmentFilesButton->setObjectName("changeEnvironmentFilesButton");
-    changeEnvironmentFilesButton->setToolTip("<font>REvoSim allows you to customise the enviroment by loading one or more image files.</font>");
+    changeEnvironmentFilesButton->setToolTip("<font>REvoSim allows you to customise the environment by loading one or more image files.</font>");
     environmentSettingsGrid->addWidget(changeEnvironmentFilesButton,1,1,1,2);
     connect(changeEnvironmentFilesButton, SIGNAL (clicked()), this, SLOT(actionEnvironment_Files_triggered()));
 
     QLabel *environment_rate_label = new QLabel("Environment refresh rate:");
-    environment_rate_label->setToolTip("<font>This is the rate of change for the selected enviromental images.</font>");
+    environment_rate_label->setToolTip("<font>This is the rate of change for the selected environmental images.</font>");
     environment_rate_spin = new QSpinBox;
-    environment_rate_spin->setToolTip("<font>This is the rate of change for the selected enviromental images.</font>");
+    environment_rate_spin->setToolTip("<font>This is the rate of change for the selected environmental images.</font>");
     environment_rate_spin->setMinimum(0);
     environment_rate_spin->setMaximum(100000);
     environment_rate_spin->setValue(envchangerate);
@@ -401,14 +401,14 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     environmentSettingsGrid->addLayout(environmentModeGrid,4,1,1,2);
 
     interpolateCheckbox = new QCheckBox("Interpolate between images");
-    interpolateCheckbox->setChecked(enviroment_interpolate);
-    interpolateCheckbox->setToolTip("<font>Turning this ON will iterpolate the environment between individual images.</font>");
+    interpolateCheckbox->setChecked(environment_interpolate);
+    interpolateCheckbox->setToolTip("<font>Turning this ON will interpolate the environment between individual images.</font>");
     environmentSettingsGrid->addWidget(interpolateCheckbox,5,1,1,2);
-    connect(interpolateCheckbox,&QCheckBox::stateChanged,[=](const bool &i) { enviroment_interpolate=i; });
+    connect(interpolateCheckbox,&QCheckBox::stateChanged,[=](const bool &i) { environment_interpolate=i; });
 
-    toroidal_checkbox = new QCheckBox("Toroidal enviroment");
+    toroidal_checkbox = new QCheckBox("Toroidal environment");
     toroidal_checkbox->setChecked(toroidal);
-    toroidal_checkbox->setToolTip("<font>Turning this ON will allow dispersal of progeny in an unbounded warparound enviroment. Progeny leaving one side of the population window will immediately reappear on the opposite side.</font>");
+    toroidal_checkbox->setToolTip("<font>Turning this ON will allow dispersal of progeny in an unbounded warparound environment. Progeny leaving one side of the population window will immediately reappear on the opposite side.</font>");
     environmentSettingsGrid->addWidget(toroidal_checkbox,6,1,1,2);
     connect(toroidal_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { toroidal=i; });
 
@@ -482,12 +482,12 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     connect(energy_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) { food=i; });
 
     QLabel *settleTolerance_label = new QLabel("Settle tolerance:");
-    settleTolerance_label->setToolTip("<font>Defines the range of enviroments an organism can settle into.</font>");
+    settleTolerance_label->setToolTip("<font>Defines the range of environments an organism can settle into.</font>");
     settleTolerance_spin = new QSpinBox;
     settleTolerance_spin->setMinimum(1);
     settleTolerance_spin->setMaximum(30);
     settleTolerance_spin->setValue(settleTolerance);
-    settleTolerance_spin->setToolTip("<font>Defines the range of enviroments an organism can settle into.</font>");
+    settleTolerance_spin->setToolTip("<font>Defines the range of environments an organism can settle into.</font>");
     simulationSettingsGrid->addWidget(settleTolerance_label,3,1);
     simulationSettingsGrid->addWidget(settleTolerance_spin,3,2);
     connect(settleTolerance_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) { settleTolerance=i; });
@@ -656,7 +656,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     fileLoggingGrid->addWidget(dump_nwk,4,1,1,2);
     connect(dump_nwk , SIGNAL (clicked()), this, SLOT(dump_run_data()));
 
-    exclude_without_descendants_checkbox = new QCheckBox("Exclude species without descendants");
+    exclude_without_descendants_checkbox = new QCheckBox("Exclude species without descendents");
     exclude_without_descendants_checkbox->setChecked(allowExcludeWithDescendants);
     exclude_without_descendants_checkbox->setToolTip("<font>Use this option to exclude species without descendents.</font>");
     fileLoggingGrid->addWidget(exclude_without_descendants_checkbox,5,1,1,1);
@@ -1021,7 +1021,7 @@ void MainWindow::on_actionStart_Sim_triggered()
         if (ui->actionGo_Slow->isChecked()) Sleeper::msleep(30);
 
         //ARTS - set Stop flag to returns true if reached end... but why? It will fire the FinishRun() function at the end.
-        if (TheSimManager->iterate(environment_mode,enviroment_interpolate)) stopflag=true;
+        if (TheSimManager->iterate(environment_mode,environment_interpolate)) stopflag=true;
     }
 
     FinishRun();
@@ -1062,7 +1062,7 @@ void MainWindow::on_actionRun_for_triggered()
         Report();
         qApp->processEvents();
 
-        if (TheSimManager->iterate(environment_mode,enviroment_interpolate)) stopflag=true;
+        if (TheSimManager->iterate(environment_mode,environment_interpolate)) stopflag=true;
         i--;
     }
 
@@ -1187,7 +1187,7 @@ void MainWindow::on_actionBatch_triggered()
             Report();
             qApp->processEvents();
 
-            TheSimManager->iterate(environment_mode,enviroment_interpolate);
+            TheSimManager->iterate(environment_mode,environment_interpolate);
             i--;
         }
 
@@ -2010,7 +2010,7 @@ void MainWindow::dump_run_data()
  * \param change_environment_mode
  * \param update_gui
  *
- * Sets the enviroment mode on change.
+ * Sets the environment mode on change.
  */
 void MainWindow::environment_mode_changed(int change_environment_mode, bool update_gui)
 {
@@ -2207,7 +2207,7 @@ void MainWindow::on_actionCount_Peaks_triggered()
  * \brief MainWindow::actionEnvironment_Files_triggered
  * \return bool
  *
- * Action to allow new enviromental files to be loaded from the local filesystem.
+ * Action to allow new environmental files to be loaded from the local filesystem.
  */
 bool MainWindow::actionEnvironment_Files_triggered()
 {
@@ -2311,7 +2311,7 @@ void MainWindow::on_actionSave_triggered()
     out<<variableBreed;
     out<<logging;
     out<<gui;
-    out<<enviroment_interpolate;
+    out<<environment_interpolate;
     out<<fitnessLoggingToFile;
     out<<autodump_checkbox->isChecked();
     out<<save_population_count->isChecked();
@@ -2394,7 +2394,7 @@ void MainWindow::on_actionSave_triggered()
     out<<ui->actionGenomeComparison->isChecked();
 
     //interpolate environment stuff
-    out<<enviroment_interpolate;
+    out<<environment_interpolate;
     for (int i=0; i<gridX; i++)
     for (int j=0; j<gridY; j++)
     {
@@ -2523,7 +2523,7 @@ void MainWindow::on_actionLoad_triggered()
     in>>variableBreed;
     in>>logging;
     in>>gui;
-    in>>enviroment_interpolate;
+    in>>environment_interpolate;
     in>>fitnessLoggingToFile;
     bool in_bool;
     in>>in_bool;
@@ -2655,8 +2655,8 @@ void MainWindow::on_actionLoad_triggered()
     in>>btemp; ui->actionGenomeComparison->setChecked(btemp);
 
     //interpolate environment stuff
-    enviroment_interpolate = true;
-    in>>enviroment_interpolate;
+    environment_interpolate = true;
+    in>>environment_interpolate;
 
     for (int i=0; i<gridX; i++)
     for (int j=0; j<gridY; j++)
@@ -2887,6 +2887,7 @@ void MainWindow::WriteLog()
                 out<<"-- Mean fitness of living digital organisms\n";
                 out<<"-- Number of entries on the breed list\n";
                 out<<"-- Number of failed breed attempts\n";
+                out<<"-- Number of species\n";
                 out<<"- [S] Species Data:\n";
                 out<<"-- Species ID\n";
                 out<<"-- Species origin (iterations)\n";
@@ -3244,7 +3245,7 @@ QString MainWindow::print_settings()
     settings_out<<"\n- Bools:\n";
     settings_out<<"-- Recalculate fitness: "<<recalcFitness<<"\n";
     settings_out<<"-- Toroidal environment: "<<toroidal<<"\n";
-    settings_out<<"-- Interpolate environment: "<<enviroment_interpolate<<"\n";
+    settings_out<<"-- Interpolate environment: "<<environment_interpolate<<"\n";
     settings_out<<"-- Nonspatial setling: "<<nonspatial<<"\n";
     settings_out<<"-- Enforce max diff to breed:"<<breeddiff<<"\n";
     settings_out<<"-- Only breed within species:"<<breedspecies<<"\n";
@@ -3327,7 +3328,7 @@ void MainWindow::load_settings()
                          if(settings_file_in.name() == "variableBreed")variableBreed=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "logging")logging=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "gui")gui=settings_file_in.readElementText().toInt();
-                         if(settings_file_in.name() == "enviroment_interpolate")enviroment_interpolate=settings_file_in.readElementText().toInt();
+                         if(settings_file_in.name() == "environment_interpolate")environment_interpolate=settings_file_in.readElementText().toInt();
                          //No gui options for below
                          if(settings_file_in.name() == "fitnessLoggingToFile")fitnessLoggingToFile=settings_file_in.readElementText().toInt();
                          //Only GUI options
@@ -3399,7 +3400,7 @@ void MainWindow::update_gui_from_variables()
     variableBreed_radio->setChecked(variableBreed);
     logging_checkbox->setChecked(logging);
     gui_checkbox->setChecked(gui);
-    interpolateCheckbox->setChecked(enviroment_interpolate);
+    interpolateCheckbox->setChecked(environment_interpolate);
 }
 
 /*!
@@ -3566,8 +3567,8 @@ void MainWindow::save_settings()
         settings_file_out.writeCharacters(QString("%1").arg(gui));
         settings_file_out.writeEndElement();
 
-        settings_file_out.writeStartElement("enviroment_interpolate");
-        settings_file_out.writeCharacters(QString("%1").arg(enviroment_interpolate));
+        settings_file_out.writeStartElement("environment_interpolate");
+        settings_file_out.writeCharacters(QString("%1").arg(environment_interpolate));
         settings_file_out.writeEndElement();
 
         settings_file_out.writeStartElement("fitnessLoggingToFile");

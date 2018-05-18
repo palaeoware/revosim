@@ -170,7 +170,7 @@ extern quint8 environment_mode;
 #define ENV_MODE_ONCE 1
 #define ENV_MODE_LOOP 2
 #define ENV_MODE_BOUNCE 3
-extern bool enviroment_interpolate;
+extern bool environment_interpolate;
 
 extern quint64 minspeciessize;
 extern bool allowExcludeWithDescendants;

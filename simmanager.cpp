@@ -72,7 +72,7 @@ bool sexual=true;
 bool logging=false;
 bool fitnessLoggingToFile=false;
 bool nonspatial=false;
-bool enviroment_interpolate=true;
+bool environment_interpolate=true;
 bool toroidal=false;
 bool reseedKnown=false;
 bool reseedDual=false;
@@ -128,7 +128,7 @@ QList<uint> species_colours;
 quint8 species_mode;
 quint64 ids; //used in tree export -
 
-// Enviroment Stuff
+// Environment Stuff
 quint8 environment_mode;
 
 quint64 minspeciessize;
@@ -142,7 +142,7 @@ SimManager::SimManager()
     //Constructor - set up all the data!
     species_mode=SPECIES_MODE_BASIC;
     environment_mode=ENV_MODE_LOOP;
-    enviroment_interpolate = true;
+    environment_interpolate = true;
     MakeLookups();
     AliveCount=0;
     ProcessorCount=QThread::idealThreadCount();
