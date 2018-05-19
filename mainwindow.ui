@@ -561,16 +561,8 @@
     <property name="title">
      <string>Tools</string>
     </property>
-    <widget class="QMenu" name="menuCustom_Logging">
-     <property name="title">
-      <string>Custom Logging</string>
-     </property>
-     <addaction name="actionFitness_logging_to_File"/>
-     <addaction name="actionRecombination_logging"/>
-    </widget>
     <addaction name="actionGenomeComparison"/>
     <addaction name="actionSettings_Dock"/>
-    <addaction name="menuCustom_Logging"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">

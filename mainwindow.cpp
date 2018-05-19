@@ -60,7 +60,6 @@ MainWindow *MainWin;
 To do for paper:
 
 To remove prior to release, but after all changes are complete:
--- Dual reseed
 -- Remove all custom logging options (RJG is using these for research and projects, so needs to keep them in master fork).
 -- Variable breeding  (RJG is using these for research and projects, so needs to keep them in master fork).
 -- Pathogens Layer  (RJG is using these for research and projects, so needs to keep them in master fork).
@@ -2860,7 +2859,6 @@ void MainWindow::CalcSpecies()
  */
 void MainWindow::WriteLog()
 {
-    //Need to sort out file name in batch mode, check breed list entries is actually working, etc. then deal with logging after run
     //RJG - write main ongoing log
     if(logging)
     {
@@ -2939,149 +2937,6 @@ void MainWindow::WriteLog()
             }
         }
         out<<"\n";
-        outputfile.close();
-      }
-
-
-    // ----RJG recombination logging to separate file
-    //Need to add this to GUI
-    if (ui->actionRecombination_logging->isChecked())
-    {
-        QString rFile(path->text()+QString(PRODUCTNAME)+"_recombination");
-        if(batch_running)
-            rFile.append(QString("_run_%1").arg(runs, 4, 10, QChar('0')));
-        rFile.append(".txt");
-        QFile routputfile(rFile);
-
-        if (!(routputfile.exists()))
-        {
-            routputfile.open(QIODevice::WriteOnly|QIODevice::Text);
-            QTextStream rout(&routputfile);
-
-            // Info on simulation setup
-            rout<<print_settings()<<"\n";
-            rout<<"\nNote on log: this only calculates proportions when variable breeding is selected for speed, and also currently will only count total breed attempts when the fitness log is also running.";
-            rout<<"For now, this is merely a list of:\nIteration\tAsexual breeds\tSexual breeds\tTotal breed attempts\tTotal breed fails\tTotal Alive\tPercent sexual.\n";
-
-            routputfile.close();
-        }
-
-        routputfile.open(QIODevice::Append|QIODevice::Text);
-        QTextStream rout(&routputfile);
-
-        rout<<generation<<"\t";
-
-        //RJG count breeding. There is probably a better way to do this, but keeping as is for now as not too slow
-        int cntAsex=0, cntSex=0;
-        int totalBreedAttempts=0, totalBreedFails=0;
-
-        for (int i=0; i<gridX; i++)
-                for (int j=0; j<gridY; j++)
-                        {
-                        for (int c=0; c<slotsPerSq; c++)
-                            if (critters[i][j][c].fitness)
-                                {
-                                    if(critters[i][j][c].return_recomb()<0)cntAsex++;
-                                    else if (critters[i][j][c].return_recomb()>0)cntSex++;
-                                }
-                        totalBreedAttempts+=breedattempts[i][j];
-                        totalBreedFails+=breedfails[i][j];
-
-                        }
-        double percent=((float)cntSex/(float)(cntAsex+cntSex))*100.;
-        rout<<cntAsex<<"\t"<<cntSex<<"\t"<<totalBreedAttempts<<"\t"<<totalBreedFails<<"\t"<<AliveCount<<"\t"<<percent<<"\n";
-
-        routputfile.close();
-    }
-
-    //Add this to GUI too
-    // ----RJG log fitness to separate file
-    if (ui->actionFitness_logging_to_File->isChecked())
-    {
-
-        QString File(path->text()+"EvoSim_fitness");
-        if(batch_running)
-            File.append(QString("_run_%1").arg(runs, 4, 10, QChar('0')));
-        File.append(".txt");
-        QFile outputfile(File);
-
-        if (!(outputfile.exists()))
-        {
-            outputfile.open(QIODevice::WriteOnly|QIODevice::Text);
-            QTextStream out(&outputfile);
-
-            // Info on simulation setup
-            out<<print_settings()<<"\n";
-
-            //Different versions of output, for reuse as needed
-            //out<<"Each generation lists, for each pixel: mean fitness, entries on breed list";
-            //out<<"Each line lists generation, then the grid's: total critter number, total fitness, total entries on breed list";
-            //out<<"Each generation lists, for each pixel (top left to bottom right): total fitness, number of critters,entries on breed list\n\n";
-            out<<"Each generation lists, for the grid: the number of living crittes, then the total fitness of all those critters, and then the number of entries on the breed list";
-            out<<"\n";
-           outputfile.close();
-        }
-
-        outputfile.open(QIODevice::Append|QIODevice::Text);
-        QTextStream out(&outputfile);
-
-        // ----RJG: Breedattempts was no longer in use - but seems accurate, so can be co-opted for this.
-        //out<<"Iteration: "<<generation<<"\n";
-        out<<generation<<"\t";
-        int gridNumberAlive=0, gridTotalFitness=0, gridBreedEntries=0;
-
-        for (int i=0; i<gridX; i++)
-            {
-                for (int j=0; j<gridY; j++)
-                    {
-                     //----RJG: Total fitness per grid square.
-                     //out<<totalfit[i][j];
-
-                    //----RJG: Number alive per square - output with +1 due to c numbering, zero is one critter, etc.
-                    //out<<maxused[i][j]+1;
-                    // ---- RJG: Note, however, there is an descendants that when critters die they remain in cell list for iteration
-                    // ---- RJG: Easiest to account for this by removing those which are dead from alive count, or recounting - rather than dealing with death system
-                    // int numberalive=0;
-
-                    //----RJG: In case mean is ever required:
-                    //float mean=0;
-                    // mean = (float)totalfit[i][j]/(float)maxused[i][j]+1;
-
-                    //----RJG: Manually calculate total fitness for grid
-                    gridTotalFitness+=totalfit[i][j];
-
-                    int critters_alive=0;
-
-                     //----RJG: Manually count number alive thanks to maxused descendants
-                    for  (int k=0; k<slotsPerSq; k++)if(critters[i][j][k].fitness)
-                                    {
-                                    //numberalive++;
-                                    gridNumberAlive++;
-                                    critters_alive++;
-                                    }
-
-                    //total fitness, number of critters,entries on breed list";
-                    //out<<totalfit[i][j]<<" "<<critters_alive<<" "<<breedattempts[i][j];
-
-                    //----RJG: Manually count breed attempts for grid
-                    gridBreedEntries+=breedattempts[i][j];
-
-                    //out<<"\n";
-
-                    }
-            }
-
-        //---- RJG: If outputting averages to log.
-        //float avFit=(float)gridTotalFitness/(float)gridNumberAlive;
-        //float avBreed=(float)gridBreedEntries/(float)gridNumberAlive;
-        //out<<avFit<<","<<avBreed;
-
-        //---- RJG: If outputting totals
-        //critter - fitness - breeds
-
-        double mean_fitness= (double)gridTotalFitness / (double)gridNumberAlive;
-
-        out<<mean_fitness<<"\t"<<gridBreedEntries<<"\t"<<gridNumberAlive<<"\n";
         outputfile.close();
       }
 }
