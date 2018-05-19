@@ -55,32 +55,6 @@ MainWindow *MainWin;
 
 #include <QThread>
 
-/*
-
-To do for paper:
-
-To remove prior to release, but after all changes are complete:
--- Variable breeding  (RJG is using these for research and projects, so needs to keep them in master fork).
--- Variable mutate
--- Pathogens Layer  (RJG is using these for research and projects, so needs to keep them in master fork).
-
-To do in revisions:
--- Further comment code
--- Standardise case throughout the code, and also variable names in a sensible fashion
--- Rename "generations" variable "iterations", which is more correct
--- Settles vis - does this work at all?
--- Fails vis - check green scaling
-
-To do long term:
--- Add variable mutation rate depent on population density:
----- Count number of filled slots (do as percentage of filled slots)
----- Use percentage to dictate probability of mutation (between 0 and 1), following standard normal distribution
----- But do this both ways around so really full mutation rate can be either very high, or very low
-
----- Add to save/load, save/load settings: reseedDual;
-
-*/
-
 /*!
  * \brief The Sleeper class
  */
@@ -238,11 +212,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //RJG - overwrite pseudorandoms with genuine randoms
     int i=rfile.read((char *)randoms,65536);
     if (i!=65536) QMessageBox::warning(this,"Oops","Failed to read 65536 bytes from file - random numbers may be compromised - try again or restart program");
-
-    //RJG - fill pathogen probability distribution as required so pathogens can kill critters
-    //Start with linear, may want to change down the line.
-    for(int cnt=0;cnt<65;cnt++)
-        pathogen_prob_distribution[cnt]=(4294967296/2)+(cnt*(4294967295/128));
 }
 
 /*!
@@ -309,7 +278,7 @@ void MainWindow::createMainToolbar()
     ui->toolBar->addSeparator();
     ui->toolBar->addAction(aboutButton);
 
-    //RJG - Connect button signals to slot.
+    //RJG - Connect button signals to slots.
     //Note for clarity:
     //Reset = start again with random individual.
     //Reseed = start again with user defined genome
@@ -818,38 +787,6 @@ QDockWidget *MainWindow::createOrganismSettingsDock() {
     org_settings_grid->addWidget(nonspatial_checkbox,17,1,1,2);
     nonspatial_checkbox->setChecked(nonspatial);
     connect(nonspatial_checkbox,&QCheckBox::stateChanged,[=](const bool &i) {nonspatial=i;});
-
-    QLabel *pathogen_settings_label= new QLabel("Pathogen settings");
-    pathogen_settings_label->setStyleSheet("font-weight: bold");
-    org_settings_grid->addWidget(pathogen_settings_label,18,1,1,2);
-
-    pathogens_checkbox = new QCheckBox("Pathogens layer");     
-    pathogens_checkbox->setChecked(path_on);
-    pathogens_checkbox->setToolTip("<font>Turn on/off the 'Pathogens' layer.</font>");
-    org_settings_grid->addWidget(pathogens_checkbox,19,1,1,2);
-    connect(pathogens_checkbox,&QCheckBox::stateChanged,[=](const bool &i) {path_on=i;});
-
-    QLabel *pathogen_mutate_label = new QLabel("Pathogen mutation:");
-    pathogen_mutate_label->setToolTip("<font>Select the 'Pathogen Mutation' rate. Min = 1; Max = 255.</font>");
-    pathogen_mutate_spin = new QSpinBox;
-    pathogen_mutate_spin->setMinimum(1);
-    pathogen_mutate_spin->setMaximum(255);
-    pathogen_mutate_spin->setValue(pathogen_mutate);
-    pathogen_mutate_spin->setToolTip("<font>Select the 'Pathogen Mutation' rate. Min = 1; Max = 255.</font>");
-    org_settings_grid->addWidget(pathogen_mutate_label,20,1);
-    org_settings_grid->addWidget(pathogen_mutate_spin,20,2);
-    connect(pathogen_mutate_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {pathogen_mutate=i;});
-
-    QLabel *pathogen_frequency_label = new QLabel("Pathogen frequency:");
-    pathogen_frequency_label->setToolTip("<font>Select the 'Pathogen Fequency' rate. Min = 1; Max = 1000.</font>");
-    pathogen_frequency_spin = new QSpinBox;
-    pathogen_frequency_spin->setMinimum(1);
-    pathogen_frequency_spin->setMaximum(1000);
-    pathogen_frequency_spin->setValue(pathogen_frequency);
-    pathogen_frequency_spin->setToolTip("<font>Select the 'Pathogen Fequency' rate. Min = 1; Max = 1000.</font>");
-    org_settings_grid->addWidget(pathogen_frequency_label,21,1);
-    org_settings_grid->addWidget(pathogen_frequency_spin,21,2);
-    connect(pathogen_frequency_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {pathogen_frequency=i;});
 
     QWidget *org_settings_layout_widget = new QWidget;
     org_settings_layout_widget->setLayout(org_settings_grid);
@@ -2261,8 +2198,6 @@ void MainWindow::on_actionSave_triggered()
     out<<food;
     out<<breedCost;
     out<<mutate;
-    out<<pathogen_mutate;
-    out<<pathogen_frequency;
     out<<maxDiff;
     out<<breedThreshold;
     out<<target;
@@ -2281,7 +2216,6 @@ void MainWindow::on_actionSave_triggered()
     out<<nonspatial;
     out<<breeddiff;
     out<<breedspecies;
-    out<<path_on;
     out<<allowExcludeWithDescendants;
     out<<sexual;
     out<<asexual;
@@ -2471,8 +2405,6 @@ void MainWindow::on_actionLoad_triggered()
     in>>food;
     in>>breedCost;
     in>>mutate;
-    in>>pathogen_mutate;
-    in>>pathogen_frequency;
     in>>maxDiff;
     in>>breedThreshold;
     in>>target;
@@ -2491,7 +2423,6 @@ void MainWindow::on_actionLoad_triggered()
     in>>nonspatial;
     in>>breeddiff;
     in>>breedspecies;
-    in>>path_on;
     in>>allowExcludeWithDescendants;
     in>>sexual;
     in>>asexual;
@@ -3061,8 +2992,6 @@ QString MainWindow::print_settings()
     settings_out<<"-- Food: "<<food<<"\n";
     settings_out<<"-- Breed cost: "<<breedCost<<"\n";
     settings_out<<"-- Mutate: "<<mutate<<"\n";
-    settings_out<<"-- Pathogen mutate: "<<pathogen_mutate<<"\n";
-    settings_out<<"-- Pathogen frequency: "<<pathogen_frequency<<"\n";
     settings_out<<"-- Max diff to breed: "<<maxDiff<<"\n";
     settings_out<<"-- Breed threshold: "<<breedThreshold<<"\n";
     settings_out<<"-- Slots per square: "<<slotsPerSq<<"\n";
@@ -3079,7 +3008,6 @@ QString MainWindow::print_settings()
     settings_out<<"-- Nonspatial setling: "<<nonspatial<<"\n";
     settings_out<<"-- Enforce max diff to breed:"<<breeddiff<<"\n";
     settings_out<<"-- Only breed within species:"<<breedspecies<<"\n";
-    settings_out<<"-- Pathogens enabled:"<<path_on<<"\n";
     settings_out<<"-- Exclude species without descendants:"<<allowExcludeWithDescendants<<"\n";
     settings_out<<"-- Breeding: ";
     if(sexual)settings_out<<"sexual"<<"\n";
@@ -3128,8 +3056,6 @@ void MainWindow::load_settings()
                          if(settings_file_in.name() == "food")food=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "breedCost")breedCost=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "mutate")mutate=settings_file_in.readElementText().toInt();
-                         if(settings_file_in.name() == "pathogen_mutate")pathogen_mutate=settings_file_in.readElementText().toInt();
-                         if(settings_file_in.name() == "pathogen_frequency")pathogen_frequency=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "maxDiff")maxDiff=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "breedThreshold")breedThreshold=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "target")target=settings_file_in.readElementText().toInt();
@@ -3149,7 +3075,6 @@ void MainWindow::load_settings()
                          if(settings_file_in.name() == "nonspatial")nonspatial=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "breeddiff")breeddiff=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "breedspecies")breedspecies=settings_file_in.readElementText().toInt();
-                         if(settings_file_in.name() == "path_on")path_on=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "allowExcludeWithDescendants")allowExcludeWithDescendants=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "sexual")sexual=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "asexual")asexual=settings_file_in.readElementText().toInt();
@@ -3201,8 +3126,6 @@ void MainWindow::update_gui_from_variables()
     energy_spin->setValue(food);
     breedCost_spin->setValue(breedCost);
     mutate_spin->setValue(mutate);
-    pathogen_mutate_spin->setValue(pathogen_mutate);
-    pathogen_frequency_spin->setValue(pathogen_frequency);
     maxDiff_spin->setValue(maxDiff);
     breedThreshold_spin->setValue(breedThreshold);
     target_spin->setValue(target);
@@ -3219,7 +3142,6 @@ void MainWindow::update_gui_from_variables()
     nonspatial_checkbox->setChecked(nonspatial);
     breeddiff_checkbox->setChecked(breeddiff);
     breedspecies_checkbox->setChecked(breedspecies);
-    pathogens_checkbox->setChecked(path_on);
     exclude_without_descendants_checkbox->setChecked(allowExcludeWithDescendants);
     sexual_radio->setChecked(sexual);
     asexual_radio->setChecked(asexual);
@@ -3287,14 +3209,6 @@ void MainWindow::save_settings()
         settings_file_out.writeCharacters(QString("%1").arg(mutate));
         settings_file_out.writeEndElement();
 
-        settings_file_out.writeStartElement("pathogen_mutate");
-        settings_file_out.writeCharacters(QString("%1").arg(pathogen_mutate));
-        settings_file_out.writeEndElement();
-
-        settings_file_out.writeStartElement("pathogen_frequency");
-        settings_file_out.writeCharacters(QString("%1").arg(pathogen_frequency));
-        settings_file_out.writeEndElement();
-
         settings_file_out.writeStartElement("maxDiff");
         settings_file_out.writeCharacters(QString("%1").arg(maxDiff));
         settings_file_out.writeEndElement();
@@ -3358,10 +3272,6 @@ void MainWindow::save_settings()
 
         settings_file_out.writeStartElement("breedspecies");
         settings_file_out.writeCharacters(QString("%1").arg(breedspecies));
-        settings_file_out.writeEndElement();
-
-        settings_file_out.writeStartElement("path_on");
-        settings_file_out.writeCharacters(QString("%1").arg(path_on));
         settings_file_out.writeEndElement();
 
         settings_file_out.writeStartElement("allowExcludeWithDescendants");

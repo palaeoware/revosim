@@ -69,13 +69,6 @@ extern int breedCost;
 extern bool asexual;
 extern bool sexual;
 
-//---- RJG: Pathogens on/off
-extern bool path_on;
-//Pathogen to mutate any given iteration out of 255
-extern int pathogen_mutate;
-//Frequency of applying pathogens
-extern int pathogen_frequency;
-
 //----MDS: toroidal geography and non-spatial settling
 extern bool nonspatial, toroidal;
 extern bool breedspecies, breeddiff;
@@ -96,11 +89,9 @@ extern int nextgenex;
 extern quint8 probbreed[65536][16];
 extern quint8 randoms[65536];
 extern quint16 nextrandom;
-extern quint32 pathogen_prob_distribution[65];// RJG - A probability distribution for pathogens killing critters
 
 //Globabl data
 extern Critter critters[GRID_X][GRID_Y][SLOTS_PER_GRID_SQUARE]; //main array - static for speed
-extern quint64 pathogens[GRID_X][GRID_Y]; //Pathogen overlay
 extern quint8 environment[GRID_X][GRID_Y][3];  //0 = red, 1 = green, 2 = blue
 extern quint8 environmentlast[GRID_X][GRID_Y][3];  //Used for interpolation
 extern quint8 environmentnext[GRID_X][GRID_Y][3];  //Used for interpolation
@@ -202,7 +193,6 @@ private:
     void debug_genome(quint64 genome);
 
     int ProcessorCount;
-    bool temp_path_on;
 
 };
 

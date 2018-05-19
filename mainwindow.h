@@ -94,10 +94,10 @@ private:
     //RJG - Save images checkboxes
     QCheckBox *gui_checkbox, *save_population_count, *save_mean_fitness, *save_coding_genome_as_colour, *save_species, *save_non_coding_genome_as_colour, *save_gene_frequencies, *save_settles, *save_fails_settles, *save_environment, *interpolateCheckbox;
     //RJG - other checkboxes
-    QCheckBox *recalcFitness_checkbox, *toroidal_checkbox, *nonspatial_checkbox, *breeddiff_checkbox, *breedspecies_checkbox, *pathogens_checkbox, *variable_mutation_checkbox, *exclude_without_descendants_checkbox, *logging_checkbox, *autodump_checkbox;
+    QCheckBox *recalcFitness_checkbox, *toroidal_checkbox, *nonspatial_checkbox, *breeddiff_checkbox, *breedspecies_checkbox, *exclude_without_descendants_checkbox, *logging_checkbox, *autodump_checkbox;
     //RJG - radios and spins
     QRadioButton *phylogeny_off_button, *basic_phylogeny_button, *phylogeny_button, *phylogeny_and_metrics_button, *sexual_radio, *asexual_radio, *environmentModeBounceButton, *environmentModeLoopButton, *environmentModeOnceButton, *environmentModeStaticButton;
-    QSpinBox *mutate_spin, *refreshRateSpin, *pathogen_mutate_spin, *pathogen_frequency_spin , *maxDiff_spin, *breedThreshold_spin, *target_spin , *environment_rate_spin, *gridX_spin , *gridY_spin, *settleTolerance_spin, *slots_spin, *startAge_spin, *dispersal_spin, *energy_spin, *breedCost_spin;
+    QSpinBox *mutate_spin, *refreshRateSpin, *maxDiff_spin, *breedThreshold_spin, *target_spin , *environment_rate_spin, *gridX_spin , *gridY_spin, *settleTolerance_spin, *slots_spin, *startAge_spin, *dispersal_spin, *energy_spin, *breedCost_spin;
     //RJG - global save path for all outputs
     QLineEdit *path;
 

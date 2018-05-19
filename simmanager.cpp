@@ -37,8 +37,6 @@ int ydisp[256][256];
 quint64 genex[65536];
 int nextgenex;
 
-quint32 pathogen_prob_distribution[65]; // RJG - A probability distribution for pathogens killing critters
-
 quint64 reseedGenome=0; //RJG - Genome for reseed with known genome
 
 //Settable ints
@@ -54,8 +52,6 @@ int breedThreshold = 500;
 int breedCost = 500;
 int maxDiff = 2;
 int mutate = 10;
-int pathogen_mutate = 5;
-int pathogen_frequency =5;
 int envchangerate=100;
 int speciesSamples=1;
 int speciesSensitivity=2;
@@ -74,7 +70,6 @@ bool toroidal=false;
 bool reseedKnown=false;
 bool breedspecies=false;
 bool breeddiff=true;
-bool path_on=false;
 bool gui=false;
 
 //File handling
@@ -87,7 +82,6 @@ QString FitnessLoggingFile="";
 
 //Globabl data
 Critter critters[GRID_X][GRID_Y][SLOTS_PER_GRID_SQUARE]; //main array - static for speed
-quint64 pathogens[GRID_X][GRID_Y]; //Pathogen overlay
 quint8 environment[GRID_X][GRID_Y][3];  //0 = red, 1 = green, 2 = blue
 quint8 environmentlast[GRID_X][GRID_Y][3];  //Used for interpolation
 quint8 environmentnext[GRID_X][GRID_Y][3];  //Used for interpolation
@@ -405,7 +399,7 @@ bool SimManager::regenerateEnvironment(int emode, bool interpolate)
     return false;
 }
 
-//----RJG: 64 bit rand useful for pathogens, and initialising critters
+//----RJG: 64 bit rand useful for initialising critters
 quint64 SimManager::Rand64()
 {
     return (quint64)Rand32()+(quint64)(65536)*(quint64)(65536)*(quint64)Rand32();
@@ -551,12 +545,6 @@ void SimManager::SetupRun()
 
     nextspeciesid++; //ready for first species after this
 
-    //RJG - now set up pathogens. Chose to do here rather than with lookups as pathogens mutate, and thus it's pretty much impossible to repeat them anyway - so start afresh each run
-    for (int n=0; n<256; n++)
-            for (int m=0; m<256; m++)
-                //RJG - Seed pathogen layer with 64 bit randoms too
-                pathogens[n][m]=Rand64();
-
     //RJG - reset warning system
     warning_count=0;
 }
@@ -604,7 +592,6 @@ int SimManager::iterate_parallel(int firstx, int lastx, int newgenomecount_local
 
             int breedlistentries=0;
 
-            // ----RJG: Iterate critters will kill and clean up pathogened critters
             for (int c=0; c<=maxv; c++)
                     if (crit[c].iterate_parallel(KillCount_local,addfood)) breedlist[breedlistentries++]=c;
 
@@ -632,26 +619,6 @@ int SimManager::iterate_parallel(int firstx, int lastx, int newgenomecount_local
                         crit[breedlist[c]].energy+=breedCost;
                 }
             }
-
-
-        // ----RJG: Pathogens have set chance of killing any living critter
-        if(temp_path_on)
-            for (int c=0; c<=maxv; c++)
-                {
-                //RJG - XOR critter and pathogen genome for bit counting
-                quint64 xr = crit[c].genome ^ pathogens[n][m];
-
-                //RJG - Count the bits
-                int t1=0;
-                quint32 g1xl = quint32(xr & (quint64)4294967295); //lower 32 bits
-                t1 += bitcounts[g1xl/(quint32)65536] +  bitcounts[g1xl & (quint32)65535];
-                quint32 g1xu = quint32(xr / ((quint64)4294967296)); //upper 32 bits
-                t1 += bitcounts[g1xu/(quint32)65536] +  bitcounts[g1xu & (quint32)65535];
-
-                //RJG - Kill the critter depending on prob distribution
-                //Iterate critters kills those which have --age == zero hence set age to 1 here and it'll be killed at iterate below
-                if(Rand32()>pathogen_prob_distribution[t1])crit[c].age=1;
-                }
 
         }
     }
@@ -785,9 +752,6 @@ bool SimManager::iterate(int emode, bool interpolate)
 
     if (regenerateEnvironment(emode, interpolate)==true) return true;
 
-    if(generation%pathogen_frequency==0&&path_on)temp_path_on=true;
-    else temp_path_on=false;
-
     //New parallelised version
 
     int newgenomecounts_starts[256]; //allow for up to 256 threads
@@ -822,16 +786,6 @@ bool SimManager::iterate(int emode, bool interpolate)
     for (int i=0; i<ProcessorCount; i++)
             AliveCount-=KillCounts[i];
 
-    //Currently pathogens is messing up AliveCount - localKillCounts seem to be too high, so number goes very negative. Bodge fix for now:
-    if(temp_path_on)
-    {
-    int tmp_alive_cnt=0;
-            for (int n=0; n<100; n++)
-                for (int m=0; m<100; m++)
-                    for (int c=0; c<100; c++)if (critters[n][m][c].fitness)tmp_alive_cnt++;
-    AliveCount=tmp_alive_cnt;
-    }
-
     //Now handle spat settling
 
     int trycount=0;
@@ -860,15 +814,6 @@ bool SimManager::iterate(int emode, bool interpolate)
          trycount+=trycounts[i];
          settlecount+=settlecounts[i];
     }
-
-    // ----RJG: Mutate pathogens.
-    if(temp_path_on)
-        for (int n=0; n<gridX; n++)
-                for (int m=0; m<gridY; m++)
-                        //----RJG: User defined prob of mutation each iteration
-                        if(Rand8()<pathogen_mutate)
-                                  //----RJG: Flip a bit.
-                                  pathogens[n][m] ^= tweakers64[portable_rand()/(PORTABLE_RAND_MAX/64)];
 
     return false;
 }
