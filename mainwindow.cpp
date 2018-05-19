@@ -35,7 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
    ui->path->setText(Directory.path());
 
    //RJG - set up graphics
-   //env_image=new QImage(":/palaeoware_logo_square.png");
    env_image=new QImage(100,100,QImage::Format_RGB32);
    env_image->fill(QColor(42,42,42));
    env_item= new QGraphicsPixmapItem(QPixmap::fromImage(*env_image));
@@ -158,13 +157,13 @@ void MainWindow::generateEnvironment()
     if(!Directory.exists() && ui->save_images_checkbox->isChecked()){QMessageBox::warning(0,"Error","No such directory.", QMessageBox::Ok);return;}
 
     //RJG - Select which kind of environment object to create - all inheret environmentclass, which has the random number and save functions in it
-    if(ui->environment_comboBox->currentIndex()==0)
+    if(ui->environment_comboBox->currentIndex()==0) // Russell environment
         environmentobject = new russellenvironment;
 
-    if (ui->environment_comboBox->currentIndex()==1) //markenv
+    if (ui->environment_comboBox->currentIndex()==1) //Mark environment
         environmentobject = new markenvironment;
 
-    if (ui->environment_comboBox->currentIndex()==2) //noise
+    if (ui->environment_comboBox->currentIndex()==2) //Noise stack
     {
         environmentobject = new noiseenvironment;
         if(MainWin->ui->noiseMin->value()>=MainWin->ui->noiseMax->value())
@@ -175,17 +174,17 @@ void MainWindow::generateEnvironment()
         }
     }
 
-    if (ui->environment_comboBox->currentIndex()==3) //combine
+    if (ui->environment_comboBox->currentIndex()==3) //Combine stacks
     {
         environmentobject = new combine;
         if (environmentobject->error){reset_gui();return;}
         generations=MainWin->ui->combineStart->value()+stackTwoSize;
     }
 
-    if (ui->environment_comboBox->currentIndex()==4) //colour
+    if (ui->environment_comboBox->currentIndex()==4) //Colour stacks
         environmentobject = new colour;
 
-    if (ui->environment_comboBox->currentIndex()==5) //stack
+    if (ui->environment_comboBox->currentIndex()==5) //Create stack from image
         {
         environmentobject = new makestack;
         if (environmentobject->error){reset_gui();return;}
