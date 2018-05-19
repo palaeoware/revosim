@@ -89,19 +89,6 @@
    </property>
    <layout class="QVBoxLayout" name="genomesLayout"/>
   </widget>
-  <widget class="QCheckBox" name="checkBoxDualReseed">
-   <property name="geometry">
-    <rect>
-     <x>380</x>
-     <y>10</y>
-     <width>321</width>
-     <height>23</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Dual reseed</string>
-   </property>
-  </widget>
  </widget>
  <resources/>
  <connections>
