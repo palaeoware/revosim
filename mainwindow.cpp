@@ -60,8 +60,8 @@ MainWindow *MainWin;
 To do for paper:
 
 To remove prior to release, but after all changes are complete:
--- Remove all custom logging options (RJG is using these for research and projects, so needs to keep them in master fork).
 -- Variable breeding  (RJG is using these for research and projects, so needs to keep them in master fork).
+-- Variable mutate
 -- Pathogens Layer  (RJG is using these for research and projects, so needs to keep them in master fork).
 
 To do in revisions:
@@ -238,17 +238,6 @@ MainWindow::MainWindow(QWidget *parent) :
     //RJG - overwrite pseudorandoms with genuine randoms
     int i=rfile.read((char *)randoms,65536);
     if (i!=65536) QMessageBox::warning(this,"Oops","Failed to read 65536 bytes from file - random numbers may be compromised - try again or restart program");
-
-    //RJG - fill cumulative_normal_distribution with numbers for variable breeding
-    //These are a cumulative standard normal distribution from -3 to 3, created using the math.h complementary error function
-    //Then scaled to zero to 32 bit rand max, to allow for probabilities within each iteration through a random number
-    float x=-3., inc=(6./32.);
-    for(int cnt=0;cnt<33;cnt++)
-    {
-        double NSDF=(0.5 * erfc(-(x) * M_SQRT1_2));
-        cumulative_normal_distribution[cnt]=4294967296*NSDF;
-        x+=inc;
-    }
 
     //RJG - fill pathogen probability distribution as required so pathogens can kill critters
     //Start with linear, may want to change down the line.
@@ -730,12 +719,6 @@ QDockWidget *MainWindow::createOrganismSettingsDock() {
     org_settings_grid->addWidget(mutate_spin,2,2);
     connect(mutate_spin,(void(QSpinBox::*)(int))&QSpinBox::valueChanged,[=](const int &i) {mutate=i;});
 
-    variable_mutation_checkbox = new QCheckBox("Variable mutation");
-    variable_mutation_checkbox->setToolTip("<font>Turn on/off to toggle variable mutation. This overrides the selected mutation rate (above).</font>");
-    org_settings_grid->addWidget(variable_mutation_checkbox,3,1,1,1);
-    variable_mutation_checkbox->setChecked(variableMutate);
-    connect(variable_mutation_checkbox,&QCheckBox::stateChanged,[=](const bool &i) { variableMutate=i; mutate_spin->setEnabled(!i); });
-
     QLabel *startAge_label = new QLabel("Start age:");
     startAge_label->setToolTip("<font>Sets the starting age for organisms. Min = 1; Max = 1000.</font>");
     startAge_spin = new QSpinBox;
@@ -802,23 +785,17 @@ QDockWidget *MainWindow::createOrganismSettingsDock() {
     sexual_radio->setToolTip("<font>Select to use 'Sexual' breeding.</font>");
     asexual_radio = new QRadioButton("Asexual");
     asexual_radio->setToolTip("<font>Select to use 'Asexual' breeding.</font>");
-    variableBreed_radio = new QRadioButton("Variable");
-    variableBreed_radio->setToolTip("<font>Select to use 'Variable' breeding.</font>");
     QButtonGroup *breeding_button_group = new QButtonGroup;
     breeding_button_group->addButton(sexual_radio,0);
     breeding_button_group->addButton(asexual_radio,1);
-    breeding_button_group->addButton(variableBreed_radio,2);
     sexual_radio->setChecked(sexual);
     asexual_radio->setChecked(asexual);
-    variableBreed_radio->setChecked(variableBreed);
     org_settings_grid->addWidget(sexual_radio,12,1,1,2);
     org_settings_grid->addWidget(asexual_radio,13,1,1,2);
-    org_settings_grid->addWidget(variableBreed_radio,14,1,1,2);
     connect(breeding_button_group, (void(QButtonGroup::*)(int))&QButtonGroup::buttonClicked,[=](const int &i)
         {
-        if(i==0){sexual=true;asexual=false;variableBreed=false;}
-        if(i==1){sexual=false;asexual=true;variableBreed=false;}
-        if(i==2){sexual=false;asexual=false;variableBreed=true;}
+        if(i==0){sexual=true;asexual=false;}
+        if(i==1){sexual=false;asexual=true;}
         });
 
     QLabel *settle_settings_label= new QLabel("Settle settings");
@@ -2305,11 +2282,9 @@ void MainWindow::on_actionSave_triggered()
     out<<breeddiff;
     out<<breedspecies;
     out<<path_on;
-    out<<variableMutate;
     out<<allowExcludeWithDescendants;
     out<<sexual;
     out<<asexual;
-    out<<variableBreed;
     out<<logging;
     out<<gui;
     out<<environment_interpolate;
@@ -2517,11 +2492,9 @@ void MainWindow::on_actionLoad_triggered()
     in>>breeddiff;
     in>>breedspecies;
     in>>path_on;
-    in>>variableMutate;
     in>>allowExcludeWithDescendants;
     in>>sexual;
     in>>asexual;
-    in>>variableBreed;
     in>>logging;
     in>>gui;
     in>>environment_interpolate;
@@ -3107,7 +3080,6 @@ QString MainWindow::print_settings()
     settings_out<<"-- Enforce max diff to breed:"<<breeddiff<<"\n";
     settings_out<<"-- Only breed within species:"<<breedspecies<<"\n";
     settings_out<<"-- Pathogens enabled:"<<path_on<<"\n";
-    settings_out<<"-- Variable mutate:"<<variableMutate<<"\n";
     settings_out<<"-- Exclude species without descendants:"<<allowExcludeWithDescendants<<"\n";
     settings_out<<"-- Breeding: ";
     if(sexual)settings_out<<"sexual"<<"\n";
@@ -3178,11 +3150,9 @@ void MainWindow::load_settings()
                          if(settings_file_in.name() == "breeddiff")breeddiff=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "breedspecies")breedspecies=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "path_on")path_on=settings_file_in.readElementText().toInt();
-                         if(settings_file_in.name() == "variableMutate")variableMutate=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "allowExcludeWithDescendants")allowExcludeWithDescendants=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "sexual")sexual=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "asexual")asexual=settings_file_in.readElementText().toInt();
-                         if(settings_file_in.name() == "variableBreed")variableBreed=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "logging")logging=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "gui")gui=settings_file_in.readElementText().toInt();
                          if(settings_file_in.name() == "environment_interpolate")environment_interpolate=settings_file_in.readElementText().toInt();
@@ -3250,11 +3220,9 @@ void MainWindow::update_gui_from_variables()
     breeddiff_checkbox->setChecked(breeddiff);
     breedspecies_checkbox->setChecked(breedspecies);
     pathogens_checkbox->setChecked(path_on);
-    variable_mutation_checkbox->setChecked(variableMutate);
     exclude_without_descendants_checkbox->setChecked(allowExcludeWithDescendants);
     sexual_radio->setChecked(sexual);
     asexual_radio->setChecked(asexual);
-    variableBreed_radio->setChecked(variableBreed);
     logging_checkbox->setChecked(logging);
     gui_checkbox->setChecked(gui);
     interpolateCheckbox->setChecked(environment_interpolate);
@@ -3396,10 +3364,6 @@ void MainWindow::save_settings()
         settings_file_out.writeCharacters(QString("%1").arg(path_on));
         settings_file_out.writeEndElement();
 
-        settings_file_out.writeStartElement("variableMutate");
-        settings_file_out.writeCharacters(QString("%1").arg(variableMutate));
-        settings_file_out.writeEndElement();
-
         settings_file_out.writeStartElement("allowExcludeWithDescendants");
         settings_file_out.writeCharacters(QString("%1").arg(allowExcludeWithDescendants));
         settings_file_out.writeEndElement();
@@ -3410,10 +3374,6 @@ void MainWindow::save_settings()
 
         settings_file_out.writeStartElement("asexual");
         settings_file_out.writeCharacters(QString("%1").arg(asexual));
-        settings_file_out.writeEndElement();
-
-        settings_file_out.writeStartElement("variableBreed");
-        settings_file_out.writeCharacters(QString("%1").arg(variableBreed));
         settings_file_out.writeEndElement();
 
         settings_file_out.writeStartElement("logging");

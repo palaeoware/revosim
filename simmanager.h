@@ -65,9 +65,8 @@ extern int breedThreshold;
 //and cost of breeding - cost applies for success or failure of course
 extern int breedCost;
 
-//---- RJG: Also allow asexual and variable reproduction.
+//---- RJG: Also allow asexual reproduction.
 extern bool asexual;
-extern bool variableBreed;
 extern bool sexual;
 
 //---- RJG: Pathogens on/off
@@ -84,8 +83,6 @@ extern bool breedspecies, breeddiff;
 extern int maxDiff;
 //chance to mutate out of 255
 extern int mutate;
-// Variable mutation based on population density - DAMP
-extern bool variableMutate;
 
 //Global lookups -
 extern quint32 tweakers[32]; // the 32 single bit XOR values (many uses!)
@@ -99,7 +96,6 @@ extern int nextgenex;
 extern quint8 probbreed[65536][16];
 extern quint8 randoms[65536];
 extern quint16 nextrandom;
-extern quint32 cumulative_normal_distribution[33]; // RJG - A cumulative normal distribution for variable breeding.
 extern quint32 pathogen_prob_distribution[65];// RJG - A probability distribution for pathogens killing critters
 
 //Globabl data

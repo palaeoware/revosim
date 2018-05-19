@@ -28,7 +28,6 @@ public:
     int recalc_fitness(quint8 *env);
     int breed_with_parallel(int xpos, int ypos, Critter *partner, int *newgenomecount_local);
     bool iterate_parallel(int *KillCount_local, int addfood);
-    int return_recomb();
 
     int xpos, ypos, zpos;
 
@@ -37,8 +36,6 @@ public:
     int age; //start off positive - 0 is dead - reduces each time
     int fitness;
     int energy; //breeding energy
-
-    int variableBreedAsex;//Track breeding
 
     quint64 speciesid; //this is inherited from parents
 };

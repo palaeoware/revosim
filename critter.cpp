@@ -30,10 +30,6 @@ Critter::Critter()
     fitness=0;
     energy=0;
     speciesid=-1; //=not assigned
-
-    //Temporary variable breed tag. Probably better way of doing this but short on time
-    int variableBreedAsex = 0;
-    Q_UNUSED(variableBreedAsex);
 }
 
 void Critter::initialise(quint64 gen, quint8 *env, int x, int y, int z, quint64 species)
@@ -52,11 +48,6 @@ void Critter::initialise(quint64 gen, quint8 *env, int x, int y, int z, quint64 
 
     quint32 gen2 = genome>>32;
     ugenecombo = (gen2>>16) ^ (gen2 & 65535); //for breed testing - work out in advance for speed
-}
-
-int Critter::return_recomb()
-{
-    return variableBreedAsex;
 }
 
 int Critter::recalc_fitness(quint8 *env)
@@ -176,19 +167,8 @@ int Critter::breed_with_parallel(int xpos, int ypos, Critter *partner, int *newg
          bool local_mutate=false;
 
          //this is technically not threadsafe, but it doesn't matter - any value for nextrand is fine
-         if(!variableMutate)
-             if ((TheSimManager->Rand8())<mutate)
-                 local_mutate=true;
-
-         //RJG - Variable mutate implemented here.
-         if(variableMutate)
-         {
-             quint32 g1xu = quint32(g2x / ((quint64)4294967296)); //upper 32 bits
-             int t1 = bitcounts[g1xu/(quint32)65536] +  bitcounts[g1xu & (quint32)65535];
-            //RJG - probability of mutation currently standard normal distribution from -3 to +3 scaled to randmax
-            //More 1's in non coding genome == higher probability of mutation - see documentation.
-            if(TheSimManager->Rand32()>=cumulative_normal_distribution[t1])local_mutate=true;
-         }
+         if ((TheSimManager->Rand8())<mutate)
+             local_mutate=true;
 
          if(local_mutate)
          {

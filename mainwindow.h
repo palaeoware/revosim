@@ -96,7 +96,7 @@ private:
     //RJG - other checkboxes
     QCheckBox *recalcFitness_checkbox, *toroidal_checkbox, *nonspatial_checkbox, *breeddiff_checkbox, *breedspecies_checkbox, *pathogens_checkbox, *variable_mutation_checkbox, *exclude_without_descendants_checkbox, *logging_checkbox, *autodump_checkbox;
     //RJG - radios and spins
-    QRadioButton *phylogeny_off_button, *basic_phylogeny_button, *phylogeny_button, *phylogeny_and_metrics_button, *sexual_radio, *asexual_radio, *variableBreed_radio, *environmentModeBounceButton, *environmentModeLoopButton, *environmentModeOnceButton, *environmentModeStaticButton;
+    QRadioButton *phylogeny_off_button, *basic_phylogeny_button, *phylogeny_button, *phylogeny_and_metrics_button, *sexual_radio, *asexual_radio, *environmentModeBounceButton, *environmentModeLoopButton, *environmentModeOnceButton, *environmentModeStaticButton;
     QSpinBox *mutate_spin, *refreshRateSpin, *pathogen_mutate_spin, *pathogen_frequency_spin , *maxDiff_spin, *breedThreshold_spin, *target_spin , *environment_rate_spin, *gridX_spin , *gridY_spin, *settleTolerance_spin, *slots_spin, *startAge_spin, *dispersal_spin, *energy_spin, *breedCost_spin;
     //RJG - global save path for all outputs
     QLineEdit *path;

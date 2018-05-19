@@ -37,7 +37,6 @@ int ydisp[256][256];
 quint64 genex[65536];
 int nextgenex;
 
-quint32 cumulative_normal_distribution[33]; // RJG - A cumulative normal distribution for variable breeding & mutation.
 quint32 pathogen_prob_distribution[65]; // RJG - A probability distribution for pathogens killing critters
 
 quint64 reseedGenome=0; //RJG - Genome for reseed with known genome
@@ -66,8 +65,6 @@ int lastReport=0;
 //Settable bools
 bool recalcFitness=false;
 bool asexual=false;
-bool variableBreed=false;
-bool variableMutate=false;
 bool sexual=true;
 bool logging=false;
 bool fitnessLoggingToFile=false;
@@ -613,7 +610,6 @@ int SimManager::iterate_parallel(int firstx, int lastx, int newgenomecount_local
 
             // ----RJG: breedattempts was no longer used - co-opting for fitness report.
             if(fitnessLoggingToFile||logging)breedattempts[n][m]=breedlistentries;
-            if(variableBreed) for (int c=0; c<=maxv; c++)crit[c].variableBreedAsex=0;
 
             //----RJG Do breeding
             if (breedlistentries>0)
@@ -624,17 +620,6 @@ int SimManager::iterate_parallel(int firstx, int lastx, int newgenomecount_local
                     int partner;
                     bool temp_asexual=asexual;
 
-                    //Variable breeding allows sexual or asexual reproduction depending on the #1's in the non-coding genome.
-                    if(variableBreed)
-                        {
-                        quint32 g1xu = quint32(crit[breedlist[c]].genome / ((quint64)4294967296)); //upper 32 bits
-                        int t1 = bitcounts[g1xu/(quint32)65536] +  bitcounts[g1xu & (quint32)65535];
-                        //RJG - probability of breeding follows a standard normal distribution from -3 to +3
-                        //More 1's in non coding genome == higher probability of sexual reproduction - see documentation.
-                        if(Rand32()>=cumulative_normal_distribution[t1])temp_asexual=true;
-                        else temp_asexual=false;
-                        }
-
                     if(temp_asexual)partner=c;
                     else partner=Rand8()/divider;
 
@@ -642,9 +627,6 @@ int SimManager::iterate_parallel(int firstx, int lastx, int newgenomecount_local
                     {
                         if (crit[breedlist[c]].breed_with_parallel(n,m,&(crit[breedlist[partner]]),&newgenomecount_local))
                             breedfails[n][m]++; //for analysis purposes
-                        //RJG - Keeping track of how bred for recombination log - may want to change down line
-                        else if (temp_asexual && variableBreed)crit[breedlist[c]].variableBreedAsex=-1;
-                        else if (!temp_asexual && variableBreed)crit[breedlist[c]].variableBreedAsex=1;
                     }
                     else //didn't find a partner, refund breed cost
                         crit[breedlist[c]].energy+=breedCost;
