@@ -75,7 +75,6 @@ bool nonspatial=false;
 bool environment_interpolate=true;
 bool toroidal=false;
 bool reseedKnown=false;
-bool reseedDual=false;
 bool breedspecies=false;
 bool breeddiff=true;
 bool path_on=false;
@@ -454,17 +453,9 @@ void SimManager::SetupRun()
     nextspeciesid=1; //reset ID counter
 
     int n=gridX/2, m=gridY/2;
-    int n2=0;
-
-    //Dual seed if required
-    if(reseedDual)
-        {
-        n=2;
-        n2=gridX-2;
-        }
 
     //RJG - Either reseed with known genome if set
-    if(reseedKnown && !reseedDual)
+    if(reseedKnown)
                 {
                     critters[n][m][0].initialise(reseedGenome,environment[n][m],n,m,0,nextspeciesid);
                     if (critters[n][m][0].fitness==0)
@@ -481,39 +472,6 @@ void SimManager::SetupRun()
                     for (int i=0; i<64; i++)if (tweakers64[i] & reseedGenome) reseedGenomeString.append("1"); else reseedGenomeString.append("0");
                     MainWin->setStatusBarText(reseedGenomeString);
                 }
-    else if(reseedKnown && reseedDual)
-                {
-                    critters[n][m][0].initialise(reseedGenome,environment[n][m],n,m,0,nextspeciesid);
-                    critters[n2][m][0].initialise(reseedGenome,environment[n2][m],n2,m,0,nextspeciesid);
-                    if (critters[n][m][0].fitness==0||critters[n2][m][0].fitness==0)
-                        {
-                            // RJG - But sort out if it can't survive...
-                             QMessageBox::warning(0,"Oops","The genome you're trying to reseed with can't survive in one of the two chosen environmental pixels. There could be a number of reasons why this is. Please contact RJG or MDS to discuss.");
-                             reseedKnown=false;
-                             SetupRun();
-                             return;
-                        }
-                    //RJG - I think this is a good thing to flag in an obvious fashion.
-                    QString reseedGenomeString("Started simulation with dual known genomes: ");
-                    for (int i=0; i<64; i++)if (tweakers64[i] & reseedGenome) reseedGenomeString.append("1"); else reseedGenomeString.append("0");
-                    MainWin->setStatusBarText(reseedGenomeString);
-                }
-    //RJG - or try till one lives. If alive, fitness (in critter file) >0
-    else if(!reseedKnown && reseedDual)
-                {
-                    int flag=0;
-                    do{
-                        flag=0;
-                        do {
-                            critters[n][m][0].initialise(Rand64(), environment[n][m], n,m,0,nextspeciesid);
-                            }
-                            while (critters[n][m][0].fitness<1);
-                        quint64 gen=critters[n][m][0].genome;
-                        critters[n2][m][0].initialise(gen, environment[n2][m],n2,m,0,nextspeciesid);
-                        flag=critters[n2][m][0].fitness;
-                        }while(flag<1);
-                    MainWin->setStatusBarText("");
-                }
     else
                 {
                     while (critters[n][m][0].fitness<1) critters[n][m][0].initialise(Rand64(), environment[n][m], n,m,0,nextspeciesid);
@@ -521,7 +479,6 @@ void SimManager::SetupRun()
                 }
 
     totalfit[n][m]=critters[n][m][0].fitness; //may have gone wrong from above
-    if(reseedDual)totalfit[n2][m]=critters[n2][m][0].fitness;
 
     AliveCount=1;
     quint64 gen=critters[n][m][0].genome;
@@ -530,7 +487,6 @@ void SimManager::SetupRun()
     for (int c=1; c<slotsPerSq; c++)
     {
         critters[n][m][c].initialise(gen, environment[n][m], n,m,c,nextspeciesid);
-        if(reseedDual)critters[n2][m][c].initialise(gen, environment[n2][m], n2,m,c,nextspeciesid);
 
         if (critters[n][m][c].age>0)
         {
@@ -539,15 +495,6 @@ void SimManager::SetupRun()
             AliveCount++;
             maxused[n][m]=c;
             totalfit[n][m]+=critters[n][m][c].fitness;
-        }
-
-        if(reseedDual && critters[n2][m][c].age>0)
-        {
-            critters[n2][m][c].age/=((Rand8()/10)+1);
-            critters[n2][m][c].age +=10;
-            AliveCount++;
-            maxused[n2][m]=c;
-            totalfit[n2][m]+=critters[n2][m][c].fitness;
         }
     }
 

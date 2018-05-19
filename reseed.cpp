@@ -39,7 +39,6 @@ reseed::reseed(QWidget *parent) :
     ui->genomeTextEdit->setFont(font);
 
     ui->CheckBoxReseedSession->setChecked(reseedKnown);
-    ui->checkBoxDualReseed->setChecked(reseedDual);
 
     int length=MainWin->genoneComparison->access_glist_length();
     if (length>10)length=10;
@@ -73,11 +72,8 @@ void reseed::on_buttonBox_accepted()
                 else reseedGenome&=(~tweakers64[i]);
 
         reseedKnown=ui->CheckBoxReseedSession->isChecked();
-        reseedDual=ui->checkBoxDualReseed->isChecked();
         }
-    if (reseedDual)QMessageBox::warning(this,"FYI","Dual seed will reseed the environment with two versions of the same genome, one on the left, the other on the right of the environment."
-                                                   " If you would rather these were different individuals, please email RJG/MDS. Be aware that currently, the species system and stats may not work as expected with a dual reseed.");
-}
+   }
 
 
 void reseed::radio_toggled()

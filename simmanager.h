@@ -145,7 +145,6 @@ extern int totalRecombination;
 
 //---- RJG reseed with known genomes
 extern bool reseedKnown;
-extern bool reseedDual;
 extern quint64 reseedGenome;
 
 extern int NextEnvChange;

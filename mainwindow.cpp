@@ -78,6 +78,8 @@ To do long term:
 ---- Use percentage to dictate probability of mutation (between 0 and 1), following standard normal distribution
 ---- But do this both ways around so really full mutation rate can be either very high, or very low
 
+---- Add to save/load, save/load settings: reseedDual;
+
 */
 
 /*!
