@@ -27,7 +27,7 @@ _____
 
 _____
 
-## 1. Copyright and Licence:
+## 1. Copyright and Licence
 
 All EnviroGen code is released under the GNU General Public License. See LICENSE.md files in the programme directory.
 
