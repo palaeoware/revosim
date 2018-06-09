@@ -44,7 +44,7 @@ _____
 
 ## 3. Installation
 
-EnviroGen may be complied usign QT from the source code or installed from the binary releases on our [GitHub](https://github.com/palaeoware).
+EnviroGen may be compiled using QT from the source code or installed from the binary releases on our [GitHub](https://github.com/palaeoware).
 
 _____
 
