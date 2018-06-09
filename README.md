@@ -2,7 +2,7 @@
 ## [Enviro]nment [Gen]rator
  
 Coded by:
- - Russell Garwood (russell.garwood@manchester.ac.uk)
+ - Russell J. Garwood (russell.garwood@manchester.ac.uk)
  - Alan R.T. Spencer (alan.spencer@imperial.ac.uk)
  - Mark Sutton (m.sutton@imperial.ac.uk)
 
