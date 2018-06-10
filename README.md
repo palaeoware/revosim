@@ -10,6 +10,10 @@ Coded by:
   <img width="250" height="250" src="./resources/palaeoware_logo_square.png">
 </p>
 
+______
+
+## Relevant references:
+Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2018. REvoSim: Organism-level simulation of macro- and microevolution
 _____
 
 CONTENTS:
