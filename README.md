@@ -32,13 +32,13 @@ All REvoSim code is released under the GNU General Public License. See LICENSE.m
 
 All REvoSim code is Copyright 2018 by Mark Sutton, Russell J. Garwood, and Alan R.T. Spencer.
 
-This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY.
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but **without any warranty**.
 
 _____
 
 ## 2. Introduction
 
-REvoSim is an evolutionary model that aims to bridge the epistemological gap between micro- and macro-evolution; by providing an organism-level simulation of sufficient computational efficiency that population sizes of 10*5-10*6 individuals can be studied over geological timescales. The model also incorporates concepts of spatial relationships, spatial and temporal environmental variation, and recombinant reproduction. Isolation of gene-pools (i.e. speciation) is not enforced, but emerges naturally from simulations under appropriate conditions. We intend REvoSim as a multipurpose platform for the study of many evolutionary phenomena; while it was designed with macro-evolutionary studies in mind, it is also applicable to micro-evolutionary problems.
+REvoSim is an evolutionary model that aims to bridge the epistemological gap between micro- and macroevolution by providing an organism-level simulation of sufficient computational efficiency that population sizes of 10<sup>5</sup>-10<sup>6</sup> individuals can be studied over geological timescales. The model also incorporates concepts of spatial relationships, spatial and temporal environmental variation, and recombinant reproduction. Isolation of gene-pools (i.e. speciation) is not enforced, but emerges naturally from simulations under appropriate conditions. We intend REvoSim as a multipurpose platform for the study of many evolutionary phenomena; while it was designed with macroevolutionary studies in mind, it is also applicable to microevolutionary problems.
 
 _____
 
