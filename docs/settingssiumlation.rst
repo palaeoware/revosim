@@ -1,2 +1,2 @@
-Settings up the Simulation
+Setting up the Simulation
 ==========================

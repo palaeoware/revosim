@@ -6,15 +6,15 @@ The main toolbar consists of the following button:
 .. figure:: _static/mainToolbar.png
     :align: center
 	
-    Figure 1 Main toolbar (no simulation running).
+    Figure 3.1.2.1 - Main toolbar (no simulation running).
 	
 .. figure:: _static/mainToolbarInRun.png
     :align: center
 	
-    Figure 2 Main toolbar (with simulation running).
+    Figure 3.1.2.2 - Main toolbar (with simulation running).
 	
 	
-The first four (“Run”, “Run for”, “Batch”, "Pause" and “Stop”) control the initiation and cessation of simulation runs. These commands can also be accessed from the “Command” menu. Further detail on these actions can be found in 3.3.1 and 3.3.2.
+The first four (“Run”, “Run for”, “Batch”, "Pause" and “Stop”) control the initiation and cessation of simulation runs. These commands can also be accessed from the _'"Commands"': mainmenu menu. Further detail on these actions can be found in 3.3.1 and 3.3.2.
 
 The sixth and seventh buttons (“Reset” and “Reseed”) allow the resetting of the simulation and reseeding of the initial genomes in the population window prior to running a simulation. Further detail on these actions can be found in 3.3.3 and 3.3.4.
 
