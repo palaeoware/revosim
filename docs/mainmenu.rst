@@ -1,13 +1,13 @@
-.. mainmenu:
+.. _mainmenu:
 
 Main Menu
 =========
 
 The Main Menu, located at the top of the program window, allows access to all program actions, functions, and settings. The menu is currently sub-divided into three sections:
 
-1. Commands
-2. Tools
-3. Help
+1. :ref:`_mainmenu-commands`
+2. :ref:`_mainmenu-tools`
+3. :ref:`_mainmenu-help`
 
 .. _mainmenu-commands:
 
