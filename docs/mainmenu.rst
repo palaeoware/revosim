@@ -1,3 +1,5 @@
+.. mainmenu:
+
 Main Menu
 =========
 
@@ -7,6 +9,8 @@ The Main Menu, located at the top of the program window, allows access to all pr
 2. Tools
 3. Help
 
+.. _mainmenu-commands:
+
 Commands
 --------
 
@@ -15,6 +19,8 @@ Commands
 
 The Commands menu holds the majority of available actions and program functions related to running of one or more siumulation.
 
+.. _mainmenu-tools:
+
 Tools
 -----
 
@@ -22,6 +28,8 @@ Tools
     :align: center
 
 The Tools menu allows access to the built-in dockable widgets (called 'Docks') which alter or extend the core program functions. This includes the main simulation settings dock.
+
+.. _mainmenu-help:
 
 Help
 ----

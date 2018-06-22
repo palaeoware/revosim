@@ -1,3 +1,5 @@
+.. windowlayout
+
 Window Layout
 =============
 
