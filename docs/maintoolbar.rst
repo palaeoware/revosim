@@ -1,4 +1,4 @@
-..maintoolbar
+.. _maintoolbar:
 
 Main Toolbar
 ============
@@ -20,7 +20,9 @@ The first four (“Run”, “Run for”, “Batch”, "Pause" and “Stop”) c
 
 The sixth and seventh buttons (“Reset” and “Reseed”) allow the resetting of the simulation and reseeding of the initial genomes in the population window prior to running a simulation. Further detail on these actions can be found in 3.3.3 and 3.3.4.
 
-The eighth button (“Settings”) opens/closes the dockable settings panel.
+The eighth button (“Genome”) opens/closes the Genome Comparison Dock.
+
+The ninth button (“Settings”) opens/closes the Settings Dock.
 
 The final button (“About”) displays the program information; including version number, authors, and license information.
 
