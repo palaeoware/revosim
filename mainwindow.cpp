@@ -1753,7 +1753,7 @@ void MainWindow::RefreshPopulations()
 
         if(currentSelectedMode==8)pop_item->setPixmap(QPixmap::fromImage(*pop_image_colour));
         if(save_fails_settles->isChecked())
-            if(save_dir.mkpath("settles_fails/"))
+            if(save_dir.mkpath("breed_settle_fails/"))
                 pop_image_colour->save(QString(save_dir.path()+"/breed_settle_fails/EvoSim_breed_settle_fails_it_%1.png").arg(generation, 7, 10, QChar('0')));
 
     }
