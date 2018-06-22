@@ -152,25 +152,25 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //ARTS - Population Window dropdown must be after settings dock setup
     // 0 = Population count
-    // 1 = Mean fitnessFails (R-Breed, G=Settle)
+    // 1 = Mean fitness
     // 2 = Coding genome as colour
     // 3 = NonCoding genome as colour
     // 4 = Gene Frequencies
     // 5 = Breed Attempts
     // 6 = Breed Fails
     // 7 = Settles
-    // 8 = Settle Fails
+    // 8 = Settle Fails (R=Breed, G=Settle)
     // 9 = Breed Fails 2
     // 10 = Species
-    ui->populationWindowComboBox->addItem("Population count",QVariant(0));
-    ui->populationWindowComboBox->addItem("Mean fitnessFails (R-Breed, G=Settle)",QVariant(1));
-    ui->populationWindowComboBox->addItem("Coding genome as colour",QVariant(2));
-    ui->populationWindowComboBox->addItem("NonCoding genome as colour",QVariant(3));
+    ui->populationWindowComboBox->addItem("Population Count",QVariant(0));
+    ui->populationWindowComboBox->addItem("Mean Fitness",QVariant(1));
+    ui->populationWindowComboBox->addItem("Coding Genome as Colour",QVariant(2));
+    ui->populationWindowComboBox->addItem("NonCoding Genome as Colour",QVariant(3));
     ui->populationWindowComboBox->addItem("Gene Frequencies",QVariant(4));
     //ui->populationWindowComboBox->addItem("Breed Attempts",QVariant(5));
     //ui->populationWindowComboBox->addItem("Breed Fails",QVariant(6));
     ui->populationWindowComboBox->addItem("Settles",QVariant(7));
-    ui->populationWindowComboBox->addItem("Settle Fails",QVariant(8));
+    ui->populationWindowComboBox->addItem("Breed/Settle Fails (R=Breed, G=Settle)",QVariant(8));
     //ui->populationWindowComboBox->addItem("Breed Fails 2",QVariant(9));
     ui->populationWindowComboBox->addItem("Species",QVariant(10));
 
@@ -579,8 +579,8 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     save_settles = new QCheckBox("Settles");
     save_settles->setToolTip("<font>Turn on/off to log the 'Settles' as an image.</font>");
     images_grid->addWidget(save_settles,5,1,1,1);
-    save_fails_settles = new QCheckBox("Fails + Settles");
-    save_fails_settles->setToolTip("<font>Turn on/off to log the 'Fails + Settles' as an image.</font>");
+    save_fails_settles = new QCheckBox("Breed/Settle Fails");
+    save_fails_settles->setToolTip("<font>Turn on/off to log the 'Breed/Settle Fails' as an image.</font>");
     images_grid->addWidget(save_fails_settles,5,2,1,1);
     save_environment = new QCheckBox("Environment");
     save_environment->setToolTip("<font>Turn on/off to log the 'Environment' as an image.</font>");
@@ -1389,14 +1389,14 @@ int MainWindow::ScaleFails(int fails, float gens)
 void MainWindow::on_populationWindowComboBox_currentIndexChanged(int index)
 {
     // 0 = Population count
-    // 1 = Mean fitnessFails (R-Breed, G=Settle)
+    // 1 = Mean fitness
     // 2 = Coding genome as colour
     // 3 = NonCoding genome as colour
     // 4 = Gene Frequencies
     // 5 = Breed Attempts
     // 6 = Breed Fails
     // 7 = Settles
-    // 8 = Settle Fails
+    // 8 = Breed/Settle Fails (R=Breed, G=Settle)
     // 9 = Breed Fails 2
     // 10 = Species
     int currentSelectedMode = ui->populationWindowComboBox->itemData(index).toInt();
@@ -1432,7 +1432,7 @@ void MainWindow::RefreshPopulations()
     // 5 = Breed Attempts
     // 6 = Breed Fails
     // 7 = Settles
-    // 8 = Settle Fails === Fails (R-Breed, G=Settle)
+    // 8 = Settle Fails === Fails (R=Breed, G=Settle)
     // 9 = Breed Fails 2
     // 10 = Species
 
@@ -1718,7 +1718,7 @@ void MainWindow::RefreshPopulations()
                 pop_image->save(QString(save_dir.path()+"/settles/EvoSim_settles_it_%1.png").arg(generation, 7, 10, QChar('0')));
     }
 
-    // (8) Settle Fails === Fails
+    // (8) Breed/Settle Fails
     //RJG - this now combines breed fails (red) and settle fails (green)
     if (currentSelectedMode==8||save_fails_settles->isChecked())
     {
@@ -1754,7 +1754,7 @@ void MainWindow::RefreshPopulations()
         if(currentSelectedMode==8)pop_item->setPixmap(QPixmap::fromImage(*pop_image_colour));
         if(save_fails_settles->isChecked())
             if(save_dir.mkpath("settles_fails/"))
-                pop_image_colour->save(QString(save_dir.path()+"/settles_fails/EvoSim_settles_fails_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                pop_image_colour->save(QString(save_dir.path()+"/breed_settle_fails/EvoSim_breed_settle_fails_it_%1.png").arg(generation, 7, 10, QChar('0')));
 
     }
 
