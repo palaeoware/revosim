@@ -60,6 +60,18 @@ All documentation for REvoSim is online at [http://revosim.readthedocs.io/](http
 
 _____
 
+## 6. Contributing to the code
+
+Contribution to the code in this repository is welcome. Please read the [Repository Contribution](https://github.com/palaeoware/repoconventions)  document for a guide to our coding style and repository structure before submitting any code updates.
+
+_____
+
+
+## 7. Bug reporting and feature requests
+
+Bug reporting and feature requests should be made through the [GitHub Issues](../../issues) page for this repository. We will aim to respond to all issues and feature requests in a timely manner. 
+
+
 t:@palaeoware
 
 w:https://github.com/palaeoware
