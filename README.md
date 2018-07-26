@@ -23,6 +23,8 @@ CONTENTS:
 3. Installation
 4. Minimum Requirments
 5. Documentation
+6. Contributing to the code
+7. Bug reporting and feature requests
 
 _____
 
