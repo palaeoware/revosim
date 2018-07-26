@@ -70,14 +70,15 @@ public:
     QString ExtinctOrigin(QString filename);
     QString SpeciesRatesOfChange(QString filename);
     QString Stasis(QString filename, int slot_count, float percentilecut, int qualifyingslotcount);
-    QString CountPeaks(int r,int g,int b);
+    QString CountPeaks(int r, int g, int b);
 
     int find_closest_index(QList <quint64>time_list, float look_for, float slot_width);
     QString MakeNewick(LogSpecies *root, quint64 min_speciessize, bool allowexclude);
     QString DumpData(LogSpecies *root, quint64 min_speciessize, bool allowexclude);
     static QString ReturnBinary(quint64 genome);
 private:
-    void MakeListRecursive(QList<quint64> *magiclist, QMap <quint64, logged_species> *species_list, quint64 ID, int insertpos);
+    void MakeListRecursive(QList<quint64> *magiclist, QMap <quint64, logged_species> *species_list,
+                           quint64 ID, int insertpos);
 };
 
 

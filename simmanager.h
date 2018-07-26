@@ -35,7 +35,7 @@
 // Provides globals for the simulation - lookup tables for example
 // Only one instance. Single instance - which is the only true global
 
-//Some defines 
+//Some defines
 #define RAND_SEED 10000
 #define PREROLLED_RANDS 60000
 
@@ -99,11 +99,11 @@ extern quint32 totalfit[GRID_X][GRID_Y]; // ----RJG - Sum fitness critters in ea
 extern quint64 generation;
 
 //These next to hold the babies... old style arrays for max speed
-extern quint64 newgenomes[GRID_X*GRID_Y*SLOTS_PER_GRID_SQUARE*2];
-extern quint32 newgenomeX[GRID_X*GRID_Y*SLOTS_PER_GRID_SQUARE*2];
-extern quint32 newgenomeY[GRID_X*GRID_Y*SLOTS_PER_GRID_SQUARE*2];
-extern int newgenomeDisp[GRID_X*GRID_Y*SLOTS_PER_GRID_SQUARE*2];
-extern quint64 newgenomespecies[GRID_X*GRID_Y*SLOTS_PER_GRID_SQUARE*2];
+extern quint64 newgenomes[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];
+extern quint32 newgenomeX[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];
+extern quint32 newgenomeY[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];
+extern int newgenomeDisp[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];
+extern quint64 newgenomespecies[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];
 extern int newgenomecount;
 extern int envchangerate;
 extern int speciesSamples; //no longer used - keep for backwards compat of files
@@ -141,7 +141,7 @@ extern QList<species> oldspecieslist;
 extern QList< QList<species> > archivedspecieslists;
 extern quint64 nextspeciesid;
 extern LogSpecies *rootspecies;
-extern QHash<quint64,LogSpecies *> LogSpeciesById;
+extern QHash<quint64, LogSpecies *> LogSpeciesById;
 
 extern QList<uint> species_colours;
 extern quint8 species_mode;
@@ -171,7 +171,8 @@ public:
     void SetupRun();
     bool iterate(int emode, bool interpolate);
     int iterate_parallel(int firstx, int lastx, int newgenomes_local, int *KillCount_local);
-    int settle_parallel(int newgenomecounts_start, int newgenomecounts_end,int *trycount_local, int *settlecount_local, int *birthcounts_local);
+    int settle_parallel(int newgenomecounts_start, int newgenomecounts_end, int *trycount_local,
+                        int *settlecount_local, int *birthcounts_local);
 
     quint8 Rand8();
     quint32 Rand32();

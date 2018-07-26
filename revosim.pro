@@ -51,5 +51,6 @@ RESOURCES += \
 CONFIG += c++11
 
 DISTFILES += \
-    LICENSE.md
+    LICENSE.md \
+    .astylerc
 

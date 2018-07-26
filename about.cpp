@@ -42,16 +42,17 @@ About::About(QWidget *parent) :
     ui->textLabel_1->setAlignment(Qt::AlignCenter);
 
     ui->textLabel_2->setWordWrap(true);
-    ui->textLabel_2->setText("This version of " + QString(PRODUCTNAME) + " was compiled on the date shown above. It was coded by:"
-                       "<br><br><b>Mark Sutton</b> (m.sutton@imperial.ac.uk)<br><b>Russell Garwood</b> (russell.garwood@gmail.com)<br><b>Alan R.T. Spencer</b> (alan.spencer@imperial.ac.uk)"
-                       "<br><br>Reports are appreciated, and comments, suggestions, and feature requests are welcome.");
+    ui->textLabel_2->setText("This version of " + QString(PRODUCTNAME) +
+                             " was compiled on the date shown above. It was coded by:"
+                             "<br><br><b>Mark Sutton</b> (m.sutton@imperial.ac.uk)<br><b>Russell Garwood</b> (russell.garwood@gmail.com)<br><b>Alan R.T. Spencer</b> (alan.spencer@imperial.ac.uk)"
+                             "<br><br>Reports are appreciated, and comments, suggestions, and feature requests are welcome.");
     ui->textLabel_2->setAlignment(Qt::AlignCenter);
 
 
     ui->textLabel_3->setWordWrap(true);
     ui->textLabel_3->setText("<b>Copyright and License:</b>"
                              "<br><br>" + QString(COPYRIGHT) +
-                             "<br><br>"+ QString(LICENCE) +" (see below).");
+                             "<br><br>" + QString(LICENCE) + " (see below).");
     ui->textLabel_3->setAlignment(Qt::AlignCenter);
 
     ui->textBrowser->setHtml(returnLicense());

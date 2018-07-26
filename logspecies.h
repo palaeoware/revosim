@@ -39,7 +39,7 @@ public:
     QString newickstring(int childindex, quint64 last_time_base, bool killfluff);
     bool isfluff();
     int maxsize_inc_children();
-    QString dump_data(int childindex, quint64 last_time_base, bool killfluff, quint64 parentid=0);
+    QString dump_data(int childindex, quint64 last_time_base, bool killfluff, quint64 parentid = 0);
     QString my_data_line(quint64 start, quint64 end, quint64 myid, quint64 pid);
 };
 

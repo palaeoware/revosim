@@ -52,24 +52,22 @@ LogSpecies::~LogSpecies()
  * \param pid
  * \return QString
  */
-QString LogSpecies::my_data_line(quint64 start, quint64 end,quint64 myid, quint64 pid)
+QString LogSpecies::my_data_line(quint64 start, quint64 end, quint64 myid, quint64 pid)
 {
     QString outstring;
     QTextStream out(&outstring);
 
-    foreach (LogSpeciesDataItem *di, data_items)
-    {
-        if (di->generation>=start && di->generation<end)
-        {
-            out<<myid<<","<<pid<<",";
-            out<<di->generation<<","<<di->size<<","<<di->sample_genome<<","
-              <<AnalysisTools::ReturnBinary(di->sample_genome)<<","
-              <<di->genomic_diversity<<","<<di->cells_occupied<<","
-             <<di->geographical_range<<","<<di->centroid_range_x<<","<<di->centroid_range_y<<",";
-            out<<di->mean_fitness<<",";
-            out<<di->min_env[0]<<","<<di->min_env[1]<<","<<di->min_env[2]<<",";
-            out<<di->max_env[0]<<","<<di->max_env[1]<<","<<di->max_env[2]<<",";
-            out<<di->mean_env[0]<<","<<di->mean_env[1]<<","<<di->mean_env[2]<<"\n";
+    foreach (LogSpeciesDataItem *di, data_items) {
+        if (di->generation >= start && di->generation < end) {
+            out << myid << "," << pid << ",";
+            out << di->generation << "," << di->size << "," << di->sample_genome << ","
+                << AnalysisTools::ReturnBinary(di->sample_genome) << ","
+                << di->genomic_diversity << "," << di->cells_occupied << ","
+                << di->geographical_range << "," << di->centroid_range_x << "," << di->centroid_range_y << ",";
+            out << di->mean_fitness << ",";
+            out << di->min_env[0] << "," << di->min_env[1] << "," << di->min_env[2] << ",";
+            out << di->max_env[0] << "," << di->max_env[1] << "," << di->max_env[2] << ",";
+            out << di->mean_env[0] << "," << di->mean_env[1] << "," << di->mean_env[2] << "\n";
         }
     }
     return outstring;
@@ -86,49 +84,43 @@ QString LogSpecies::my_data_line(quint64 start, quint64 end,quint64 myid, quint6
  * \param parentid
  * \return QString
  */
-QString LogSpecies::dump_data(int childindex, quint64 last_time_base, bool killfluff, quint64 parentid)
+QString LogSpecies::dump_data(int childindex, quint64 last_time_base, bool killfluff,
+                              quint64 parentid)
 {
     //modelled on newickstring
-    int cc=children.count();
-    quint64 myid=ids++;
-    if (last_time_base==0) last_time_base=timeOfFirstAppearance;
-    if (cc<=childindex)
-        return my_data_line(last_time_base,timeOfLastAppearance,myid,parentid);
-    else
-    {
-        int nextchildindex=cc; //for if it runs off the end
-        quint64 thisgeneration=0;
-        bool genvalid=false;
-        for (int i=childindex; i<cc; i++)
-        {
-            if (!genvalid || children[i]->timeOfFirstAppearance==thisgeneration)
-            {
-                if (!(children[i]->isfluff()))
-                {
-                    genvalid=true;
-                    thisgeneration=children[i]->timeOfFirstAppearance;
+    int cc = children.count();
+    quint64 myid = ids++;
+    if (last_time_base == 0) last_time_base = timeOfFirstAppearance;
+    if (cc <= childindex)
+        return my_data_line(last_time_base, timeOfLastAppearance, myid, parentid);
+    else {
+        int nextchildindex = cc; //for if it runs off the end
+        quint64 thisgeneration = 0;
+        bool genvalid = false;
+        for (int i = childindex; i < cc; i++) {
+            if (!genvalid || children[i]->timeOfFirstAppearance == thisgeneration) {
+                if (!(children[i]->isfluff())) {
+                    genvalid = true;
+                    thisgeneration = children[i]->timeOfFirstAppearance;
                 }
-            }
-            else
-            {
-                nextchildindex=i;
+            } else {
+                nextchildindex = i;
                 break;
             }
         }
 
-       if (!genvalid) return my_data_line(last_time_base,timeOfLastAppearance,myid,parentid);
+        if (!genvalid) return my_data_line(last_time_base, timeOfLastAppearance, myid, parentid);
 
         //now recurse onto (a) this with new settings, and (b) the children
         QString s;
         QTextStream out(&s);
-        out<<dump_data(nextchildindex,thisgeneration,killfluff,myid); //my 'offspring'
-        for (int i=childindex; i<nextchildindex; i++)
-        {
+        out << dump_data(nextchildindex, thisgeneration, killfluff, myid); //my 'offspring'
+        for (int i = childindex; i < nextchildindex; i++) {
 
             if (!(children[i]->isfluff()))
-            out<<children.at(i)->dump_data(0,thisgeneration,killfluff,myid);
+                out << children.at(i)->dump_data(0, thisgeneration, killfluff, myid);
         }
-        out<<my_data_line(last_time_base,thisgeneration,myid,parentid);
+        out << my_data_line(last_time_base, thisgeneration, myid, parentid);
 
         return s;
     }
@@ -144,11 +136,10 @@ QString LogSpecies::dump_data(int childindex, quint64 last_time_base, bool killf
  */
 int LogSpecies::maxsize_inc_children()
 {
-    int recurseMaxSize=maxsize;
-    for (int i=0; i<children.count(); i++)
-    {
-        int maxSize=children[i]->maxsize_inc_children();
-        if (maxSize>recurseMaxSize) recurseMaxSize=maxSize;
+    int recurseMaxSize = maxsize;
+    for (int i = 0; i < children.count(); i++) {
+        int maxSize = children[i]->maxsize_inc_children();
+        if (maxSize > recurseMaxSize) recurseMaxSize = maxSize;
     }
     return recurseMaxSize;
 }
@@ -166,17 +157,17 @@ int LogSpecies::maxsize_inc_children()
 bool LogSpecies::isfluff()
 {
     // Always fluff if only in one iteration
-    if (timeOfFirstAppearance==timeOfLastAppearance) return true;
+    if (timeOfFirstAppearance == timeOfLastAppearance) return true;
 
     // Is this a 'fluff' species - i.e. one has no descendants and is smaller than minspeciessize?
     // Used by filter of newickstring and other recursives
-    if (children.count()!=0 && allowExcludeWithDescendants==false)
+    if (children.count() != 0 && allowExcludeWithDescendants == false)
         return false;
 
-    int recurseMaxSize=maxsize;
-    if (allowExcludeWithDescendants) recurseMaxSize=maxsize_inc_children();
+    int recurseMaxSize = maxsize;
+    if (allowExcludeWithDescendants) recurseMaxSize = maxsize_inc_children();
 
-    if (recurseMaxSize<=minspeciessize) return true;
+    if (recurseMaxSize <= minspeciessize) return true;
 
     return false;
 }
@@ -200,60 +191,50 @@ QString LogSpecies::newickstring(int childindex, quint64 last_time_base, bool ki
 {
     //recursively generate Newick-format text description of tree
     //bl is branch length. For simple nodes - just last appearance time - first
-    int cc=children.count();
+    int cc = children.count();
     int bl;
-    quint64 myid=ids++;
-    if (last_time_base==0) last_time_base=timeOfFirstAppearance;
-    if (cc<=childindex)
-    {
-        bl=timeOfLastAppearance-last_time_base;
+    quint64 myid = ids++;
+    if (last_time_base == 0) last_time_base = timeOfFirstAppearance;
+    if (cc <= childindex) {
+        bl = timeOfLastAppearance - last_time_base;
         QString s;
-        s.sprintf("ID%ld-%d:%d",myid,maxsize,bl);
+        s.sprintf("ID%ld-%d:%d", myid, maxsize, bl);
         return s;
-    }
-    else
-    {
-        int nextchildindex=cc; //for if it runs off the end
-        quint64 thisgeneration=0;
-        bool genvalid=false;
-        for (int i=childindex; i<cc; i++)
-        {
-            if (!genvalid || children[i]->timeOfFirstAppearance==thisgeneration)
-            {
-                if (!(children[i]->isfluff()))
-                {
-                    genvalid=true;
-                    thisgeneration=children[i]->timeOfFirstAppearance;
+    } else {
+        int nextchildindex = cc; //for if it runs off the end
+        quint64 thisgeneration = 0;
+        bool genvalid = false;
+        for (int i = childindex; i < cc; i++) {
+            if (!genvalid || children[i]->timeOfFirstAppearance == thisgeneration) {
+                if (!(children[i]->isfluff())) {
+                    genvalid = true;
+                    thisgeneration = children[i]->timeOfFirstAppearance;
                 }
-            }
-            else
-            {
+            } else {
                 //OK, run too far - i is now next childindex
-                nextchildindex=i;
+                nextchildindex = i;
                 break;
             }
         }
 
-        if (!genvalid)
-        {
+        if (!genvalid) {
             //actually no children
-            bl=timeOfLastAppearance-last_time_base;
+            bl = timeOfLastAppearance - last_time_base;
             QString s;
-            s.sprintf("ID%ld-%d:%d",myid,maxsize,bl);
+            s.sprintf("ID%ld-%d:%d", myid, maxsize, bl);
             return s;
         }
-        bl=thisgeneration-last_time_base;
+        bl = thisgeneration - last_time_base;
 
         //now recurse onto (a) this with new settings, and (b) the children
         QString s;
         QTextStream out(&s);
-        out<<"("<<newickstring(nextchildindex,thisgeneration,killfluff);
-        for (int i=childindex; i<nextchildindex; i++)
-        {
+        out << "(" << newickstring(nextchildindex, thisgeneration, killfluff);
+        for (int i = childindex; i < nextchildindex; i++) {
             if (!(children[i]->isfluff()))
-            out<<","<<children.at(i)->newickstring(0,thisgeneration,killfluff);
+                out << "," << children.at(i)->newickstring(0, thisgeneration, killfluff);
         }
-        out<<")ID"<<myid<<"-"<<maxsize<<":"<<bl;
+        out << ")ID" << myid << "-" << maxsize << ":" << bl;
         return s;
     }
     return "ERROR"; //shouldn't get here!

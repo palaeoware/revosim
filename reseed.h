@@ -38,9 +38,9 @@ public:
     QList<QRadioButton *> radios;
 
 private slots:
-        void on_buttonBox_accepted();
-        void on_buttonBox_rejected();
-        void radio_toggled();
+    void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
+    void radio_toggled();
 
 private:
     Ui::reseed *ui;

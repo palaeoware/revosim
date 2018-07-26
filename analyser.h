@@ -53,9 +53,9 @@ public:
     QList <int> genome_count;
     QList<int> species_id;
     QList<int> lookup_persistent_species_ID;
-    int genome_groups[256*256]; //this is static array for speed
-    quint64 type_genomes_per_group[256*256];
-    int type_genome_groups[256*256];
+    int genome_groups[256 * 256]; //this is static array for speed
+    quint64 type_genomes_per_group[256 * 256];
+    int type_genome_groups[256 * 256];
     int next_type_genome;
 
 private:
