@@ -47,7 +47,7 @@ Each grid-square is visualized with a grey-level representing the number of succ
 Breed/Settle Fails (R=Breed; G=Settle)
 --------------------------------------
 
-Each grid-square is assigned a colour representing the number of ‘fails’ since the last visualization. The number of ‘breed fails’ (attempts to breed that were aborted due to compatibility) provides the red level, and the number of ‘settle fails’ (attempts to settle that resulted in a fitness of 0 and hence the death of the settling creature) provides the green level. Fail visualizations are scaled non-linearly (using v = 100f0.8, where f = mean fails per iteration, and v is visualized intensity on a scale 0-255). Fail visualization maps the edge of species or subspecies ranges, as it highlights cells where gene-flow is restricted by any mechanism.
+Each grid-square is assigned a colour representing the number of ‘fails’ since the last visualization. The number of ‘breed fails’ (attempts to breed that were aborted due to compatibility) provides the red level, and the number of ‘settle fails’ (attempts to settle that resulted in a fitness of 0 and hence the death of the settling creature) provides the green level. Fail visualizations are scaled non-linearly (using *v* = 100*f*0.8, where *f* = mean fails per iteration, and v is visualized intensity on a scale 0-255). Fail visualization maps the edge of species or subspecies ranges, as it highlights cells where gene-flow is restricted by any mechanism.
 
 Species
 -------
