@@ -42,6 +42,8 @@ Species::Species()
     size = -1;
     originTime = -1;
     logSpeciesStructure = (LogSpecies *)nullptr;
+
+    qDebug() << size;
 }
 
 /*!
@@ -251,7 +253,7 @@ void Analyser::groupsGenealogicalTracker()
         if (TheSimManager->warning_count > 0) {
             count++;
             prBar.setValue(count);
-            MainWin->process_app_events();
+            MainWin->processAppEvents();
         }
 
         QSet<quint64> *speciesset = ii.value(); // Get the set of genomes
@@ -430,7 +432,7 @@ void Analyser::groupsGenealogicalTracker()
                     newlogspecies->maxSize = speciessize;
                     thislogspecies->children.append(newlogspecies);
 
-                    newlogspecies->data_items.append(newdata);
+                    newlogspecies->dataItems.append(newdata);
                     LogSpeciesById.insert(nextspeciesid, newlogspecies);
                     newsp.logSpeciesStructure = newlogspecies;
                     logspeciespointers[groupcode] = newlogspecies;
@@ -450,7 +452,7 @@ void Analyser::groupsGenealogicalTracker()
                             newsp.logSpeciesStructure->timeOfLastAppearance = generation;
                             LogSpeciesDataItem *newdata = new LogSpeciesDataItem;
                             newdata->generation = generation;
-                            newsp.logSpeciesStructure->data_items.append(newdata);
+                            newsp.logSpeciesStructure->dataItems.append(newdata);
                         }
                     }
                 }
@@ -474,13 +476,13 @@ void Analyser::groupsGenealogicalTracker()
                 jj.next();
                 qint32 groupcode = jj.key(); //get its code
                 LogSpecies *thislogspecies = logspeciespointers[groupcode];
-                LogSpeciesDataItem *thisdataitem = thislogspecies->data_items.last();
+                LogSpeciesDataItem *thisdataitem = thislogspecies->dataItems.last();
 
                 quint64 speciessize = 0; //zero its size
 
                 quint64 samplegenome;
                 QSet<quint16> cellsoc;
-                thisdataitem->genomic_diversity = 0;
+                thisdataitem->genomicDiversity = 0;
                 quint64 sumfit = 0;
 
                 int mincol[3];
@@ -509,7 +511,7 @@ void Analyser::groupsGenealogicalTracker()
                     //and fix data in critters for them
                 {
                     if (groupcodes[iii] == groupcode) {
-                        thisdataitem->genomic_diversity++;
+                        thisdataitem->genomicDiversity++;
                         QList<quint32> *updatelist = slotswithgenome.value(speciesID)->value(genomes[iii]);
                         //retrieve the list of positions for this genome
                         speciessize += updatelist->count(); //add its count to size
@@ -549,29 +551,29 @@ void Analyser::groupsGenealogicalTracker()
                             //TODO - allow for toroidal!
                             //to do - put correct data in this item
 
-                            //newdata->centroid_range_x=n; // mean of all x's - but allow for toroidal somehow
-                            //newdata->centroid_range_y=m;
-                            //newdata->geographical_range=0;  //max (max-min x, max-min y), but allow for toroidal
+                            //newdata->centroidRangeX=n; // mean of all x's - but allow for toroidal somehow
+                            //newdata->centroidRangeY=m;
+                            //newdata->geographicalRange=0;  //max (max-min x, max-min y), but allow for toroidal
                         }
                         samplegenome = genomes[iii];
                     }
                 }
-                thisdataitem->mean_fitness = (quint16)((sumfit * 1000) / speciessize);
-                thisdataitem->sample_genome = samplegenome;
+                thisdataitem->meanFitness = (quint16)((sumfit * 1000) / speciessize);
+                thisdataitem->sampleGenome = samplegenome;
                 thisdataitem->size = speciessize;
-                thisdataitem->cells_occupied = cellsoc.count();
-                thisdataitem->max_env[0] = maxcol[0];
-                thisdataitem->max_env[1] = maxcol[1];
-                thisdataitem->max_env[2] = maxcol[2];
-                thisdataitem->min_env[0] = mincol[0];
-                thisdataitem->min_env[1] = mincol[1];
-                thisdataitem->min_env[2] = mincol[2];
-                thisdataitem->mean_env[0] = (quint8)(sumcol[0] / speciessize);
-                thisdataitem->mean_env[1] = (quint8)(sumcol[1] / speciessize);
-                thisdataitem->mean_env[2] = (quint8)(sumcol[2] / speciessize);
-                thisdataitem->centroid_range_x = (quint8)(sumxpos / speciessize);
-                thisdataitem->centroid_range_y = (quint8)(sumypos / speciessize);
-                thisdataitem->geographical_range = (quint8)(qMax(maxx - minx, maxy - miny));
+                thisdataitem->cellsOccupied = cellsoc.count();
+                thisdataitem->maxEnvironment[0] = maxcol[0];
+                thisdataitem->maxEnvironment[1] = maxcol[1];
+                thisdataitem->maxEnvironment[2] = maxcol[2];
+                thisdataitem->minEnvironment[0] = mincol[0];
+                thisdataitem->minEnvironment[1] = mincol[1];
+                thisdataitem->minEnvironment[2] = mincol[2];
+                thisdataitem->meanEnvironment[0] = (quint8)(sumcol[0] / speciessize);
+                thisdataitem->meanEnvironment[1] = (quint8)(sumcol[1] / speciessize);
+                thisdataitem->meanEnvironment[2] = (quint8)(sumcol[2] / speciessize);
+                thisdataitem->centroidRangeX = (quint8)(sumxpos / speciessize);
+                thisdataitem->centroidRangeY = (quint8)(sumypos / speciessize);
+                thisdataitem->geographicalRange = (quint8)(qMax(maxx - minx, maxy - miny));
             }
         }
 
@@ -579,7 +581,7 @@ void Analyser::groupsGenealogicalTracker()
 
     if (TheSimManager->warning_count > 0) MainWin->statusProgressBar(&prBar, false);
 
-//Nearly there! Just need to put size data into correct species
+    //Nearly there! Just need to put size data into correct species
     for (int f = 0; f < newspecieslist.count(); f++) { //go through new species list
         quint32 newsize = (quint32)speciessizes[newspecieslist[f].ID];
         newspecieslist[f].size = newsize;
@@ -605,7 +607,7 @@ void Analyser::groupsGenealogicalTracker()
     }
     //Done!
 
-//RJG - need to give user heads up if species ID is taking > 5 seconds, and allow them to turn it off.
+    //RJG - need to give user heads up if species ID is taking > 5 seconds, and allow them to turn it off.
     if (t.elapsed() > 5000)TheSimManager->warning_count++;
 }
 
@@ -942,5 +944,5 @@ int Analyser::speciesIndex(quint64 genome)
         return -1;
     else
         return lookupPersistentSpeciesID[speciesID[i -
-                                                                    genomeList.begin()]]; // this is QT bodgy way to get index apparently
+                                                               genomeList.begin()]]; // this is QT bodgy way to get index apparently
 }

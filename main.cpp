@@ -15,15 +15,15 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY.
  */
 
+#include "darkstyletheme.h"
+#include "mainwindow.h"
+#include "version.h"
+
 #include <QApplication>
+#include <QDesktopWidget>
 #include <QSplashScreen>
 #include <QString>
 #include <QStyle>
-#include <QDesktopWidget>
-
-#include "version.h"
-#include "mainwindow.h"
-#include "darkstyletheme.h"
 
 /*!
  * \brief qMain
@@ -52,8 +52,7 @@ int main(int argc, char *argv[])
     QPixmap splashPixmap(":/palaeoware_logo_square.png");
     QSplashScreen splash(splashPixmap, Qt::WindowStaysOnTopHint);
     splash.show();
-    splash.showMessage("<font><b>" + QString(PRODUCTNAME) + " - " + QString(PRODUCTTAG) + "</b></font>",
-                       Qt::AlignHCenter, Qt::white);
+    splash.showMessage("<font><b>" + QString(PRODUCTNAME) + " - " + QString(PRODUCTTAG) + "</b></font>", Qt::AlignHCenter, Qt::white);
     application.processEvents();
 
     MainWindow window;

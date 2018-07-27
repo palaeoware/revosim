@@ -129,21 +129,21 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->genomeComparisonContent->setLayout(genomeLayout);
 
     //create scenes, add to the GVs
-    envscene = new EnvironmentScene;
-    ui->GV_Environment->setScene(envscene);
-    envscene->mainWindow = this;
+    environmentScene = new EnvironmentScene;
+    ui->GV_Environment->setScene(environmentScene);
+    environmentScene->mainWindow = this;
 
-    popscene = new PopulationScene;
-    popscene->mainWindow = this;
-    ui->GV_Population->setScene(popscene);
+    populationScene = new PopulationScene;
+    populationScene->mainWindow = this;
+    ui->GV_Population->setScene(populationScene);
 
     //add images to the scenes
     env_item = new QGraphicsPixmapItem();
-    envscene->addItem(env_item);
+    environmentScene->addItem(env_item);
     env_item->setZValue(0);
 
     pop_item = new QGraphicsPixmapItem();
-    popscene->addItem(pop_item);
+    populationScene->addItem(pop_item);
 
     pop_image = new QImage(gridX, gridY, QImage::Format_Indexed8);
     QVector <QRgb> clut(256);
@@ -189,17 +189,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     TheSimManager = new SimManager;
 
-    pauseflag = false;
+    pauseFlag = false;
 
     //RJG - load default environment image to allow program to run out of box (quicker for testing)
     EnvFiles.append(":/EvoSim_default_env.png");
     CurrentEnvFile = 0;
     TheSimManager->loadEnvironmentFromFile(1);
 
-    FinishRun();//sets up enabling
+    finishRun();//sets up enabling
     TheSimManager->SetupRun();
-    NextRefresh = 0;
-    Report();
+    nextRefresh = 0;
+    report();
 
     //RJG - Set batch variables
     batch_running = false;
@@ -599,19 +599,19 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     pollingRateLabel->setObjectName("pollingRateLabel");
     pollingRateGrid->addWidget(pollingRateLabel, 1, 1, 1, 2);
 
-    RefreshRate = 50;
+    refreshRate = 50;
     QLabel *refreshRateLabel = new QLabel("Refresh/polling rate:");
     refreshRateLabel->setObjectName("refreshRateLabel");
     refreshRateLabel->setToolTip("<font>Number of iteration between each logging and screen data refresh event.</font>");
     refreshRateSpin = new QSpinBox;
     refreshRateSpin->setMinimum(1);
     refreshRateSpin->setMaximum(10000);
-    refreshRateSpin->setValue(RefreshRate);
+    refreshRateSpin->setValue(refreshRate);
     refreshRateSpin->setToolTip("<font>Number of iteration between each logging and screen data refresh event.</font>");
     pollingRateGrid->addWidget(refreshRateLabel, 2, 1);
     pollingRateGrid->addWidget(refreshRateSpin, 2, 2);
     connect(refreshRateSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
-        RefreshRate = i;
+        refreshRate = i;
     });
 
     //ARTS - Logging: Population & Environment
@@ -621,15 +621,15 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     imagesLabel->setObjectName("imagesLabel");
     images_grid->addWidget(imagesLabel, 1, 1, 1, 2);
 
-    save_population_count = new QCheckBox("Population count");
-    save_population_count->setToolTip("<font>Turn on/off to log the 'Population Count' as an image.</font>");
-    images_grid->addWidget(save_population_count, 2, 1, 1, 1);
-    save_mean_fitness = new QCheckBox("Mean fitness");
-    save_mean_fitness->setToolTip("<font>Turn on/off to log the 'Mean Fitness' as an image.</font>");
-    images_grid->addWidget(save_mean_fitness, 2, 2, 1, 1);
-    save_coding_genome_as_colour = new QCheckBox("Coding genome");
-    save_coding_genome_as_colour->setToolTip("<font>Turn on/off to log the 'Coding Genome' as an image.</font>");
-    images_grid->addWidget(save_coding_genome_as_colour, 3, 1, 1, 1);
+    savePopulationCount = new QCheckBox("Population count");
+    savePopulationCount->setToolTip("<font>Turn on/off to log the 'Population Count' as an image.</font>");
+    images_grid->addWidget(savePopulationCount, 2, 1, 1, 1);
+    saveMeanFitness = new QCheckBox("Mean fitness");
+    saveMeanFitness->setToolTip("<font>Turn on/off to log the 'Mean Fitness' as an image.</font>");
+    images_grid->addWidget(saveMeanFitness, 2, 2, 1, 1);
+    saveCodingGenomeAsColour = new QCheckBox("Coding genome");
+    saveCodingGenomeAsColour->setToolTip("<font>Turn on/off to log the 'Coding Genome' as an image.</font>");
+    images_grid->addWidget(saveCodingGenomeAsColour, 3, 1, 1, 1);
     save_non_coding_genome_as_colour = new QCheckBox("Noncoding genome");
     save_non_coding_genome_as_colour->setToolTip("<font>Turn on/off to log the 'Noncoding Genome' as an image.</font>");
     images_grid->addWidget(save_non_coding_genome_as_colour, 3, 2, 1, 1);
@@ -671,15 +671,15 @@ QDockWidget *MainWindow::createOutputSettingsDock()
         logging = i;
     });
 
-    autodump_checkbox = new QCheckBox("Automatically create detailed log on batch runs");
-    autodump_checkbox->setChecked(true);
-    autodump_checkbox->setToolTip("<font>Turn on/off this option to automatically write detailed log after batch runs</font>");
-    fileLoggingGrid->addWidget(autodump_checkbox, 3, 1, 1, 2);
+    autowrite_checkbox = new QCheckBox("Automatically create detailed log on batch runs");
+    autowrite_checkbox->setChecked(true);
+    autowrite_checkbox->setToolTip("<font>Turn on/off this option to automatically write detailed log after batch runs</font>");
+    fileLoggingGrid->addWidget(autowrite_checkbox, 3, 1, 1, 2);
 
-    QPushButton *dump_nwk = new QPushButton("Write data (including tree) for current run");
-    dump_nwk->setToolTip("<font>Use this option to manually trigger the writing of a detailed log after a run.</font>");
-    fileLoggingGrid->addWidget(dump_nwk, 4, 1, 1, 2);
-    connect(dump_nwk, SIGNAL (clicked()), this, SLOT(dump_run_data()));
+    QPushButton *write_nwk = new QPushButton("Write data (including tree) for current run");
+    write_nwk->setToolTip("<font>Use this option to manually trigger the writing of a detailed log after a run.</font>");
+    fileLoggingGrid->addWidget(write_nwk, 4, 1, 1, 2);
+    connect(write_nwk, SIGNAL (clicked()), this, SLOT(write_run_data()));
 
     exclude_without_descendants_checkbox = new QCheckBox("Exclude species without descendents");
     exclude_without_descendants_checkbox->setChecked(allowExcludeWithDescendants);
@@ -710,11 +710,11 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     advancedSettingsLabel->setObjectName("advancedSettingsLabel");
     advancedLoggingGrid->addWidget(advancedSettingsLabel, 1, 1, 1, 2);
 
-    gui_checkbox = new QCheckBox("Don't update GUI on refresh/poll");
-    gui_checkbox->setChecked(gui);
-    gui_checkbox->setToolTip("<font>Note: If you turn off GUI update you cannot log the population/environment windows using saved images.</font>");
-    advancedLoggingGrid->addWidget(gui_checkbox, 2, 1, 1, 2);
-    QObject::connect(gui_checkbox, SIGNAL (toggled(bool)), this,
+    guiCheckbox = new QCheckBox("Don't update GUI on refresh/poll");
+    guiCheckbox->setChecked(gui);
+    guiCheckbox->setToolTip("<font>Note: If you turn off GUI update you cannot log the population/environment windows using saved images.</font>");
+    advancedLoggingGrid->addWidget(guiCheckbox, 2, 1, 1, 2);
+    QObject::connect(guiCheckbox, SIGNAL (toggled(bool)), this,
                      SLOT(gui_checkbox_state_changed(bool)));
 
     //ARTS - Dock Grid Layout
@@ -946,10 +946,10 @@ void MainWindow::on_actionReset_triggered()
 
     //RJG - This resets all the species logging stuff as well as setting up the run
     TheSimManager->SetupRun();
-    NextRefresh = 0;
+    nextRefresh = 0;
 
     //ARTS - Update views based on the new reset simulation
-    RefreshPopulations();
+    refreshPopulations();
 }
 
 /*!
@@ -1017,25 +1017,25 @@ void MainWindow::on_actionStart_Sim_triggered()
         }
     }
 
-    RunSetUp();
+    runSetUp();
 
     ui->LabelBatch->setText(tr("1/1"));
 
-    while (stopflag == false) {
-        while (pauseflag == true) {
+    while (stopFlag == false) {
+        while (pauseFlag == true) {
             waitUntilPauseSignalIsEmitted();
-            pauseflag = false;
+            pauseFlag = false;
         }
 
-        Report();
+        report();
         qApp->processEvents();
         if (ui->actionGo_Slow->isChecked()) Sleeper::msleep(30);
 
-        //ARTS - set Stop flag to returns true if reached end... but why? It will fire the FinishRun() function at the end.
-        if (TheSimManager->iterate(environment_mode, environment_interpolate)) stopflag = true;
+        //ARTS - set Stop flag to returns true if reached end... but why? It will fire the finishRun() function at the end.
+        if (TheSimManager->iterate(environment_mode, environment_interpolate)) stopFlag = true;
     }
 
-    FinishRun();
+    finishRun();
 }
 
 /*!
@@ -1060,32 +1060,32 @@ void MainWindow::on_actionRun_for_triggered()
 
     ui->LabelBatch->setText(tr("1/1"));
 
-    RunSetUp();
+    runSetUp();
 
-    while (stopflag == false && i > 0) {
-        while (pauseflag == true) {
+    while (stopFlag == false && i > 0) {
+        while (pauseFlag == true) {
             waitUntilPauseSignalIsEmitted();
-            pauseflag = false;
+            pauseFlag = false;
         }
 
-        Report();
+        report();
         qApp->processEvents();
 
-        if (TheSimManager->iterate(environment_mode, environment_interpolate)) stopflag = true;
+        if (TheSimManager->iterate(environment_mode, environment_interpolate)) stopFlag = true;
         i--;
     }
 
-    if (autodump_checkbox->isChecked())dump_run_data();
+    if (autowrite_checkbox->isChecked())write_run_data();
 
     //ARTS Show finish message and run FinshRun()
-    if (stopflag == false) {
+    if (stopFlag == false) {
         QMessageBox::information(0, tr("Run For... Finished"),
                                  tr("The run for %1 iterations has finished.").arg(num_iterations));
-        FinishRun();
+        finishRun();
     } else {
         QMessageBox::information(0, tr("Run For... Stopped"),
                                  tr("The run for %1 iterations has been stopped at iteration %2.").arg(num_iterations).arg(i));
-        FinishRun();
+        finishRun();
     }
 }
 
@@ -1188,30 +1188,30 @@ void MainWindow::on_actionBatch_triggered()
             }
         }
 
-        RunSetUp();
+        runSetUp();
         int i = batch_iterations;
-        while (stopflag == false && i > 0) {
-            while (pauseflag == true) {
+        while (stopFlag == false && i > 0) {
+            while (pauseFlag == true) {
                 waitUntilPauseSignalIsEmitted();
-                pauseflag = false;
+                pauseFlag = false;
             }
 
-            Report();
+            report();
             qApp->processEvents();
 
             TheSimManager->iterate(environment_mode, environment_interpolate);
             i--;
         }
 
-        if (autodump_checkbox->isChecked())dump_run_data();
+        if (autowrite_checkbox->isChecked())write_run_data();
 
         runs++;
 
-        if (stopflag == false && runs < batch_target_runs) {
+        if (stopFlag == false && runs < batch_target_runs) {
             on_actionReset_triggered();
         }
 
-    } while (runs < batch_target_runs && stopflag == false);
+    } while (runs < batch_target_runs && stopFlag == false);
 
     //ARTS Show finish message and reset batch counters
     if ((runs) == batch_target_runs) {
@@ -1227,7 +1227,7 @@ void MainWindow::on_actionBatch_triggered()
     path->setText(save_path);
     runs = 0;
     batch_running = false;
-    FinishRun();
+    finishRun();
 }
 
 /*!
@@ -1239,15 +1239,15 @@ void MainWindow::on_actionBatch_triggered()
  */
 void MainWindow::on_actionPause_Sim_triggered()
 {
-    if (pauseflag == true) {
-        pauseflag = false;
+    if (pauseFlag == true) {
+        pauseFlag = false;
         ui->actionStop_Sim->setEnabled(true);
         ui->actionPause_Sim->setText(tr("Pause"));
         ui->actionPause_Sim->setToolTip(tr("Pause"));
         stopButton->setEnabled(true);
         pauseButton->setText(tr("Pause"));
     } else {
-        pauseflag = true;
+        pauseFlag = true;
         ui->actionStop_Sim->setEnabled(false);
         ui->actionPause_Sim->setText(tr("Resume"));
         ui->actionPause_Sim->setToolTip(tr("Resume"));
@@ -1259,21 +1259,21 @@ void MainWindow::on_actionPause_Sim_triggered()
 /*!
  * \brief MainWindow::on_actionStop_Sim_triggered
  *
- * Sets the stopflag to be true on Stop button/command trigger.
+ * Sets the stopFlag to be true on Stop button/command trigger.
  */
 void MainWindow::on_actionStop_Sim_triggered()
 {
-    stopflag = true;
+    stopFlag = true;
 }
 
 /*!
- * \brief MainWindow::RunSetUp
+ * \brief MainWindow::runSetUp
  *
  * Sets up the defaults for a simulation run.
  */
-void MainWindow::RunSetUp()
+void MainWindow::runSetUp()
 {
-    stopflag = false;
+    stopFlag = false;
 
     // Run start action
     ui->actionStart_Sim->setEnabled(false);
@@ -1330,17 +1330,17 @@ void MainWindow::RunSetUp()
     }
 
     timer.restart();
-    NextRefresh = RefreshRate;
+    nextRefresh = refreshRate;
 
     if (logging_checkbox->isChecked())WriteLog();
 }
 
 /*!
- * \brief MainWindow::FinishRun
+ * \brief MainWindow::finishRun
  *
  * Resets the buttons/commands back to a pre-run state.
  */
-void MainWindow::FinishRun()
+void MainWindow::finishRun()
 {
     // Run start action
     ui->actionStart_Sim->setEnabled(true);
@@ -1384,22 +1384,22 @@ void MainWindow::closeEvent(QCloseEvent *e)
 }
 
 /*!
- * \brief MainWindow::Report
+ * \brief MainWindow::report
  *
  * Updates reports, and does logging.
  */
-void MainWindow::Report()
+void MainWindow::report()
 {
 
-    if (--NextRefresh > 0) return;
+    if (--nextRefresh > 0) return;
 
-    NextRefresh = RefreshRate;
+    nextRefresh = refreshRate;
 
     QString s;
     QTextStream sout(&s);
 
     int time = timer.elapsed();
-    float atime = (float)time / (float) RefreshRate;
+    float atime = (float)time / (float) refreshRate;
     timer.restart();
     double t = 0;
     for (int n2 = 0; n2 < gridX; n2++)
@@ -1447,8 +1447,8 @@ void MainWindow::Report()
     ui->LabelSpecies->setText(out);
 
     //do species stuff
-    if (!gui)RefreshPopulations();
-    if (!gui)RefreshEnvironment();
+    if (!gui)refreshPopulations();
+    if (!gui)refreshEnvironment();
 
     WriteLog();
 
@@ -1463,16 +1463,16 @@ void MainWindow::Report()
 }
 
 /*!
- * \brief MainWindow::ScaleFails
+ * \brief MainWindow::scaleFails
  * \param fails
- * \param gens
+ * \param generations
  * \return int
  *
  * Scales colour of fail count, correcting for generations, and scaling high values to something saner.
  */
-int MainWindow::ScaleFails(int fails, float gens)
+int MainWindow::scaleFails(int fails, float generations)
 {
-    float ffails = ((float)fails) / gens;
+    float ffails = ((float)fails) / generations;
 
     ffails *= 100.0; // a fudge factor no less! Well it's only visualization...
     ffails = pow(ffails, 0.8);
@@ -1504,15 +1504,15 @@ void MainWindow::on_populationWindowComboBox_currentIndexChanged(int index)
     Q_UNUSED(currentSelectedMode);
 
     //view_mode_changed();
-    RefreshPopulations();
+    refreshPopulations();
 }
 
 /*!
- * \brief MainWindow::RefreshPopulations
+ * \brief MainWindow::refreshPopulations
  *
  * Rereshes the population window. Also runs the species identification code.
  */
-void MainWindow::RefreshPopulations()
+void MainWindow::refreshPopulations()
 {
     //RJG - make path if required - this way as if user adds file name to path, this will create a
     //subfolder with the same file name as logs.
@@ -1541,8 +1541,8 @@ void MainWindow::RefreshPopulations()
                                   ui->populationWindowComboBox->currentIndex()).toInt();
 
     // (0) Population Count
-    //if (ui->actionPopulation_Count->isChecked()||save_population_count->isChecked())
-    if (currentSelectedMode == 0 || save_population_count->isChecked()) {
+    //if (ui->actionPopulation_Count->isChecked()||savePopulationCount->isChecked())
+    if (currentSelectedMode == 0 || savePopulationCount->isChecked()) {
         //Popcount
         int bigcount = 0;
         for (int n = 0; n < gridX; n++)
@@ -1558,14 +1558,14 @@ void MainWindow::RefreshPopulations()
             }
         //if (ui->actionPopulation_Count->isChecked())pop_item->setPixmap(QPixmap::fromImage(*pop_image));
         if (currentSelectedMode == 0)pop_item->setPixmap(QPixmap::fromImage(*pop_image));
-        if (save_population_count->isChecked())
+        if (savePopulationCount->isChecked())
             if (save_dir.mkpath("population/"))
                 pop_image_colour->save(QString(save_dir.path() + "/population/EvoSim_population_it_%1.png").arg(
                                            generation, 7, 10, QChar('0')));
     }
 
     // (1) Fitness
-    if (currentSelectedMode == 1 || save_mean_fitness->isChecked()) {
+    if (currentSelectedMode == 1 || saveMeanFitness->isChecked()) {
         //Popcount
         int multiplier = 255 / settleTolerance;
         for (int n = 0; n < gridX; n++)
@@ -1581,14 +1581,14 @@ void MainWindow::RefreshPopulations()
 
             }
         if (currentSelectedMode == 1)pop_item->setPixmap(QPixmap::fromImage(*pop_image));
-        if (save_mean_fitness->isChecked())
+        if (saveMeanFitness->isChecked())
             if (save_dir.mkpath("fitness/"))
                 pop_image_colour->save(QString(save_dir.path() + "/fitness/EvoSim_mean_fitness_it_%1.png").arg(
                                            generation, 7, 10, QChar('0')));
     }
 
     // (2) Genome as colour
-    if (currentSelectedMode == 2 || save_coding_genome_as_colour->isChecked()) {
+    if (currentSelectedMode == 2 || saveCodingGenomeAsColour->isChecked()) {
         //find modal genome in each square, convert to colour
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
@@ -1645,7 +1645,7 @@ gotcounts:
             }
 
         if (currentSelectedMode == 2) pop_item->setPixmap(QPixmap::fromImage(*pop_image_colour));
-        if (save_coding_genome_as_colour->isChecked())
+        if (saveCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("coding/"))
                 pop_image_colour->save(QString(save_dir.path() + "/coding/EvoSim_coding_genome_it_%1.png").arg(
                                            generation, 7, 10, QChar('0')));
@@ -1754,7 +1754,7 @@ gotcounts2:
         //Popcount
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
-                int value = (breedattempts[n][m] * 10) / RefreshRate;
+                int value = (breedattempts[n][m] * 10) / refreshRate;
                 if (value > 255) value = 255;
                 pop_image->setPixel(n, m, value);
             }
@@ -1781,7 +1781,7 @@ gotcounts2:
         //Popcount
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
-                int value = (settles[n][m] * 10) / RefreshRate;
+                int value = (settles[n][m] * 10) / refreshRate;
                 if (value > 255) value = 255;
                 pop_image->setPixel(n, m, value);
             }
@@ -1813,14 +1813,14 @@ gotcounts2:
         */
 
         //work out average per generation
-        float gens = generation - lastReport;
+        float generations = generation - lastReport;
 
 
         //Make image
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
-                int r = ScaleFails(breedfails[n][m], gens);
-                int g = ScaleFails(settlefails[n][m], gens);
+                int r = scaleFails(breedfails[n][m], generations);
+                int g = scaleFails(settlefails[n][m], generations);
                 pop_image_colour->setPixel(n, m, qRgb(r, g, 0));
             }
 
@@ -1878,11 +1878,11 @@ gotcounts2:
 }
 
 /*!
- * \brief MainWindow::RefreshEnvironment
+ * \brief MainWindow::refreshEnvironment
  *
  * Refreshes the environment window.
  */
-void MainWindow::RefreshEnvironment()
+void MainWindow::refreshEnvironment()
 {
     QString save_path(path->text());
     if (!save_path.endsWith(QDir::separator()))save_path.append(QDir::separator());
@@ -1906,21 +1906,21 @@ void MainWindow::RefreshEnvironment()
 /*!
  * \brief MainWindow::resizeEvent
  *
- * Resize windows on window size change event.
+ * resize windows on window size change event.
  */
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
     Q_UNUSED(e);
 
-    Resize();
+    resize();
 }
 
 /*!
- * \brief MainWindow::Resize
+ * \brief MainWindow::resize
  *
  * Force and window resize and rescale of the graphic view
  */
-void MainWindow::Resize()
+void MainWindow::resize()
 {
     ui->GV_Population->fitInView(pop_item, Qt::KeepAspectRatio);
     ui->GV_Environment->fitInView(env_item, Qt::KeepAspectRatio);
@@ -1938,7 +1938,7 @@ void MainWindow::gui_checkbox_state_changed(bool dont_update)
             && QMessageBox::question(0, "Heads up",
                                      "If you don't update the GUI, images will also not be saved. OK?",
                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::No) {
-        gui_checkbox->setChecked(false);
+        guiCheckbox->setChecked(false);
         return;
     }
 
@@ -1953,9 +1953,9 @@ void MainWindow::gui_checkbox_state_changed(bool dont_update)
  */
 void MainWindow::save_all_checkbox_state_changed(bool all)
 {
-    save_population_count->setChecked(all);
-    save_mean_fitness->setChecked(all);
-    save_coding_genome_as_colour->setChecked(all);
+    savePopulationCount->setChecked(all);
+    saveMeanFitness->setChecked(all);
+    saveCodingGenomeAsColour->setChecked(all);
     save_non_coding_genome_as_colour->setChecked(all);
     save_species->setChecked(all);
     save_gene_frequencies->setChecked(all);
@@ -1965,12 +1965,12 @@ void MainWindow::save_all_checkbox_state_changed(bool all)
 }
 
 /*!
- * \brief MainWindow::dump_run_data
+ * \brief MainWindow::write_run_data
  *
  * At end of run in run for/batch mode, or on click when a run is going, this allows user to
  * output the final log, along with the tree for the run.
  */
-void MainWindow::dump_run_data()
+void MainWindow::write_run_data()
 {
 
     QString FinalLoggingFile(path->text());
@@ -1990,7 +1990,7 @@ void MainWindow::dump_run_data()
     out << "\n\n===================\n\n";
     out << "Tree:\n\n" << HandleAnalysisTool(ANALYSIS_TOOL_CODE_MAKE_NEWICK);
     out << "\n\nSpecies data:\n\n";
-    out << HandleAnalysisTool(ANALYSIS_TOOL_CODE_DUMP_DATA);
+    out << HandleAnalysisTool(ANALYSIS_TOOL_CODE_WRITE_DATA);
     outputfile.close();
 }
 
@@ -2128,9 +2128,9 @@ void MainWindow::redoImages(int oldrows, int oldcols)
 
     ResizeImageObjects();
 
-    RefreshPopulations();
-    RefreshEnvironment();
-    Resize();
+    refreshPopulations();
+    refreshEnvironment();
+    resize();
 }
 
 /*!
@@ -2217,7 +2217,7 @@ bool MainWindow::actionEnvironment_Files_triggered()
     EnvFiles = files;
     CurrentEnvFile = 0;
     TheSimManager->loadEnvironmentFromFile(environment_mode);
-    RefreshEnvironment();
+    refreshEnvironment();
 
     //RJG - Reset for this new environment
     TheSimManager->SetupRun();
@@ -2270,7 +2270,7 @@ void MainWindow::on_actionSave_triggered()
     out << target;
     out << envchangerate;
     out << environment_mode;
-    out << RefreshRate;
+    out << refreshRate;
     out << speciesSamples;
     out << speciesSensitivity;
     out << timeSliceConnect;
@@ -2290,10 +2290,10 @@ void MainWindow::on_actionSave_triggered()
     out << gui;
     out << environment_interpolate;
     out << fitnessLoggingToFile;
-    out << autodump_checkbox->isChecked();
-    out << save_population_count->isChecked();
-    out << save_mean_fitness->isChecked();
-    out << save_coding_genome_as_colour->isChecked();
+    out << autowrite_checkbox->isChecked();
+    out << savePopulationCount->isChecked();
+    out << saveMeanFitness->isChecked();
+    out << saveCodingGenomeAsColour->isChecked();
     out << save_species->isChecked();
     out << save_non_coding_genome_as_colour->isChecked();
     out << save_gene_frequencies->isChecked();
@@ -2433,7 +2433,7 @@ void MainWindow::on_actionLoad_triggered()
 
     if (filename.length() == 0) return;
 
-    if (stopflag == false) stopflag = true;
+    if (stopFlag == false) stopFlag = true;
 
     //Otherwise - serialise all my crap
     QFile infile(filename);
@@ -2469,7 +2469,7 @@ void MainWindow::on_actionLoad_triggered()
     in >> target;
     in >> envchangerate;
     in >> environment_mode;
-    in >> RefreshRate;
+    in >> refreshRate;
     in >> speciesSamples;
     in >> speciesSensitivity;
     in >> timeSliceConnect;
@@ -2491,13 +2491,13 @@ void MainWindow::on_actionLoad_triggered()
     in >> fitnessLoggingToFile;
     bool in_bool;
     in >> in_bool;
-    autodump_checkbox->setChecked(in_bool);
+    autowrite_checkbox->setChecked(in_bool);
     in >> in_bool;
-    save_population_count->setChecked(in_bool);
+    savePopulationCount->setChecked(in_bool);
     in >> in_bool;
-    save_mean_fitness->setChecked(in_bool);
+    saveMeanFitness->setChecked(in_bool);
     in >> in_bool;
-    save_coding_genome_as_colour->setChecked(in_bool);
+    saveCodingGenomeAsColour->setChecked(in_bool);
     in >> in_bool;
     save_species->setChecked(in_bool);
     in >> in_bool;
@@ -2678,12 +2678,12 @@ void MainWindow::on_actionLoad_triggered()
         in >> randoms[i];
 
     infile.close();
-    NextRefresh = 0;
+    nextRefresh = 0;
     ResizeImageObjects();
-    Report();
-    Resize();
+    report();
+    resize();
 
-    update_gui_from_variables();
+    updateGUIFromVariables();
 }
 
 /*!
@@ -2694,8 +2694,8 @@ void MainWindow::on_actionLoad_triggered()
  */
 bool MainWindow::genomeComparisonAdd()
 {
-    int x = popscene->selectedx;
-    int y = popscene->selectedy;
+    int x = populationScene->selectedx;
+    int y = populationScene->selectedy;
 
     //---- Get genome colour
     if (totalfit[x][y] != 0) {
@@ -2714,7 +2714,7 @@ bool MainWindow::genomeComparisonAdd()
  */
 void MainWindow::on_actionShow_positions_triggered()
 {
-    RefreshEnvironment();
+    refreshEnvironment();
 }
 
 /*!
@@ -2861,9 +2861,9 @@ void MainWindow::WriteLog()
                 //----RJG: Manually count number alive thanks to maxused descendants
                 for  (int k = 0; k < slotsPerSq; k++)if (critters[i][j][k].fitness)gridNumberAlive++;
             }
-        double mean_fitness = (double)gridTotalFitness / (double)gridNumberAlive;
+        double meanFitness = (double)gridTotalFitness / (double)gridNumberAlive;
 
-        out << "[P] " << gridNumberAlive << "," << mean_fitness << "," << gridBreedEntries << "," <<
+        out << "[P] " << gridNumberAlive << "," << meanFitness << "," << gridBreedEntries << "," <<
             gridBreedFails << "," << oldspecieslist.count() << "\n";
 
         //----RJG: And species details for each iteration
@@ -2980,8 +2980,8 @@ QString MainWindow::HandleAnalysisTool(int code)
         else OutputString = "Species tracking is not enabled.";
         break;
 
-    case ANALYSIS_TOOL_CODE_DUMP_DATA:
-        if (phylogeny_and_metrics_button->isChecked())OutputString = a.dumpData(rootspecies, minspeciessize,
+    case ANALYSIS_TOOL_CODE_WRITE_DATA:
+        if (phylogeny_and_metrics_button->isChecked())OutputString = a.writeData(rootspecies, minspeciessize,
                                                                                     allowExcludeWithDescendants);
         else OutputString = "Species tracking is not enabled, or is set to phylogeny only.";
         break;
@@ -3004,7 +3004,7 @@ QString MainWindow::HandleAnalysisTool(int code)
  */
 void MainWindow::on_actionGenerate_NWK_tree_file_triggered()
 {
-    dump_run_data();
+    write_run_data();
 }
 
 /*!
@@ -3012,7 +3012,7 @@ void MainWindow::on_actionGenerate_NWK_tree_file_triggered()
  */
 void MainWindow::on_actionSpecies_sizes_triggered()
 {
-    dump_run_data();
+    write_run_data();
 }
 
 /*!
@@ -3104,7 +3104,7 @@ void MainWindow::load_settings()
             if (settings_file_in.name() == "target")target = settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "envchangerate")envchangerate =
                     settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "RefreshRate")RefreshRate =
+            if (settings_file_in.name() == "refreshRate")refreshRate =
                     settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "environment_mode")environment_mode_changed(
                     settings_file_in.readElementText().toInt(), true);
@@ -3140,14 +3140,14 @@ void MainWindow::load_settings()
             if (settings_file_in.name() == "fitnessLoggingToFile")fitnessLoggingToFile =
                     settings_file_in.readElementText().toInt();
             //Only GUI options
-            if (settings_file_in.name() == "autodump")autodump_checkbox->setChecked(
+            if (settings_file_in.name() == "autowrite")autowrite_checkbox->setChecked(
                     settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "save_population_count")save_population_count->setChecked(
+            if (settings_file_in.name() == "savePopulationCount")savePopulationCount->setChecked(
                     settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "save_mean_fitness")save_mean_fitness->setChecked(
+            if (settings_file_in.name() == "saveMeanFitness")saveMeanFitness->setChecked(
                     settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "save_coding_genome_as_colour")
-                save_coding_genome_as_colour->setChecked(settings_file_in.readElementText().toInt());
+            if (settings_file_in.name() == "saveCodingGenomeAsColour")
+                saveCodingGenomeAsColour->setChecked(settings_file_in.readElementText().toInt());
             if (settings_file_in.name() == "save_species")save_species->setChecked(
                     settings_file_in.readElementText().toInt());
             if (settings_file_in.name() == "save_non_coding_genome_as_colour")
@@ -3173,15 +3173,15 @@ void MainWindow::load_settings()
 
     settings_file.close();
 
-    update_gui_from_variables();
+    updateGUIFromVariables();
 }
 
 /*!
- * \brief MainWindow::update_gui_from_variables
+ * \brief MainWindow::updateGUIFromVariables
  *
  * Call this from either load settings, or plain load. Updates gui from those variables held as simulation globals
  */
-void MainWindow::update_gui_from_variables()
+void MainWindow::updateGUIFromVariables()
 {
     //Ints
     gridX_spin->setValue(gridX);
@@ -3197,7 +3197,7 @@ void MainWindow::update_gui_from_variables()
     breedThreshold_spin->setValue(breedThreshold);
     target_spin->setValue(target);
     environment_rate_spin->setValue(envchangerate);
-    refreshRateSpin->setValue(RefreshRate);
+    refreshRateSpin->setValue(refreshRate);
     // Add species_mode
     species_mode_changed(species_mode, true);
     // Add environment_mode
@@ -3213,7 +3213,7 @@ void MainWindow::update_gui_from_variables()
     sexual_radio->setChecked(sexual);
     asexual_radio->setChecked(asexual);
     logging_checkbox->setChecked(logging);
-    gui_checkbox->setChecked(gui);
+    guiCheckbox->setChecked(gui);
     interpolateCheckbox->setChecked(environment_interpolate);
 }
 
@@ -3296,8 +3296,8 @@ void MainWindow::save_settings()
     settings_file_out.writeCharacters(QString("%1").arg(environment_mode));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("RefreshRate");
-    settings_file_out.writeCharacters(QString("%1").arg(RefreshRate));
+    settings_file_out.writeStartElement("refreshRate");
+    settings_file_out.writeCharacters(QString("%1").arg(refreshRate));
     settings_file_out.writeEndElement();
 
     settings_file_out.writeStartElement("speciesSamples");
@@ -3369,20 +3369,20 @@ void MainWindow::save_settings()
     settings_file_out.writeCharacters(QString("%1").arg(fitnessLoggingToFile));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("autodump");
-    settings_file_out.writeCharacters(QString("%1").arg(autodump_checkbox->isChecked()));
+    settings_file_out.writeStartElement("autowrite");
+    settings_file_out.writeCharacters(QString("%1").arg(autowrite_checkbox->isChecked()));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("save_population_count");
-    settings_file_out.writeCharacters(QString("%1").arg(save_population_count->isChecked()));
+    settings_file_out.writeStartElement("savePopulationCount");
+    settings_file_out.writeCharacters(QString("%1").arg(savePopulationCount->isChecked()));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("save_mean_fitness");
-    settings_file_out.writeCharacters(QString("%1").arg(save_mean_fitness->isChecked()));
+    settings_file_out.writeStartElement("saveMeanFitness");
+    settings_file_out.writeCharacters(QString("%1").arg(saveMeanFitness->isChecked()));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("save_coding_genome_as_colour");
-    settings_file_out.writeCharacters(QString("%1").arg(save_coding_genome_as_colour->isChecked()));
+    settings_file_out.writeStartElement("saveCodingGenomeAsColour");
+    settings_file_out.writeCharacters(QString("%1").arg(saveCodingGenomeAsColour->isChecked()));
     settings_file_out.writeEndElement();
 
     settings_file_out.writeStartElement("save_species");
@@ -3474,7 +3474,7 @@ void MainWindow::on_actionGenomeComparison_triggered(bool checked)
     genomeComparisonButton->setChecked(checked);
 }
 
-void MainWindow::process_app_events()
+void MainWindow::processAppEvents()
 {
     qApp->processEvents();
 }

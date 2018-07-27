@@ -1,6 +1,6 @@
 /**
  * @file
- * Resize Catcher
+ * resize Catcher
  *
  * All REvoSim code is released under the GNU General Public License.
  * See LICENSE.md files in the programme directory.
@@ -30,7 +30,7 @@ bool ResizeCatcher::eventFilter(QObject *obj, QEvent *event)
 {
     //if it's a resize event - do resize via Main Window
     if (event->type() == QEvent::Resize)
-        MainWin->Resize();
+        MainWin->resize();
 
     return QObject::eventFilter(obj, event);
 }

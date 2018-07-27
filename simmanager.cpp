@@ -477,29 +477,29 @@ void SimManager::SetupRun()
     rootspecies->ID = nextspeciesid;
     rootspecies->timeOfFirstAppearance = 0;
     rootspecies->timeOfLastAppearance = 0;
-    rootspecies->parent = (LogSpecies *)0;
+    rootspecies->parent = (LogSpecies *)nullptr;
     LogSpeciesDataItem *newdata = new LogSpeciesDataItem;
-    newdata->centroid_range_x = n;
-    newdata->centroid_range_y = m;
+    newdata->centroidRangeX = n;
+    newdata->centroidRangeY = m;
     newdata->generation = 0;
-    newdata->cells_occupied = 1;
-    newdata->genomic_diversity = 1;
+    newdata->cellsOccupied = 1;
+    newdata->genomicDiversity = 1;
     newdata->size = AliveCount;
-    newdata->geographical_range = 0;
-    newdata->cells_occupied = 0; //=1, this is stored as -1
-    newdata->sample_genome = generation;
-    newdata->max_env[0] = environment[n][m][0];
-    newdata->max_env[1] = environment[n][m][1];
-    newdata->max_env[2] = environment[n][m][2];
-    newdata->min_env[0] = environment[n][m][0];
-    newdata->min_env[1] = environment[n][m][1];
-    newdata->min_env[2] = environment[n][m][2];
-    newdata->mean_env[0] = environment[n][m][0];
-    newdata->mean_env[1] = environment[n][m][1];
-    newdata->mean_env[2] = environment[n][m][2];
-    newdata->mean_fitness = (quint16)((totalfit[n][m] * 1000) / AliveCount);
+    newdata->geographicalRange = 0;
+    newdata->cellsOccupied = 0; //=1, this is stored as -1
+    newdata->sampleGenome = generation;
+    newdata->maxEnvironment[0] = environment[n][m][0];
+    newdata->maxEnvironment[1] = environment[n][m][1];
+    newdata->maxEnvironment[2] = environment[n][m][2];
+    newdata->minEnvironment[0] = environment[n][m][0];
+    newdata->minEnvironment[1] = environment[n][m][1];
+    newdata->minEnvironment[2] = environment[n][m][2];
+    newdata->meanEnvironment[0] = environment[n][m][0];
+    newdata->meanEnvironment[1] = environment[n][m][1];
+    newdata->meanEnvironment[2] = environment[n][m][2];
+    newdata->meanFitness = (quint16)((totalfit[n][m] * 1000) / AliveCount);
 
-    rootspecies->data_items.append(newdata);
+    rootspecies->dataItems.append(newdata);
     LogSpeciesById.clear();
     LogSpeciesById.insert(nextspeciesid, rootspecies);
 
@@ -523,7 +523,7 @@ void SimManager::SetupRun()
 }
 
 int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal,
-                                 int *killCountLocal)
+                                int *killCountLocal)
 //parallel version - takes newgenomes_local as the start point it can write to in main genomes array
 //returns number of new genomes
 {
@@ -581,7 +581,7 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal,
 
                         if (partner < breedlistentries) {
                             if (crit[breedlist[c]].breedWithParallel(n, m, &(crit[breedlist[partner]]),
-                                                                       &newGenomeCountLocal))
+                                                                     &newGenomeCountLocal))
                                 breedfails[n][m]++; //for analysis purposes
                         } else //didn't find a partner, refund breed cost
                             crit[breedlist[c]].energy += breedCost;
@@ -697,7 +697,7 @@ bool SimManager::iterate(int emode, bool interpolate)
                                   "If you click yes, the system will be disabled. You will only see this warning once per run.",
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
             species_mode = 0;
-            MainWin->update_gui_from_variables();
+            MainWin->updateGUIFromVariables();
         }
         warning_count++;
     }

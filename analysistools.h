@@ -30,7 +30,7 @@
 #define ANALYSIS_TOOL_CODE_STASIS 3
 #define ANALYSIS_TOOL_CODE_COUNT_PEAKS 4
 #define ANALYSIS_TOOL_CODE_MAKE_NEWICK 5
-#define ANALYSIS_TOOL_CODE_DUMP_DATA 6
+#define ANALYSIS_TOOL_CODE_WRITE_DATA 6
 
 #define SCALE 100
 
@@ -81,7 +81,7 @@ public:
     QString stasis(QString filename, int slotCount, float percentileCut, int qualifyingSlotCount);
     QString countPeaks(int r, int g, int b);
     QString makeNewick(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude);
-    QString dumpData(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude);
+    QString writeData(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude);
 
 private:
     void makeListRecursive(QList<quint64> *magicList, QMap <quint64, LoggedSpecies> *speciesList,

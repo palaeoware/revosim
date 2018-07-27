@@ -18,21 +18,21 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QActionGroup>
-#include <QAction>
-#include <QStandardPaths>
-#include <QCheckBox>
-#include <QSpinBox>
-#include <QRadioButton>
-#include <QShortcut>
-#include <QProgressBar>
-
-#include "simmanager.h"
-#include "populationscene.h"
+#include "about.h"
 #include "environmentscene.h"
 #include "genomecomparison.h"
-#include "about.h"
+#include "populationscene.h"
+#include "simmanager.h"
+
+#include <QAction>
+#include <QActionGroup>
+#include <QCheckBox>
+#include <QMainWindow>
+#include <QProgressBar>
+#include <QRadioButton>
+#include <QShortcut>
+#include <QSpinBox>
+#include <QStandardPaths>
 
 extern MainWindow *MainWin;
 
@@ -40,74 +40,126 @@ namespace Ui {
 class MainWindow;
 }
 
+/**
+ * @brief The MainWindow class
+ */
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
+
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    GenomeComparison *genoneComparison;
-    bool genomeComparisonAdd();
-    void RefreshReport();
-    void Resize();
-    void RefreshEnvironment();
+
+    Ui::MainWindow *ui;
+
+    void resize();
+    void refreshEnvironment();
     void setStatusBarText(QString text);
     void statusProgressBar(QProgressBar *prBar, bool add);
-    Ui::MainWindow *ui;
+    void createMainToolbar();
+    void updateGUIFromVariables();
+    void processAppEvents();
+    bool genomeComparisonAdd();
     QDockWidget *createSimulationSettingsDock();
     QDockWidget *createOutputSettingsDock();
     QDockWidget *createOrganismSettingsDock();
-    void createMainToolbar();
-    //RJG - This needs to be called from SimManager...
-    void update_gui_from_variables();
-    //RJG - And this to update gui from analyser when species ID slow
-    void process_app_events();
 
-    int RefreshRate;
+    int refreshRate;
+    GenomeComparison *genoneComparison;
 
 protected:
     void changeEvent(QEvent *e);
     void resizeEvent(QResizeEvent *e);
 
 private:
-    int ScaleFails(int fails, float gens);
+    int scaleFails(int fails, float generations);
     void closeEvent(QCloseEvent *e);
-    void Report();
-    void RunSetUp();
-    void FinishRun();
-    void RefreshPopulations();
+    void report();
+    void runSetUp();
+    void finishRun();
+    void refreshPopulations();
     void resetInformationBar();
 
-    //RJG - some imporant variables
-    bool stopflag;
-    bool pauseflag;
+    bool stopFlag;
+    bool pauseFlag;
     int waitUntilPauseSignalIsEmitted();
-    int NextRefresh;
+    int nextRefresh;
 
     //RJG - GUI stuff
-    EnvironmentScene *envscene;
-    PopulationScene *popscene;
-    QActionGroup *viewgroup2;
-    QDockWidget *simulationSettingsDock, *organismSettingsDock, *outputSettingsDock;
+    EnvironmentScene *environmentScene;
+    PopulationScene *populationScene;
+    QDockWidget *simulationSettingsDock;
+    QDockWidget *organismSettingsDock;
+    QDockWidget *outputSettingsDock;
 
-    //RJG - GUI buttons and settings docker options which need to be accessible via slots, especially for load settings function
-    QAction *startButton, *stopButton, *pauseButton, *runForButton, *resetButton, *reseedButton,
-            *runForBatchButton, *genomeComparisonButton, *settingsButton, *aboutButton;
+    //RJG - GUI buttons and settings docker options which need to be accessible via slots; especially for load settings function
+    QAction *startButton;
+    QAction *stopButton;
+    QAction *pauseButton;
+    QAction *runForButton;
+    QAction *resetButton;
+    QAction *reseedButton;
+    QAction *runForBatchButton;
+    QAction *genomeComparisonButton;
+    QAction *settingsButton;
+    QAction *aboutButton;
+
     //RJG - Save images checkboxes
-    QCheckBox *gui_checkbox, *save_population_count, *save_mean_fitness, *save_coding_genome_as_colour,
-              *save_species, *save_non_coding_genome_as_colour, *save_gene_frequencies, *save_settles,
-              *save_fails_settles, *save_environment, *interpolateCheckbox;
+    QCheckBox *guiCheckbox;
+    QCheckBox *savePopulationCount;
+    QCheckBox *saveMeanFitness;
+    QCheckBox *saveCodingGenomeAsColour;
+    QCheckBox *save_species;
+    QCheckBox *save_non_coding_genome_as_colour;
+    QCheckBox *save_gene_frequencies;
+    QCheckBox *save_settles;
+    QCheckBox *save_fails_settles;
+    QCheckBox *save_environment;
+    QCheckBox *interpolateCheckbox;
+
     //RJG - other checkboxes
-    QCheckBox *recalcFitness_checkbox, *toroidal_checkbox, *nonspatial_checkbox, *breeddiff_checkbox,
-              *breedspecies_checkbox, *exclude_without_descendants_checkbox, *logging_checkbox,
-              *autodump_checkbox;
+    QCheckBox *recalcFitness_checkbox;
+    QCheckBox *toroidal_checkbox;
+    QCheckBox *nonspatial_checkbox;
+    QCheckBox *breeddiff_checkbox;
+    QCheckBox *breedspecies_checkbox;
+    QCheckBox *pathogens_checkbox;
+    QCheckBox *variable_mutation_checkbox;
+    QCheckBox *exclude_without_descendants_checkbox;
+    QCheckBox *logging_checkbox;
+    QCheckBox *autowrite_checkbox;
+
     //RJG - radios and spins
-    QRadioButton *phylogeny_off_button, *basic_phylogeny_button, *phylogeny_button,
-                 *phylogeny_and_metrics_button, *sexual_radio, *asexual_radio, *environmentModeBounceButton,
-                 *environmentModeLoopButton, *environmentModeOnceButton, *environmentModeStaticButton;
-    QSpinBox *mutate_spin, *refreshRateSpin, *maxDiff_spin, *breedThreshold_spin, *target_spin,
-             *environment_rate_spin, *gridX_spin, *gridY_spin, *settleTolerance_spin, *slots_spin,
-             *startAge_spin, *dispersal_spin, *energy_spin, *breedCost_spin;
+    QRadioButton *phylogeny_off_button;
+    QRadioButton *basic_phylogeny_button;
+    QRadioButton *phylogeny_button;
+    QRadioButton *phylogeny_and_metrics_button;
+    QRadioButton *sexual_radio;
+    QRadioButton *asexual_radio;
+    QRadioButton *variableBreed_radio;
+    QRadioButton *environmentModeBounceButton;
+    QRadioButton *environmentModeLoopButton;
+    QRadioButton *environmentModeOnceButton;
+    QRadioButton *environmentModeStaticButton;
+
+    QSpinBox *mutate_spin;
+    QSpinBox *refreshRateSpin;
+    QSpinBox *pathogen_mutate_spin;
+    QSpinBox *pathogen_frequency_spin;
+    QSpinBox *maxDiff_spin;
+    QSpinBox *breedThreshold_spin;
+    QSpinBox *target_spin;
+    QSpinBox *environment_rate_spin;
+    QSpinBox *gridX_spin;
+    QSpinBox *gridY_spin;
+    QSpinBox *settleTolerance_spin;
+    QSpinBox *slots_spin;
+    QSpinBox *startAge_spin;
+    QSpinBox *dispersal_spin;
+    QSpinBox *energy_spin;
+    QSpinBox *breedCost_spin;
+
     //RJG - global save path for all outputs
     QLineEdit *path;
 
@@ -139,7 +191,7 @@ private slots:
     void on_actionCount_Peaks_triggered();
     void gui_checkbox_state_changed(bool);
     void save_all_checkbox_state_changed(bool);
-    void dump_run_data();
+    void write_run_data();
     void actionSettings_triggered();
     void redoImages(int oldrows, int oldcols);
     bool actionEnvironment_Files_triggered();

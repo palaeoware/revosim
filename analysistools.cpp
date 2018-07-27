@@ -501,7 +501,7 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
                 speciesList[species_ID].totalSize += (quint64) (split_up[4].toULongLong());
                 speciesList[species_ID].occurrences++;
                 speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = (quint64) (
-                                                                                                 split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
+                                                                                                      split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
             } else { //not yet recorded
                 LoggedSpecies spe;
                 spe.start = (quint64) (split_up[2].toULongLong());
@@ -1380,19 +1380,19 @@ QString AnalysisTools::makeNewick(LogSpecies *root, quint64 minSpeciesSize, bool
     allowExcludeWithDescendants = allowExclude;
 
     if (root)
-        return root->newickstring(0, 0, true);
+        return root->writeNewickString(0, 0, true);
     else
         return "ERROR - NO PHYLOGENY DATA";
 }
 
 /**
- * @brief AnalysisTools::dumpData
+ * @brief AnalysisTools::writeData
  * @param root
  * @param minSpeciesSize
  * @param allowExclude
  * @return
  */
-QString AnalysisTools::dumpData(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude)
+QString AnalysisTools::writeData(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude)
 {
     ids = 0;
 
@@ -1401,31 +1401,31 @@ QString AnalysisTools::dumpData(LogSpecies *root, quint64 minSpeciesSize, bool a
     LogSpecies *parent;
     quint64 timeOfFirstAppearance;
     quint64 timeOfLastAppearance;
-    QList<LogSpeciesDataItem *>data_items;
+    QList<LogSpeciesDataItem *>dataItems;
     QList<LogSpecies *>children;
     quint32 maxSize;
 
 
     quint64 generation;
-    quint64 sample_genome;
+    quint64 sampleGenome;
     quint32 size; //number of critters
-    quint32 genomic_diversity; //number of genomes
-    quint16 cells_occupied; //number of cells found in - 1 (as real range is 1-65536, to fit in 0-65535)
-    quint8 geographical_range; //max distance between outliers
-    quint8 centroid_range_x; //mean of x positions
-    quint8 centroid_range_y; //mean of y positions
-    quint16 mean_fitness; //mean of all critter fitnesses, stored as x1000
-    quint8 min_env[3]; //min red, green, blue found in
-    quint8 max_env[3]; //max red, green, blue found in
-    quint8 mean_env[3]; //mean environmental colour found in
+    quint32 genomicDiversity; //number of genomes
+    quint16 cellsOccupied; //number of cells found in - 1 (as real range is 1-65536, to fit in 0-65535)
+    quint8 geographicalRange; //max distance between outliers
+    quint8 centroidRangeX; //mean of x positions
+    quint8 centroidRangeY; //mean of y positions
+    quint16 meanFitness; //mean of all critter fitnesses, stored as x1000
+    quint8 minEnvironment[3]; //min red, green, blue found in
+    quint8 maxEnvironment[3]; //max red, green, blue found in
+    quint8 meanEnvironment[3]; //mean environmental colour found in
 
 
     minspeciessize = minSpeciesSize;
     allowExcludeWithDescendants = allowExclude;
     if (root)
-        return "ID,ParentID,generation,size,sample_genome,sample_genome_binary,diversity,cells_occupied,geog_range,centroid_x,centroid_y,mean_fit,min_env_red,min_env_green,min_env_blue,max_env_red,max_env_green,max_env_blue,mean_env_red,mean_env_green,mean_env_blue\n"
+        return "ID,ParentID,generation,size,sampleGenome,sampleGenome_binary,diversity,cellsOccupied,geog_range,centroid_x,centroid_y,mean_fit,min_env_red,min_env_green,min_env_blue,max_env_red,max_env_green,max_env_blue,mean_env_red,mean_env_green,mean_env_blue\n"
                +
-               root->dump_data(0, 0, true);
+               root->writeData(0, 0, true);
     else
         return "ERROR - NO PHYLOGENY DATA";
 
@@ -1438,15 +1438,15 @@ QString AnalysisTools::dumpData(LogSpecies *root, quint64 minSpeciesSize, bool a
     Q_UNUSED(timeOfLastAppearance);
     Q_UNUSED(maxSize);
     Q_UNUSED(generation);
-    Q_UNUSED(sample_genome);
+    Q_UNUSED(sampleGenome);
     Q_UNUSED(size);
-    Q_UNUSED(genomic_diversity);
-    Q_UNUSED(cells_occupied);
-    Q_UNUSED(geographical_range);
-    Q_UNUSED(centroid_range_x);
-    Q_UNUSED(centroid_range_y);
-    Q_UNUSED(mean_fitness);
-    Q_UNUSED(min_env);
-    Q_UNUSED(max_env);
-    Q_UNUSED(mean_env);
+    Q_UNUSED(genomicDiversity);
+    Q_UNUSED(cellsOccupied);
+    Q_UNUSED(geographicalRange);
+    Q_UNUSED(centroidRangeX);
+    Q_UNUSED(centroidRangeY);
+    Q_UNUSED(meanFitness);
+    Q_UNUSED(minEnvironment);
+    Q_UNUSED(maxEnvironment);
+    Q_UNUSED(meanEnvironment);
 }

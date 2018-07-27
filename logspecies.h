@@ -17,11 +17,17 @@
 
 #ifndef LOGSPECIES_H
 #define LOGSPECIES_H
-#include <QList>
-#include <QString>
+
 #include "logspeciesdataitem.h"
 
-//used to log all species that appear. species class is for internal simulation purposes. This is for output.
+#include <QList>
+#include <QString>
+
+/**
+ * @brief The LogSpecies class
+ *
+ * Used to log all species that appear. species class is for internal simulation purposes. This is for output.
+ */
 class LogSpecies
 {
 
@@ -29,18 +35,19 @@ public:
     LogSpecies();
     ~LogSpecies();
 
-    quint64 ID;
+    bool isFluff();
+    quint32 maxSizeIncludingChildren();
+    QString writeNewickString(int childIndex, quint64 lastTimeBase, bool killfFuff);
+    QString writeData(int childIndex, quint64 lastTimeBase, bool killfFuff, quint64 parentID = 0);
+    QString writeDataLine(quint64 start, quint64 end, quint64 speciesID, quint64 parentID);
+
     LogSpecies *parent;
+    QList<LogSpeciesDataItem *> dataItems;
+    QList<LogSpecies *> children;
+    quint32 maxSize;
+    quint64 ID;
     quint64 timeOfFirstAppearance;
     quint64 timeOfLastAppearance;
-    QList<LogSpeciesDataItem *>data_items;
-    QList<LogSpecies *>children;
-    quint32 maxSize;
-    QString newickstring(int childindex, quint64 last_time_base, bool killfluff);
-    bool isfluff();
-    int maxsize_inc_children();
-    QString dump_data(int childindex, quint64 last_time_base, bool killfluff, quint64 parentid = 0);
-    QString my_data_line(quint64 start, quint64 end, quint64 myid, quint64 pid);
 };
 
 #endif // LOGSPECIES_H

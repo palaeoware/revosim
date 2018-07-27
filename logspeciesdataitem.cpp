@@ -18,6 +18,4 @@
 #include "logspeciesdataitem.h"
 
 LogSpeciesDataItem::LogSpeciesDataItem()
-{
-
-}
+= default;
