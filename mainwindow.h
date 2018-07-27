@@ -55,9 +55,10 @@ public:
 
     void resize();
     void refreshEnvironment();
-    void setStatusBarText(const QString& text);
+    void setStatusBarText(const QString &text);
     void statusProgressBar(QProgressBar *prBar, bool add);
     void createMainToolbar();
+    void createMainMenu();
     void updateGUIFromVariables();
     void processAppEvents();
     bool genomeComparisonAdd();
@@ -73,17 +74,25 @@ protected:
     void resizeEvent(QResizeEvent *e);
 
 private:
-    int scaleFails(int fails, float generations);
+    Analyser *a;
+
     void closeEvent(QCloseEvent *e);
     void report();
     void runSetUp();
     void finishRun();
     void refreshPopulations();
     void resetInformationBar();
+    void resetSquare(int n, int m);
+    void resizeImageObjects();
+    void writeLog();
+    void calculateSpecies();
+    int scaleFails(int fails, float generations);
+    int waitUntilPauseSignalIsEmitted();
+    QString handleAnalysisTool(int code);
+    QString printSettings();
 
     bool stopFlag{};
     bool pauseFlag;
-    int waitUntilPauseSignalIsEmitted();
     int nextRefresh;
 
     //RJG - GUI stuff
@@ -110,114 +119,100 @@ private:
     QCheckBox *savePopulationCount{};
     QCheckBox *saveMeanFitness{};
     QCheckBox *saveCodingGenomeAsColour{};
-    QCheckBox *save_species{};
-    QCheckBox *save_non_coding_genome_as_colour{};
-    QCheckBox *save_gene_frequencies{};
-    QCheckBox *save_settles{};
-    QCheckBox *save_fails_settles{};
-    QCheckBox *save_environment{};
+    QCheckBox *saveSpecies{};
+    QCheckBox *saveNonCodingGenomeAsColour{};
+    QCheckBox *saveGeneFrequencies{};
+    QCheckBox *saveSettles{};
+    QCheckBox *saveFailsSettles{};
+    QCheckBox *saveEnvironment{};
     QCheckBox *interpolateCheckbox{};
 
     //RJG - other checkboxes
-    QCheckBox *recalcFitness_checkbox{};
-    QCheckBox *toroidal_checkbox{};
-    QCheckBox *nonspatial_checkbox{};
-    QCheckBox *breeddiff_checkbox{};
-    QCheckBox *breedspecies_checkbox{};
-    QCheckBox *pathogens_checkbox{};
-    QCheckBox *variable_mutation_checkbox{};
-    QCheckBox *exclude_without_descendants_checkbox{};
-    QCheckBox *logging_checkbox{};
-    QCheckBox *autowrite_checkbox{};
+    QCheckBox *recalculateFitnessCheckbox{};
+    QCheckBox *toroidalCheckbox{};
+    QCheckBox *nonspatialCheckbox{};
+    QCheckBox *breedDifferenceCheckbox{};
+    QCheckBox *breedSpeciesCheckbox{};
+    QCheckBox *excludeWithoutDescendantsCheckbox{};
+    QCheckBox *loggingCheckbox{};
+    QCheckBox *autowriteLogCheckbox{};
 
     //RJG - radios and spins
-    QRadioButton *phylogeny_off_button{};
-    QRadioButton *basic_phylogeny_button{};
-    QRadioButton *phylogeny_button{};
-    QRadioButton *phylogeny_and_metrics_button{};
-    QRadioButton *sexual_radio{};
-    QRadioButton *asexual_radio{};
-    QRadioButton *variableBreed_radio{};
+    QRadioButton *phylogenyOffButton{};
+    QRadioButton *basicPhylogenyButton{};
+    QRadioButton *phylogenyButton{};
+    QRadioButton *phylogenyAndMetricsButton{};
+    QRadioButton *sexualRadio{};
+    QRadioButton *asexualRadio{};
     QRadioButton *environmentModeBounceButton{};
     QRadioButton *environmentModeLoopButton{};
     QRadioButton *environmentModeOnceButton{};
     QRadioButton *environmentModeStaticButton{};
 
-    QSpinBox *mutate_spin{};
+    QSpinBox *mutateSpin{};
     QSpinBox *refreshRateSpin{};
-    QSpinBox *pathogen_mutate_spin{};
-    QSpinBox *pathogen_frequency_spin{};
-    QSpinBox *maxDiff_spin{};
-    QSpinBox *breedThreshold_spin{};
-    QSpinBox *target_spin{};
-    QSpinBox *environment_rate_spin{};
-    QSpinBox *gridX_spin{};
-    QSpinBox *gridY_spin{};
-    QSpinBox *settleTolerance_spin{};
-    QSpinBox *slots_spin{};
-    QSpinBox *startAge_spin{};
-    QSpinBox *dispersal_spin{};
-    QSpinBox *energy_spin{};
-    QSpinBox *breedCost_spin{};
+    QSpinBox *maxDifferenceSpin{};
+    QSpinBox *breedThresholdSpin{};
+    QSpinBox *targetSpin{};
+    QSpinBox *environmentRateSpin{};
+    QSpinBox *gridXSpin{};
+    QSpinBox *gridYSpin{};
+    QSpinBox *settleToleranceSpin{};
+    QSpinBox *slotsSpin{};
+    QSpinBox *startAgeSpin{};
+    QSpinBox *dispersalSpin{};
+    QSpinBox *energySpin{};
+    QSpinBox *breedCostSpin{};
 
-    //RJG - global save path for all outputs
-    QLineEdit *path{};
+    //RJG - global save globalSavePath for all outputs
+    QLineEdit *globalSavePath{};
 
     //RJG - options for batching
-    bool batch_running;
-    int runs, batch_iterations, batch_target_runs;
+    bool batchRunning;
+    quint64 batchRuns;
+    quint64 batchIterations;
+    quint64 batchTargetRuns;
 
     //Now some things settable by the ui
     QTime timer;
-    QImage *pop_image, *env_image, *pop_image_colour;
-    QGraphicsPixmapItem *pop_item, *env_item;
-
-    void ResetSquare(int n, int m);
-    void ResizeImageObjects();
-    void WriteLog();
-    void CalcSpecies();
-    QString HandleAnalysisTool(int code);
-    Analyser *a;
-    QString print_settings();
+    QImage *populationImage;
+    QImage *environmentImage;
+    QImage *populationImageColour;
+    QGraphicsPixmapItem *populationItem;
+    QGraphicsPixmapItem *environmentItem;
 
 private slots:
-    void on_actionReset_triggered();
-    void on_actionReseed_triggered();
-    void on_actionStart_Sim_triggered();
-    void on_actionRun_for_triggered();
-    void on_actionBatch_triggered();
-    void on_actionPause_Sim_triggered();
-    void on_actionStop_Sim_triggered();
-    void on_actionCount_Peaks_triggered();
-    void gui_checkbox_state_changed(bool);
-    void save_all_checkbox_state_changed(bool);
-    void write_run_data();
-    void actionSettings_triggered();
-    void redoImages(int oldrows, int oldcols);
-    bool actionEnvironment_Files_triggered();
-    void on_actionSave_triggered();
-    void on_actionLoad_triggered();
-    void load_settings();
-    void save_settings();
-    void on_actionShow_positions_triggered();
-    void on_actionFitness_logging_to_File_triggered();
-    void on_actionGenerate_Tree_from_Log_File_triggered();
-    void on_actionExtinction_and_Origination_Data_triggered();
-    void on_actionRates_of_Change_triggered();
-    void on_actionStasis_triggered();
-    void on_actionLoad_Random_Numbers_triggered();
-    void species_mode_changed(int change_species_mode, bool update_gui);
-    void environment_mode_changed(int change_environment_mode, bool update_gui);
-    void on_actionGenerate_NWK_tree_file_triggered();
-    void on_actionSpecies_sizes_triggered();
-    void changepath_triggered();
-    void on_actionAbout_triggered();
-    void on_actionExit_triggered();
-    void on_populationWindowComboBox_currentIndexChanged(int index);
-    void on_actionCode_on_GitHub_triggered();
-    void on_actionOnline_User_Manual_triggered();
-    void on_actionSettings_Dock_triggered();
-    void on_actionGenomeComparison_triggered(bool checked);
+    void guiCheckboxStateChanged(bool);
+    void saveAllCheckboxStateChanged(bool);
+    void writeRunData();
+    void updateSettingsDockVisability();
+    void updateGenomeComparisonDockVisability(bool checked);
+    void redoImages(int oldRows, int oldColumns);
+    void speciesModeChanged(int changeSpeciesMode, bool updateGUI);
+    void environmentModeChanged(int changeEnvironmentMode, bool updateGUI);
+    void loadSettings();
+    void saveSettings();
+    void updateGlobalPath();
+    bool loadEnvironmentFiles();
+    void writePeakCounts();
+    void startSimulation();
+    void runForNSimulation();
+    void resetSimulation();
+    void launchReseedDialog();
+    void startBatchSimulation();
+    void pauseSimulation();
+    void stopSimulation();
+    void saveSimulation();
+    void loadSimulation();
+    void exitProgram();
+
+    // Note: on_actionXXX function are autoconnected by QT
+    void on_actionLoad_Random_Numbers_triggered(); // auto
+    void on_populationWindowComboBox_currentIndexChanged(int index); // auto
+    void on_actionCode_on_GitHub_triggered(); // auto
+    void on_actionAbout_triggered(); //auto
+    void on_actionOnline_User_Manual_triggered(); // auto
+    void on_actionSettings_Dock_triggered(); // auto
 };
 
 #endif // MAINWINDOW_H

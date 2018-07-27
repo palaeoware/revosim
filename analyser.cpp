@@ -42,8 +42,6 @@ Species::Species()
     size = -1;
     originTime = -1;
     logSpeciesStructure = (LogSpecies *)nullptr;
-
-    qDebug() << size;
 }
 
 /*!

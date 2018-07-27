@@ -26,7 +26,7 @@
 Subclassed QGraphicsScene object -
 basically just has mouse handlers for main window
 **********************************************/
-PopulationScene::PopulationScene() : QGraphicsScene()
+PopulationScene::PopulationScene()
 {
     selectedx = 0;
     selectedy = 0;

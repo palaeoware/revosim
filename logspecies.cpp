@@ -28,7 +28,7 @@
  * \brief LogSpecies::LogSpecies
  */
 LogSpecies::LogSpecies()
-= default;
+    = default;
 
 /*!
  * \brief LogSpecies::~LogSpecies
@@ -90,37 +90,36 @@ QString LogSpecies::writeData(int childIndex, quint64 lastTimeBase, bool killfFu
     if (lastTimeBase == 0) lastTimeBase = timeOfFirstAppearance;
     if (cc <= childIndex)
         return writeDataLine(lastTimeBase, timeOfLastAppearance, speciesID, parentID);
-    
-        int nextchildindex = cc; //for if it runs off the end
-        quint64 thisgeneration = 0;
-        bool genvalid = false;
-        for (int i = childIndex; i < cc; i++) {
-            if (!genvalid || children[i]->timeOfFirstAppearance == thisgeneration) {
-                if (!(children[i]->isFluff())) {
-                    genvalid = true;
-                    thisgeneration = children[i]->timeOfFirstAppearance;
-                }
-            } else {
-                nextchildindex = i;
-                break;
+
+    int nextchildindex = cc; //for if it runs off the end
+    quint64 thisgeneration = 0;
+    bool genvalid = false;
+    for (int i = childIndex; i < cc; i++) {
+        if (!genvalid || children[i]->timeOfFirstAppearance == thisgeneration) {
+            if (!(children[i]->isFluff())) {
+                genvalid = true;
+                thisgeneration = children[i]->timeOfFirstAppearance;
             }
+        } else {
+            nextchildindex = i;
+            break;
         }
+    }
 
-        if (!genvalid) return writeDataLine(lastTimeBase, timeOfLastAppearance, speciesID, parentID);
+    if (!genvalid) return writeDataLine(lastTimeBase, timeOfLastAppearance, speciesID, parentID);
 
-        //now recurse onto (a) this with new settings, and (b) the children
-        QString s;
-        QTextStream out(&s);
-        out << writeData(nextchildindex, thisgeneration, killfFuff, speciesID); //my 'offspring'
-        for (int i = childIndex; i < nextchildindex; i++) {
+    //now recurse onto (a) this with new settings, and (b) the children
+    QString s;
+    QTextStream out(&s);
+    out << writeData(nextchildindex, thisgeneration, killfFuff, speciesID); //my 'offspring'
+    for (int i = childIndex; i < nextchildindex; i++) {
 
-            if (!(children[i]->isFluff()))
-                out << children.at(i)->writeData(0, thisgeneration, killfFuff, speciesID);
-        }
-        out << writeDataLine(lastTimeBase, thisgeneration, speciesID, parentID);
+        if (!(children[i]->isFluff()))
+            out << children.at(i)->writeData(0, thisgeneration, killfFuff, speciesID);
+    }
+    out << writeDataLine(lastTimeBase, thisgeneration, speciesID, parentID);
 
-        return s;
-    
+    return s;
 }
 
 /*!
@@ -194,41 +193,41 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
         QString s;
         s.sprintf("ID%lld-%d:%lld", speciesID, maxSize, bl);
         return s;
-    } 
-        int nextchildindex = cc; //for if it runs off the end
-        quint64 thisgeneration = 0;
-        bool genvalid = false;
-        for (int i = childIndex; i < cc; i++) {
-            if (!genvalid || children[i]->timeOfFirstAppearance == thisgeneration) {
-                if (!(children[i]->isFluff())) {
-                    genvalid = true;
-                    thisgeneration = children[i]->timeOfFirstAppearance;
-                }
-            } else {
-                //OK, run too far - i is now next childIndex
-                nextchildindex = i;
-                break;
+    }
+    int nextchildindex = cc; //for if it runs off the end
+    quint64 thisgeneration = 0;
+    bool genvalid = false;
+    for (int i = childIndex; i < cc; i++) {
+        if (!genvalid || children[i]->timeOfFirstAppearance == thisgeneration) {
+            if (!(children[i]->isFluff())) {
+                genvalid = true;
+                thisgeneration = children[i]->timeOfFirstAppearance;
             }
+        } else {
+            //OK, run too far - i is now next childIndex
+            nextchildindex = i;
+            break;
         }
+    }
 
-        if (!genvalid) {
-            //actually no children
-            bl = timeOfLastAppearance - lastTimeBase;
-            QString s;
-            s.sprintf("ID%lld-%d:%lld", speciesID, maxSize, bl);
-            return s;
-        }
-        bl = thisgeneration - lastTimeBase;
-
-        //now recurse onto (a) this with new settings, and (b) the children
+    if (!genvalid) {
+        //actually no children
+        bl = timeOfLastAppearance - lastTimeBase;
         QString s;
-        QTextStream out(&s);
-        out << "(" << writeNewickString(nextchildindex, thisgeneration, killfFuff);
-        for (int i = childIndex; i < nextchildindex; i++) {
-            if (!(children[i]->isFluff()))
-                out << "," << children.at(i)->writeNewickString(0, thisgeneration, killfFuff);
-        }
-        out << ")ID" << speciesID << "-" << maxSize << ":" << bl;
+        s.sprintf("ID%lld-%d:%lld", speciesID, maxSize, bl);
         return s;
-    
+    }
+    bl = thisgeneration - lastTimeBase;
+
+    //now recurse onto (a) this with new settings, and (b) the children
+    QString s;
+    QTextStream out(&s);
+    out << "(" << writeNewickString(nextchildindex, thisgeneration, killfFuff);
+    for (int i = childIndex; i < nextchildindex; i++) {
+        if (!(children[i]->isFluff()))
+            out << "," << children.at(i)->writeNewickString(0, thisgeneration, killfFuff);
+    }
+    out << ")ID" << speciesID << "-" << maxSize << ":" << bl;
+    return s;
+
 }
