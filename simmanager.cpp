@@ -5,7 +5,7 @@
  * All REvoSim code is released under the GNU General Public License.
  * See LICENSE.md files in the programme directory.
  *
- * All REvoSim code is Copyright 2018 by Mark Sutton, Russell Garwood,
+ * All REvoSim code is Copyright 2008-2018 by Mark D. Sutton, Russell J. Garwood,
  * and Alan R.T. Spencer.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -108,8 +108,8 @@ int AliveCount;
 int totalRecombination;
 
 //Species stuff
-QList<species> oldspecieslist;
-QList< QList<species> > archivedspecieslists; //no longer used?
+QList<Species> oldspecieslist;
+QList< QList<Species> > archivedspecieslists; //no longer used?
 LogSpecies *rootspecies;
 QHash<quint64, LogSpecies *> LogSpeciesById;
 quint64 lastSpeciesCalc = 0;
@@ -473,7 +473,7 @@ void SimManager::SetupRun()
     //create a new logspecies with appropriate first data entry
     rootspecies = new LogSpecies;
 
-    rootspecies->maxsize = AliveCount;
+    rootspecies->maxSize = AliveCount;
     rootspecies->ID = nextspeciesid;
     rootspecies->timeOfFirstAppearance = 0;
     rootspecies->timeOfLastAppearance = 0;
@@ -507,13 +507,13 @@ void SimManager::SetupRun()
     archivedspecieslists.clear();
 
     oldspecieslist.clear();
-    species newsp;
+    Species newsp;
     newsp.ID = nextspeciesid;
-    newsp.origintime = 0;
+    newsp.originTime = 0;
     newsp.parent = 0;
     newsp.size = slotsPerSq;
     newsp.type = gen;
-    newsp.logspeciesstructure = rootspecies;
+    newsp.logSpeciesStructure = rootspecies;
     oldspecieslist.append(newsp);
 
     nextspeciesid++; //ready for first species after this

@@ -5,7 +5,7 @@
  * All REvoSim code is released under the GNU General Public License.
  * See LICENSE.md files in the programme directory.
  *
- * All REvoSim code is Copyright 2018 by Mark Sutton, Russell Garwood,
+ * All REvoSim code is Copyright 2008-2018 by Mark D. Sutton, Russell J. Garwood,
  * and Alan R.T. Spencer.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,7 +29,7 @@ class About : public QDialog
     Q_OBJECT
 
 public:
-    explicit About(QWidget *parent = 0);
+    explicit About(QWidget *parent = nullptr);
     ~About();
 
 private:

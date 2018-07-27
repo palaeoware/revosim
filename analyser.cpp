@@ -5,7 +5,7 @@
  * All REvoSim code is released under the GNU General Public License.
  * See LICENSE.md files in the programme directory.
  *
- * All REvoSim code is Copyright 2018 by Mark Sutton, Russell Garwood,
+ * All REvoSim code is Copyright 2008-2018 by Mark D. Sutton, Russell J. Garwood,
  * and Alan R.T. Spencer.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -16,30 +16,32 @@
  */
 
 #include "analyser.h"
-#include <QTextStream>
-#include "simmanager.h"
-#include <QDebug>
-#include <QHash>
-#include <QSet>
-#include <QHashIterator>
-#include <QTime>
-#include <QMessageBox>
-
 #include "mainwindow.h"
+#include "simmanager.h"
 #include "version.h"
 
+#include <QDebug>
+#include <QHash>
+#include <QHashIterator>
+#include <QMessageBox>
+#include <QSet>
+#include <QTextStream>
+#include <QTime>
+
 /*!
- * \brief species::species
+ * \brief Species:sSpecies
+ *
+ * This is the species class, which is used in the species identifier system
  */
-species::species()
+Species::Species()
 {
     type = 0;
     ID = 0; //default, not assigned
     internalID = -1;
     parent = 0;
     size = -1;
-    origintime = -1;
-    logspeciesstructure = (LogSpecies *)0;
+    originTime = -1;
+    logSpeciesStructure = (LogSpecies *)nullptr;
 }
 
 /*!
@@ -47,54 +49,54 @@ species::species()
  */
 Analyser::Analyser()
 {
-    genomes_total_count = 0;
+    genomesTotalCount = 0;
 }
 
 /*!
- * \brief Analyser::AddGenome_Fast
+ * \brief Analyser::addGenomeFast
  * \param genome
  */
-void Analyser::AddGenome_Fast(quint64 genome)
+void Analyser::addGenomeFast(quint64 genome)
 {
     //adds genome to sorted list. Use halving algorithm to find insertion point
 
-    if (genome_list.count() == 0) {
-        genome_list.append(genome);
-        genome_count.append(1);
-        genomes_total_count++;
+    if (genomeList.count() == 0) {
+        genomeList.append(genome);
+        genomeCount.append(1);
+        genomesTotalCount++;
         return;
     }
 
     int minp = 0;
-    int maxp = genome_list.count() - 1;
+    int maxp = genomeList.count() - 1;
     int lookingat = (maxp + minp) / 2; //start in middle
 
     int counter = 0;
     while (counter++ < 100) {
-        if (genome_list[lookingat] == genome) {
-            genome_count[lookingat]++;
-            genomes_total_count++;
+        if (genomeList[lookingat] == genome) {
+            genomeCount[lookingat]++;
+            genomesTotalCount++;
             return;
         } //found it
 
         //found where it should be?
 
-        if (genome_list[lookingat] < genome) {
+        if (genomeList[lookingat] < genome) {
             //we are lower in list than we should be - genome we are looking at
             //is lower than us
             int next = lookingat + 1;
-            if (next == genome_count.count()) { //at end, just append then
-                genome_list.append(genome);
-                genome_count.append(1);
-                genomes_total_count++;
+            if (next == genomeCount.count()) { //at end, just append then
+                genomeList.append(genome);
+                genomeCount.append(1);
+                genomesTotalCount++;
                 goto done;
             }
 
-            if (genome_list[next] > genome) {
+            if (genomeList[next] > genome) {
                 //insert here
-                genome_list.insert(next, genome);
-                genome_count.insert(next, 1);
-                genomes_total_count++;
+                genomeList.insert(next, genome);
+                genomeCount.insert(next, 1);
+                genomesTotalCount++;
                 goto done;
             } else {
                 minp = lookingat;
@@ -109,17 +111,17 @@ void Analyser::AddGenome_Fast(quint64 genome)
 
             int next = lookingat - 1;
             if (next == -1) { //at start, just prepend then
-                genome_list.prepend(genome);
-                genome_count.prepend(1);
-                genomes_total_count++;
+                genomeList.prepend(genome);
+                genomeCount.prepend(1);
+                genomesTotalCount++;
                 goto done;
             }
 
-            if (genome_list[next] < genome) {
+            if (genomeList[next] < genome) {
                 //insert here
-                genome_list.insert(lookingat, genome);
-                genomes_total_count++;
-                genome_count.insert(lookingat, 1);
+                genomeList.insert(lookingat, genome);
+                genomesTotalCount++;
+                genomeCount.insert(lookingat, 1);
                 goto done;
             } else {
                 maxp = lookingat;
@@ -138,7 +140,7 @@ done:
 }
 
 /*!
- * \brief Analyser::Groups_2017
+ * \brief Analyser::groupsGenealogicalTracker
  *
  * This is new code that uses the genealogical tracking of species since last analysis.
  *
@@ -156,7 +158,7 @@ done:
  * groups - create new species from those with fewer unique genomes.
  * 2c - Go through and write back new species IDs into cells.
  */
-void Analyser::Groups_2017()
+void Analyser::groupsGenealogicalTracker()
 {
     QTime t;
     t.start(); //for debug/user warning timing purposes
@@ -224,7 +226,7 @@ void Analyser::Groups_2017()
     QHashIterator<quint64, QSet<quint64> *> ii(
         genomedata); //iterator to loop over all species and their genome sets
 
-    QList<species> newspecieslist; // will eventually replace the global oldspecieslist
+    QList<Species> newspecieslist; // will eventually replace the global oldspecieslist
     // convenient to build into  a new list, then copy at the end
 
     //RJG - Add a progress bar
@@ -409,9 +411,9 @@ void Analyser::Groups_2017()
                 speciessizes[nextspeciesid] = speciessize; //can set species size now in the hash
                 speciessizes[speciesid] = speciessizes[speciesid] - speciessize; //remove this number from parent
 
-                species newsp;          //new species object
+                Species newsp;          //new species object
                 newsp.parent = speciesid; //parent is the species we are splitting from
-                newsp.origintime = generation; //i.e. now (generation is a global)
+                newsp.originTime = generation; //i.e. now (generation is a global)
                 newsp.ID = nextspeciesid;   //set the ID - last use so increment
                 newsp.type = samplegenome;    //put in our selected type genome
 
@@ -425,12 +427,12 @@ void Analyser::Groups_2017()
                     newlogspecies->timeOfFirstAppearance = generation;
                     newlogspecies->timeOfLastAppearance = generation;
                     newlogspecies->parent = thislogspecies;
-                    newlogspecies->maxsize = speciessize;
+                    newlogspecies->maxSize = speciessize;
                     thislogspecies->children.append(newlogspecies);
 
                     newlogspecies->data_items.append(newdata);
                     LogSpeciesById.insert(nextspeciesid, newlogspecies);
-                    newsp.logspeciesstructure = newlogspecies;
+                    newsp.logSpeciesStructure = newlogspecies;
                     logspeciespointers[groupcode] = newlogspecies;
                 }
 
@@ -439,16 +441,16 @@ void Analyser::Groups_2017()
                 nextspeciesid++;
             } else { //this is the continuing species
                 //find it in the old list and copy
-                species newsp;
+                Species newsp;
                 for (int j = 0; j < oldspecieslist.count(); j++) {
                     if (oldspecieslist[j].ID == speciesid) {
                         newsp = oldspecieslist[j];
                         if (species_mode >= SPECIES_MODE_PHYLOGENY) {
-                            logspeciespointers[jj.key()] = newsp.logspeciesstructure;
-                            newsp.logspeciesstructure->timeOfLastAppearance = generation;
+                            logspeciespointers[jj.key()] = newsp.logSpeciesStructure;
+                            newsp.logSpeciesStructure->timeOfLastAppearance = generation;
                             LogSpeciesDataItem *newdata = new LogSpeciesDataItem;
                             newdata->generation = generation;
-                            newsp.logspeciesstructure->data_items.append(newdata);
+                            newsp.logSpeciesStructure->data_items.append(newdata);
                         }
                     }
                 }
@@ -584,10 +586,10 @@ void Analyser::Groups_2017()
         //find size in my hash, put it in
 
         if (species_mode >= SPECIES_MODE_PHYLOGENY) {
-            LogSpecies *ls = newspecieslist[f].logspeciesstructure;
-            if (newsize > ls->maxsize) ls->maxsize = newsize;
+            LogSpecies *ls = newspecieslist[f].logSpeciesStructure;
+            if (newsize > ls->maxSize) ls->maxSize = newsize;
         }
-        //also in maxsize for species fluff culling
+        //also in maxSize for species fluff culling
     }
 
 
@@ -610,9 +612,9 @@ void Analyser::Groups_2017()
 
 //
 /*!
- * \brief Analyser::Groups_With_History_Modal
+ * \brief Analyser::groupsWithHistoryModal
  *
- * This was last functional version pre-2017. Now superceded by Groups_2017().
+ * This was last functional version pre-2017. Now superceded by groupsGenealogicalTracker().
  *
  * Implementation of new search mechanism based around using modal genome as core of species.
  *
@@ -639,29 +641,29 @@ void Analyser::Groups_2017()
  *
  * Then - do comparison with last time - not yet implemented
  *
- * \see Analyser::Groups_2017()
+ * \see Analyser::groupsGenealogicalTracker()
  */
-void Analyser::Groups_With_History_Modal()
+void Analyser::groupsWithHistoryModal()
 {
     //QTime t;
     //t.start();
 
     //We start with two QLlists
-    // genome_list - list of quint64 genomes
-    // genome_count - list of ints, the number of occurences of each
-    // genomes_total_count is the sum of values in genome_count
+    // genomeList - list of quint64 genomes
+    // genomeCount - list of ints, the number of occurences of each
+    // genomesTotalCount is the sum of values in genomeCount
 
-    //2. Set up and  blank the species_id array
-    int genome_list_count = genome_list.count();
+    //2. Set up and  blank the speciesID array
+    int genome_list_count = genomeList.count();
     QList<int> species_sizes;
-    QList<int> species_type; //type genome in genome_list, genome_count
+    QList<int> species_type; //type genome in genomeList, genomeCount
 
     species_sizes.append(0); //want an item 0 so we can start count at 1#
     species_type.append(0);
 
     //Calculate mergethreshold - how many cross links to merge a species?
-    species_id.clear();
-    for (int i = 0; i < genome_list_count; i++) species_id.append(0);
+    speciesID.clear();
+    for (int i = 0; i < genome_list_count; i++) speciesID.append(0);
 
     //This is N above
     int next_id = 1;
@@ -674,9 +676,9 @@ void Analyser::Groups_With_History_Modal()
         int largest = -1;
         int largest_index = -1;
         for (int i = 0; i < genome_list_count; i++) {
-            if (species_id[i] == 0)
-                if (genome_count[i] > largest) {
-                    largest = genome_count[i];
+            if (speciesID[i] == 0)
+                if (genomeCount[i] > largest) {
+                    largest = genomeCount[i];
                     largest_index = i;
                 }
         }
@@ -687,24 +689,24 @@ void Analyser::Groups_With_History_Modal()
         //If they are close enough, mark them down as species N (will include self),
         //or if they are already assigned to a species, note somewhere that those two species are equivalent
         int this_species_size = 0;
-        quint64 mygenome = genome_list[largest_index];
+        quint64 mygenome = genomeList[largest_index];
         for (int i = 0; i < genome_list_count; i++) {
-            quint64 g1x = mygenome ^ genome_list[i]; //XOR the two to compare
+            quint64 g1x = mygenome ^ genomeList[i]; //XOR the two to compare
             quint32 g1xl = quint32(g1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
             int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
             if (t1 <= maxDiff) {
                 quint32 g1xu = quint32(g1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
                 t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
                 if (t1 <= maxDiff) {
-                    if (species_id[i] >
+                    if (speciesID[i] >
                             0) { //already in a species, mark to merge- summing the number of genome occurences creating the link
-                        int key = species_id[i];
-                        int sum = genome_count[i];
+                        int key = speciesID[i];
+                        int sum = genomeCount[i];
                         if (merge_species.contains(key)) sum += merge_species[key];
-                        merge_species.insert(species_id[i], sum);
+                        merge_species.insert(speciesID[i], sum);
                     } else {
-                        this_species_size += genome_count[i]; // keep track of occurences
-                        species_id[i] = next_id;
+                        this_species_size += genomeCount[i]; // keep track of occurences
+                        speciesID[i] = next_id;
                     }
                 }
             }
@@ -725,15 +727,15 @@ void Analyser::Groups_With_History_Modal()
             int senscalc = ((j.value()) * 100) / usesize;
             if (senscalc >= speciesSensitivity) {
 
-                if (genome_count[species_type[tomerge]] > highestcount) {
-                    highestcount = genome_count[species_type[tomerge]];
+                if (genomeCount[species_type[tomerge]] > highestcount) {
+                    highestcount = genomeCount[species_type[tomerge]];
                     highestcountindex = species_type[tomerge];
                 }
 
                 this_species_size += species_sizes[tomerge];
                 species_sizes[tomerge] = 0; //merged species size to 0
                 for (int i = 0; i < genome_list_count; i++)
-                    if (species_id[i] == tomerge) species_id[i] = next_id;
+                    if (speciesID[i] == tomerge) speciesID[i] = next_id;
             }
         }
 
@@ -751,12 +753,12 @@ void Analyser::Groups_With_History_Modal()
     //  species_sizes - total size for each species (if 0, not a species)
     //  Want to turn this into a Qlist of species structures - each an ID and a modal genome
 
-    QList<species> newspecieslist;
+    QList<Species> newspecieslist;
 
     for (int i = 1; i < species_sizes.count(); i++) {
         if (species_sizes[i] > 0) {
-            species s;
-            s.type = genome_list[species_type[i]];
+            Species s;
+            s.type = genomeList[species_type[i]];
             s.internalID = i;
             s.size = species_sizes[i];
             newspecieslist.append(s);
@@ -777,7 +779,7 @@ void Analyser::Groups_With_History_Modal()
     QHash <int, int>
     primarychildsizediff; //used for new tiebreaking code. Key is specieslistold indices, value is size difference to new
 
-    QList<species> oldspecieslist_combined = oldspecieslist;
+    QList<Species> oldspecieslist_combined = oldspecieslist;
 
     //Add in all past lists to oldspecieslist  - might be slow, but simplest solution. Need to do an add that avoids duplicates though
     QSet<quint64> IDs;
@@ -866,7 +868,7 @@ void Analyser::Groups_With_History_Modal()
             if (childcounts.contains(j)) {
                 newspecieslist[primarychild[j]].ID = oldspecieslist_combined[j].ID;
                 newspecieslist[primarychild[j]].parent = oldspecieslist_combined[j].parent;
-                newspecieslist[primarychild[j]].origintime = oldspecieslist_combined[j].origintime;
+                newspecieslist[primarychild[j]].originTime = oldspecieslist_combined[j].originTime;
 
             }
             // else //apparently went extinct, currently do nothing
@@ -878,14 +880,14 @@ void Analyser::Groups_With_History_Modal()
             if (newspecieslist[i].ID == 0) {
                 newspecieslist[i].ID = nextspeciesid++;
                 newspecieslist[i].parent = oldspecieslist_combined[parents[i]].ID;
-                newspecieslist[i].origintime = generation;
+                newspecieslist[i].originTime = generation;
             }
 
     } else {
         //handle first time round - basically give species proper IDs
         for (int i = 0; i < newspecieslist.count(); i++) {
             newspecieslist[i].ID = nextspeciesid++;
-            newspecieslist[i].origintime = generation;
+            newspecieslist[i].originTime = generation;
         }
     }
 
@@ -898,20 +900,20 @@ void Analyser::Groups_With_History_Modal()
         if (newspecieslist[ip.key()].parent ==
                 0) //not a new parent, so must be yet-to-be filled from parent - anagenetic descendent
             newspecieslist[ip.key()].parent = oldspecieslist_combined[ip.value()].parent;
-        if (newspecieslist[ip.key()].origintime ==
+        if (newspecieslist[ip.key()].originTime ==
                 -1) //not a new time, so must be yet-to-be filled from parent
-            newspecieslist[ip.key()].origintime = oldspecieslist_combined[ip.value()].origintime;
+            newspecieslist[ip.key()].originTime = oldspecieslist_combined[ip.value()].originTime;
     }
 
     //finally go through newspecieslist and look at internalID - this is ID in the species_ID array
     //do same for colour array
-    lookup_persistent_species_ID.clear();
+    lookupPersistentSpeciesID.clear();
 
-    for (int i = 0; i <= species_id.count(); i++) lookup_persistent_species_ID.append(0);
+    for (int i = 0; i <= speciesID.count(); i++) lookupPersistentSpeciesID.append(0);
 
 
     for (int i = 0; i < newspecieslist.count();
-            i++) lookup_persistent_species_ID[newspecieslist[i].internalID] = newspecieslist[i].ID;
+            i++) lookupPersistentSpeciesID[newspecieslist[i].internalID] = newspecieslist[i].ID;
 
 
     //handle archive of old species lists (prior to last time slice)
@@ -927,18 +929,18 @@ void Analyser::Groups_With_History_Modal()
 }
 
 /*!
- * \brief Analyser::SpeciesIndex
+ * \brief Analyser::speciesIndex
  * \param genome
  * \return lookup_persistant_species_id or -1
  */
-int Analyser::SpeciesIndex(quint64 genome)
-//returns index (in genome_count, genome_list, species_id) for genome
+int Analyser::speciesIndex(quint64 genome)
+//returns index (in genomeCount, genomeList, speciesID) for genome
 {
-    QList<quint64>::iterator i = qBinaryFind(genome_list.begin(), genome_list.end(), genome);
+    QList<quint64>::iterator i = qBinaryFind(genomeList.begin(), genomeList.end(), genome);
 
-    if (i == genome_list.end())
+    if (i == genomeList.end())
         return -1;
     else
-        return lookup_persistent_species_ID[species_id[i -
-                                                                    genome_list.begin()]]; // this is QT bodgy way to get index apparently
+        return lookupPersistentSpeciesID[speciesID[i -
+                                                                    genomeList.begin()]]; // this is QT bodgy way to get index apparently
 }

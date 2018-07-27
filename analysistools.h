@@ -5,7 +5,7 @@
  * All REvoSim code is released under the GNU General Public License.
  * See LICENSE.md files in the programme directory.
  *
- * All REvoSim code is Copyright 2018 by Mark Sutton, Russell Garwood,
+ * All REvoSim code is Copyright 2008-2018 by Mark D. Sutton, Russell J. Garwood,
  * and Alan R.T. Spencer.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,10 +17,12 @@
 
 #ifndef ANALYSISTOOLS_H
 #define ANALYSISTOOLS_H
-#include <QString>
+
+#include "logspecies.h"
+
 #include <QMap>
 #include <QList>
-#include "logspecies.h"
+#include <QString>
 
 #define ANALYSIS_TOOL_CODE_GENERATE_TREE 0
 #define ANALYSIS_TOOL_CODE_RATES_OF_CHANGE 1
@@ -32,54 +34,58 @@
 
 #define SCALE 100
 
-class logged_species
+class LoggedSpecies
 {
 public:
-    logged_species();
+    LoggedSpecies();
+
+    int maxSize;
+    int occurrences;
+    int sizes[SCALE];
+    QList<float> averageSizes;
+    QList<float> averageChanges;
+
     quint64 start;
     quint64 end;
     quint64 parent;
-    int maxsize;
-    quint64 totalsize;
-    int occurrences;
-    quint64 lastgenome;
+    quint64 totalSize;
+    quint64 lastGenome;
     quint64 genomes[SCALE];
-    int sizes[SCALE];
-    QList <float> avsizes;
-    QList <float> avchanges;
 };
 
-class stasis_species
+class StasisSpecies
 {
 public:
-    stasis_species();
+    StasisSpecies();
+
     quint64 ID;
     qint64 start;
     qint64 end;
-    QList <quint64> genomes;
-    QList <quint64> genome_sample_times;
-    QList <float> resampled_average_genome_changes;
+    QList<quint64> genomes;
+    QList<quint64> genomeSampleTimes;
+    QList<float> resampledAverageGenomeChanges;
 };
 
 class AnalysisTools
 {
 public:
     AnalysisTools();
-    bool doesthiscodeneedafile(int code);
-    QString GenerateTree(QString filename);
-    QString ExtinctOrigin(QString filename);
-    QString SpeciesRatesOfChange(QString filename);
-    QString Stasis(QString filename, int slot_count, float percentilecut, int qualifyingslotcount);
-    QString CountPeaks(int r, int g, int b);
 
-    int find_closest_index(QList <quint64>time_list, float look_for, float slot_width);
-    QString MakeNewick(LogSpecies *root, quint64 min_speciessize, bool allowexclude);
-    QString DumpData(LogSpecies *root, quint64 min_speciessize, bool allowexclude);
-    static QString ReturnBinary(quint64 genome);
+    static QString returnBinary(quint64 genome);
+
+    bool dataFileNeededCheck(int code);
+    int findClosestIndex(QList <quint64>timeList, float lookFor, float slotWidth);
+    QString generateTree(QString filename);
+    QString extinctOrigin(QString filename);
+    QString speciesRatesOfChange(QString filename);
+    QString stasis(QString filename, int slotCount, float percentileCut, int qualifyingSlotCount);
+    QString countPeaks(int r, int g, int b);
+    QString makeNewick(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude);
+    QString dumpData(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude);
+
 private:
-    void MakeListRecursive(QList<quint64> *magiclist, QMap <quint64, logged_species> *species_list,
-                           quint64 ID, int insertpos);
+    void makeListRecursive(QList<quint64> *magicList, QMap <quint64, LoggedSpecies> *speciesList,
+                           quint64 ID, int insertPosition);
 };
-
 
 #endif // ANALYSISTOOLS_H

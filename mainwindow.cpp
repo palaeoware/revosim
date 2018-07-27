@@ -5,7 +5,7 @@
  * All REvoSim code is released under the GNU General Public License.
  * See LICENSE.md files in the programme directory.
  *
- * All REvoSim code is Copyright 2018 by Mark Sutton, Russell Garwood,
+ * All REvoSim code is Copyright 2008-2018 by Mark D. Sutton, Russell J. Garwood,
  * and Alan R.T. Spencer.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -2389,7 +2389,7 @@ void MainWindow::on_actionSave_triggered()
     for (int j = 0; j < oldspecieslist.count(); j++) {
         out << oldspecieslist[j].ID;
         out << oldspecieslist[j].type;
-        out << oldspecieslist[j].origintime;
+        out << oldspecieslist[j].originTime;
         out << oldspecieslist[j].parent;
         out << oldspecieslist[j].size;
         out << oldspecieslist[j].internalID;
@@ -2401,7 +2401,7 @@ void MainWindow::on_actionSave_triggered()
         for (int j = 0; j < archivedspecieslists[i].count(); j++) {
             out << archivedspecieslists[i][j].ID;
             out << archivedspecieslists[i][j].type;
-            out << archivedspecieslists[i][j].origintime;
+            out << archivedspecieslists[i][j].originTime;
             out << archivedspecieslists[i][j].parent;
             out << archivedspecieslists[i][j].size;
             out << archivedspecieslists[i][j].internalID;
@@ -2642,10 +2642,10 @@ void MainWindow::on_actionLoad_triggered()
     int temp;
     in >> temp; //oldspecieslist.count();
     for (int j = 0; j < temp; j++) {
-        species s;
+        Species s;
         in >> s.ID;
         in >> s.type;
-        in >> s.origintime;
+        in >> s.originTime;
         in >> s.parent;
         in >> s.size;
         in >> s.internalID;
@@ -2657,12 +2657,12 @@ void MainWindow::on_actionLoad_triggered()
     for (int i = 0; i < temp; i++) {
         int temp2;
         in >> temp2; //archivedspecieslists.count();
-        QList<species> ql;
+        QList<Species> ql;
         for (int j = 0; j < temp2; j++) {
-            species s;
+            Species s;
             in >> s.ID;
             in >> s.type;
-            in >> s.origintime;
+            in >> s.originTime;
             in >> s.parent;
             in >> s.size;
             in >> s.internalID;
@@ -2770,7 +2770,7 @@ void MainWindow::CalcSpecies()
         a = new Analyser;
 
         //New species analyser
-        a->Groups_2017();
+        a->groupsGenealogicalTracker();
 
         //Makre sure this is updated
         lastSpeciesCalc = generation;
@@ -2790,13 +2790,13 @@ void MainWindow::CalcSpecies()
                 {
                     if (critters[n][m][c].age>0)
                     {
-                        a->AddGenome_Fast(critters[n][m][c].genome);
+                        a->addGenomeFast(critters[n][m][c].genome);
                         if ((++found)>=speciesSamples) break; //limit number sampled
                     }
                 }
             }
 
-            a->Groups_With_History_Modal();
+            a->groupsWithHistoryModal();
             lastSpeciesCalc=generation;
         }
         */
@@ -2874,7 +2874,7 @@ void MainWindow::WriteLog()
             if (oldspecieslist[i].size > minspeciessize) {
                 out << "[S] ";
                 out << (oldspecieslist[i].ID) << ",";
-                out << oldspecieslist[i].origintime << ",";
+                out << oldspecieslist[i].originTime << ",";
                 out << oldspecieslist[i].parent << ",";
                 out << oldspecieslist[i].size << ",";
                 //---- RJG - output binary genome if needed
@@ -2971,19 +2971,19 @@ QString MainWindow::HandleAnalysisTool(int code)
         if (!ok)return QString("");;
         int blue = QInputDialog::getInt(this, "Count peaks...", "Green level?", 128, 0, 255, 1, &ok);
         if (!ok)return QString("");
-        OutputString = a.CountPeaks(red, green, blue);
+        OutputString = a.countPeaks(red, green, blue);
         break;
     }
 
     case ANALYSIS_TOOL_CODE_MAKE_NEWICK:
         if (phylogeny_button->isChecked()
-                || phylogeny_and_metrics_button->isChecked())OutputString = a.MakeNewick(rootspecies,
+                || phylogeny_and_metrics_button->isChecked())OutputString = a.makeNewick(rootspecies,
                                                                                              minspeciessize, allowExcludeWithDescendants);
         else OutputString = "Species tracking is not enabled.";
         break;
 
     case ANALYSIS_TOOL_CODE_DUMP_DATA:
-        if (phylogeny_and_metrics_button->isChecked())OutputString = a.DumpData(rootspecies, minspeciessize,
+        if (phylogeny_and_metrics_button->isChecked())OutputString = a.dumpData(rootspecies, minspeciessize,
                                                                                     allowExcludeWithDescendants);
         else OutputString = "Species tracking is not enabled, or is set to phylogeny only.";
         break;

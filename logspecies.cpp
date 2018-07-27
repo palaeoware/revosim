@@ -5,7 +5,7 @@
  * All REvoSim code is released under the GNU General Public License.
  * See LICENSE.md files in the programme directory.
  *
- * All REvoSim code is Copyright 2018 by Mark Sutton, Russell Garwood,
+ * All REvoSim code is Copyright 2008-2018 by Mark D. Sutton, Russell J. Garwood,
  * and Alan R.T. Spencer.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -61,7 +61,7 @@ QString LogSpecies::my_data_line(quint64 start, quint64 end, quint64 myid, quint
         if (di->generation >= start && di->generation < end) {
             out << myid << "," << pid << ",";
             out << di->generation << "," << di->size << "," << di->sample_genome << ","
-                << AnalysisTools::ReturnBinary(di->sample_genome) << ","
+                << AnalysisTools::returnBinary(di->sample_genome) << ","
                 << di->genomic_diversity << "," << di->cells_occupied << ","
                 << di->geographical_range << "," << di->centroid_range_x << "," << di->centroid_range_y << ",";
             out << di->mean_fitness << ",";
@@ -130,13 +130,13 @@ QString LogSpecies::dump_data(int childindex, quint64 last_time_base, bool killf
 /*!
  * \brief LogSpecies::maxsize_inc_children
  *
- * Finds maxsize of this AND all child lineages - for fluff removal
+ * Finds maxSize of this AND all child lineages - for fluff removal
  *
  * \return int recurseMaxSize
  */
 int LogSpecies::maxsize_inc_children()
 {
-    int recurseMaxSize = maxsize;
+    int recurseMaxSize = maxSize;
     for (int i = 0; i < children.count(); i++) {
         int maxSize = children[i]->maxsize_inc_children();
         if (maxSize > recurseMaxSize) recurseMaxSize = maxSize;
@@ -164,7 +164,7 @@ bool LogSpecies::isfluff()
     if (children.count() != 0 && allowExcludeWithDescendants == false)
         return false;
 
-    int recurseMaxSize = maxsize;
+    int recurseMaxSize = maxSize;
     if (allowExcludeWithDescendants) recurseMaxSize = maxsize_inc_children();
 
     if (recurseMaxSize <= minspeciessize) return true;
@@ -198,7 +198,7 @@ QString LogSpecies::newickstring(int childindex, quint64 last_time_base, bool ki
     if (cc <= childindex) {
         bl = timeOfLastAppearance - last_time_base;
         QString s;
-        s.sprintf("ID%ld-%d:%d", myid, maxsize, bl);
+        s.sprintf("ID%ld-%d:%d", myid, maxSize, bl);
         return s;
     } else {
         int nextchildindex = cc; //for if it runs off the end
@@ -221,7 +221,7 @@ QString LogSpecies::newickstring(int childindex, quint64 last_time_base, bool ki
             //actually no children
             bl = timeOfLastAppearance - last_time_base;
             QString s;
-            s.sprintf("ID%ld-%d:%d", myid, maxsize, bl);
+            s.sprintf("ID%ld-%d:%d", myid, maxSize, bl);
             return s;
         }
         bl = thisgeneration - last_time_base;
@@ -234,7 +234,7 @@ QString LogSpecies::newickstring(int childindex, quint64 last_time_base, bool ki
             if (!(children[i]->isfluff()))
                 out << "," << children.at(i)->newickstring(0, thisgeneration, killfluff);
         }
-        out << ")ID" << myid << "-" << maxsize << ":" << bl;
+        out << ")ID" << myid << "-" << maxSize << ":" << bl;
         return s;
     }
     return "ERROR"; //shouldn't get here!

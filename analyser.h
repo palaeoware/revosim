@@ -5,7 +5,7 @@
  * All REvoSim code is released under the GNU General Public License.
  * See LICENSE.md files in the programme directory.
  *
- * All REvoSim code is Copyright 2018 by Mark Sutton, Russell Garwood,
+ * All REvoSim code is Copyright 2008-2018 by Mark D. Sutton, Russell J. Garwood,
  * and Alan R.T. Spencer.
  *
  * This program is free software; you can redistribute it and/or modify
@@ -17,57 +17,47 @@
 
 #ifndef ANALYSER_H
 #define ANALYSER_H
-#include <QString>
-#include <QList>
+
 #include "sortablegenome.h"
 #include "logspecies.h"
-#include <QHash>
-#include <QColor>
 
-class species
+#include <QColor>
+#include <QHash>
+#include <QList>
+#include <QString>
+
+class Species
 {
 public:
-    species();
-    quint64 type;
-    quint64 ID;
+    Species();
+
     int internalID;
     int size;
+    int originTime;
+    LogSpecies *logSpeciesStructure;
+    quint64 type;
+    quint64 ID;
     quint64 parent;
-    int origintime;
-    LogSpecies *logspeciesstructure;
 };
 
 class Analyser
 {
 public:
     Analyser();
-    void AddGenome_Fast(quint64 genome);
-    QString SortedSummary();
-    QString Groups();
-    int SpeciesIndex(quint64 genome);
-    void Groups_With_History_Modal();
-    void Groups_2017();
 
-    //New
-    QList <quint64> genome_list;
-    QList <int> genome_count;
-    QList<int> species_id;
-    QList<int> lookup_persistent_species_ID;
-    int genome_groups[256 * 256]; //this is static array for speed
-    quint64 type_genomes_per_group[256 * 256];
-    int type_genome_groups[256 * 256];
-    int next_type_genome;
+    void addGenomeFast(quint64 genome);
+    void groupsWithHistoryModal();
+    void groupsGenealogicalTracker();
+    int speciesIndex(quint64 genome);
+
+    QList<quint64> genomeList;
+    QList<int> genomeCount;
+    QList<int> speciesID;
+    QList<int> lookupPersistentSpeciesID;
 
 private:
-    quint8 randtweak(quint8 oldval);
-    //Old
-    QList <sortablegenome> genomes;
-    QList <int>unusedgroups;
-
-    int genomes_total_count;
-    int genomes_listsize;
-    int Spread(int position, int group);
-    int Spread_Fast(int position, int group);
+    int genomesTotalCount;
+    QList<sortablegenome> genomes;
 };
 
 #endif // ANALYSER_H
