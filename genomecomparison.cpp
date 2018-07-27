@@ -21,10 +21,11 @@
 #include <QDebug>
 #include <QMessageBox>
 
-//Constructor
-GenomeComparison::GenomeComparison(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::GenomeComparison)
+/**
+ * @brief GenomeComparison::GenomeComparison
+ * @param parent
+ */
+GenomeComparison::GenomeComparison(QWidget *parent) : QWidget(parent), ui(new Ui::GenomeComparison)
 {
     ui->setupUi(this);
 
@@ -34,7 +35,7 @@ GenomeComparison::GenomeComparison(QWidget *parent) :
     //Set Column Colours
     first32 = QColor(0, 100, 0); // Green
     last32 = QColor(200, 0, 0); // Red
-    spacerCol = QColor(255, 255, 255); //White
+    spacerColumn = QColor(255, 255, 255); //White
     highlight = QColor(127, 127, 127); //Gray
 
     columnWidth = 30;
@@ -77,13 +78,17 @@ GenomeComparison::GenomeComparison(QWidget *parent) :
     buttonUpdate();
 }
 
-//Destructor
+/**
+ * @brief GenomeComparison::~GenomeComparison
+ */
 GenomeComparison::~GenomeComparison()
 {
     delete ui;
 }
 
-//Buttons
+/**
+* @brief GenomeComparison::buttonActions
+*/
 void GenomeComparison::buttonActions()
 {
     connect(ui->compareButton, SIGNAL(pressed()), this, SLOT(compareGenomes()));
@@ -92,6 +97,9 @@ void GenomeComparison::buttonActions()
     connect(ui->deleteButton, SIGNAL(pressed()), this, SLOT(deleteGenome()));
 }
 
+/**
+ * @brief GenomeComparison::buttonUpdate
+ */
 void GenomeComparison::buttonUpdate()
 {
     if (autoComparison == true) {
@@ -112,7 +120,10 @@ void GenomeComparison::buttonUpdate()
     }
 }
 
-//Tables
+/**
+ * @brief GenomeComparison::renderGenomesTable
+ * @return
+ */
 bool GenomeComparison::renderGenomesTable()
 {
     ui->genomeTableWidget->hide();
@@ -214,6 +225,24 @@ bool GenomeComparison::renderGenomesTable()
     return true;
 }
 
+/**
+ * @brief GenomeComparison::insertRow
+ * @param row
+ * @param genomeName
+ * @param genomeStr
+ * @param environmentR
+ * @param environmentG
+ * @param environmentB
+ * @param genomeR
+ * @param genomeG
+ * @param genomeB
+ * @param nonCodeR
+ * @param nonCodeG
+ * @param nonCodeB
+ * @param fitness
+ * @param table
+ * @param comparisonMask
+ */
 void GenomeComparison::insertRow(
     int row,
     QString genomeName,
@@ -272,7 +301,7 @@ void GenomeComparison::insertRow(
             QTableWidgetItem *newItem = new QTableWidgetItem(tr(""));
             newItem->setFlags(Qt::ItemIsEnabled);
             table->setItem(row, col, newItem);
-            table->item(row, col)->setBackground(QBrush(spacerCol));
+            table->item(row, col)->setBackground(QBrush(spacerColumn));
             col++;
         }
 
@@ -333,6 +362,10 @@ void GenomeComparison::insertRow(
     table->blockSignals(false);
 }
 
+/**
+ * @brief GenomeComparison::renderCompareTable
+ * @return
+ */
 bool GenomeComparison::renderCompareTable()
 {
     //---- Reset Table
@@ -400,7 +433,11 @@ bool GenomeComparison::renderCompareTable()
     return true;
 }
 
-//Table Actions follow...
+/**
+ * @brief GenomeComparison::updateGenomeName
+ * @param row
+ * @param col
+ */
 void GenomeComparison::updateGenomeName(int row, int col)
 {
     if (col == 1) {
@@ -409,7 +446,12 @@ void GenomeComparison::updateGenomeName(int row, int col)
     }
 }
 
-
+/**
+ * @brief GenomeComparison::addGenomeCritter
+ * @param critter
+ * @param environment
+ * @return
+ */
 bool GenomeComparison::addGenomeCritter(Critter critter, quint8 *environment)
 {
     int row = genomeList.count();
@@ -514,6 +556,10 @@ bool GenomeComparison::addGenomeCritter(Critter critter, quint8 *environment)
     return true;
 }
 
+/**
+ * @brief GenomeComparison::saveComparison
+ * @return
+ */
 QByteArray GenomeComparison::saveComparison()
 {
     QByteArray outData;
@@ -531,6 +577,11 @@ QByteArray GenomeComparison::saveComparison()
     return outData;
 }
 
+/**
+ * @brief GenomeComparison::loadComparison
+ * @param inData
+ * @return
+ */
 bool GenomeComparison::loadComparison(QByteArray inData)
 {
     QDataStream in(&inData, QIODevice::ReadOnly);
@@ -558,7 +609,10 @@ bool GenomeComparison::loadComparison(QByteArray inData)
     return true;
 }
 
-//Button Actions
+/**
+ * @brief GenomeComparison::compareGenomes
+ * @return
+ */
 bool GenomeComparison::compareGenomes()
 {
     //Are there any checked genomes?
@@ -594,6 +648,10 @@ bool GenomeComparison::compareGenomes()
     return true;
 }
 
+/**
+ * @brief GenomeComparison::resetTables
+ * @return
+ */
 bool GenomeComparison::resetTables()
 {
     genomeList.clear();
@@ -606,6 +664,10 @@ bool GenomeComparison::resetTables()
     return true;
 }
 
+/**
+ * @brief GenomeComparison::deleteGenome
+ * @return
+ */
 bool GenomeComparison::deleteGenome()
 {
     //Are there any checked genomes?
@@ -630,6 +692,10 @@ bool GenomeComparison::deleteGenome()
     return true;
 }
 
+/**
+ * @brief GenomeComparison::setAuto
+ * @param toggle
+ */
 void GenomeComparison::setAuto(bool toggle)
 {
     if (toggle) {
@@ -645,7 +711,10 @@ void GenomeComparison::setAuto(bool toggle)
     }
 }
 
-//Tables Functions
+/**
+ * @brief GenomeComparison::isGenomeChecked
+ * @return
+ */
 QList<int> GenomeComparison::isGenomeChecked()
 {
     QList<int> checkedList;
@@ -661,14 +730,21 @@ QList<int> GenomeComparison::isGenomeChecked()
 }
 
 
-//RJG - Access Functions
-QString GenomeComparison::access_genome(int row)
+/**
+ * @brief GenomeComparison::accessGenome
+ * @param row
+ * @return
+ */
+QString GenomeComparison::accessGenome(int row)
 {
     return genomeList[row]["genome"];
 }
 
-int GenomeComparison::access_glist_length()
+/**
+ * @brief GenomeComparison::accessGenomeListLength
+ * @return
+ */
+int GenomeComparison::accessGenomeListLength()
 {
     return genomeList.length();
 }
-

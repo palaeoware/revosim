@@ -17,29 +17,47 @@
 
 #include "darkstyletheme.h"
 
-DarkStyleTheme::DarkStyleTheme():
-    DarkStyleTheme(styleBase())
+/**
+ * @brief DarkStyleTheme::DarkStyleTheme
+ */
+DarkStyleTheme::DarkStyleTheme(): DarkStyleTheme(styleBase())
 {
 
 }
 
-DarkStyleTheme::DarkStyleTheme(QStyle *style):
-    QProxyStyle(style)
+/**
+ * @brief DarkStyleTheme::DarkStyleTheme
+ * @param style
+ */
+DarkStyleTheme::DarkStyleTheme(QStyle *style): QProxyStyle(style)
 {
 
 }
 
+/**
+ * @brief DarkStyleTheme::styleBase
+ * @param style
+ * @return
+ */
 QStyle *DarkStyleTheme::styleBase(QStyle *style) const
 {
     static QStyle *base = !style ? QStyleFactory::create(QStringLiteral("Fusion")) : style;
     return base;
 }
 
+/**
+ * @brief DarkStyleTheme::baseStyle
+ * @return
+ */
 QStyle *DarkStyleTheme::baseStyle() const
 {
     return styleBase();
 }
 
+/**
+ * @brief DarkStyleTheme::polish
+ * @param palette
+ */
 void DarkStyleTheme::polish(QPalette &palette)
 {
     // modify palette to dark
@@ -65,6 +83,10 @@ void DarkStyleTheme::polish(QPalette &palette)
     palette.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(127, 127, 127));
 }
 
+/**
+ * @brief DarkStyleTheme::polish
+ * @param app
+ */
 void DarkStyleTheme::polish(QApplication *app)
 {
     if (!app) return;

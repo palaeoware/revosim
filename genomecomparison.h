@@ -18,11 +18,11 @@
 #ifndef GENOMECOMPARISON_H
 #define GENOMECOMPARISON_H
 
-#include <QWidget>
-#include <QTableWidget>
-#include <QString>
-
 #include "simmanager.h"
+
+#include <QString>
+#include <QTableWidget>
+#include <QWidget>
 
 namespace Ui {
 class GenomeComparison;
@@ -33,16 +33,16 @@ class GenomeComparison : public QWidget
     Q_OBJECT
 
 public:
-    explicit GenomeComparison(QWidget *parent = 0);
+    explicit GenomeComparison(QWidget *parent = nullptr);
     ~GenomeComparison();
+
     Ui::GenomeComparison *ui;
 
-    //---- Comparison Public Interface Functions
     bool addGenomeCritter(Critter critter, quint8 *environment);
-    QByteArray saveComparison();
     bool loadComparison(QByteArray data);
-    QString access_genome(int row);
-    int access_glist_length();
+    int accessGenomeListLength();
+    QByteArray saveComparison();
+    QString accessGenome(int row);
 
 private slots:
     //---- Actions
@@ -84,8 +84,12 @@ private:
     QList<int> isGenomeChecked();
 
     //---- Vars
-    QList< QMap<QString, QString> > genomeList, compareList;
-    QColor first32, last32, spacerCol, highlight;
+    QList< QMap<QString, QString> > genomeList;
+    QList< QMap<QString, QString> > compareList;
+    QColor first32;
+    QColor last32;
+    QColor spacerColumn;
+    QColor highlight;
     bool autoComparison;
     int columnWidth;
 };

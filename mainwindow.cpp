@@ -131,10 +131,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //create scenes, add to the GVs
     envscene = new EnvironmentScene;
     ui->GV_Environment->setScene(envscene);
-    envscene->mw = this;
+    envscene->mainWindow = this;
 
     popscene = new PopulationScene;
-    popscene->mw = this;
+    popscene->mainWindow = this;
     ui->GV_Population->setScene(popscene);
 
     //add images to the scenes
@@ -1857,7 +1857,7 @@ gotcounts2:
                     quint64 thisspecies = 0;
                     for (int c = 0; c < slotsPerSq; c++) {
                         if (critters[n][m][c].age > 0) {
-                            thisspecies = critters[n][m][c].speciesid;
+                            thisspecies = critters[n][m][c].speciesID;
                             break;
                         }
                     }
@@ -2323,12 +2323,11 @@ void MainWindow::on_actionSave_triggered()
                 else {
                     out << critters[i][j][k].age;
                     out << critters[i][j][k].genome;
-                    out << critters[i][j][k].ugenecombo;
                     out << critters[i][j][k].fitness;
                     out << critters[i][j][k].energy;
-                    out << critters[i][j][k].xpos;
-                    out << critters[i][j][k].ypos;
-                    out << critters[i][j][k].zpos;
+                    out << critters[i][j][k].xPosition;
+                    out << critters[i][j][k].yPosition;
+                    out << critters[i][j][k].zPosition;
                 }
             }
 
@@ -2565,12 +2564,11 @@ void MainWindow::on_actionLoad_triggered()
                 in >> critters[i][j][k].age;
                 if (critters[i][j][k].age > 0) {
                     in >> critters[i][j][k].genome;
-                    in >> critters[i][j][k].ugenecombo;
                     in >> critters[i][j][k].fitness;
                     in >> critters[i][j][k].energy;
-                    in >> critters[i][j][k].xpos;
-                    in >> critters[i][j][k].ypos;
-                    in >> critters[i][j][k].zpos;
+                    in >> critters[i][j][k].xPosition;
+                    in >> critters[i][j][k].yPosition;
+                    in >> critters[i][j][k].zPosition;
                 }
             }
 

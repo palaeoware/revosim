@@ -170,7 +170,7 @@ public:
 
     void SetupRun();
     bool iterate(int emode, bool interpolate);
-    int iterate_parallel(int firstx, int lastx, int newgenomes_local, int *KillCount_local);
+    int iterateParallel(int firstx, int lastx, int newgenomes_local, int *killCountLocal);
     int settle_parallel(int newgenomecounts_start, int newgenomecounts_end, int *trycount_local,
                         int *settlecount_local, int *birthcounts_local);
 

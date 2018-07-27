@@ -167,7 +167,7 @@ void Analyser::groupsGenealogicalTracker()
     genomedata; //key is speciesID, set is all unique genomes within that species
 
     //Horrible container structure to store all locations of particular genomes, for rapid write-back of new species
-    //first key is speciesid
+    //first key is speciesID
     //second key is gemome
     //qlist is of quint32s which are packed x,y,z as x*65536+y*256+z
     QHash<quint64, QHash<quint64, QList<quint32> *> *> slotswithgenome;
@@ -184,18 +184,18 @@ void Analyser::groupsGenealogicalTracker()
                     QHash<quint64, QList<quint32>*>
                     *genomeposlist; //will be pointer to the position list by genome for this species
                     QSet<quint64> *speciesset; //will be pointer to the genome set for this species
-                    speciesset = genomedata.value(critters[n][m][c].speciesid,
+                    speciesset = genomedata.value(critters[n][m][c].speciesID,
                                                   (QSet<quint64> *)0); //get the latter from hash table if it's there
                     if (!speciesset) { //it wasn't there - so first time we've seen this species this iteration
                         speciesset = new QSet<quint64>; //new set for the genomes for the species
-                        genomedata.insert(critters[n][m][c].speciesid, speciesset); //add it to the hash
+                        genomedata.insert(critters[n][m][c].speciesID, speciesset); //add it to the hash
 
                         genomeposlist = new
                         QHash<quint64, QList<quint32>*>; //new genome/position list hash table for the species
-                        slotswithgenome.insert(critters[n][m][c].speciesid, genomeposlist); //add this to its hash as well
+                        slotswithgenome.insert(critters[n][m][c].speciesID, genomeposlist); //add this to its hash as well
                     } else { //species already encountered - objects exist
                         genomeposlist = slotswithgenome.value(
-                                            critters[n][m][c].speciesid); //retrieve postion list/genome hash pointer for this species
+                                            critters[n][m][c].speciesID); //retrieve postion list/genome hash pointer for this species
                         //speciesset already retrieved
                     }
 
@@ -214,7 +214,7 @@ void Analyser::groupsGenealogicalTracker()
 
                     //add 1 to count of occurrences for this speciesID - by end it will be correct - pre-splitting
                     //later if species are split off, their counts will be removed from this
-                    speciessizes[critters[n][m][c].speciesid] = speciessizes.value(critters[n][m][c].speciesid, 0) + 1;
+                    speciessizes[critters[n][m][c].speciesID] = speciessizes.value(critters[n][m][c].speciesID, 0) + 1;
                 }
             }
         }
@@ -255,11 +255,11 @@ void Analyser::groupsGenealogicalTracker()
         }
 
         QSet<quint64> *speciesset = ii.value(); // Get the set of genomes
-        quint64 speciesid = ii.key(); //get the speciesID
+        quint64 speciesID = ii.key(); //get the speciesID
         LogSpecies *thislogspecies;
 
         if (species_mode >= SPECIES_MODE_PHYLOGENY) {
-            thislogspecies = LogSpeciesById.value(speciesid, (LogSpecies *)0);
+            thislogspecies = LogSpeciesById.value(speciesID, (LogSpecies *)0);
             if (!thislogspecies) {
                 QMessageBox::warning(MainWin, "Oops",
                                      "Internal error - species not found in log hash. Please email MDS / RJG with this message");
@@ -392,7 +392,7 @@ void Analyser::groupsGenealogicalTracker()
                     //find all genome entries for this group
                     //and fix data in critters for them
                     if (groupcodes[iii] == groupcode) {
-                        QList<quint32> *updatelist = slotswithgenome.value(speciesid)->value(genomes[iii]);
+                        QList<quint32> *updatelist = slotswithgenome.value(speciesID)->value(genomes[iii]);
                         //retrieve the list of positions for this genome
                         speciessize += updatelist->count(); //add its count to size
                         foreach (quint32 v, *updatelist) { //go through list and set critters data to new species
@@ -400,7 +400,7 @@ void Analyser::groupsGenealogicalTracker()
                             int ls = v % 65536;
                             int y = ls / 256;
                             int z = ls % 256;
-                            critters[x][y][z].speciesid = nextspeciesid;
+                            critters[x][y][z].speciesID = nextspeciesid;
 
                         }
 
@@ -409,10 +409,10 @@ void Analyser::groupsGenealogicalTracker()
                     }
 
                 speciessizes[nextspeciesid] = speciessize; //can set species size now in the hash
-                speciessizes[speciesid] = speciessizes[speciesid] - speciessize; //remove this number from parent
+                speciessizes[speciesID] = speciessizes[speciesID] - speciessize; //remove this number from parent
 
                 Species newsp;          //new species object
-                newsp.parent = speciesid; //parent is the species we are splitting from
+                newsp.parent = speciesID; //parent is the species we are splitting from
                 newsp.originTime = generation; //i.e. now (generation is a global)
                 newsp.ID = nextspeciesid;   //set the ID - last use so increment
                 newsp.type = samplegenome;    //put in our selected type genome
@@ -443,7 +443,7 @@ void Analyser::groupsGenealogicalTracker()
                 //find it in the old list and copy
                 Species newsp;
                 for (int j = 0; j < oldspecieslist.count(); j++) {
-                    if (oldspecieslist[j].ID == speciesid) {
+                    if (oldspecieslist[j].ID == speciesID) {
                         newsp = oldspecieslist[j];
                         if (species_mode >= SPECIES_MODE_PHYLOGENY) {
                             logspeciespointers[jj.key()] = newsp.logSpeciesStructure;
@@ -510,7 +510,7 @@ void Analyser::groupsGenealogicalTracker()
                 {
                     if (groupcodes[iii] == groupcode) {
                         thisdataitem->genomic_diversity++;
-                        QList<quint32> *updatelist = slotswithgenome.value(speciesid)->value(genomes[iii]);
+                        QList<quint32> *updatelist = slotswithgenome.value(speciesID)->value(genomes[iii]);
                         //retrieve the list of positions for this genome
                         speciessize += updatelist->count(); //add its count to size
 

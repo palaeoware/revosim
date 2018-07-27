@@ -41,7 +41,7 @@ reseed::reseed(QWidget *parent) :
 
     ui->CheckBoxReseedSession->setChecked(reseedKnown);
 
-    int length = MainWin->genoneComparison->access_glist_length();
+    int length = MainWin->genoneComparison->accessGenomeListLength();
     if (length > 10)length = 10;
 
     if (!length) {
@@ -49,7 +49,7 @@ reseed::reseed(QWidget *parent) :
         ui->genomesLayout->addWidget(label);
     } else for (int i = 0; i < length; i++) {
             QRadioButton *radio = new QRadioButton(this);
-            radio->setText(MainWin->genoneComparison->access_genome(i));
+            radio->setText(MainWin->genoneComparison->accessGenome(i));
             ui->genomesLayout->addWidget(radio);
             connect(radio, SIGNAL(toggled(bool)), this, SLOT(radio_toggled()));
             radios.append(radio);

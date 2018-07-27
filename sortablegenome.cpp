@@ -17,11 +17,11 @@
 
 #include "sortablegenome.h"
 
-sortablegenome::sortablegenome(quint64 gen, int f, int c)
+sortablegenome::sortablegenome(quint64 generation, int f, int c)
 {
     fit = f;
     count = c;
-    genome = gen;
+    genome = generation;
     group = 0;
 }
 

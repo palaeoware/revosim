@@ -18,45 +18,54 @@
 #include "critter.h"
 #include "simmanager.h"
 
-//undefine to use old genetic distance methods
-
-//#define SLOTS
-#define MONEYBACK
-
+/**
+ * @brief Critter::Critter
+ */
 Critter::Critter()
 {
     genome = 0;
     age = 0; //this is the tested flag for dead
     fitness = 0;
     energy = 0;
-    speciesid = -1; //=not assigned
+    speciesID = -1; //=not assigned
 }
 
-void Critter::initialise(quint64 gen, quint8 *env, int x, int y, int z, quint64 species)
+/**
+ * @brief Critter::initialise
+ * @param generation
+ * @param environment
+ * @param x
+ * @param y
+ * @param z
+ * @param species
+ */
+void Critter::initialise(quint64 generation, quint8 *environment, int x, int y, int z, quint64 species)
 {
     //Restart a slot - set up properly
-    genome = gen;
+    genome = generation;
 
     age = startAge;
     //RJG - start with 0 energy
     energy = 0;
     //RJG - Work out fitness
-    recalc_fitness(env);
+    recalculateFitness(environment);
 
-    xpos = x;
-    ypos = y;
-    zpos = z;
-    speciesid = species;
-
-    quint32 gen2 = genome >> 32;
-    ugenecombo = (gen2 >> 16) ^ (gen2 & 65535); //for breed testing - work out in advance for speed
+    xPosition = x;
+    yPosition = y;
+    zPosition = z;
+    speciesID = species;
 }
 
-int Critter::recalc_fitness(quint8 *env)
+/**
+ * @brief Critter::recalculateFitness
+ * @param environment
+ * @return
+ */
+int Critter::recalculateFitness(quint8 *environment)
 {
     quint32 lowergenome = (quint32)(genome & ((quint64)65536 * (quint64)65536 - (quint64)1));
 
-    quint32 answer = lowergenome ^ xormasks[env[0]][0]; //apply redmask
+    quint32 answer = lowergenome ^ xormasks[environment[0]][0]; //apply redmask
     quint32 a2 = answer / 65536;
     answer &= (quint32) 65535;
 
@@ -64,13 +73,13 @@ int Critter::recalc_fitness(quint8 *env)
     int finalanswer = bitcounts[answer];
     finalanswer += bitcounts[a2];
 
-    answer = lowergenome ^ xormasks[env[1]][1]; //apply greenmask
+    answer = lowergenome ^ xormasks[environment[1]][1]; //apply greenmask
     a2 = answer / 65536;
     answer &= (unsigned int) 65535;
     finalanswer += bitcounts[answer];
     finalanswer += bitcounts[a2];
 
-    answer = lowergenome ^ xormasks[env[2]][2]; //apply bluemask
+    answer = lowergenome ^ xormasks[environment[2]][2]; //apply bluemask
     a2 = answer / 65536;
     answer &= (unsigned int) 65535;
     finalanswer += bitcounts[answer];
@@ -95,31 +104,36 @@ int Critter::recalc_fitness(quint8 *env)
     return fitness;
 }
 
-
-bool Critter::iterate_parallel(int *KillCount_local, int addfood)
+/**
+ * @brief Critter::iterateParallel
+ * @param killCountLocal
+ * @param addFood
+ * @return
+ */
+bool Critter::iterateParallel(int *killCountLocal, int addFood)
 {
     if (age) {
         //RJG - Here is where an individual dies.
         if ((--age) == 0) {
-            (*KillCount_local)++;
-            totalfit[xpos][ypos] -= fitness;
+            (*killCountLocal)++;
+            totalfit[xPosition][yPosition] -= fitness;
             fitness = 0;
-            if (maxused[xpos][ypos] == zpos) {
-                for (int n = zpos - 1; n >= 0; n--)
-                    if (critters[xpos][ypos][n].age > 0) {
-                        maxused[xpos][ypos] = n;
+            if (maxused[xPosition][yPosition] == zPosition) {
+                for (int n = zPosition - 1; n >= 0; n--)
+                    if (critters[xPosition][yPosition][n].age > 0) {
+                        maxused[xPosition][yPosition] = n;
                         goto past;
                     }
-                maxused[xpos][ypos] = -1;
+                maxused[xPosition][yPosition] = -1;
 past:
                 ;
             }
             return false;
         }
-        energy +=  fitness * addfood;
-        //energy+= (fitness * food) / totalfit[xpos][ypos];]
+        energy +=  fitness * addFood;
+        //energy+= (fitness * food) / totalfit[xPosition][yPosition];]
 
-//non-slot version - try breeding if our energy is high enough
+        //non-slot version - try breeding if our energy is high enough
         if (energy > (breedThreshold + breedCost)) {
             energy -= breedCost;
             return true;
@@ -129,17 +143,25 @@ past:
     return false;
 }
 
-int Critter::breed_with_parallel(int xpos, int ypos, Critter *partner, int *newgenomecount_local)
-//newgenomecount_local is position in genome array - arranged so can never overlap
-//returns 1 if it fails (so I can count fails)
+/**
+ * @brief Critter::breedWithParallel
+ *
+ * newGenomeCountLocal is position in genome array - arranged so can never overlap
+ * returns 1 if it fails (so I can count fails)
+ *
+ * @param xPosition
+ * @param yPosition
+ * @param partner
+ * @param newGenomeCountLocal
+ * @return
+ */
+int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, int *newGenomeCountLocal)
 {
-    //do some breeding!
-
     bool breedsuccess1 = true; //for species restricted breeding
     bool breedsuccess2 = true; //for difference breeding
 
     if (breedspecies) {
-        if (partner->speciesid != speciesid) breedsuccess1 = false;
+        if (partner->speciesID != speciesID) breedsuccess1 = false;
     }
 
     if (breeddiff) {
@@ -184,11 +206,11 @@ int Critter::breed_with_parallel(int xpos, int ypos, Critter *partner, int *newg
 
         //store it all
 
-        newgenomes[*newgenomecount_local] = g2x;
-        newgenomeX[*newgenomecount_local] = xpos;
-        newgenomeY[*newgenomecount_local] = ypos;
-        newgenomespecies[*newgenomecount_local] = speciesid;
-        newgenomeDisp[(*newgenomecount_local)++] =
+        newgenomes[*newGenomeCountLocal] = g2x;
+        newgenomeX[*newGenomeCountLocal] = xPosition;
+        newgenomeY[*newGenomeCountLocal] = yPosition;
+        newgenomespecies[*newGenomeCountLocal] = speciesID;
+        newgenomeDisp[(*newGenomeCountLocal)++] =
             dispersal; //how far to disperse - low is actually far (it's a divider - max is 240, <10% are >30
         return 0;
     } else {

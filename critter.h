@@ -24,21 +24,20 @@ class Critter
 {
 public:
     Critter();
-    void initialise(quint64 gen, quint8 *env, int x, int y, int z, quint64 species);
-    int recalc_fitness(quint8 *env);
-    int breed_with_parallel(int xpos, int ypos, Critter *partner, int *newgenomecount_local);
-    bool iterate_parallel(int *KillCount_local, int addfood);
 
-    int xpos, ypos, zpos;
+    void initialise(quint64 generation, quint8 *environment, int x, int y, int z, quint64 species);
+    bool iterateParallel(int *killCountLocal, int addFood);
+    int recalculateFitness(quint8 *environment);
+    int breedWithParallel(int xPosition, int yPosition, Critter *partner, int *newGenomeCountLocal);
 
-    quint64 genome;
-    quint32 ugenecombo;
+    int xPosition;
+    int yPosition;
+    int zPosition;
     int age; //start off positive - 0 is dead - reduces each time
     int fitness;
     int energy; //breeding energy
-
-    quint64 speciesid; //this is inherited from parents
+    quint64 genome;
+    quint64 speciesID; //this is inherited from parents
 };
-
 
 #endif // CRITTER_H

@@ -19,10 +19,10 @@
 #define DARKSTYLETHEME_H
 
 #include <QApplication>
-#include <QProxyStyle>
-#include <QStyleFactory>
 #include <QFont>
 #include <QFile>
+#include <QProxyStyle>
+#include <QStyleFactory>
 
 class DarkStyleTheme : public QProxyStyle
 {
@@ -30,12 +30,12 @@ class DarkStyleTheme : public QProxyStyle
 
 public:
     DarkStyleTheme();
-    explicit DarkStyleTheme(QStyle *style);
 
-    QStyle *baseStyle() const;
+    explicit DarkStyleTheme(QStyle *style);
 
     void polish(QPalette &palette) override;
     void polish(QApplication *app) override;
+    QStyle *baseStyle() const;
 
 private:
     QStyle *styleBase(QStyle *style = Q_NULLPTR) const;

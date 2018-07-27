@@ -16,8 +16,8 @@
  */
 
 #include "environmentscene.h"
-#include "simmanager.h"
 #include "mainwindow.h"
+#include "simmanager.h"
 
 /*!
  * \brief EnvironmentScene::EnvironmentScene

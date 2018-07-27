@@ -126,27 +126,27 @@ QString AnalysisTools::speciesRatesOfChange(QString filename)
             quint64 species_ID = (quint64) (split_up[1].toULongLong());
 
             //work out slot in 0-(SCALE-1)
-            int xpos = (int)(((float)(split_up[0].toInt())) / timescale);
-            if (xpos > (SCALE - 1)) xpos = SCALE - 1;
+            int xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
 
             if (speciesList.contains(species_ID)) { //if ID species already recorded, update details
                 speciesList[species_ID].end = (split_up[0].toULongLong());
                 int ssize = split_up[4].toInt();
-                speciesList[species_ID].sizes[xpos] = ssize; //record last size in each slot, will be fine
+                speciesList[species_ID].sizes[xPosition] = ssize; //record last size in each slot, will be fine
                 if (speciesList[species_ID].maxSize < ssize) speciesList[species_ID].maxSize = ssize;
                 speciesList[species_ID].totalSize += (quint64) (split_up[4].toULongLong());
                 speciesList[species_ID].occurrences++;
-                speciesList[species_ID].genomes[xpos] = speciesList[species_ID].lastGenome = (quint64) (split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
+                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = (quint64) (split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
             } else { //not yet recorded
                 LoggedSpecies spe;
                 spe.start = (quint64) (split_up[2].toULongLong());
-                speciesList[species_ID].sizes[xpos] = spe.end = (quint64) (split_up[0].toULongLong());
+                speciesList[species_ID].sizes[xPosition] = spe.end = (quint64) (split_up[0].toULongLong());
                 spe.parent = (quint64) (split_up[3].toULongLong());
                 spe.maxSize = split_up[4].toInt();
                 spe.totalSize = (quint64) (split_up[4].toULongLong());
                 spe.occurrences = 1;
-                speciesList[species_ID].genomes[xpos] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
+                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
                 speciesList.insert(species_ID, spe);
             }
 
@@ -489,28 +489,28 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
             if (((qint64)species_ID) > maxspeciesID)
                 maxspeciesID = (qint64)species_ID;
             //work out slot in 0-(SCALE-1)
-            int xpos = (int)(((float)(split_up[0].toInt())) / timescale);
-            if (xpos > (SCALE - 1)) xpos = SCALE - 1;
+            int xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
 
             if (speciesList.contains(species_ID)) { //if ID species already recorded, update details
                 speciesList[species_ID].end = (split_up[0].toULongLong());
                 int ssize = split_up[4].toInt();
-                speciesList[species_ID].sizes[xpos] = ssize; //record last size in each slot, will be fine
+                speciesList[species_ID].sizes[xPosition] = ssize; //record last size in each slot, will be fine
                 if (speciesList[species_ID].maxSize < ssize) speciesList[species_ID].maxSize = ssize;
                 speciesList[species_ID].totalSize += (quint64) (split_up[4].toULongLong());
                 speciesList[species_ID].occurrences++;
-                speciesList[species_ID].genomes[xpos] = speciesList[species_ID].lastGenome = (quint64) (
+                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = (quint64) (
                                                                                                  split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
             } else { //not yet recorded
                 LoggedSpecies spe;
                 spe.start = (quint64) (split_up[2].toULongLong());
-                speciesList[species_ID].sizes[xpos] = spe.end = (quint64) (split_up[0].toULongLong());
+                speciesList[species_ID].sizes[xPosition] = spe.end = (quint64) (split_up[0].toULongLong());
                 spe.parent = (quint64) (split_up[3].toULongLong());
                 spe.maxSize = split_up[4].toInt();
                 spe.totalSize = (quint64) (split_up[4].toULongLong());
                 spe.occurrences = 1;
-                speciesList[species_ID].genomes[xpos] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
+                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
                 speciesList.insert(species_ID, spe);
             }
 
@@ -839,28 +839,28 @@ QString AnalysisTools::extinctOrigin(QString filename)
             quint64 species_ID = (quint64) (split_up[1].toULongLong());
 
             //work out slot in 0-(SCALE-1)
-            int xpos = (int)(((float)(split_up[0].toInt())) / timescale);
-            if (xpos > (SCALE - 1)) xpos = SCALE - 1;
+            int xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
 
 
             if (speciesList.contains(species_ID)) { //if ID species already recorded, update details
                 speciesList[species_ID].end = (split_up[0].toULongLong());
                 int ssize = split_up[4].toInt();
-                speciesList[species_ID].sizes[xpos] = ssize; //record last size in each slot, will be fine
+                speciesList[species_ID].sizes[xPosition] = ssize; //record last size in each slot, will be fine
                 if (speciesList[species_ID].maxSize < ssize) speciesList[species_ID].maxSize = ssize;
                 speciesList[species_ID].totalSize += (quint64) (split_up[4].toULongLong());
                 speciesList[species_ID].occurrences++;
-                speciesList[species_ID].genomes[xpos] = speciesList[species_ID].lastGenome = (quint64) (split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
+                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = (quint64) (split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
             } else { //not yet recorded
                 LoggedSpecies spe;
                 spe.start = (quint64) (split_up[2].toULongLong());
-                speciesList[species_ID].sizes[xpos] = spe.end = (quint64) (split_up[0].toULongLong());
+                speciesList[species_ID].sizes[xPosition] = spe.end = (quint64) (split_up[0].toULongLong());
                 spe.parent = (quint64) (split_up[3].toULongLong());
                 spe.maxSize = split_up[4].toInt();
                 spe.totalSize = (quint64) (split_up[4].toULongLong());
                 spe.occurrences = 1;
-                speciesList[species_ID].genomes[xpos] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
+                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
                 speciesList.insert(species_ID, spe);
             }
 
@@ -892,16 +892,16 @@ QString AnalysisTools::extinctOrigin(QString filename)
             int acount = 0;
             int bcount = 0;
             foreach (LoggedSpecies spec, speciesList) {
-                int xpos = (int)(((float)(spec.start)) / timescale);
-                if (xpos > (SCALE - 1)) xpos = SCALE - 1;
-                if (xpos == i) count++;
+                int xPosition = (int)(((float)(spec.start)) / timescale);
+                if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
+                if (xPosition == i) count++;
 
                 int xpos2 = (int)(((float)(spec.end)) / timescale);
                 if (xpos2 > (SCALE - 1)) xpos2 = SCALE - 1;
                 if (xpos2 == i) ecount++;
 
-                if (xpos <= i && xpos2 >= i) acount++;
-                if (xpos <= i && xpos2 >= i && spec.maxSize > 20) bcount++;
+                if (xPosition <= i && xpos2 >= i) acount++;
+                if (xPosition <= i && xpos2 >= i && spec.maxSize > 20) bcount++;
             }
             extinctcounts.append(ecount);
             origincounts.append(count);
@@ -911,9 +911,9 @@ QString AnalysisTools::extinctOrigin(QString filename)
 
         //calc av species alive
         for (int i = 0; i < RealSpeciesTimeSlots.count(); i++) {
-            int xpos = (int)(((float)(RealSpeciesTimeSlots[i])) / timescale);
-            if (xpos > (SCALE - 1)) xpos = SCALE - 1;
-            RealSpeciesTimeSlots[i] = xpos;
+            int xPosition = (int)(((float)(RealSpeciesTimeSlots[i])) / timescale);
+            if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
+            RealSpeciesTimeSlots[i] = xPosition;
         }
 
         float avspeciescounts[SCALE];
@@ -1006,26 +1006,26 @@ QString AnalysisTools::generateTree(QString filename)
             quint64 species_ID = (quint64) (split_up[1].toULongLong());
 
             //work out slot in 0-(SCALE-1)
-            int xpos = (int)(((float)(split_up[0].toInt())) / timescale);
-            if (xpos > (SCALE - 1)) xpos = SCALE - 1;
+            int xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
             if (speciesList.contains(species_ID)) { //if ID species already recorded, update details
                 speciesList[species_ID].end = (split_up[0].toULongLong());
                 int ssize = split_up[4].toInt();
-                speciesList[species_ID].sizes[xpos] = ssize; //record last size in each slot, will be fine
+                speciesList[species_ID].sizes[xPosition] = ssize; //record last size in each slot, will be fine
                 if (speciesList[species_ID].maxSize < ssize) speciesList[species_ID].maxSize = ssize;
                 speciesList[species_ID].totalSize += (quint64) (split_up[4].toULongLong());
                 speciesList[species_ID].occurrences++;
-                speciesList[species_ID].genomes[xpos] = speciesList[species_ID].lastGenome = (quint64) (split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
+                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = (quint64) (split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
             } else { //not yet recorded
                 LoggedSpecies spe;
                 spe.start = (quint64) (split_up[2].toULongLong());
-                speciesList[species_ID].sizes[xpos] = spe.end = (quint64) (split_up[0].toULongLong());
+                speciesList[species_ID].sizes[xPosition] = spe.end = (quint64) (split_up[0].toULongLong());
                 spe.parent = (quint64) (split_up[3].toULongLong());
                 spe.maxSize = split_up[4].toInt();
                 spe.totalSize = (quint64) (split_up[4].toULongLong());
                 spe.occurrences = 1;
-                speciesList[species_ID].genomes[xpos] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
+                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
                 speciesList.insert(species_ID, spe);
             }
 
@@ -1184,19 +1184,19 @@ QString AnalysisTools::generateTree(QString filename)
             if (parent > 0) {
                 //find parent's line number
                 int pline = magicList.indexOf(parent) * 2;
-                int xpos = (int)(((float)speciesList[ID].start) / timescale);
-                if (xpos > (SCALE - 1)) xpos = SCALE - 1;
-                output_grid[pline][xpos] = 2;
+                int xPosition = (int)(((float)speciesList[ID].start) / timescale);
+                if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
+                output_grid[pline][xPosition] = 2;
                 if (pline > myline) { // below
                     for (int j = myline + 1; j < pline; j++) {
-                        output_grid[j][xpos] = 3;
+                        output_grid[j][xPosition] = 3;
                     }
-                    output_grid[myline][xpos] = 4;
+                    output_grid[myline][xPosition] = 4;
                 } else { //above
                     for (int j = pline + 1; j < myline; j++) {
-                        output_grid[j][xpos] = 3;
+                        output_grid[j][xPosition] = 3;
                     }
-                    output_grid[myline][xpos] = 5;
+                    output_grid[myline][xPosition] = 5;
                 }
             }
             myline++;
@@ -1313,14 +1313,14 @@ QString AnalysisTools::countPeaks(int r, int g, int b)
 {
     //return "CP";
     // for a particular colours - go through ALL genomes, work out fitness.
-    quint8 env[3];
+    quint8 environment[3];
     quint32 fits[96];
 
     for (int i = 0; i < 96; i++) fits[i] = 0;
 
-    env[0] = (quint8)r;
-    env[1] = (quint8)g;
-    env[2] = (quint8)b;
+    environment[0] = (quint8)r;
+    environment[1] = (quint8)g;
+    environment[2] = (quint8)b;
 
     QString s;
     QTextStream out(&s);
@@ -1332,7 +1332,7 @@ QString AnalysisTools::countPeaks(int r, int g, int b)
     //quint64 max = 1000000;
     for (quint64 genome = 0; genome < max; genome++) {
         Critter c;
-        c.initialise((quint32)genome, env, 0, 0, 0, 0);
+        c.initialise((quint32)genome, environment, 0, 0, 0, 0);
         fits[c.fitness]++;
 
         if (!(genome % 6553600)) {

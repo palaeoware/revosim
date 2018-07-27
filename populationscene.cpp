@@ -38,7 +38,7 @@ void PopulationScene::DoMouse(int x, int y, int button)
     if (button == 2 && x >= 0 && x < gridX && y >= 0 && y < gridY) {
         selectedx = x;
         selectedy = y;
-        mw->genomeComparisonAdd();
+        mainWindow->genomeComparisonAdd();
     }
 }
 

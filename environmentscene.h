@@ -26,7 +26,8 @@ class EnvironmentScene : public QGraphicsScene
 {
 public:
     EnvironmentScene();
-    MainWindow *mw;
+
+    MainWindow *mainWindow;
 };
 
 #endif // ENVIRONMENTSCENE_H
