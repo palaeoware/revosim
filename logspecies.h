@@ -41,13 +41,13 @@ public:
     QString writeData(int childIndex, quint64 lastTimeBase, bool killfFuff, quint64 parentID = 0);
     QString writeDataLine(quint64 start, quint64 end, quint64 speciesID, quint64 parentID);
 
-    LogSpecies *parent;
+    LogSpecies *parent{};
     QList<LogSpeciesDataItem *> dataItems;
     QList<LogSpecies *> children;
-    quint32 maxSize;
-    quint64 ID;
-    quint64 timeOfFirstAppearance;
-    quint64 timeOfLastAppearance;
+    quint32 maxSize{};
+    quint64 ID{};
+    quint64 timeOfFirstAppearance{};
+    quint64 timeOfLastAppearance{};
 };
 
 #endif // LOGSPECIES_H

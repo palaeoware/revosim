@@ -23,8 +23,7 @@
 ResizeCatcher::ResizeCatcher(QObject *parent) :
     QObject(parent)
 {
-    return;
-}
+    }
 
 bool ResizeCatcher::eventFilter(QObject *obj, QEvent *event)
 {

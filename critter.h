@@ -27,12 +27,12 @@ public:
 
     void initialise(quint64 generation, quint8 *environment, int x, int y, int z, quint64 species);
     bool iterateParallel(int *killCountLocal, int addFood);
-    int recalculateFitness(quint8 *environment);
+    int recalculateFitness(const quint8 *environment);
     int breedWithParallel(int xPosition, int yPosition, Critter *partner, int *newGenomeCountLocal);
 
-    int xPosition;
-    int yPosition;
-    int zPosition;
+    int xPosition{};
+    int yPosition{};
+    int zPosition{};
     int age; //start off positive - 0 is dead - reduces each time
     int fitness;
     int energy; //breeding energy

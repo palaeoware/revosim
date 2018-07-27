@@ -30,7 +30,7 @@ public:
     PopulationScene();
     int selectedx;
     int selectedy;
-    MainWindow *mainWindow;
+    MainWindow *mainWindow{};
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);

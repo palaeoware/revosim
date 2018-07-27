@@ -60,8 +60,8 @@ private:
     bool renderGenomesTable();
     void insertRow(
         int row,
-        QString genomeName,
-        QString genomeStr,
+        const QString& genomeName,
+        const QString& genomeStr,
         int environmentR,
         int environmentG,
         int environmentB,
@@ -73,7 +73,7 @@ private:
         int nonCodeB,
         int fitness,
         QTableWidget *table,
-        QString comparisonMask = QString(""));
+        const QString& comparisonMask = QString(""));
     bool renderCompareTable();
 
     //---- Buttons

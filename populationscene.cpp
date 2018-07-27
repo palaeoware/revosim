@@ -54,7 +54,6 @@ void PopulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton) but = 1;
     if (event->button() == Qt::RightButton) but = 2;
     if (but > 0) DoMouse(x, y, but);
-    return;
 }
 
 
@@ -71,7 +70,6 @@ void PopulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::RightButton) but = 2;
 
     DoMouse(x, y, but);
-    return;
 }
 
 void PopulationScene::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
@@ -79,5 +77,4 @@ void PopulationScene::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
     Q_UNUSED(event);
 
     //don't do anything
-    return;
 }

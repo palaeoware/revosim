@@ -61,9 +61,9 @@ void Critter::initialise(quint64 generation, quint8 *environment, int x, int y, 
  * @param environment
  * @return
  */
-int Critter::recalculateFitness(quint8 *environment)
+int Critter::recalculateFitness(const quint8 *environment)
 {
-    quint32 lowergenome = (quint32)(genome & ((quint64)65536 * (quint64)65536 - (quint64)1));
+    auto lowergenome = (quint32)(genome & ((quint64)65536 * (quint64)65536 - (quint64)1));
 
     quint32 answer = lowergenome ^ xormasks[environment[0]][0]; //apply redmask
     quint32 a2 = answer / 65536;
@@ -137,7 +137,7 @@ past:
         if (energy > (breedThreshold + breedCost)) {
             energy -= breedCost;
             return true;
-        } else return false;
+        } return false;
 
     }
     return false;
@@ -170,11 +170,11 @@ int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, i
         quint64 cg1x = genome ^ partner->genome; //XOR the two to compare
 
         //Coding half
-        quint32 g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
+        auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
         t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
 
         //non-Coding half
-        quint32 g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
+        auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
         t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
         if (t1 > maxDiff) {
             breedsuccess2 = false;
@@ -213,12 +213,12 @@ int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, i
         newgenomeDisp[(*newGenomeCountLocal)++] =
             dispersal; //how far to disperse - low is actually far (it's a divider - max is 240, <10% are >30
         return 0;
-    } else {
+    } 
         //breeders get their energy back - this is an 'abort'
         //---- RJG: Note that this refund is different to and exclusive from that in Simmanager, which refunds if no partner found.
         energy += breedCost;
         //---- RJG: Presumably removed to prevent critters getting multiple refunds
         //partner->energy+=breedCost;
         return 1;
-    }
+    
 }

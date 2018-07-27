@@ -28,12 +28,10 @@ sortablegenome::sortablegenome(quint64 generation, int f, int c)
 bool sortablegenome::operator<(const sortablegenome &rhs) const
 {
     if (count > rhs.count) return true; //to reverse the sort
-    else return false;
+    return false;
 }
 
 bool sortablegenome::operator==(const sortablegenome &rhs) const
 {
-    if (genome == rhs.genome) return true;
-    else return false;
+    return genome == rhs.genome;
 }
-

@@ -22,15 +22,13 @@
 
 #include <QTextStream>
 
-extern quint64 generation;
+
 
 /*!
  * \brief LogSpecies::LogSpecies
  */
 LogSpecies::LogSpecies()
-{
-
-}
+= default;
 
 /*!
  * \brief LogSpecies::~LogSpecies
@@ -92,7 +90,7 @@ QString LogSpecies::writeData(int childIndex, quint64 lastTimeBase, bool killfFu
     if (lastTimeBase == 0) lastTimeBase = timeOfFirstAppearance;
     if (cc <= childIndex)
         return writeDataLine(lastTimeBase, timeOfLastAppearance, speciesID, parentID);
-    else {
+    
         int nextchildindex = cc; //for if it runs off the end
         quint64 thisgeneration = 0;
         bool genvalid = false;
@@ -122,7 +120,7 @@ QString LogSpecies::writeData(int childIndex, quint64 lastTimeBase, bool killfFu
         out << writeDataLine(lastTimeBase, thisgeneration, speciesID, parentID);
 
         return s;
-    }
+    
 }
 
 /*!
@@ -159,15 +157,13 @@ bool LogSpecies::isFluff()
 
     // Is this a 'fluff' species - i.e. one has no descendants and is smaller than minspeciessize?
     // Used by filter of writeNewickString and other recursives
-    if (children.count() != 0 && allowExcludeWithDescendants == false)
+    if (children.count() != 0 && !allowExcludeWithDescendants)
         return false;
 
     quint32 recurseMaxSize = maxSize;
     if (allowExcludeWithDescendants) recurseMaxSize = maxSizeIncludingChildren();
 
-    if (recurseMaxSize <= minspeciessize) return true;
-
-    return false;
+    return recurseMaxSize <= minspeciessize;
 }
 
 /*!
@@ -198,7 +194,7 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
         QString s;
         s.sprintf("ID%lld-%d:%lld", speciesID, maxSize, bl);
         return s;
-    } else {
+    } 
         int nextchildindex = cc; //for if it runs off the end
         quint64 thisgeneration = 0;
         bool genvalid = false;
@@ -234,5 +230,5 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
         }
         out << ")ID" << speciesID << "-" << maxSize << ":" << bl;
         return s;
-    }
+    
 }

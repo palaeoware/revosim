@@ -44,7 +44,7 @@
 
 #include "analysistools.h"
 #include "version.h"
-#include "math.h"
+#include <cmath>
 
 #ifndef M_SQRT1_2 //not defined in all versions
 #define M_SQRT1_2 0.7071067811865475
@@ -94,7 +94,7 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(QIcon (":/icon.png"));
 
     //Install filter to catch resize events to central widget and deliver to mainwindow (handle dock resizes)
-    ResizeCatcher *rescatch = new ResizeCatcher(this);
+    auto *rescatch = new ResizeCatcher(this);
     ui->centralWidget->installEventFilter(rescatch);
 
     // Create Main Toolbar
@@ -124,7 +124,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //Add Genome Comparison UI Dock
     ui->genomeComparisonDock->hide();
     genoneComparison = new GenomeComparison;
-    QVBoxLayout *genomeLayout = new QVBoxLayout;
+    auto *genomeLayout = new QVBoxLayout;
     genomeLayout->addWidget(genoneComparison);
     ui->genomeComparisonContent->setLayout(genomeLayout);
 
@@ -334,11 +334,11 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     simulationSettingsDock->setFeatures(QDockWidget::DockWidgetFloatable);
     addDockWidget(Qt::RightDockWidgetArea, simulationSettingsDock);
 
-    QGridLayout *settings_grid = new QGridLayout;
+    auto *settings_grid = new QGridLayout;
     settings_grid->setAlignment(Qt::AlignTop);
 
     // Environment Settings
-    QGridLayout *environmentSettingsGrid = new QGridLayout;
+    auto *environmentSettingsGrid = new QGridLayout;
 
     QLabel *environment_label = new QLabel("Environmental Settings");
     environment_label->setStyleSheet("font-weight: bold");
@@ -369,7 +369,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     QLabel *environment_mode_label = new QLabel("Environment mode:");
     environmentSettingsGrid->addWidget(environment_mode_label, 3, 1, 1, 2);
 
-    QGridLayout *environmentModeGrid = new QGridLayout;
+    auto *environmentModeGrid = new QGridLayout;
     environmentModeStaticButton = new QRadioButton("Static");
     environmentModeStaticButton->setToolTip("<font>'Static' uses a single environment image.</font>");
     environmentModeOnceButton = new QRadioButton("Once");
@@ -378,7 +378,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     environmentModeLoopButton->setToolTip("<font>'Loop' uses each image in order in a loop</font>");
     environmentModeBounceButton = new QRadioButton("Bounce");
     environmentModeBounceButton->setToolTip("<font>'Bounce' rebounds between the first and last image in a loop.</font>");
-    QButtonGroup *environmentModeButtonGroup = new QButtonGroup;
+    auto *environmentModeButtonGroup = new QButtonGroup;
     environmentModeButtonGroup->addButton(environmentModeStaticButton, ENV_MODE_STATIC);
     environmentModeButtonGroup->addButton(environmentModeOnceButton, ENV_MODE_ONCE);
     environmentModeButtonGroup->addButton(environmentModeLoopButton, ENV_MODE_LOOP);
@@ -411,7 +411,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     });
 
     // Simulation Size Settings
-    QGridLayout *simulationSizeSettingsGrid = new QGridLayout;
+    auto *simulationSizeSettingsGrid = new QGridLayout;
 
     QLabel *simulation_size_label = new QLabel("Simulation size");
     simulation_size_label->setStyleSheet("font-weight: bold");
@@ -462,7 +462,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     });
 
     // Simulation Settings
-    QGridLayout *simulationSettingsGrid = new QGridLayout;
+    auto *simulationSettingsGrid = new QGridLayout;
 
     QLabel *simulation_settings_label = new QLabel("Simulation settings");
     simulation_settings_label->setStyleSheet("font-weight: bold");
@@ -516,13 +516,13 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     });
 
     //Phylogeny Settings
-    QGridLayout *phylogenySettingsGrid = new QGridLayout;
+    auto *phylogenySettingsGrid = new QGridLayout;
 
     QLabel *phylogeny_settings_label = new QLabel("Phylogeny settings");
     phylogeny_settings_label->setStyleSheet("font-weight: bold");
     phylogenySettingsGrid->addWidget(phylogeny_settings_label, 0, 1, 1, 1);
 
-    QGridLayout *phylogeny_grid = new QGridLayout;
+    auto *phylogeny_grid = new QGridLayout;
     phylogeny_off_button = new QRadioButton("Off");
     phylogeny_off_button->setToolTip("<font>Turns phylogeny logging off.</font>");
     basic_phylogeny_button = new QRadioButton("Basic");
@@ -531,7 +531,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     phylogeny_button->setToolTip("<font>Turns on phylogeny logging.</font>");
     phylogeny_and_metrics_button = new QRadioButton("Phylogeny and metrics");
     phylogeny_and_metrics_button->setToolTip("<font>Turns on phylogeny and metrics logging.</font>");
-    QButtonGroup *phylogeny_button_group = new QButtonGroup;
+    auto *phylogeny_button_group = new QButtonGroup;
     phylogeny_button_group->addButton(phylogeny_off_button, SPECIES_MODE_NONE);
     phylogeny_button_group->addButton(basic_phylogeny_button, SPECIES_MODE_BASIC);
     phylogeny_button_group->addButton(phylogeny_button, SPECIES_MODE_PHYLOGENY);
@@ -574,11 +574,11 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     outputSettingsDock->setFeatures(QDockWidget::DockWidgetFloatable);
     addDockWidget(Qt::RightDockWidgetArea, outputSettingsDock);
 
-    QGridLayout *output_settings_grid = new QGridLayout;
+    auto *output_settings_grid = new QGridLayout;
     output_settings_grid->setAlignment(Qt::AlignTop);
 
     //ARTS - Output Save Path
-    QGridLayout *savePathGrid = new QGridLayout;
+    auto *savePathGrid = new QGridLayout;
     QLabel *savePathLabel = new QLabel("Output save path");
     savePathLabel->setObjectName("savePathLabel");
     savePathGrid->addWidget(savePathLabel, 1, 1, 1, 2);
@@ -594,7 +594,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     connect(changePathButton, SIGNAL (clicked()), this, SLOT(changepath_triggered()));
 
     //ARTS - Refresh/Polling Rate
-    QGridLayout *pollingRateGrid = new QGridLayout;
+    auto *pollingRateGrid = new QGridLayout;
     QLabel *pollingRateLabel = new QLabel("Refresh/Polling Rate");
     pollingRateLabel->setObjectName("pollingRateLabel");
     pollingRateGrid->addWidget(pollingRateLabel, 1, 1, 1, 2);
@@ -615,7 +615,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     });
 
     //ARTS - Logging: Population & Environment
-    QGridLayout *images_grid = new QGridLayout;
+    auto *images_grid = new QGridLayout;
 
     QLabel *imagesLabel = new QLabel("Logging: Population/Enivronment");
     imagesLabel->setObjectName("imagesLabel");
@@ -657,7 +657,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
                      SLOT(save_all_checkbox_state_changed(bool)));
 
     //ARTS - Logging to text file
-    QGridLayout *fileLoggingGrid = new QGridLayout;
+    auto *fileLoggingGrid = new QGridLayout;
 
     QLabel *outputSettingsLabel = new QLabel("Logging: To Text File(s)");
     outputSettingsLabel->setObjectName("outputSettingsLabel");
@@ -691,7 +691,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
 
     QLabel *Min_species_size_label = new QLabel("Minimum species size:");
     Min_species_size_label->setToolTip("<font>Selects the minimum number of organisms needed to define a species. Min = 0; Max = 1000000.</font>");
-    QSpinBox *Min_species_size_spin = new QSpinBox;
+    auto *Min_species_size_spin = new QSpinBox;
     Min_species_size_spin->setToolTip("<font>Selects the minimum number of organisms needed to define a species. Min = 0; Max = 1000000.</font>");
     Min_species_size_spin->setMinimum(0);
     Min_species_size_spin->setMaximum(1000000);
@@ -704,7 +704,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     });
 
     //ARTS - Advanced
-    QGridLayout *advancedLoggingGrid = new QGridLayout;
+    auto *advancedLoggingGrid = new QGridLayout;
 
     QLabel *advancedSettingsLabel = new QLabel("Advanced");
     advancedSettingsLabel->setObjectName("advancedSettingsLabel");
@@ -743,7 +743,7 @@ QDockWidget *MainWindow::createOrganismSettingsDock()
     organismSettingsDock->setFeatures(QDockWidget::DockWidgetFloatable);
     addDockWidget(Qt::RightDockWidgetArea, organismSettingsDock);
 
-    QGridLayout *org_settings_grid = new QGridLayout;
+    auto *org_settings_grid = new QGridLayout;
     org_settings_grid->setAlignment(Qt::AlignTop);
 
     QLabel *org_settings_label = new QLabel("Organism settings");
@@ -841,7 +841,7 @@ QDockWidget *MainWindow::createOrganismSettingsDock()
     sexual_radio->setToolTip("<font>Select to use 'Sexual' breeding.</font>");
     asexual_radio = new QRadioButton("Asexual");
     asexual_radio->setToolTip("<font>Select to use 'Asexual' breeding.</font>");
-    QButtonGroup *breeding_button_group = new QButtonGroup;
+    auto *breeding_button_group = new QButtonGroup;
     breeding_button_group->addButton(sexual_radio, 0);
     breeding_button_group->addButton(asexual_radio, 1);
     sexual_radio->setChecked(sexual);
@@ -1011,8 +1011,8 @@ void MainWindow::on_actionStart_Sim_triggered()
 {
 
     if (CurrentEnvFile == -1) {
-        QMessageBox::critical(0, "", "Cannot start simulation without environment");
-        if (actionEnvironment_Files_triggered() == false) {
+        QMessageBox::critical(nullptr, "", "Cannot start simulation without environment");
+        if (!actionEnvironment_Files_triggered()) {
             return;
         }
     }
@@ -1021,8 +1021,8 @@ void MainWindow::on_actionStart_Sim_triggered()
 
     ui->LabelBatch->setText(tr("1/1"));
 
-    while (stopFlag == false) {
-        while (pauseFlag == true) {
+    while (!stopFlag) {
+        while (pauseFlag) {
             waitUntilPauseSignalIsEmitted();
             pauseFlag = false;
         }
@@ -1046,8 +1046,8 @@ void MainWindow::on_actionStart_Sim_triggered()
 void MainWindow::on_actionRun_for_triggered()
 {
     if (CurrentEnvFile == -1) {
-        QMessageBox::critical(0, "", "Cannot start simulation without environment");
-        if (actionEnvironment_Files_triggered() == false) {
+        QMessageBox::critical(nullptr, "", "Cannot start simulation without environment");
+        if (!actionEnvironment_Files_triggered()) {
             return;
         }
     }
@@ -1062,8 +1062,8 @@ void MainWindow::on_actionRun_for_triggered()
 
     runSetUp();
 
-    while (stopFlag == false && i > 0) {
-        while (pauseFlag == true) {
+    while (!stopFlag && i > 0) {
+        while (pauseFlag) {
             waitUntilPauseSignalIsEmitted();
             pauseFlag = false;
         }
@@ -1078,12 +1078,12 @@ void MainWindow::on_actionRun_for_triggered()
     if (autowrite_checkbox->isChecked())write_run_data();
 
     //ARTS Show finish message and run FinshRun()
-    if (stopFlag == false) {
-        QMessageBox::information(0, tr("Run For... Finished"),
+    if (!stopFlag) {
+        QMessageBox::information(nullptr, tr("Run For... Finished"),
                                  tr("The run for %1 iterations has finished.").arg(num_iterations));
         finishRun();
     } else {
-        QMessageBox::information(0, tr("Run For... Stopped"),
+        QMessageBox::information(nullptr, tr("Run For... Stopped"),
                                  tr("The run for %1 iterations has been stopped at iteration %2.").arg(num_iterations).arg(i));
         finishRun();
     }
@@ -1120,7 +1120,7 @@ void MainWindow::on_actionBatch_triggered()
     form.addRow(new
                 QLabel("You may: 1) set the number of runs you require; 2) set the number of iterations per run; and 3) choose to repeat or not to repeat the environment each run."));
 
-    QSpinBox *iterationsSpinBox = new QSpinBox(&dialog);
+    auto *iterationsSpinBox = new QSpinBox(&dialog);
     iterationsSpinBox->setRange(2, maxIterations);
     iterationsSpinBox->setSingleStep(1);
     iterationsSpinBox->setValue(defaultIterations);
@@ -1128,14 +1128,14 @@ void MainWindow::on_actionBatch_triggered()
                                   tr("How many iterations would you like each run to go for (max = %1)?")).arg(maxIterations);
     form.addRow(iterationsLabel, iterationsSpinBox);
 
-    QSpinBox *runsSpinBox = new QSpinBox(&dialog);
+    auto *runsSpinBox = new QSpinBox(&dialog);
     runsSpinBox->setRange(1, maxRuns);
     runsSpinBox->setSingleStep(2);
     runsSpinBox->setValue(defaultRuns);
     QString runsLabel = QString(tr("And how many runs (max = %1)?")).arg(maxRuns);
     form.addRow(runsLabel, runsSpinBox);
 
-    QComboBox *environmentComboBox = new QComboBox(&dialog);
+    auto *environmentComboBox = new QComboBox(&dialog);
     environmentComboBox->addItem("Yes", 1);
     environmentComboBox->addItem("No", 0);
     int index = environmentComboBox->findData(1);
@@ -1157,9 +1157,7 @@ void MainWindow::on_actionBatch_triggered()
     if (dialog.exec() == QDialog::Accepted) {
         batch_iterations = iterationsSpinBox->value();
         batch_target_runs = runsSpinBox->value();
-        if (environmentComboBox->itemData(environmentComboBox->currentIndex()) == 1) repeat_environment =
-                true;
-        else repeat_environment = false;
+        repeat_environment = environmentComboBox->itemData(environmentComboBox->currentIndex()) == 1;
 
         // Reset before starting batch run
         on_actionReset_triggered();
@@ -1182,16 +1180,16 @@ void MainWindow::on_actionBatch_triggered()
         ui->LabelBatch->setText(tr("%1/%2").arg((runs + 1)).arg(batch_target_runs));
 
         if (CurrentEnvFile == -1) {
-            QMessageBox::critical(0, "", "Cannot start simulation without environment");
-            if (actionEnvironment_Files_triggered() == false) {
+            QMessageBox::critical(nullptr, "", "Cannot start simulation without environment");
+            if (!actionEnvironment_Files_triggered()) {
                 return;
             }
         }
 
         runSetUp();
         int i = batch_iterations;
-        while (stopFlag == false && i > 0) {
-            while (pauseFlag == true) {
+        while (!stopFlag && i > 0) {
+            while (pauseFlag) {
                 waitUntilPauseSignalIsEmitted();
                 pauseFlag = false;
             }
@@ -1207,19 +1205,19 @@ void MainWindow::on_actionBatch_triggered()
 
         runs++;
 
-        if (stopFlag == false && runs < batch_target_runs) {
+        if (!stopFlag && runs < batch_target_runs) {
             on_actionReset_triggered();
         }
 
-    } while (runs < batch_target_runs && stopFlag == false);
+    } while (runs < batch_target_runs && !stopFlag);
 
     //ARTS Show finish message and reset batch counters
     if ((runs) == batch_target_runs) {
-        QMessageBox::information(0, tr("Batch Finished"),
+        QMessageBox::information(nullptr, tr("Batch Finished"),
                                  tr("The batch of %1 runs with %2 iterations has finished.").arg(batch_target_runs).arg(
                                      batch_iterations));
     } else {
-        QMessageBox::information(0, tr("Batch Stopped"),
+        QMessageBox::information(nullptr, tr("Batch Stopped"),
                                  tr("The batch of %1 runs with %2 iterations has been stopped at batch run number %3.").arg(
                                      batch_target_runs).arg(batch_iterations).arg(runs));
     }
@@ -1239,7 +1237,7 @@ void MainWindow::on_actionBatch_triggered()
  */
 void MainWindow::on_actionPause_Sim_triggered()
 {
-    if (pauseFlag == true) {
+    if (pauseFlag) {
         pauseFlag = false;
         ui->actionStop_Sim->setEnabled(true);
         ui->actionPause_Sim->setText(tr("Pause"));
@@ -1313,7 +1311,7 @@ void MainWindow::runSetUp()
                                                                         QDir::separator());
     QDir save_path(path->text());
     if (!save_path.exists()) {
-        QMessageBox::warning(0, "Error!",
+        QMessageBox::warning(nullptr, "Error!",
                              "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is.");
         QString program_path(QCoreApplication::applicationDirPath());
         program_path.append(QDir::separator());
@@ -1325,7 +1323,7 @@ void MainWindow::runSetUp()
         if (!save_path.mkpath(QString(PRODUCTNAME) + "_output" + QDir::separator())) {
             QMessageBox::warning(this, "Error", "Cant save images. Permissions issue?");
             return;
-        } else path->setText(save_path.absolutePath() + QDir::separator() + QString(
+        } path->setText(save_path.absolutePath() + QDir::separator() + QString(
                                      PRODUCTNAME) + "_output" + QDir::separator());
     }
 
@@ -1633,7 +1631,7 @@ gotcounts:
 
                     //now convert first 32 bits to a colour
                     // r,g,b each counts of 11,11,10 bits
-                    quint32 genome = (quint32)(maxg & ((quint64)65536 * (quint64)65536 - (quint64)1));
+                    auto genome = (quint32)(maxg & ((quint64)65536 * (quint64)65536 - (quint64)1));
                     quint32 b = bitcounts[genome & 2047] * 23;
                     genome /= 2048;
                     quint32 g = bitcounts[genome & 2047] * 23;
@@ -1698,7 +1696,7 @@ gotcounts2:
 
                     //now convert second 32 bits to a colour
                     // r,g,b each counts of 11,11,10 bits
-                    quint32 genome = (quint32)(maxg / ((quint64)65536 * (quint64)65536));
+                    auto genome = (quint32)(maxg / ((quint64)65536 * (quint64)65536));
                     quint32 b = bitcounts[genome & 2047] * 23;
                     genome /= 2048;
                     quint32 g = bitcounts[genome & 2047] * 23;
@@ -1935,7 +1933,7 @@ void MainWindow::resize()
 void MainWindow::gui_checkbox_state_changed(bool dont_update)
 {
     if (dont_update
-            && QMessageBox::question(0, "Heads up",
+            && QMessageBox::question(nullptr, "Heads up",
                                      "If you don't update the GUI, images will also not be saved. OK?",
                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::No) {
         guiCheckbox->setChecked(false);
@@ -2343,9 +2341,9 @@ void MainWindow::on_actionSave_triggered()
             out << totalfit[i][j];
         }
 
-    for (int i = 0; i < 256; i++)
+    for (auto & xormask : xormasks)
         for (int j = 0; j < 3; j++) {
-            out << xormasks[i][j];
+            out << xormask[j];
         }
 
     //ARTS - Genome Comparison Saving
@@ -2410,8 +2408,8 @@ void MainWindow::on_actionSave_triggered()
     out << lastSpeciesCalc;
 
     //now random number array
-    for (int i = 0; i < 65536; i++)
-        out << randoms[i];
+    for (unsigned char random : randoms)
+        out << random;
 
     outfile.close();
 }
@@ -2433,7 +2431,7 @@ void MainWindow::on_actionLoad_triggered()
 
     if (filename.length() == 0) return;
 
-    if (stopFlag == false) stopFlag = true;
+    if (!stopFlag) stopFlag = true;
 
     //Otherwise - serialise all my crap
     QFile infile(filename);
@@ -2584,9 +2582,9 @@ void MainWindow::on_actionLoad_triggered()
             in >> totalfit[i][j];
         }
 
-    for (int i = 0; i < 256; i++)
+    for (auto & xormask : xormasks)
         for (int j = 0; j < 3; j++) {
-            in >> xormasks[i][j];
+            in >> xormask[j];
         }
 
     //Genome Comparison Loading
@@ -2674,8 +2672,8 @@ void MainWindow::on_actionLoad_triggered()
     lastSpeciesCalc--;
 
     //now random array
-    for (int i = 0; i < 65536; i++)
-        in >> randoms[i];
+    for (unsigned char & random : randoms)
+        in >> random;
 
     infile.close();
     nextRefresh = 0;
@@ -2894,7 +2892,7 @@ void MainWindow::WriteLog()
  *
  * Sets the status bar text.
  */
-void MainWindow::setStatusBarText(QString text)
+void MainWindow::setStatusBarText(const QString& text)
 {
     ui->statusBar->showMessage(text);
 }

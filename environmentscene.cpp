@@ -25,7 +25,5 @@
  * This is a simple sub-class of the QGraphicsScene class mainly to hold
  * any future mouse events captures.
  */
-EnvironmentScene::EnvironmentScene() : QGraphicsScene()
-{
-
-}
+EnvironmentScene::EnvironmentScene()
+    = default;

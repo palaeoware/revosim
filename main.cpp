@@ -44,20 +44,20 @@ int main(int argc, char *argv[])
     QApplication application(argc, argv);
 
     //Close on last window close
-    application.setQuitOnLastWindowClosed(true);
+    QApplication::setQuitOnLastWindowClosed(true);
 
     //Style program with our dark style
-    application.setStyle(new DarkStyleTheme);
+    QApplication::setStyle(new DarkStyleTheme);
 
     QPixmap splashPixmap(":/palaeoware_logo_square.png");
     QSplashScreen splash(splashPixmap, Qt::WindowStaysOnTopHint);
     splash.show();
     splash.showMessage("<font><b>" + QString(PRODUCTNAME) + " - " + QString(PRODUCTTAG) + "</b></font>", Qt::AlignHCenter, Qt::white);
-    application.processEvents();
+    QApplication::processEvents();
 
     MainWindow window;
 
     window.show();
 
-    return application.exec();
+    return QApplication::exec();
 }

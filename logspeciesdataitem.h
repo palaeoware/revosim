@@ -25,18 +25,18 @@ class LogSpeciesDataItem
 public:
     LogSpeciesDataItem();
 
-    quint64 generation;
-    quint64 sampleGenome;
-    quint32 size; //number of critters
-    quint32 genomicDiversity; //number of genomes
-    quint16 cellsOccupied; //number of cells found in - 1 (as real range is 1-65536, to fit in 0-65535)
-    quint8 geographicalRange; //max distance between outliers
-    quint8 centroidRangeX; //mean of x positions
-    quint8 centroidRangeY; //mean of y positions
-    quint16 meanFitness; //mean of all critter fitnesses, stored as x1000
-    quint8 minEnvironment[3]; //min red, green, blue found in
-    quint8 maxEnvironment[3]; //max red, green, blue found in
-    quint8 meanEnvironment[3]; //mean environmental colour found in
+    quint64 generation{};
+    quint64 sampleGenome{};
+    quint32 size{}; //number of critters
+    quint32 genomicDiversity{}; //number of genomes
+    quint16 cellsOccupied{}; //number of cells found in - 1 (as real range is 1-65536, to fit in 0-65535)
+    quint8 geographicalRange{}; //max distance between outliers
+    quint8 centroidRangeX{}; //mean of x positions
+    quint8 centroidRangeY{}; //mean of y positions
+    quint16 meanFitness{}; //mean of all critter fitnesses, stored as x1000
+    quint8 minEnvironment[3]{}; //min red, green, blue found in
+    quint8 maxEnvironment[3]{}; //max red, green, blue found in
+    quint8 meanEnvironment[3]{}; //mean environmental colour found in
 };
 
 #endif // LOGSPECIESDATAITEM_H

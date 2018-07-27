@@ -102,7 +102,7 @@ void GenomeComparison::buttonActions()
  */
 void GenomeComparison::buttonUpdate()
 {
-    if (autoComparison == true) {
+    if (autoComparison) {
         ui->autoButton->setChecked(true);
     } else {
         ui->autoButton->setChecked(false);
@@ -167,7 +167,7 @@ bool GenomeComparison::renderGenomesTable()
     if (!genomeList.empty()) {
         for (int row = 0; row < genomeList.count(); row++) {
             //Add to table
-            if (autoComparison == true && row != 0) {
+            if (autoComparison && row != 0) {
                 //Do comparison with last genome...
                 QMap<QString, QString> genomeListMapA = genomeList[row - 1];
                 QMap<QString, QString> genomeListMapB = genomeList[row];
@@ -245,8 +245,8 @@ bool GenomeComparison::renderGenomesTable()
  */
 void GenomeComparison::insertRow(
     int row,
-    QString genomeName,
-    QString genomeStr,
+    const QString& genomeName,
+    const QString& genomeStr,
     int environmentR,
     int environmentG,
     int environmentB,
@@ -258,7 +258,7 @@ void GenomeComparison::insertRow(
     int nonCodeB,
     int fitness,
     QTableWidget *table,
-    QString comparisonMask)
+    const QString& comparisonMask)
 {
     table->blockSignals(true);
     table->insertRow(row);
@@ -268,7 +268,7 @@ void GenomeComparison::insertRow(
     QColor nonCodeColour = QColor(nonCodeR, nonCodeG, nonCodeB);
 
     if (table == ui->genomeTableWidget) {
-        QTableWidgetItem *newItem = new QTableWidgetItem();
+        auto *newItem = new QTableWidgetItem();
         newItem->setCheckState(Qt::Unchecked);
         newItem->setTextAlignment(Qt:: AlignCenter);
         table->setItem(row, 0, newItem);
@@ -306,7 +306,7 @@ void GenomeComparison::insertRow(
         }
 
         QString bit = genomeStr.at(i);
-        QTableWidgetItem *newItem = new QTableWidgetItem(bit);
+        auto *newItem = new QTableWidgetItem(bit);
         newItem->setTextAlignment(Qt:: AlignCenter);
         newItem->setFlags(Qt::ItemIsEnabled);
 
@@ -499,7 +499,7 @@ bool GenomeComparison::addGenomeCritter(Critter critter, quint8 *environment)
     genomeList.append(genomeListMap);
 
     //Add to table
-    if (autoComparison == true && row != 0) {
+    if (autoComparison && row != 0) {
         //Do comparison with last genome...
         QMap<QString, QString> genomeListMapA = genomeList[row - 1];
         QMap<QString, QString> genomeListMapB = genomeList[row];
@@ -626,7 +626,7 @@ bool GenomeComparison::compareGenomes()
         msgBox.setText(tr("You need to select 2 genomes from the table in order to compare."));
         msgBox.exec();
         return false;
-    } else if (numChecked == 1) {
+    } if (numChecked == 1) {
         QMessageBox msgBox;
         msgBox.setWindowTitle(tr("Genome Comparison: Error"));
         msgBox.setText(tr("You need to select 1 more genome from the table to begin comparing."));
@@ -681,14 +681,14 @@ bool GenomeComparison::deleteGenome()
         msgBox.setText(tr("You need to select at least 1 genome from the table to delete."));
         msgBox.exec();
         return false;
-    } else {
+    } 
         //Something Checked, Remove selected from genomeList
         for (int i = 0; i < numChecked; i++) {
             genomeList.removeAt(checkedList[i - i]);
         }
         renderGenomesTable();
         buttonUpdate();
-    }
+    
     return true;
 }
 

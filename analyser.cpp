@@ -187,7 +187,7 @@ void Analyser::groupsGenealogicalTracker()
                     *genomeposlist; //will be pointer to the position list by genome for this species
                     QSet<quint64> *speciesset; //will be pointer to the genome set for this species
                     speciesset = genomedata.value(critters[n][m][c].speciesID,
-                                                  (QSet<quint64> *)0); //get the latter from hash table if it's there
+                                                  (QSet<quint64> *)nullptr); //get the latter from hash table if it's there
                     if (!speciesset) { //it wasn't there - so first time we've seen this species this iteration
                         speciesset = new QSet<quint64>; //new set for the genomes for the species
                         genomedata.insert(critters[n][m][c].speciesID, speciesset); //add it to the hash
@@ -261,7 +261,7 @@ void Analyser::groupsGenealogicalTracker()
         LogSpecies *thislogspecies;
 
         if (species_mode >= SPECIES_MODE_PHYLOGENY) {
-            thislogspecies = LogSpeciesById.value(speciesID, (LogSpecies *)0);
+            thislogspecies = LogSpeciesById.value(speciesID, (LogSpecies *)nullptr);
             if (!thislogspecies) {
                 QMessageBox::warning(MainWin, "Oops",
                                      "Internal error - species not found in log hash. Please email MDS / RJG with this message");
@@ -323,10 +323,10 @@ void Analyser::groupsGenealogicalTracker()
                 //do comparison using standard (for REvoSim) xor/bitcount code. By nd, t1 is bit-distance.
                 //maxDiff is set by user in the settings dialog
                 quint64 g1x = firstgenome ^ genomes[second]; //XOR the two to compare
-                quint32 g1xl = quint32(g1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
+                auto g1xl = quint32(g1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
                 int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
                 if (t1 <= maxDiff) {
-                    quint32 g1xu = quint32(g1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
+                    auto g1xu = quint32(g1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
                     t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
                     if (t1 <= maxDiff) {
                         //Pair IS within tolerances - so second should be in the same group as first
@@ -421,8 +421,8 @@ void Analyser::groupsGenealogicalTracker()
 
                 if (species_mode >= SPECIES_MODE_PHYLOGENY) {
                     //sort out the logspecies object
-                    LogSpecies *newlogspecies = new LogSpecies;
-                    LogSpeciesDataItem *newdata = new LogSpeciesDataItem;
+                    auto *newlogspecies = new LogSpecies;
+                    auto *newdata = new LogSpeciesDataItem;
                     newdata->generation = generation;
 
                     newlogspecies->ID = nextspeciesid;
@@ -450,7 +450,7 @@ void Analyser::groupsGenealogicalTracker()
                         if (species_mode >= SPECIES_MODE_PHYLOGENY) {
                             logspeciespointers[jj.key()] = newsp.logSpeciesStructure;
                             newsp.logSpeciesStructure->timeOfLastAppearance = generation;
-                            LogSpeciesDataItem *newdata = new LogSpeciesDataItem;
+                            auto *newdata = new LogSpeciesDataItem;
                             newdata->generation = generation;
                             newsp.logSpeciesStructure->dataItems.append(newdata);
                         }
@@ -583,7 +583,7 @@ void Analyser::groupsGenealogicalTracker()
 
     //Nearly there! Just need to put size data into correct species
     for (int f = 0; f < newspecieslist.count(); f++) { //go through new species list
-        quint32 newsize = (quint32)speciessizes[newspecieslist[f].ID];
+        auto newsize = (quint32)speciessizes[newspecieslist[f].ID];
         newspecieslist[f].size = newsize;
         //find size in my hash, put it in
 
@@ -694,10 +694,10 @@ void Analyser::groupsWithHistoryModal()
         quint64 mygenome = genomeList[largest_index];
         for (int i = 0; i < genome_list_count; i++) {
             quint64 g1x = mygenome ^ genomeList[i]; //XOR the two to compare
-            quint32 g1xl = quint32(g1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
+            auto g1xl = quint32(g1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
             int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
             if (t1 <= maxDiff) {
-                quint32 g1xu = quint32(g1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
+                auto g1xu = quint32(g1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
                 t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
                 if (t1 <= maxDiff) {
                     if (speciesID[i] >
@@ -811,9 +811,9 @@ void Analyser::groupsWithHistoryModal()
             //look at each old species, find closest
             for (int j = 0; j < oldspecieslist_combined.count(); j++) {
                 quint64 g1x = oldspecieslist_combined[j].type ^ newspecieslist[i].type; //XOR the two to compare
-                quint32 g1xl = quint32(g1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
+                auto g1xl = quint32(g1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
                 int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
-                quint32 g1xu = quint32(g1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
+                auto g1xu = quint32(g1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
                 t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
 
                 if (t1 == bestdist) {
@@ -940,9 +940,7 @@ int Analyser::speciesIndex(quint64 genome)
 {
     QList<quint64>::iterator i = qBinaryFind(genomeList.begin(), genomeList.end(), genome);
 
-    if (i == genomeList.end())
-        return -1;
-    else
-        return lookupPersistentSpeciesID[speciesID[i -
-                                                               genomeList.begin()]]; // this is QT bodgy way to get index apparently
+    if (i == genomeList.end()) return -1;
+
+    return lookupPersistentSpeciesID[speciesID[i - genomeList.begin()]]; // this is QT bodgy way to get index apparently
 }

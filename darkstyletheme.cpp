@@ -94,7 +94,7 @@ void DarkStyleTheme::polish(QApplication *app)
     //ARTS - Increase font size for better reading,
     QFont defaultFont = QApplication::font();
     defaultFont.setPointSize(defaultFont.pointSize() + 1);
-    app->setFont(defaultFont);
+    QApplication::setFont(defaultFont);
 
     // Load CSS Stylesheet from resources
     QFile darkstyle_qss(QStringLiteral(":/darkstyle/stylesheet_dark.qss"));

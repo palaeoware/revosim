@@ -36,7 +36,7 @@
 LoggedSpecies::LoggedSpecies()
 {
     lastGenome = 0;
-    for (int i = 0; i < SCALE; i++) sizes[i] = 0; //means no data
+    for (int &size : sizes) size = 0;  //means no data
 }
 
 /**
@@ -46,7 +46,6 @@ StasisSpecies::StasisSpecies()
 {
     start = -1;
     end = -1;
-    return;
 }
 
 /**
@@ -56,7 +55,6 @@ StasisSpecies::StasisSpecies()
  */
 AnalysisTools::AnalysisTools()
 {
-    return;
 }
 
 /**
@@ -83,7 +81,7 @@ bool AnalysisTools::dataFileNeededCheck(int code)
  * @param filename
  * @return
  */
-QString AnalysisTools::speciesRatesOfChange(QString filename)
+QString AnalysisTools::speciesRatesOfChange(const QString &filename)
 {
     //Modified version of tree maker
     QMap <quint64, LoggedSpecies> speciesList;  //main list of species list, filed by Species ID
@@ -123,10 +121,10 @@ QString AnalysisTools::speciesRatesOfChange(QString filename)
             QStringList split_up;
             split_up = s.split(',');
             //0 Time,1 Species_ID,2 Species_origin_time,3 Species_parent_ID,4 Species_current_size,5 Species_current_genome
-            quint64 species_ID = (quint64) (split_up[1].toULongLong());
+            auto species_ID = (quint64) (split_up[1].toULongLong());
 
             //work out slot in 0-(SCALE-1)
-            int xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            auto xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
             if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
 
@@ -154,7 +152,7 @@ QString AnalysisTools::speciesRatesOfChange(QString filename)
             if (count % 1000 == 0)
                 //do some display in status bar every 1000 iterations to show user that algorithm didn't die
             {
-                quint64 thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
+                auto thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
@@ -207,8 +205,7 @@ QString AnalysisTools::speciesRatesOfChange(QString filename)
             //does it have descendants?
 
             if (i.value().end != lasttime
-                    && descendants ==
-                    false) //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
+                    && !descendants) //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
                 i.remove();
 
             count++;
@@ -286,7 +283,7 @@ QString AnalysisTools::speciesRatesOfChange(QString filename)
             for (int k = 1; k < SCALE; k++) {
                 if (start != -1) tonextav--;
                 if (speciesList[magicList[j]].sizes[k]) { //if this exists
-                    if (flag == false) {
+                    if (!flag) {
                         firstgenome = speciesList[magicList[j]].genomes[k];
                         flag = true;
                     }
@@ -316,11 +313,11 @@ QString AnalysisTools::speciesRatesOfChange(QString filename)
                         quint64 cg1x = thisgenome ^ lastGenome; //XOR the two to compare
 
                         //Coding half
-                        quint32 g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
+                        auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
                         int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
 
                         //non-Coding half
-                        quint32 g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
+                        auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
                         t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
 
                         //if (t1>0) qDebug()<<"T1 not 0!"<<t1;
@@ -337,11 +334,11 @@ QString AnalysisTools::speciesRatesOfChange(QString filename)
             quint64 cg1x = speciesList[magicList[j]].lastGenome ^ firstgenome; //XOR the two to compare
 
             //Coding half
-            quint32 g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
+            auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
             int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
 
             //non-Coding half
-            quint32 g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
+            auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
             t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
 
             QString changestring1 = "'NA'";
@@ -383,9 +380,9 @@ QString AnalysisTools::speciesRatesOfChange(QString filename)
         qApp->processEvents();
 
         return OutputString;
-    } else {
-        return "Can't open file";
     }
+    return "Can't open file";
+
 
 }
 
@@ -398,29 +395,27 @@ QString AnalysisTools::speciesRatesOfChange(QString filename)
  */
 int AnalysisTools::findClosestIndex(QList <quint64>timeList, float lookFor, float slotWidth)
 {
-    quint64 look_for_int = (quint64)(lookFor + .5);
+    auto look_for_int = (quint64)(lookFor + .5);
     //check the before and after possibilities first
     if (look_for_int <= timeList[0]) //before start - should be impossible to be so
         return 0;
 
     //off end?
     if (look_for_int >= timeList.last()) {
-        if ((float)(timeList.last() - look_for_int) >
-                slotWidth) //off end, and more than one slot width away - so genuinely off end
+        if ((float)(timeList.last() - look_for_int) > slotWidth) //off end, and more than one slot width away - so genuinely off end
             return -1;
-        else return timeList.count() - 1;
+        return timeList.count() - 1;
     }
 
     //somewhere in middle!
     for (int ii = 0; ii < timeList.count() - 1; ii++) {
-        if (timeList[ii] <= look_for_int && timeList[ii + 1] > look_for_int)
-            //must be between ii and ii+1
-        {
+        //must be between ii and ii+1
+        if (timeList[ii] <= look_for_int && timeList[ii + 1] > look_for_int) {
             if ((look_for_int - timeList[ii]) > (timeList[ii + 1] - look_for_int))
                 //distance to ii more than distance to ii+1 - use ii+1
                 return ii + 1;
-            else
-                return ii;
+
+            return ii;
         }
     }
     return -2; //error code - shouldn't ever get here
@@ -434,7 +429,7 @@ int AnalysisTools::findClosestIndex(QList <quint64>timeList, float lookFor, floa
  * @param qualifyingSlotCount
  * @return
  */
-QString AnalysisTools::stasis(QString filename, int slotCount, float percentileCut, int qualifyingSlotCount)
+QString AnalysisTools::stasis(const QString &filename, int slotCount, float percentileCut, int qualifyingSlotCount)
 {
     //Much of this copied from other tools - does loads I don't need, but does no harm. Will generate culled list
     qint64 maxspeciesID = -1;
@@ -484,12 +479,12 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
             QStringList split_up;
             split_up = s.split(',');
             //0 Time,1 Species_ID,2 Species_origin_time,3 Species_parent_ID,4 Species_current_size,5 Species_current_genome
-            quint64 species_ID = (quint64) (split_up[1].toULongLong());
+            auto species_ID = (quint64) (split_up[1].toULongLong());
 
             if (((qint64)species_ID) > maxspeciesID)
                 maxspeciesID = (qint64)species_ID;
             //work out slot in 0-(SCALE-1)
-            int xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            auto xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
             if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
 
@@ -518,7 +513,7 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
             if (count % 1000 == 0)
                 //do some display in status bar every 1000 iterations to show user that algorithm didn't die
             {
-                quint64 thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
+                auto thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
@@ -565,8 +560,7 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
             //does it have descendants?
 
             if (i.value().end != lasttime
-                    && descendants ==
-                    false) //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
+                    && !descendants) //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
                 i.remove();
 
             count++;
@@ -610,7 +604,7 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
         while (i.hasNext()) {
             i.next();
             quint64 ID = i.key();
-            StasisSpecies *newspecies = new StasisSpecies;
+            auto *newspecies = new StasisSpecies;
             newspecies->ID = ID;
             stasis_species_list.append(newspecies);
             species_lookup[(int)ID] = apos;
@@ -629,7 +623,7 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
             QStringList split_up;
             split_up = s.split(',');
             //0 Time,1 Species_ID,2 Species_origin_time,3 Species_parent_ID,4 Species_current_size,5 Species_current_genome
-            quint64 species_ID = (quint64) (split_up[1].toULongLong());
+            auto species_ID = (quint64) (split_up[1].toULongLong());
 
             if (species_lookup[(int)species_ID] != -1) {
                 //it's a real one
@@ -655,7 +649,7 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
 
         qSort(sortable_lengths);
 
-        int percentilepos = (int)((float)sortable_lengths.count() * percentileCut);
+        auto percentilepos = (int)((float)sortable_lengths.count() * percentileCut);
         qint64 length_species = sortable_lengths[percentilepos];
         float slot_length = (float)length_species / (float)slotCount;
 
@@ -677,7 +671,7 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
 
             StasisSpecies *this_species = stasis_species_list[ii];
 
-            float slot_start_pos = (float) this_species->start;
+            auto slot_start_pos = (float) this_species->start;
 
             for (int ii = 0; ii < slotCount; ii++) {
                 float slot_end_pos = slot_start_pos + slot_length;
@@ -721,9 +715,9 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
 
                 quint64 cg1x = genome1 ^ genome2; //XOR the two to compare
 
-                quint32 g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
+                auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
                 int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
-                quint32 g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
+                auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
                 t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
 
                 float avdiff = ((float)t1) / ((float)this_species->genomeSampleTimes[closestindexend] -
@@ -767,9 +761,9 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
 
         qDeleteAll(stasis_species_list);
         return OutputString;
-    } else {
-        return "Can't open file";
     }
+    return "Can't open file";
+
 
 }
 
@@ -778,7 +772,7 @@ QString AnalysisTools::stasis(QString filename, int slotCount, float percentileC
  * @param filename
  * @return
  */
-QString AnalysisTools::extinctOrigin(QString filename)
+QString AnalysisTools::extinctOrigin(const QString &filename)
 {
     QMap <quint64, LoggedSpecies> speciesList;  //main list of species list, filed by Species ID
 
@@ -836,10 +830,10 @@ QString AnalysisTools::extinctOrigin(QString filename)
             }
 
 
-            quint64 species_ID = (quint64) (split_up[1].toULongLong());
+            auto species_ID = (quint64) (split_up[1].toULongLong());
 
             //work out slot in 0-(SCALE-1)
-            int xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            auto xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
             if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
 
@@ -868,7 +862,7 @@ QString AnalysisTools::extinctOrigin(QString filename)
             if (count % 1000 == 0)
                 //do some display in status bar every 1000 iterations to show user that algorithm didn't die
             {
-                quint64 thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
+                auto thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
@@ -892,11 +886,11 @@ QString AnalysisTools::extinctOrigin(QString filename)
             int acount = 0;
             int bcount = 0;
             foreach (LoggedSpecies spec, speciesList) {
-                int xPosition = (int)(((float)(spec.start)) / timescale);
+                auto xPosition = (int)(((float)(spec.start)) / timescale);
                 if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
                 if (xPosition == i) count++;
 
-                int xpos2 = (int)(((float)(spec.end)) / timescale);
+                auto xpos2 = (int)(((float)(spec.end)) / timescale);
                 if (xpos2 > (SCALE - 1)) xpos2 = SCALE - 1;
                 if (xpos2 == i) ecount++;
 
@@ -911,13 +905,13 @@ QString AnalysisTools::extinctOrigin(QString filename)
 
         //calc av species alive
         for (int i = 0; i < RealSpeciesTimeSlots.count(); i++) {
-            int xPosition = (int)(((float)(RealSpeciesTimeSlots[i])) / timescale);
+            auto xPosition = (int)(((float)(RealSpeciesTimeSlots[i])) / timescale);
             if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
             RealSpeciesTimeSlots[i] = xPosition;
         }
 
         float avspeciescounts[SCALE];
-        for (int i = 0; i < SCALE; i++) avspeciescounts[i] = -1.0;
+        for (float &avspeciescount : avspeciescounts) avspeciescount = -1.0;
 
         int countspecies = 1;
         int total = RealSpeciesCounts[0];
@@ -948,7 +942,8 @@ QString AnalysisTools::extinctOrigin(QString filename)
         }
 
         return outstring;
-    } else return "Could not open file";
+    }
+    return "Could not open file";
 }
 
 /**
@@ -964,7 +959,7 @@ QString AnalysisTools::extinctOrigin(QString filename)
  * @param filename
  * @return
  */
-QString AnalysisTools::generateTree(QString filename)
+QString AnalysisTools::generateTree(const QString &filename)
 {
     QMap <quint64, LoggedSpecies> speciesList;  //main list of species list, filed by Species ID
 
@@ -1003,10 +998,10 @@ QString AnalysisTools::generateTree(QString filename)
             QStringList split_up;
             split_up = s.split(',');
             //0 Time,1 Species_ID,2 Species_origin_time,3 Species_parent_ID,4 Species_current_size,5 Species_current_genome
-            quint64 species_ID = (quint64) (split_up[1].toULongLong());
+            auto species_ID = (quint64) (split_up[1].toULongLong());
 
             //work out slot in 0-(SCALE-1)
-            int xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            auto xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
             if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
             if (speciesList.contains(species_ID)) { //if ID species already recorded, update details
@@ -1032,7 +1027,7 @@ QString AnalysisTools::generateTree(QString filename)
             count++;
             //do some display in status bar every 1000 iterations to show user that algorithm didn't die
             if (count % 1000 == 0) {
-                quint64 thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
+                auto thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
@@ -1083,7 +1078,7 @@ QString AnalysisTools::generateTree(QString filename)
             if (parents.contains(i.key())) descendants = true; //if it is in parents list it should survive cull
             //does it have descendants?
 
-            if (i.value().end != lasttime && descendants == false) //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
+            if (i.value().end != lasttime && !descendants) //used to also have a term here to exlude short-lived species: && (i.value().end - i.value().start) < 400
                 i.remove();
 
             count++;
@@ -1161,8 +1156,8 @@ QString AnalysisTools::generateTree(QString filename)
             QVector <int> line;
             for (int j = 0; j < SCALE; j++) { //+1 in case of rounding cockups
                 //work out what start and end time this means
-                quint64 starttime = (quint64)((float)j * timescale);
-                quint64 endtime = (quint64)((float)(j + 1) * timescale);
+                auto starttime = (quint64)((float)j * timescale);
+                auto endtime = (quint64)((float)(j + 1) * timescale);
 
                 if (speciesList[ID].start <= endtime && speciesList[ID].end >= starttime) {
                     //do by size
@@ -1184,7 +1179,7 @@ QString AnalysisTools::generateTree(QString filename)
             if (parent > 0) {
                 //find parent's line number
                 int pline = magicList.indexOf(parent) * 2;
-                int xPosition = (int)(((float)speciesList[ID].start) / timescale);
+                auto xPosition = (int)(((float)speciesList[ID].start) / timescale);
                 if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
                 output_grid[pline][xPosition] = 2;
                 if (pline > myline) { // below
@@ -1244,9 +1239,9 @@ QString AnalysisTools::generateTree(QString filename)
         out << "Taxa: " << tcount << endl;
 
         return OutputString;
-    } else {
-        return "Can't open file";
     }
+    return "Can't open file";
+
 }
 
 /**
@@ -1316,7 +1311,7 @@ QString AnalysisTools::countPeaks(int r, int g, int b)
     quint8 environment[3];
     quint32 fits[96];
 
-    for (int i = 0; i < 96; i++) fits[i] = 0;
+    for (unsigned int &fit : fits) fit = 0;
 
     environment[0] = (quint8)r;
     environment[1] = (quint8)g;
@@ -1381,8 +1376,8 @@ QString AnalysisTools::makeNewick(LogSpecies *root, quint64 minSpeciesSize, bool
 
     if (root)
         return root->writeNewickString(0, 0, true);
-    else
-        return "ERROR - NO PHYLOGENY DATA";
+
+    return "ERROR - NO PHYLOGENY DATA";
 }
 
 /**
@@ -1426,8 +1421,8 @@ QString AnalysisTools::writeData(LogSpecies *root, quint64 minSpeciesSize, bool 
         return "ID,ParentID,generation,size,sampleGenome,sampleGenome_binary,diversity,cellsOccupied,geog_range,centroid_x,centroid_y,mean_fit,min_env_red,min_env_green,min_env_blue,max_env_red,max_env_green,max_env_blue,mean_env_red,mean_env_green,mean_env_blue\n"
                +
                root->writeData(0, 0, true);
-    else
-        return "ERROR - NO PHYLOGENY DATA";
+
+    return "ERROR - NO PHYLOGENY DATA";
 
     //recurse over species,
 

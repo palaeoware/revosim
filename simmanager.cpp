@@ -21,8 +21,8 @@
 #include "mainwindow.h"
 
 #include <QDebug>
-#include <stdlib.h>
-#include <math.h>
+#include <cstdlib>
+#include <cmath>
 #include <QThread>
 #include <QImage>
 #include <QMessageBox>
@@ -139,9 +139,9 @@ SimManager::SimManager()
     if (ProcessorCount == -1) ProcessorCount = 1;
     if (ProcessorCount > 256) ProcessorCount = 256; //a sanity check
     //ProcessorCount=1;
-    for (int i = 0; i < GRID_X; i++)
+    for (auto & mutexe : mutexes)
         for (int j = 0; j < GRID_X; j++)
-            mutexes[i][j] = new QMutex();
+            mutexe[j] = new QMutex();
 
     for (int i = 0; i < ProcessorCount; i++)
         FuturesList.append(new QFuture<int>);
@@ -152,7 +152,7 @@ SimManager::SimManager()
     EnvChangeCounter = 0;
     EnvChangeForward = true;
     nextspeciesid = 1;
-    rootspecies = (LogSpecies *)0;
+    rootspecies = (LogSpecies *)nullptr;
 
     warning_count = 0;
 }
@@ -170,7 +170,7 @@ int SimManager::portable_rand()
         // assume it's (2^n)-1
         int r = qrand();
         return r & 32767; //mask off bottom 16 bits, return those
-    } else return qrand();
+    } return qrand();
 }
 
 void SimManager::MakeLookups()
@@ -207,14 +207,14 @@ void SimManager::MakeLookups()
     }
 
     //now the randoms - pre_rolled random numbers 0-255
-    for (int n = 0; n < 65536; n++) randoms[n] = (quint8)((portable_rand() & 255));
+    for (unsigned char & random : randoms) random = (quint8)((portable_rand() & 255));
     nextrandom = 0;
 
     // gene exchange lookup
-    for (int n = 0; n < 65536; n++) { //random bit combs, averaging every other bit on
+    for (unsigned long long & n : genex) { //random bit combs, averaging every other bit on
         quint64 value = 0;
-        for (int m = 0; m < 64; m++) if (portable_rand() > (PORTABLE_RAND_MAX / 2)) value += tweakers64[m];
-        genex[n] = value;
+        for (unsigned long long m : tweakers64) if (portable_rand() > (PORTABLE_RAND_MAX / 2)) value += m;
+        n = value;
     }
     nextgenex = 0;
 
@@ -248,7 +248,7 @@ void SimManager::loadEnvironmentFromFile(int emode)
     QImage LoadImage(EnvFiles[CurrentEnvFile]);
 
     if (LoadImage.isNull()) {
-        QMessageBox::critical(0, "Error", "Fatal - can't open image " + EnvFiles[CurrentEnvFile]);
+        QMessageBox::critical(nullptr, "Error", "Fatal - can't open image " + EnvFiles[CurrentEnvFile]);
         exit(1);
     }
     //check size works
@@ -330,7 +330,7 @@ bool SimManager::regenerateEnvironment(int emode, bool interpolate)
     if (EnvChangeCounter <= 0)
         //is it time to do a full change?
     {
-        if (emode != 3 && EnvChangeForward == false) //should not be going backwards!
+        if (emode != 3 && !EnvChangeForward) //should not be going backwards!
             EnvChangeForward = true;
         if (EnvChangeForward) {
             CurrentEnvFile++; //next image
@@ -426,7 +426,7 @@ void SimManager::SetupRun()
         critters[n][m][0].initialise(reseedGenome, environment[n][m], n, m, 0, nextspeciesid);
         if (critters[n][m][0].fitness == 0) {
             // RJG - But sort out if it can't survive...
-            QMessageBox::warning(0, "Oops",
+            QMessageBox::warning(nullptr, "Oops",
                                  "The genome you're trying to reseed with can't survive in this environment. There could be a number of reasons why this is. Please contact RJG or MDS to discuss.");
             reseedKnown = false;
             SetupRun();
@@ -435,7 +435,7 @@ void SimManager::SetupRun()
 
         //RJG - I think this is a good thing to flag in an obvious fashion.
         QString reseedGenomeString("Started simulation with known genome: ");
-        for (int i = 0; i < 64; i++)if (tweakers64[i] & reseedGenome) reseedGenomeString.append("1");
+        for (unsigned long long i : tweakers64)if (i & reseedGenome) reseedGenomeString.append("1");
             else reseedGenomeString.append("0");
         MainWin->setStatusBarText(reseedGenomeString);
     } else {
@@ -468,7 +468,7 @@ void SimManager::SetupRun()
     EnvChangeForward = true;
 
     //remove old species log if one exists
-    if (rootspecies) delete rootspecies;
+    delete rootspecies;
 
     //create a new logspecies with appropriate first data entry
     rootspecies = new LogSpecies;
@@ -478,7 +478,7 @@ void SimManager::SetupRun()
     rootspecies->timeOfFirstAppearance = 0;
     rootspecies->timeOfLastAppearance = 0;
     rootspecies->parent = (LogSpecies *)nullptr;
-    LogSpeciesDataItem *newdata = new LogSpeciesDataItem;
+    auto *newdata = new LogSpeciesDataItem;
     newdata->centroidRangeX = n;
     newdata->centroidRangeY = m;
     newdata->generation = 0;
@@ -690,7 +690,7 @@ bool SimManager::iterate(int emode, bool interpolate)
 
     //RJG - Provide user with warning if the system is grinding through so many species it's taking>5 seconds.Option to turn off species mode.
     if (warning_count == 1) {
-        if (QMessageBox::question(0, "A choice awaits...",
+        if (QMessageBox::question(nullptr, "A choice awaits...",
                                   "The last species search took more than five seconds."
                                   " This suggests the settings you are using lend themselves towards speciation, and the species system is a bottleneck."
                                   " Would you like to switch off the species system? If you select no, a progress bar will appear to give you an idea of how long it is taking."
@@ -702,7 +702,7 @@ bool SimManager::iterate(int emode, bool interpolate)
         warning_count++;
     }
 
-    if (regenerateEnvironment(emode, interpolate) == true) return true;
+    if (regenerateEnvironment(emode, interpolate)) return true;
 
     //New parallelised version
 
