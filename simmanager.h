@@ -44,14 +44,14 @@
 //Settable ints
 extern int gridX;        //Can't be used to define arrays
 extern int gridY;
-extern int slotsPerSq;
+extern int slotsPerSquare;
 extern int startAge;
 
 #define GRID_X 256
 #define GRID_Y 256
 #define SLOTS_PER_GRID_SQUARE 256
 
-extern bool recalcFitness;
+extern bool recalculateFitness;
 extern int target;
 extern int settleTolerance;
 extern int dispersal;
@@ -105,29 +105,29 @@ extern quint32 newgenomeY[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];
 extern int newgenomeDisp[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];
 extern quint64 newgenomespecies[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];
 extern int newgenomecount;
-extern int envchangerate;
+extern int environmentChangeRate;
 extern int speciesSamples; //no longer used - keep for backwards compat of files
 extern int speciesSensitivity; //no longer used - keep for backwards compat of files
 extern int timeSliceConnect; //no longer used - keep for backwards compat of files
 extern bool speciesLogging;
 extern bool speciesLoggingToFile;
-extern QString SpeciesLoggingFile;
+extern QString speciesLoggingFile;
 extern bool fitnessLoggingToFile;
 //extern QString FitnessLoggingFile;
 extern bool logging;
 extern bool gui;
 
-extern QStringList EnvFiles;
-extern int CurrentEnvFile;
+extern QStringList environmentFiles;
+extern int currentEnvironmentFile;
 extern quint64 lastSpeciesCalc;
-extern int lastReport;
+extern quint64 lastReport;
 
 extern int breedattempts[GRID_X][GRID_Y]; //for analysis purposes
 extern int breedfails[GRID_X][GRID_Y]; //for analysis purposes
 extern int settles[GRID_X][GRID_Y]; //for analysis purposes
 extern int settlefails[GRID_X][GRID_Y]; //for analysis purposes
 extern int maxused[GRID_X][GRID_Y]; //---- RJG number of slots used within each grid square
-extern int AliveCount;
+extern int aliveCount;
 extern int totalRecombination;
 
 //---- RJG reseed with known genomes
@@ -137,28 +137,28 @@ extern quint64 reseedGenome;
 extern int NextEnvChange;
 extern int EnvChangeCounter;
 extern bool EnvChangeForward;
-extern QList<Species> oldspecieslist;
+extern QList<Species> oldSpeciesList;
 extern QList< QList<Species> > archivedspecieslists;
 extern quint64 nextspeciesid;
 extern LogSpecies *rootspecies;
 extern QHash<quint64, LogSpecies *> LogSpeciesById;
 
 extern QList<uint> species_colours;
-extern quint8 species_mode;
+extern quint8 speciesMode;
 
 #define SPECIES_MODE_NONE 0
 #define SPECIES_MODE_BASIC 1
 #define SPECIES_MODE_PHYLOGENY 2
 #define SPECIES_MODE_PHYLOGENY_AND_METRICS 3
 
-extern quint8 environment_mode;
+extern quint8 environmentMode;
 #define ENV_MODE_STATIC 0
 #define ENV_MODE_ONCE 1
 #define ENV_MODE_LOOP 2
 #define ENV_MODE_BOUNCE 3
-extern bool environment_interpolate;
+extern bool environmentInterpolate;
 
-extern quint64 minspeciessize;
+extern quint64 minSpeciesSize;
 extern bool allowExcludeWithDescendants;
 extern quint64 ids;
 
@@ -168,7 +168,7 @@ class SimManager
 public:
     SimManager();
 
-    void SetupRun();
+    void setupRun();
     bool iterate(int emode, bool interpolate);
     int iterateParallel(int firstx, int lastx, int newgenomes_local, int *killCountLocal);
     int settle_parallel(int newgenomecounts_start, int newgenomecounts_end, int *trycount_local,
@@ -197,7 +197,7 @@ private:
 
 };
 
-extern SimManager *TheSimManager;
+extern SimManager *simulationManager;
 
 #define PORTABLE_RAND_MAX 32767
 

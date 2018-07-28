@@ -195,11 +195,11 @@ int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, i
         bool local_mutate = false;
 
         //this is technically not threadsafe, but it doesn't matter - any value for nextrand is fine
-        if ((TheSimManager->Rand8()) < mutate)
+        if ((simulationManager->Rand8()) < mutate)
             local_mutate = true;
 
         if (local_mutate) {
-            int w = TheSimManager->Rand8();
+            int w = simulationManager->Rand8();
             w &= 63;
             g2x ^= tweakers64[w];
         }

@@ -19,7 +19,7 @@
 #include "simmanager.h"
 #include "ui_reseed.h"
 
-//RJG - so can access MainWin
+//RJG - so can access mainWindow
 #include "mainwindow.h"
 
 reseed::reseed(QWidget *parent) :
@@ -41,7 +41,7 @@ reseed::reseed(QWidget *parent) :
 
     ui->CheckBoxReseedSession->setChecked(reseedKnown);
 
-    int length = MainWin->genoneComparison->accessGenomeListLength();
+    int length = mainWindow->genoneComparison->accessGenomeListLength();
     if (length > 10)length = 10;
 
     if (!length) {
@@ -49,7 +49,7 @@ reseed::reseed(QWidget *parent) :
         ui->genomesLayout->addWidget(label);
     } else for (int i = 0; i < length; i++) {
             auto *radio = new QRadioButton(this);
-            radio->setText(MainWin->genoneComparison->accessGenome(i));
+            radio->setText(mainWindow->genoneComparison->accessGenome(i));
             ui->genomesLayout->addWidget(radio);
             connect(radio, SIGNAL(toggled(bool)), this, SLOT(radio_toggled()));
             radios.append(radio);

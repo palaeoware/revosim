@@ -156,7 +156,7 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
-                MainWin->setStatusBarText(outstring);
+                mainWindow->setStatusBarText(outstring);
                 qApp->processEvents();
             }
             s = in.readLine(); //next line
@@ -215,7 +215,7 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Doing cull: done " << count << " species of " << speccount;
-                MainWin->setStatusBarText(outstring);
+                mainWindow->setStatusBarText(outstring);
                 qApp->processEvents();
             }
         }
@@ -376,7 +376,7 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
 
         }
 
-        MainWin->setStatusBarText("Done");
+        mainWindow->setStatusBarText("Done");
         qApp->processEvents();
 
         return OutputString;
@@ -517,7 +517,7 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
-                MainWin->setStatusBarText(outstring);
+                mainWindow->setStatusBarText(outstring);
                 qApp->processEvents();
             }
             s = in.readLine(); //next line
@@ -570,7 +570,7 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Doing cull: done " << count << " species of " << speccount;
-                MainWin->setStatusBarText(outstring);
+                mainWindow->setStatusBarText(outstring);
                 qApp->processEvents();
             }
         }
@@ -665,7 +665,7 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Second pass " << ii << " (out of " << stasis_species_list.count() << ")";
-                MainWin->setStatusBarText(outstring);
+                mainWindow->setStatusBarText(outstring);
                 qApp->processEvents();
             }
 
@@ -756,7 +756,7 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
             (countall - countshown) << " of which " << nan_cull <<
             " were divide by zero errors - data too gappy";
 
-        MainWin->setStatusBarText("Done");
+        mainWindow->setStatusBarText("Done");
         qApp->processEvents();
 
         qDeleteAll(stasis_species_list);
@@ -866,7 +866,7 @@ QString AnalysisTools::extinctOrigin(const QString &filename)
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
-                MainWin->setStatusBarText(outstring);
+                mainWindow->setStatusBarText(outstring);
                 qApp->processEvents();
             }
             s = in.readLine(); //next line
@@ -1031,7 +1031,7 @@ QString AnalysisTools::generateTree(const QString &filename)
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
-                MainWin->setStatusBarText(outstring);
+                mainWindow->setStatusBarText(outstring);
                 qApp->processEvents();
             }
             s = in.readLine(); //next line
@@ -1087,7 +1087,7 @@ QString AnalysisTools::generateTree(const QString &filename)
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Doing cull: done " << count << " species of " << speccount;
-                MainWin->setStatusBarText(outstring);
+                mainWindow->setStatusBarText(outstring);
                 qApp->processEvents();
             }
         }
@@ -1113,7 +1113,7 @@ QString AnalysisTools::generateTree(const QString &filename)
         //now do my reordering magic - magicList ends up as a list of species IDs in culled list, but in a sensible order for tree output
         QList<quint64> magicList;
 
-        MainWin->setStatusBarText("Starting list reordering");
+        mainWindow->setStatusBarText("Starting list reordering");
         qApp->processEvents();
 
         makeListRecursive(&magicList, &speciesList, 1, 0); //Recursively sorts culled speciesList into magicList. args are list pointer, ID
@@ -1137,7 +1137,7 @@ QString AnalysisTools::generateTree(const QString &filename)
         out << endl << "=============================================================" << endl;
 
 
-        MainWin->setStatusBarText("Calculating Tree");
+        mainWindow->setStatusBarText("Calculating Tree");
         qApp->processEvents();
 
         /*
@@ -1215,7 +1215,7 @@ QString AnalysisTools::generateTree(const QString &filename)
             } else out << endl;
         }
 
-        MainWin->setStatusBarText("Done tree");
+        mainWindow->setStatusBarText("Done tree");
         qApp->processEvents();
 
         //Finally output genomes of all extant taxa - for cladistic comparison originally
@@ -1335,7 +1335,7 @@ QString AnalysisTools::countPeaks(int r, int g, int b)
             QTextStream out2(&s2);
             out2 << (double)genome*(double)100 / (double)max << "% done...";
 
-            MainWin->setStatusBarText(s2);
+            mainWindow->setStatusBarText(s2);
             qApp->processEvents();
             /*for (int i=0; i<=settleTolerance; i++)
             {
@@ -1371,7 +1371,7 @@ QString AnalysisTools::countPeaks(int r, int g, int b)
 QString AnalysisTools::makeNewick(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude)
 {
     ids = 0;
-    minspeciessize = minSpeciesSize;
+    minSpeciesSize = minSpeciesSize;
     allowExcludeWithDescendants = allowExclude;
 
     if (root)
@@ -1415,7 +1415,7 @@ QString AnalysisTools::writeData(LogSpecies *root, quint64 minSpeciesSize, bool 
     quint8 meanEnvironment[3]; //mean environmental colour found in
 
 
-    minspeciessize = minSpeciesSize;
+    minSpeciesSize = minSpeciesSize;
     allowExcludeWithDescendants = allowExclude;
     if (root)
         return "ID,ParentID,generation,size,sampleGenome,sampleGenome_binary,diversity,cellsOccupied,geog_range,centroid_x,centroid_y,mean_fit,min_env_red,min_env_green,min_env_blue,max_env_red,max_env_green,max_env_blue,mean_env_red,mean_env_green,mean_env_blue\n"

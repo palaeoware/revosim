@@ -550,8 +550,8 @@
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionLoad"/>
-    <addaction name="actionSave_settings"/>
-    <addaction name="actionLoad_settings"/>
+    <addaction name="actionSaveSettings"/>
+    <addaction name="actionLoadSettings"/>
     <addaction name="separator"/>
     <addaction name="actionCount_peaks"/>
     <addaction name="separator"/>
@@ -701,7 +701,7 @@
     <string>Ctrl+Shift+P</string>
    </property>
   </action>
-  <action name="actionSave_settings">
+  <action name="actionSaveSettings">
    <property name="text">
     <string>Save settings...</string>
    </property>
@@ -709,7 +709,7 @@
     <string>Ctrl+Shift+S</string>
    </property>
   </action>
-  <action name="actionLoad_settings">
+  <action name="actionLoadSettings">
    <property name="text">
     <string>Load settings...</string>
    </property>

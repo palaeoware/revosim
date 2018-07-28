@@ -17,7 +17,7 @@
 
 #include "simmanager.h"
 
-//RJG - so can access MainWin
+//RJG - so can access mainWindow
 #include "mainwindow.h"
 
 #include <QDebug>
@@ -42,7 +42,7 @@ quint64 reseedGenome = 0; //RJG - Genome for reseed with known genome
 //Settable ints
 int gridX = 100;        //Can't be used to define arrays - hence both ATM
 int gridY = 100;
-int slotsPerSq = 100;
+int slotsPerSquare = 100;
 int startAge = 15;
 int target = 66;
 int settleTolerance = 15;
@@ -52,20 +52,20 @@ int breedThreshold = 500;
 int breedCost = 500;
 int maxDiff = 2;
 int mutate = 10;
-int envchangerate = 100;
+int environmentChangeRate = 100;
 int speciesSamples = 1;
 int speciesSensitivity = 2;
 int timeSliceConnect = 5;
-int lastReport = 0;
+quint64 lastReport = 0;
 
 //Settable bools
-bool recalcFitness = false;
+bool recalculateFitness = false;
 bool asexual = false;
 bool sexual = true;
 bool logging = false;
 bool fitnessLoggingToFile = false;
 bool nonspatial = false;
-bool environment_interpolate = true;
+bool environmentInterpolate = true;
 bool toroidal = false;
 bool reseedKnown = false;
 bool breedspecies = false;
@@ -73,11 +73,11 @@ bool breeddiff = true;
 bool gui = false;
 
 //File handling
-QStringList EnvFiles;
-int CurrentEnvFile;
+QStringList environmentFiles;
+int currentEnvironmentFile;
 int EnvChangeCounter;
 bool EnvChangeForward;
-QString SpeciesLoggingFile = "";
+QString speciesLoggingFile = "";
 QString FitnessLoggingFile = "";
 
 //Globabl data
@@ -104,24 +104,24 @@ int breedfails[GRID_X][GRID_Y]; //for analysis purposes
 int settles[GRID_X][GRID_Y]; //for analysis purposes
 int settlefails[GRID_X][GRID_Y]; //for analysis purposes
 int maxused[GRID_X][GRID_Y];
-int AliveCount;
+int aliveCount;
 int totalRecombination;
 
 //Species stuff
-QList<Species> oldspecieslist;
+QList<Species> oldSpeciesList;
 QList< QList<Species> > archivedspecieslists; //no longer used?
 LogSpecies *rootspecies;
 QHash<quint64, LogSpecies *> LogSpeciesById;
 quint64 lastSpeciesCalc = 0;
 quint64 nextspeciesid;
 QList<uint> species_colours;
-quint8 species_mode;
+quint8 speciesMode;
 quint64 ids; //used in tree export -
 
 // Environment Stuff
-quint8 environment_mode;
+quint8 environmentMode;
 
-quint64 minspeciessize;
+quint64 minSpeciesSize;
 bool allowExcludeWithDescendants;
 
 QMutex *mutexes[GRID_X][GRID_Y]; //set up array of mutexes
@@ -130,16 +130,16 @@ QMutex *mutexes[GRID_X][GRID_Y]; //set up array of mutexes
 SimManager::SimManager()
 {
     //Constructor - set up all the data!
-    species_mode = SPECIES_MODE_BASIC;
-    environment_mode = ENV_MODE_LOOP;
-    environment_interpolate = true;
+    speciesMode = SPECIES_MODE_BASIC;
+    environmentMode = ENV_MODE_LOOP;
+    environmentInterpolate = true;
     MakeLookups();
-    AliveCount = 0;
+    aliveCount = 0;
     ProcessorCount = QThread::idealThreadCount();
     if (ProcessorCount == -1) ProcessorCount = 1;
     if (ProcessorCount > 256) ProcessorCount = 256; //a sanity check
     //ProcessorCount=1;
-    for (auto & mutexe : mutexes)
+    for (auto &mutexe : mutexes)
         for (int j = 0; j < GRID_X; j++)
             mutexe[j] = new QMutex();
 
@@ -147,8 +147,8 @@ SimManager::SimManager()
         FuturesList.append(new QFuture<int>);
 
 
-    EnvFiles.clear();
-    CurrentEnvFile = -1;
+    environmentFiles.clear();
+    currentEnvironmentFile = -1;
     EnvChangeCounter = 0;
     EnvChangeForward = true;
     nextspeciesid = 1;
@@ -170,7 +170,8 @@ int SimManager::portable_rand()
         // assume it's (2^n)-1
         int r = qrand();
         return r & 32767; //mask off bottom 16 bits, return those
-    } return qrand();
+    }
+    return qrand();
 }
 
 void SimManager::MakeLookups()
@@ -207,11 +208,11 @@ void SimManager::MakeLookups()
     }
 
     //now the randoms - pre_rolled random numbers 0-255
-    for (unsigned char & random : randoms) random = (quint8)((portable_rand() & 255));
+    for (unsigned char &random : randoms) random = (quint8)((portable_rand() & 255));
     nextrandom = 0;
 
     // gene exchange lookup
-    for (unsigned long long & n : genex) { //random bit combs, averaging every other bit on
+    for (unsigned long long &n : genex) {  //random bit combs, averaging every other bit on
         quint64 value = 0;
         for (unsigned long long m : tweakers64) if (portable_rand() > (PORTABLE_RAND_MAX / 2)) value += m;
         n = value;
@@ -242,13 +243,13 @@ void SimManager::loadEnvironmentFromFile(int emode)
 {
     //Use make qimage from file method
     //Load the image
-    if (CurrentEnvFile >= EnvFiles.count()) {
+    if (currentEnvironmentFile >= environmentFiles.count()) {
         return;
     }
-    QImage LoadImage(EnvFiles[CurrentEnvFile]);
+    QImage LoadImage(environmentFiles[currentEnvironmentFile]);
 
     if (LoadImage.isNull()) {
-        QMessageBox::critical(nullptr, "Error", "Fatal - can't open image " + EnvFiles[CurrentEnvFile]);
+        QMessageBox::critical(nullptr, "Error", "Fatal - can't open image " + environmentFiles[currentEnvironmentFile]);
         exit(1);
     }
     //check size works
@@ -277,7 +278,7 @@ void SimManager::loadEnvironmentFromFile(int emode)
         }
     //set up environment next - depends on emode
 
-    if (emode == 0 || EnvFiles.count() == 1) { //static environment
+    if (emode == 0 || environmentFiles.count() == 1) { //static environment
         for (int i = 0; i < gridX; i++)
             for (int j = 0; j < gridY; j++) {
                 QRgb colour = LoadImage.pixel(i, j);
@@ -289,22 +290,22 @@ void SimManager::loadEnvironmentFromFile(int emode)
         //work out next file
         int nextfile;
         if (EnvChangeForward) {
-            if ((CurrentEnvFile + 1) < EnvFiles.count()) //not yet at end
-                nextfile = CurrentEnvFile + 1;
+            if ((currentEnvironmentFile + 1) < environmentFiles.count()) //not yet at end
+                nextfile = currentEnvironmentFile + 1;
             else {
                 //depends on emode
-                if (emode == 1) nextfile = CurrentEnvFile; //won't matter
+                if (emode == 1) nextfile = currentEnvironmentFile; //won't matter
                 if (emode == 2) nextfile = 0; //loop mode
-                if (emode == 3) nextfile = CurrentEnvFile - 1; //bounce mode
+                if (emode == 3) nextfile = currentEnvironmentFile - 1; //bounce mode
             }
         } else { //backwards - simpler, must be emode 3
-            if (CurrentEnvFile > 0) //not yet at end
-                nextfile = CurrentEnvFile - 1;
+            if (currentEnvironmentFile > 0) //not yet at end
+                nextfile = currentEnvironmentFile - 1;
             else
                 nextfile = 1; //bounce mode
         }
 
-        QImage LoadImage2(EnvFiles[nextfile]);
+        QImage LoadImage2(environmentFiles[nextfile]);
         if (xsize < gridX || ysize < gridY) //rescale if necessary - only if too small
             LoadImage2 = LoadImage2.scaled(QSize(gridX, gridY), Qt::IgnoreAspectRatio);
         //get it
@@ -321,9 +322,9 @@ void SimManager::loadEnvironmentFromFile(int emode)
 bool SimManager::regenerateEnvironment(int emode, bool interpolate)
 //returns true if finished sim
 {
-    if (envchangerate == 0 || emode == 0
-            || EnvFiles.count() == 1) return
-                    false; //constant environment - either static in menu, or 0 envchangerate, or only one file
+    if (environmentChangeRate == 0 || emode == 0
+            || environmentFiles.count() == 1) return
+                    false; //constant environment - either static in menu, or 0 environmentChangeRate, or only one file
 
     --EnvChangeCounter;
 
@@ -333,29 +334,29 @@ bool SimManager::regenerateEnvironment(int emode, bool interpolate)
         if (emode != 3 && !EnvChangeForward) //should not be going backwards!
             EnvChangeForward = true;
         if (EnvChangeForward) {
-            CurrentEnvFile++; //next image
-            if (CurrentEnvFile >= EnvFiles.count()) {
+            currentEnvironmentFile++; //next image
+            if (currentEnvironmentFile >= environmentFiles.count()) {
                 if (emode == 1) return true; //no more files and we are in 'once' mode - stop the sim
-                if (emode == 2) CurrentEnvFile = 0; //loop mode
+                if (emode == 2) currentEnvironmentFile = 0; //loop mode
                 if (emode == 3) {
-                    CurrentEnvFile -= 2; //bounce mode - back two to undo the extra ++
+                    currentEnvironmentFile -= 2; //bounce mode - back two to undo the extra ++
                     EnvChangeForward = false;
                 }
             }
         } else { //going backwards - must be in emode 3 (bounce)
-            CurrentEnvFile--; //next image
-            if (CurrentEnvFile < 0) {
-                CurrentEnvFile = 1; //bounce mode - one to one again, must have just been 0
+            currentEnvironmentFile--; //next image
+            if (currentEnvironmentFile < 0) {
+                currentEnvironmentFile = 1; //bounce mode - one to one again, must have just been 0
                 EnvChangeForward = true;
             }
         }
-        EnvChangeCounter = envchangerate; //reset counter
+        EnvChangeCounter = environmentChangeRate; //reset counter
         loadEnvironmentFromFile(emode); //and load it from the file
 
     } else {
         if (interpolate) {
             float progress, invprogress;
-            invprogress = ((float)(EnvChangeCounter + 1) / ((float)envchangerate));
+            invprogress = ((float)(EnvChangeCounter + 1) / ((float)environmentChangeRate));
             progress = 1 - invprogress;
             //not getting new, doing an interpolate
             for (int i = 0; i < gridX; i++)
@@ -395,7 +396,7 @@ quint8 SimManager::Rand8()
     return randoms[nextrandom++];
 }
 
-void SimManager::SetupRun()
+void SimManager::setupRun()
 {
 
     //Find middle square, try creatures till something lives, duplicate it [slots] times
@@ -405,7 +406,7 @@ void SimManager::SetupRun()
     //Kill em all
     for (int n = 0; n < gridX; n++)
         for (int m = 0; m < gridY; m++) {
-            for (int c = 0; c < slotsPerSq; c++) {
+            for (int c = 0; c < slotsPerSquare; c++) {
                 critters[n][m][c].age = 0;
                 critters[n][m][c].fitness = 0;
             }
@@ -429,7 +430,7 @@ void SimManager::SetupRun()
             QMessageBox::warning(nullptr, "Oops",
                                  "The genome you're trying to reseed with can't survive in this environment. There could be a number of reasons why this is. Please contact RJG or MDS to discuss.");
             reseedKnown = false;
-            SetupRun();
+            setupRun();
             return;
         }
 
@@ -437,26 +438,26 @@ void SimManager::SetupRun()
         QString reseedGenomeString("Started simulation with known genome: ");
         for (unsigned long long i : tweakers64)if (i & reseedGenome) reseedGenomeString.append("1");
             else reseedGenomeString.append("0");
-        MainWin->setStatusBarText(reseedGenomeString);
+        mainWindow->setStatusBarText(reseedGenomeString);
     } else {
         while (critters[n][m][0].fitness < 1) critters[n][m][0].initialise(Rand64(), environment[n][m], n,
                                                                                m, 0, nextspeciesid);
-        MainWin->setStatusBarText("");
+        mainWindow->setStatusBarText("");
     }
 
     totalfit[n][m] = critters[n][m][0].fitness; //may have gone wrong from above
 
-    AliveCount = 1;
+    aliveCount = 1;
     quint64 generation = critters[n][m][0].genome;
 
     //RJG - Fill square with successful critter
-    for (int c = 1; c < slotsPerSq; c++) {
+    for (int c = 1; c < slotsPerSquare; c++) {
         critters[n][m][c].initialise(generation, environment[n][m], n, m, c, nextspeciesid);
 
         if (critters[n][m][c].age > 0) {
             critters[n][m][c].age /= ((Rand8() / 10) + 1);
             critters[n][m][c].age += 10;
-            AliveCount++;
+            aliveCount++;
             maxused[n][m] = c;
             totalfit[n][m] += critters[n][m][c].fitness;
         }
@@ -464,7 +465,7 @@ void SimManager::SetupRun()
 
     generation = 0;
 
-    EnvChangeCounter = envchangerate;
+    EnvChangeCounter = environmentChangeRate;
     EnvChangeForward = true;
 
     //remove old species log if one exists
@@ -473,7 +474,7 @@ void SimManager::SetupRun()
     //create a new logspecies with appropriate first data entry
     rootspecies = new LogSpecies;
 
-    rootspecies->maxSize = AliveCount;
+    rootspecies->maxSize = aliveCount;
     rootspecies->ID = nextspeciesid;
     rootspecies->timeOfFirstAppearance = 0;
     rootspecies->timeOfLastAppearance = 0;
@@ -484,7 +485,7 @@ void SimManager::SetupRun()
     newdata->generation = 0;
     newdata->cellsOccupied = 1;
     newdata->genomicDiversity = 1;
-    newdata->size = AliveCount;
+    newdata->size = aliveCount;
     newdata->geographicalRange = 0;
     newdata->cellsOccupied = 0; //=1, this is stored as -1
     newdata->sampleGenome = generation;
@@ -497,7 +498,7 @@ void SimManager::SetupRun()
     newdata->meanEnvironment[0] = environment[n][m][0];
     newdata->meanEnvironment[1] = environment[n][m][1];
     newdata->meanEnvironment[2] = environment[n][m][2];
-    newdata->meanFitness = (quint16)((totalfit[n][m] * 1000) / AliveCount);
+    newdata->meanFitness = (quint16)((totalfit[n][m] * 1000) / aliveCount);
 
     rootspecies->dataItems.append(newdata);
     LogSpeciesById.clear();
@@ -506,15 +507,15 @@ void SimManager::SetupRun()
     //RJG - Depreciated, but clear here just in case
     archivedspecieslists.clear();
 
-    oldspecieslist.clear();
+    oldSpeciesList.clear();
     Species newsp;
     newsp.ID = nextspeciesid;
     newsp.originTime = 0;
     newsp.parent = 0;
-    newsp.size = slotsPerSq;
+    newsp.size = slotsPerSquare;
     newsp.type = generation;
     newsp.logSpeciesStructure = rootspecies;
-    oldspecieslist.append(newsp);
+    oldSpeciesList.append(newsp);
 
     nextspeciesid++; //ready for first species after this
 
@@ -537,7 +538,7 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal,
 
             Critter *crit = critters[n][m];
 
-            if (recalcFitness) {
+            if (recalculateFitness) {
                 totalfit[n][m] = 0;
                 maxalive = 0;
                 deathcount = 0;
@@ -609,7 +610,7 @@ int SimManager::settle_parallel(int newgenomecounts_start, int newgenomecounts_e
             (*trycount_local)++;
             Critter *crit = critters[(int)xPosition][(int)yPosition];
             //Now put the baby into any free slot here
-            for (int m = 0; m < slotsPerSq; m++) {
+            for (int m = 0; m < slotsPerSquare; m++) {
                 Critter *crit2 = &(crit[m]);
                 if (crit2->age == 0) {
                     //place it
@@ -659,7 +660,7 @@ int SimManager::settle_parallel(int newgenomecounts_start, int newgenomecounts_e
             (*trycount_local)++;
             Critter *crit = critters[xPosition][yPosition];
             //Now put the baby into any free slot here
-            for (int m = 0; m < slotsPerSq; m++) {
+            for (int m = 0; m < slotsPerSquare; m++) {
                 Critter *crit2 = &(crit[m]);
                 if (crit2->age == 0) {
                     //place it
@@ -696,8 +697,8 @@ bool SimManager::iterate(int emode, bool interpolate)
                                   " Would you like to switch off the species system? If you select no, a progress bar will appear to give you an idea of how long it is taking."
                                   "If you click yes, the system will be disabled. You will only see this warning once per run.",
                                   QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::Yes) {
-            species_mode = 0;
-            MainWin->updateGUIFromVariables();
+            speciesMode = 0;
+            mainWindow->updateGUIFromVariables();
         }
         warning_count++;
     }
@@ -738,7 +739,7 @@ bool SimManager::iterate(int emode, bool interpolate)
 
     //apply all the kills to the global count
     for (int i = 0; i < ProcessorCount; i++)
-        AliveCount -= KillCounts[i];
+        aliveCount -= KillCounts[i];
 
     //Now handle spat settling
 
@@ -767,7 +768,7 @@ bool SimManager::iterate(int emode, bool interpolate)
 
     //sort out all the counts
     for (int i = 0; i < ProcessorCount; i++) {
-        AliveCount += birthcounts[i];
+        aliveCount += birthcounts[i];
         trycount += trycounts[i];
         settlecount += settlecounts[i];
     }

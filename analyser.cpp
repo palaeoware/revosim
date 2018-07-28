@@ -179,7 +179,7 @@ void Analyser::groupsGenealogicalTracker()
     for (int n = 0; n < gridX; n++)
         for (int m = 0; m < gridY; m++) {
             if (totalfit[n][m] == 0) continue; //nothing alive in the cell - skip
-            for (int c = 0; c < slotsPerSq; c++) {
+            for (int c = 0; c < slotsPerSquare; c++) {
                 if (critters[n][m][c].age > 0) { //if critter is alive
                     QHash<quint64, QList<quint32>*>
                     *genomeposlist; //will be pointer to the position list by genome for this species
@@ -226,21 +226,21 @@ void Analyser::groupsGenealogicalTracker()
     QHashIterator<quint64, QSet<quint64> *> ii(
         genomedata); //iterator to loop over all species and their genome sets
 
-    QList<Species> newspecieslist; // will eventually replace the global oldspecieslist
+    QList<Species> newspecieslist; // will eventually replace the global oldSpeciesList
     // convenient to build into  a new list, then copy at the end
 
     //RJG - Add a progress bar
     QProgressBar prBar;
     //Work out limits
     int count = 0;
-    if (TheSimManager->warning_count > 0) {
+    if (simulationManager->warning_count > 0) {
         while (ii.hasNext()) {
             count++;
             ii.next();
         }
         prBar.setRange(0, count);
         prBar.setAlignment(Qt::AlignCenter);
-        MainWin->statusProgressBar(&prBar, true);
+        mainWindow->statusProgressBar(&prBar, true);
         count = 0;
         ii.toFront();
     }
@@ -248,20 +248,20 @@ void Analyser::groupsGenealogicalTracker()
     while (ii.hasNext()) { //for each entry in genomedata hash
         ii.next();
 
-        if (TheSimManager->warning_count > 0) {
+        if (simulationManager->warning_count > 0) {
             count++;
             prBar.setValue(count);
-            MainWin->processAppEvents();
+            mainWindow->processAppEvents();
         }
 
         QSet<quint64> *speciesset = ii.value(); // Get the set of genomes
         quint64 speciesID = ii.key(); //get the speciesID
         LogSpecies *thislogspecies;
 
-        if (species_mode >= SPECIES_MODE_PHYLOGENY) {
+        if (speciesMode >= SPECIES_MODE_PHYLOGENY) {
             thislogspecies = LogSpeciesById.value(speciesID, (LogSpecies *)nullptr);
             if (!thislogspecies) {
-                QMessageBox::warning(MainWin, "Oops",
+                QMessageBox::warning(mainWindow, "Oops",
                                      "Internal error - species not found in log hash. Please email MDS / RJG with this message");
                 exit(0);
             }
@@ -278,7 +278,7 @@ void Analyser::groupsGenealogicalTracker()
         int nextgroup = 0; //group numbers don't leave this function. Start at 0 for each species.
 
         if (speciesset->count() >= MAX_GENOME_COUNT) { //check it actually fits in the static array
-            QMessageBox::warning(MainWin, "Oops",
+            QMessageBox::warning(mainWindow, "Oops",
                                  "Species static array too small - you have more species than " + QString(
                                      PRODUCTNAME) + " was designed to handle. Pleasee email MDS / RJG with this message for a fix. " +
                                  QString(PRODUCTNAME) + " will now close." );
@@ -417,7 +417,7 @@ void Analyser::groupsGenealogicalTracker()
                 newsp.ID = nextspeciesid;   //set the ID - last use so increment
                 newsp.type = samplegenome;    //put in our selected type genome
 
-                if (species_mode >= SPECIES_MODE_PHYLOGENY) {
+                if (speciesMode >= SPECIES_MODE_PHYLOGENY) {
                     //sort out the logspecies object
                     auto *newlogspecies = new LogSpecies;
                     auto *newdata = new LogSpeciesDataItem;
@@ -442,10 +442,10 @@ void Analyser::groupsGenealogicalTracker()
             } else { //this is the continuing species
                 //find it in the old list and copy
                 Species newsp;
-                for (int j = 0; j < oldspecieslist.count(); j++) {
-                    if (oldspecieslist[j].ID == speciesID) {
-                        newsp = oldspecieslist[j];
-                        if (species_mode >= SPECIES_MODE_PHYLOGENY) {
+                for (int j = 0; j < oldSpeciesList.count(); j++) {
+                    if (oldSpeciesList[j].ID == speciesID) {
+                        newsp = oldSpeciesList[j];
+                        if (speciesMode >= SPECIES_MODE_PHYLOGENY) {
                             logspeciespointers[jj.key()] = newsp.logSpeciesStructure;
                             newsp.logSpeciesStructure->timeOfLastAppearance = generation;
                             auto *newdata = new LogSpeciesDataItem;
@@ -467,7 +467,7 @@ void Analyser::groupsGenealogicalTracker()
             }
         }
 
-        if (species_mode == SPECIES_MODE_PHYLOGENY_AND_METRICS) {
+        if (speciesMode == SPECIES_MODE_PHYLOGENY_AND_METRICS) {
             //record a load of stuff
             jj.toFront(); //reuse same iterator for groups
             while (jj.hasNext()) {
@@ -577,7 +577,7 @@ void Analyser::groupsGenealogicalTracker()
 
     }
 
-    if (TheSimManager->warning_count > 0) MainWin->statusProgressBar(&prBar, false);
+    if (simulationManager->warning_count > 0) mainWindow->statusProgressBar(&prBar, false);
 
     //Nearly there! Just need to put size data into correct species
     for (int f = 0; f < newspecieslist.count(); f++) { //go through new species list
@@ -585,7 +585,7 @@ void Analyser::groupsGenealogicalTracker()
         newspecieslist[f].size = newsize;
         //find size in my hash, put it in
 
-        if (species_mode >= SPECIES_MODE_PHYLOGENY) {
+        if (speciesMode >= SPECIES_MODE_PHYLOGENY) {
             LogSpecies *ls = newspecieslist[f].logSpeciesStructure;
             if (newsize > ls->maxSize) ls->maxSize = newsize;
         }
@@ -593,7 +593,7 @@ void Analyser::groupsGenealogicalTracker()
     }
 
 
-    oldspecieslist = newspecieslist; //copy new list over old one
+    oldSpeciesList = newspecieslist; //copy new list over old one
 
     //delete all data - not simple for the slotswithgenome hash of hashes, but this works!
     qDeleteAll(genomedata);
@@ -606,7 +606,7 @@ void Analyser::groupsGenealogicalTracker()
     //Done!
 
     //RJG - need to give user heads up if species ID is taking > 5 seconds, and allow them to turn it off.
-    if (t.elapsed() > 5000)TheSimManager->warning_count++;
+    if (t.elapsed() > 5000)simulationManager->warning_count++;
 }
 
 
@@ -779,13 +779,13 @@ void Analyser::groupsWithHistoryModal()
     QHash <int, int>
     primarychildsizediff; //used for new tiebreaking code. Key is specieslistold indices, value is size difference to new
 
-    QList<Species> oldspecieslist_combined = oldspecieslist;
+    QList<Species> oldspecieslist_combined = oldSpeciesList;
 
-    //Add in all past lists to oldspecieslist  - might be slow, but simplest solution. Need to do an add that avoids duplicates though
+    //Add in all past lists to oldSpeciesList  - might be slow, but simplest solution. Need to do an add that avoids duplicates though
     QSet<quint64> IDs;
 
-    //put all IDs in the set from oldspecieslist
-    for (int i = 0; i < oldspecieslist.count(); i++) IDs.insert(oldspecieslist[i].ID);
+    //put all IDs in the set from oldSpeciesList
+    for (int i = 0; i < oldSpeciesList.count(); i++) IDs.insert(oldSpeciesList[i].ID);
 
     //now append all previous list items that are not already in list with a more recent ID!
     for (int l = 0; l < (timeSliceConnect - 1) && l < archivedspecieslists.count(); l++)
@@ -797,7 +797,7 @@ void Analyser::groupsWithHistoryModal()
         }
 
 
-    if (oldspecieslist.count() > 0) {
+    if (oldSpeciesList.count() > 0) {
 
         for (int i = 0; i < newspecieslist.count(); i++) {
             //for every new species
@@ -917,15 +917,15 @@ void Analyser::groupsWithHistoryModal()
 
 
     //handle archive of old species lists (prior to last time slice)
-    if (oldspecieslist.count() > 0
+    if (oldSpeciesList.count() > 0
             && timeSliceConnect > 1) { //if there IS an old species list, and if we are storing them
-        archivedspecieslists.prepend(oldspecieslist); //put the last old one in position 0
+        archivedspecieslists.prepend(oldSpeciesList); //put the last old one in position 0
         while (archivedspecieslists.count() > timeSliceConnect - 1)
             archivedspecieslists.removeLast(); //trim list to correct size
         // will normally only remove one from end, unless timeSliceConnect has changed
         // TO DO - note species going extinct here?
     }
-    oldspecieslist = newspecieslist;
+    oldSpeciesList = newspecieslist;
 }
 
 /*!

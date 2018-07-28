@@ -15,45 +15,42 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY.
  */
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "reseed.h"
-#include "analyser.h"
-#include "resizecatcher.h"
+#include <cmath>
 
-#include <QTextStream>
-#include <QInputDialog>
+#include "analyser.h"
+#include "analysistools.h"
+#include "mainwindow.h"
+#include "reseed.h"
+#include "resizecatcher.h"
+#include "ui_mainwindow.h"
+#include "version.h"
+
+#include <QActionGroup>
 #include <QComboBox>
+#include <QDataStream>
+#include <QDesktopServices>
 #include <QDialogButtonBox>
-#include <QFormLayout>
-#include <QGraphicsPixmapItem>
-#include <QDockWidget>
 #include <QDebug>
-#include <QTimer>
+#include <QDockWidget>
+#include <QFile>
 #include <QFileDialog>
 #include <QFormLayout>
-#include <QStringList>
+#include <QGraphicsPixmapItem>
+#include <QInputDialog>
 #include <QMessageBox>
-#include <QActionGroup>
-#include <QDataStream>
-#include <QStringList>
-#include <QFile>
-#include <QXmlStreamReader>
-#include <QDesktopServices>
 #include <QPushButton>
-
-#include "analysistools.h"
-#include "version.h"
-#include <cmath>
+#include <QStringList>
+#include <QTextStream>
+#include <QTimer>
+#include <QThread>
+#include <QXmlStreamReader>
 
 #ifndef M_SQRT1_2 //not defined in all versions
 #define M_SQRT1_2 0.7071067811865475
 #endif
 
-SimManager *TheSimManager;
-MainWindow *MainWin;
-
-#include <QThread>
+SimManager *simulationManager;
+MainWindow *mainWindow;
 
 /*!
  * \brief The Sleeper class
@@ -79,13 +76,11 @@ public:
  * \brief MainWindow::MainWindow
  * \param parent
  */
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow)
 {
-    a = new Analyser; // so can delete next time!
+    analyser = new Analyser; // so can delete next time!
     ui->setupUi(this);
-    MainWin = this;
+    mainWindow = this;
 
     //RJG - Output version, but also date compiled for clarity
     QString version;
@@ -94,8 +89,8 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(QIcon (":/icon.png"));
 
     //Install filter to catch resize events to central widget and deliver to mainwindow (handle dock resizes)
-    auto *rescatch = new ResizeCatcher(this);
-    ui->centralWidget->installEventFilter(rescatch);
+    auto *resizeCatcher = new ResizeCatcher(this);
+    ui->centralWidget->installEventFilter(resizeCatcher);
 
     // Create Main Menu
     createMainMenu();
@@ -173,7 +168,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->populationWindowComboBox->addItem("Population Count", QVariant(0));
     ui->populationWindowComboBox->addItem("Mean Fitness", QVariant(1));
     ui->populationWindowComboBox->addItem("Coding Genome as Colour", QVariant(2));
-    ui->populationWindowComboBox->addItem("NonCoding Genome as Colour", QVariant(3));
+    ui->populationWindowComboBox->addItem("Non-Coding Genome as Colour", QVariant(3));
     ui->populationWindowComboBox->addItem("Gene Frequencies", QVariant(4));
     //ui->populationWindowComboBox->addItem("Breed Attempts",QVariant(5));
     //ui->populationWindowComboBox->addItem("Breed Fails",QVariant(6));
@@ -185,17 +180,17 @@ MainWindow::MainWindow(QWidget *parent) :
     //ARTS -Population Window dropdown set current index. Note this value is the index not the data value.
     ui->populationWindowComboBox->setCurrentIndex(2);
 
-    TheSimManager = new SimManager;
+    simulationManager = new SimManager;
 
     pauseFlag = false;
 
     //RJG - load default environment image to allow program to run out of box (quicker for testing)
-    EnvFiles.append(":/EvoSim_default_env.png");
-    CurrentEnvFile = 0;
-    TheSimManager->loadEnvironmentFromFile(1);
+    environmentFiles.append(":/EvoSim_default_env.png");
+    currentEnvironmentFile = 0;
+    simulationManager->loadEnvironmentFromFile(1);
 
     finishRun();//sets up enabling
-    TheSimManager->SetupRun();
+    simulationManager->setupRun();
     nextRefresh = 0;
     report();
 
@@ -208,20 +203,19 @@ MainWindow::MainWindow(QWidget *parent) :
     showMaximized();
 
     //RJG - seed pseudorandom numbers
-    qsrand(QTime::currentTime().msec());
+    qsrand(static_cast<uint>(QTime::currentTime().msec()));
+
     //RJG - Now load randoms into program - portable rand is just plain pseudorandom number - initially used in makelookups (called from simmanager contructor) to write to randoms array
-    int seedoffset = TheSimManager->portable_rand();
+    int seedoffset = simulationManager->portable_rand();
     QFile rfile(":/randoms.dat");
-    if (!rfile.exists()) QMessageBox::warning(this, "Oops",
-                                                  "Error loading randoms. Please do so manually.");
+    if (!rfile.exists()) QMessageBox::warning(this, "Oops", "Error loading randoms. Please do so manually.");
     rfile.open(QIODevice::ReadOnly);
 
     rfile.seek(seedoffset);
 
     //RJG - overwrite pseudorandoms with genuine randoms
-    int i = rfile.read((char *)randoms, 65536);
-    if (i != 65536) QMessageBox::warning(this, "Oops",
-                                             "Failed to read 65536 bytes from file - random numbers may be compromised - try again or restart program");
+    int i = static_cast<int>(rfile.read(reinterpret_cast<char *>(randoms), 65536));
+    if (i != 65536) QMessageBox::warning(this, "Oops", "Failed to read 65536 bytes from file - random numbers may be compromised - try again or restart program");
 }
 
 /*!
@@ -230,7 +224,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete TheSimManager;
+    delete simulationManager;
 }
 
 /**
@@ -247,8 +241,8 @@ void MainWindow::createMainMenu()
     QObject::connect(ui->actionReseed, SIGNAL (triggered()), this, SLOT (launchReseedDialog()));
     QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveSimulation()));
     QObject::connect(ui->actionLoad, SIGNAL(triggered()), this, SLOT(loadSimulation()));
-    QObject::connect(ui->actionSave_settings, SIGNAL (triggered()), this, SLOT (saveSettings()));
-    QObject::connect(ui->actionLoad_settings, SIGNAL (triggered()), this, SLOT (loadSettings()));
+    QObject::connect(ui->actionSaveSettings, SIGNAL (triggered()), this, SLOT (saveSettings()));
+    QObject::connect(ui->actionLoadSettings, SIGNAL (triggered()), this, SLOT (loadSettings()));
     QObject::connect(ui->actionCount_peaks, SIGNAL(triggered()), this, SLOT(writePeakCounts()));
     QObject::connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(exitProgram()));
 }
@@ -336,40 +330,38 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     simulationSettingsDock->setFeatures(QDockWidget::DockWidgetFloatable);
     addDockWidget(Qt::RightDockWidgetArea, simulationSettingsDock);
 
-    auto *settings_grid = new QGridLayout;
-    settings_grid->setAlignment(Qt::AlignTop);
+    auto *settingsGrid = new QGridLayout;
+    settingsGrid->setAlignment(Qt::AlignTop);
 
     // Environment Settings
     auto *environmentSettingsGrid = new QGridLayout;
 
-    QLabel *environment_label = new QLabel("Environmental Settings");
-    environment_label->setStyleSheet("font-weight: bold");
-    environmentSettingsGrid->addWidget(environment_label, 0, 1, 1, 2);
+    QLabel *environmentLabel = new QLabel("Environmental Settings");
+    environmentLabel->setStyleSheet("font-weight: bold");
+    environmentSettingsGrid->addWidget(environmentLabel, 0, 1, 1, 2);
 
     QPushButton *changeEnvironmentFilesButton = new QPushButton("&Change Environment Files");
     changeEnvironmentFilesButton->setObjectName("changeEnvironmentFilesButton");
     changeEnvironmentFilesButton->setToolTip("<font>REvoSim allows you to customise the environment by loading one or more image files.</font>");
     environmentSettingsGrid->addWidget(changeEnvironmentFilesButton, 1, 1, 1, 2);
-    connect(changeEnvironmentFilesButton, SIGNAL (clicked()), this,
-            SLOT(loadEnvironmentFiles()));
+    connect(changeEnvironmentFilesButton, SIGNAL (clicked()), this, SLOT(loadEnvironmentFiles()));
 
-    QLabel *environment_rate_label = new QLabel("Environment refresh rate:");
-    environment_rate_label->setToolTip("<font>This is the rate of change for the selected environmental images.</font>");
+    QLabel *environmentRateLabel = new QLabel("Environment refresh rate:");
+    environmentRateLabel->setToolTip("<font>This is the rate of change for the selected environmental images.</font>");
     environmentRateSpin = new QSpinBox;
     environmentRateSpin->setToolTip("<font>This is the rate of change for the selected environmental images.</font>");
     environmentRateSpin->setMinimum(0);
     environmentRateSpin->setMaximum(100000);
-    environmentRateSpin->setValue(envchangerate);
-    environmentSettingsGrid->addWidget(environment_rate_label, 2, 1);
+    environmentRateSpin->setValue(environmentChangeRate);
+    environmentSettingsGrid->addWidget(environmentRateLabel, 2, 1);
     environmentSettingsGrid->addWidget(environmentRateSpin, 2, 2);
     //RJG - Note in order to use a lamda not only do you need to use C++11, but there are two valueChanged signals for spinbox - and int and a string. Need to cast it to an int
-    connect(environmentRateSpin,
-    (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i ) {
-        envchangerate = i;
+    connect(environmentRateSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i ) {
+        environmentChangeRate = i;
     });
 
-    QLabel *environment_mode_label = new QLabel("Environment mode:");
-    environmentSettingsGrid->addWidget(environment_mode_label, 3, 1, 1, 2);
+    QLabel *environment_modeLabel = new QLabel("Environment mode:");
+    environmentSettingsGrid->addWidget(environment_modeLabel, 3, 1, 1, 2);
 
     auto *environmentModeGrid = new QGridLayout;
     environmentModeStaticButton = new QRadioButton("Static");
@@ -390,18 +382,17 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     environmentModeGrid->addWidget(environmentModeOnceButton, 1, 2, 1, 2);
     environmentModeGrid->addWidget(environmentModeLoopButton, 2, 1, 1, 2);
     environmentModeGrid->addWidget(environmentModeBounceButton, 2, 2, 1, 2);
-    connect(environmentModeButtonGroup,
-    (void(QButtonGroup::*)(int))&QButtonGroup::buttonClicked, [ = ](const int &i) {
+    connect(environmentModeButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i) {
         environmentModeChanged(i, false);
     });
     environmentSettingsGrid->addLayout(environmentModeGrid, 4, 1, 1, 2);
 
     interpolateCheckbox = new QCheckBox("Interpolate between images");
-    interpolateCheckbox->setChecked(environment_interpolate);
+    interpolateCheckbox->setChecked(environmentInterpolate);
     interpolateCheckbox->setToolTip("<font>Turning this ON will interpolate the environment between individual images.</font>");
     environmentSettingsGrid->addWidget(interpolateCheckbox, 5, 1, 1, 2);
     connect(interpolateCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i) {
-        environment_interpolate = i;
+        environmentInterpolate = i;
     });
 
     toroidalCheckbox = new QCheckBox("Toroidal environment");
@@ -415,114 +406,114 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     // Simulation Size Settings
     auto *simulationSizeSettingsGrid = new QGridLayout;
 
-    QLabel *simulation_size_label = new QLabel("Simulation size");
-    simulation_size_label->setStyleSheet("font-weight: bold");
-    simulationSizeSettingsGrid->addWidget(simulation_size_label, 0, 1, 1, 2);
+    QLabel *simulation_sizeLabel = new QLabel("Simulation size");
+    simulation_sizeLabel->setStyleSheet("font-weight: bold");
+    simulationSizeSettingsGrid->addWidget(simulation_sizeLabel, 0, 1, 1, 2);
 
-    QLabel *gridX_label = new QLabel("Grid X:");
-    gridX_label->setToolTip("<font>Number of grid cells on the <i>x</i> axis.</font>");
+    QLabel *gridXLabel = new QLabel("Grid X:");
+    gridXLabel->setToolTip("<font>Number of grid cells on the <i>x</i> axis.</font>");
     gridXSpin = new QSpinBox;
     gridXSpin->setMinimum(1);
     gridXSpin->setMaximum(256);
     gridXSpin->setValue(gridX);
     gridXSpin->setToolTip("<font>Number of grid cells on the <i>x</i> axis.</font>");
-    simulationSizeSettingsGrid->addWidget(gridX_label, 2, 1);
+    simulationSizeSettingsGrid->addWidget(gridXLabel, 2, 1);
     simulationSizeSettingsGrid->addWidget(gridXSpin, 2, 2);
-    connect(gridXSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    connect(gridXSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         int oldRows = gridX;
         gridX = i;
         redoImages(oldRows, gridY);
     });
 
-    QLabel *gridY_label = new QLabel("Grid Y:");
-    gridY_label->setToolTip("<font>Number of grid cells on the <i>y</i> axis.</font>");
+    QLabel *gridYLabel = new QLabel("Grid Y:");
+    gridYLabel->setToolTip("<font>Number of grid cells on the <i>y</i> axis.</font>");
     gridYSpin = new QSpinBox;
     gridYSpin->setMinimum(1);
     gridYSpin->setMaximum(256);
     gridYSpin->setValue(gridY);
     gridYSpin->setToolTip("<font>Number of grid cells on the <i>y</i> axis.</font>");
-    simulationSizeSettingsGrid->addWidget(gridY_label, 3, 1);
+    simulationSizeSettingsGrid->addWidget(gridYLabel, 3, 1);
     simulationSizeSettingsGrid->addWidget(gridYSpin, 3, 2);
-    connect(gridYSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    connect(gridYSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         int oldColumns = gridY;
         gridY = i;
         redoImages(gridX, oldColumns);
     });
 
-    QLabel *slots_label = new QLabel("Slots:");
-    slots_label->setToolTip("<font>Number of slots per grid cell.</font>");
+    QLabel *slotsLabel = new QLabel("Slots:");
+    slotsLabel->setToolTip("<font>Number of slots per grid cell.</font>");
     slotsSpin = new QSpinBox;
     slotsSpin->setMinimum(1);
     slotsSpin->setMaximum(256);
-    slotsSpin->setValue(slotsPerSq);
+    slotsSpin->setValue(slotsPerSquare);
     slotsSpin->setToolTip("<font>Number of slots per grid cell.</font>");
-    simulationSizeSettingsGrid->addWidget(slots_label, 4, 1);
+    simulationSizeSettingsGrid->addWidget(slotsLabel, 4, 1);
     simulationSizeSettingsGrid->addWidget(slotsSpin, 4, 2);
-    connect(slotsSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
-        slotsPerSq = i;
+    connect(slotsSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
+        slotsPerSquare = i;
         redoImages(gridX, gridY);
     });
 
     // Simulation Settings
     auto *simulationSettingsGrid = new QGridLayout;
 
-    QLabel *simulation_settings_label = new QLabel("Simulation settings");
-    simulation_settings_label->setStyleSheet("font-weight: bold");
-    simulationSettingsGrid->addWidget(simulation_settings_label, 0, 1, 1, 2);
+    QLabel *simulationSettingsLabel = new QLabel("Simulation settings");
+    simulationSettingsLabel->setStyleSheet("font-weight: bold");
+    simulationSettingsGrid->addWidget(simulationSettingsLabel, 0, 1, 1, 2);
 
-    QLabel *target_label = new QLabel("Fitness target:");
-    target_label->setToolTip("<font>Target value effects the fitness landscape. See manual for more details.</font>");
+    QLabel *targetLabel = new QLabel("Fitness target:");
+    targetLabel->setToolTip("<font>Target value effects the fitness landscape. See manual for more details.</font>");
     targetSpin = new QSpinBox;
     targetSpin->setMinimum(1);
     targetSpin->setMaximum(96);
     targetSpin->setValue(target);
     targetSpin->setToolTip("<font>Target value effects the fitness landscape. See manual for more details.</font>");
-    simulationSettingsGrid->addWidget(target_label, 1, 1);
+    simulationSettingsGrid->addWidget(targetLabel, 1, 1);
     simulationSettingsGrid->addWidget(targetSpin, 1, 2);
-    connect(targetSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    connect(targetSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         target = i;
     });
 
-    QLabel *energy_label = new QLabel("Energy input:");
-    energy_label->setToolTip("<font>Energy level given to new organisms.</font>");
+    QLabel *energyLabel = new QLabel("Energy input:");
+    energyLabel->setToolTip("<font>Energy level given to new organisms.</font>");
     energySpin = new QSpinBox;
     energySpin->setMinimum(1);
     energySpin->setMaximum(20000);
     energySpin->setValue(food);
     energySpin->setToolTip("<font>Energy level given to new organisms.</font>");
-    simulationSettingsGrid->addWidget(energy_label, 2, 1);
+    simulationSettingsGrid->addWidget(energyLabel, 2, 1);
     simulationSettingsGrid->addWidget(energySpin, 2, 2);
-    connect(energySpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    connect(energySpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         food = i;
     });
 
-    QLabel *settleTolerance_label = new QLabel("Settle tolerance:");
-    settleTolerance_label->setToolTip("<font>Defines the range of environments an organism can settle into.</font>");
+    QLabel *settleToleranceLabel = new QLabel("Settle tolerance:");
+    settleToleranceLabel->setToolTip("<font>Defines the range of environments an organism can settle into.</font>");
     settleToleranceSpin = new QSpinBox;
     settleToleranceSpin->setMinimum(1);
     settleToleranceSpin->setMaximum(30);
     settleToleranceSpin->setValue(settleTolerance);
     settleToleranceSpin->setToolTip("<font>Defines the range of environments an organism can settle into.</font>");
-    simulationSettingsGrid->addWidget(settleTolerance_label, 3, 1);
+    simulationSettingsGrid->addWidget(settleToleranceLabel, 3, 1);
     simulationSettingsGrid->addWidget(settleToleranceSpin, 3, 2);
-    connect(settleToleranceSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    connect(settleToleranceSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         settleTolerance = i;
     });
 
     recalculateFitnessCheckbox = new QCheckBox("Recalculate fitness");
-    recalculateFitnessCheckbox->setChecked(recalcFitness);
+    recalculateFitnessCheckbox->setChecked(recalculateFitness);
     recalculateFitnessCheckbox->setToolTip("<font>Turning on recalculates the fitness of each organism every iteration.</font>");
     simulationSettingsGrid->addWidget(recalculateFitnessCheckbox, 4, 1, 1, 2);
     connect(recalculateFitnessCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i) {
-        recalcFitness = i;
+        recalculateFitness = i;
     });
 
     //Phylogeny Settings
     auto *phylogenySettingsGrid = new QGridLayout;
 
-    QLabel *phylogeny_settings_label = new QLabel("Phylogeny settings");
-    phylogeny_settings_label->setStyleSheet("font-weight: bold");
-    phylogenySettingsGrid->addWidget(phylogeny_settings_label, 0, 1, 1, 1);
+    QLabel *phylogenySettingsLabel = new QLabel("Phylogeny settings");
+    phylogenySettingsLabel->setStyleSheet("font-weight: bold");
+    phylogenySettingsGrid->addWidget(phylogenySettingsLabel, 0, 1, 1, 1);
 
     auto *phylogeny_grid = new QGridLayout;
     phylogenyOffButton = new QRadioButton("Off");
@@ -543,22 +534,21 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     phylogeny_grid->addWidget(basicPhylogenyButton, 1, 2, 1, 2);
     phylogeny_grid->addWidget(phylogenyButton, 2, 1, 1, 2);
     phylogeny_grid->addWidget(phylogenyAndMetricsButton, 2, 2, 1, 2);
-    connect(phylogeny_button_group,
-    (void(QButtonGroup::*)(int))&QButtonGroup::buttonClicked, [ = ](const int &i) {
+    connect(phylogeny_button_group, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i) {
         speciesModeChanged(i, false);
     });
     phylogenySettingsGrid->addLayout(phylogeny_grid, 1, 1, 1, 2);
 
     //ARTS - Dock Grid Layout
-    settings_grid->addLayout(environmentSettingsGrid, 0, 1);
-    settings_grid->addLayout(simulationSizeSettingsGrid, 1, 1);
-    settings_grid->addLayout(simulationSettingsGrid, 2, 1);
-    settings_grid->addLayout(phylogenySettingsGrid, 3, 1);
+    settingsGrid->addLayout(environmentSettingsGrid, 0, 1);
+    settingsGrid->addLayout(simulationSizeSettingsGrid, 1, 1);
+    settingsGrid->addLayout(simulationSettingsGrid, 2, 1);
+    settingsGrid->addLayout(phylogenySettingsGrid, 3, 1);
 
-    QWidget *settings_layout_widget = new QWidget;
-    settings_layout_widget->setLayout(settings_grid);
-    settings_layout_widget->setMinimumWidth(300);
-    simulationSettingsDock->setWidget(settings_layout_widget);
+    QWidget *settingsLayoutWidget = new QWidget;
+    settingsLayoutWidget->setLayout(settingsGrid);
+    settingsLayoutWidget->setMinimumWidth(300);
+    simulationSettingsDock->setWidget(settingsLayoutWidget);
     simulationSettingsDock->adjustSize();
 
     return simulationSettingsDock;
@@ -576,8 +566,8 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     outputSettingsDock->setFeatures(QDockWidget::DockWidgetFloatable);
     addDockWidget(Qt::RightDockWidgetArea, outputSettingsDock);
 
-    auto *output_settings_grid = new QGridLayout;
-    output_settings_grid->setAlignment(Qt::AlignTop);
+    auto *outputSettingsGrid = new QGridLayout;
+    outputSettingsGrid->setAlignment(Qt::AlignTop);
 
     //ARTS - Output Save Path
     auto *savePathGrid = new QGridLayout;
@@ -612,7 +602,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     refreshRateSpin->setToolTip("<font>Number of iteration between each logging and screen data refresh event.</font>");
     pollingRateGrid->addWidget(refreshRateLabel, 2, 1);
     pollingRateGrid->addWidget(refreshRateSpin, 2, 2);
-    connect(refreshRateSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    connect(refreshRateSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         refreshRate = i;
     });
 
@@ -655,8 +645,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     saveAllImagesCheckbox->setObjectName("saveAllImagesCheckbox");
     saveAllImagesCheckbox->setToolTip("<font>Toggle all/none of the above checkboxes.</font>");
     images_grid->addWidget(saveAllImagesCheckbox, 6, 2, 1, 1);
-    QObject::connect(saveAllImagesCheckbox, SIGNAL (toggled(bool)), this,
-                     SLOT(saveAllCheckboxStateChanged(bool)));
+    QObject::connect(saveAllImagesCheckbox, SIGNAL (toggled(bool)), this, SLOT(saveAllCheckboxStateChanged(bool)));
 
     //ARTS - Logging to text file
     auto *fileLoggingGrid = new QGridLayout;
@@ -691,18 +680,17 @@ QDockWidget *MainWindow::createOutputSettingsDock()
         allowExcludeWithDescendants = i;
     });
 
-    QLabel *Min_species_size_label = new QLabel("Minimum species size:");
-    Min_species_size_label->setToolTip("<font>Selects the minimum number of organisms needed to define a species. Min = 0; Max = 1000000.</font>");
+    QLabel *Min_species_sizeLabel = new QLabel("Minimum species size:");
+    Min_species_sizeLabel->setToolTip("<font>Selects the minimum number of organisms needed to define a species. Min = 0; Max = 1000000.</font>");
     auto *Min_species_size_spin = new QSpinBox;
     Min_species_size_spin->setToolTip("<font>Selects the minimum number of organisms needed to define a species. Min = 0; Max = 1000000.</font>");
     Min_species_size_spin->setMinimum(0);
     Min_species_size_spin->setMaximum(1000000);
-    Min_species_size_spin->setValue(minspeciessize);
-    fileLoggingGrid->addWidget(Min_species_size_label, 6, 1);
+    Min_species_size_spin->setValue(static_cast<int>(minSpeciesSize));
+    fileLoggingGrid->addWidget(Min_species_sizeLabel, 6, 1);
     fileLoggingGrid->addWidget(Min_species_size_spin, 6, 2);
-    connect(Min_species_size_spin,
-    (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
-        minspeciessize = i;
+    connect(Min_species_size_spin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
+        minSpeciesSize = static_cast<quint64>(i);
     });
 
     //ARTS - Advanced
@@ -716,19 +704,18 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     guiCheckbox->setChecked(gui);
     guiCheckbox->setToolTip("<font>Note: If you turn off GUI update you cannot log the population/environment windows using saved images.</font>");
     advancedLoggingGrid->addWidget(guiCheckbox, 2, 1, 1, 2);
-    QObject::connect(guiCheckbox, SIGNAL (toggled(bool)), this,
-                     SLOT(guiCheckboxStateChanged(bool)));
+    QObject::connect(guiCheckbox, SIGNAL (toggled(bool)), this, SLOT(guiCheckboxStateChanged(bool)));
 
     //ARTS - Dock Grid Layout
-    output_settings_grid->addLayout(savePathGrid, 1, 1, 1, 2);
-    output_settings_grid->addLayout(pollingRateGrid, 2, 1, 1, 2);
-    output_settings_grid->addLayout(images_grid, 3, 1, 1, 2);
-    output_settings_grid->addLayout(fileLoggingGrid, 4, 1, 1, 2);
-    output_settings_grid->addLayout(advancedLoggingGrid, 5, 1, 1, 2);
+    outputSettingsGrid->addLayout(savePathGrid, 1, 1, 1, 2);
+    outputSettingsGrid->addLayout(pollingRateGrid, 2, 1, 1, 2);
+    outputSettingsGrid->addLayout(images_grid, 3, 1, 1, 2);
+    outputSettingsGrid->addLayout(fileLoggingGrid, 4, 1, 1, 2);
+    outputSettingsGrid->addLayout(advancedLoggingGrid, 5, 1, 1, 2);
 
-    QWidget *output_settings_layout_widget = new QWidget;
-    output_settings_layout_widget->setLayout(output_settings_grid);
-    outputSettingsDock->setWidget(output_settings_layout_widget);
+    QWidget *outputSettingsLayoutWidget = new QWidget;
+    outputSettingsLayoutWidget->setLayout(outputSettingsGrid);
+    outputSettingsDock->setWidget(outputSettingsLayoutWidget);
 
     return outputSettingsDock;
 }
@@ -745,85 +732,85 @@ QDockWidget *MainWindow::createOrganismSettingsDock()
     organismSettingsDock->setFeatures(QDockWidget::DockWidgetFloatable);
     addDockWidget(Qt::RightDockWidgetArea, organismSettingsDock);
 
-    auto *org_settings_grid = new QGridLayout;
-    org_settings_grid->setAlignment(Qt::AlignTop);
+    auto *organismSettingsGrid = new QGridLayout;
+    organismSettingsGrid->setAlignment(Qt::AlignTop);
 
-    QLabel *org_settings_label = new QLabel("Organism settings");
-    org_settings_label->setStyleSheet("font-weight: bold");
-    org_settings_grid->addWidget(org_settings_label, 1, 1, 1, 2);
+    QLabel *organismSettingsLabel = new QLabel("Organism settings");
+    organismSettingsLabel->setStyleSheet("font-weight: bold");
+    organismSettingsGrid->addWidget(organismSettingsLabel, 1, 1, 1, 2);
 
-    QLabel *mutate_label = new QLabel("Chance of mutation:");
-    mutate_label->setToolTip("<font>Selects the chance of mutation. Min = 0; Max = 255.</font>");
+    QLabel *mutateLabel = new QLabel("Chance of mutation:");
+    mutateLabel->setToolTip("<font>Selects the chance of mutation. Min = 0; Max = 255.</font>");
     mutateSpin = new QSpinBox;
     mutateSpin->setMinimum(0);
     mutateSpin->setMaximum(255);
     mutateSpin->setValue(mutate);
     mutateSpin->setToolTip("<font>Selects the chance of mutation. Min = 0; Max = 255.</font>");
-    org_settings_grid->addWidget(mutate_label, 2, 1);
-    org_settings_grid->addWidget(mutateSpin, 2, 2);
-    connect(mutateSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    organismSettingsGrid->addWidget(mutateLabel, 2, 1);
+    organismSettingsGrid->addWidget(mutateSpin, 2, 2);
+    connect(mutateSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         mutate = i;
     });
 
-    QLabel *startAge_label = new QLabel("Start age:");
-    startAge_label->setToolTip("<font>Sets the starting age for organisms. Min = 1; Max = 1000.</font>");
+    QLabel *startAgeLabel = new QLabel("Start age:");
+    startAgeLabel->setToolTip("<font>Sets the starting age for organisms. Min = 1; Max = 1000.</font>");
     startAgeSpin = new QSpinBox;
     startAgeSpin->setMinimum(1);
     startAgeSpin->setMaximum(1000);
     startAgeSpin->setValue(startAge);
     startAgeSpin->setToolTip("<font>Sets the starting age for organisms. Min = 1; Max = 1000.</font>");
-    org_settings_grid->addWidget(startAge_label, 4, 1);
-    org_settings_grid->addWidget(startAgeSpin, 4, 2);
-    connect(startAgeSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    organismSettingsGrid->addWidget(startAgeLabel, 4, 1);
+    organismSettingsGrid->addWidget(startAgeSpin, 4, 2);
+    connect(startAgeSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         startAge = i;
     });
 
-    QLabel *breed_settings_label = new QLabel("Breed settings");
-    breed_settings_label->setStyleSheet("font-weight: bold");
-    org_settings_grid->addWidget(breed_settings_label, 5, 1, 1, 2);
+    QLabel *breedSettingsLabel = new QLabel("Breed settings");
+    breedSettingsLabel->setStyleSheet("font-weight: bold");
+    organismSettingsGrid->addWidget(breedSettingsLabel, 5, 1, 1, 2);
 
-    QLabel *breedThreshold_label = new QLabel("Breed threshold:");
-    breedThreshold_label->setToolTip("<font>Sets the 'Breed Threshold'. Min = 0; Max = 5000.</font>");
+    QLabel *breedThresholdLabel = new QLabel("Breed threshold:");
+    breedThresholdLabel->setToolTip("<font>Sets the 'Breed Threshold'. Min = 0; Max = 5000.</font>");
     breedThresholdSpin = new QSpinBox;
     breedThresholdSpin->setMinimum(1);
     breedThresholdSpin->setMaximum(5000);
     breedThresholdSpin->setValue(breedThreshold);
     breedThresholdSpin->setToolTip("<font>Sets the 'Breed Threshold'. Min = 0; Max = 5000.</font>");
-    org_settings_grid->addWidget(breedThreshold_label, 6, 1);
-    org_settings_grid->addWidget(breedThresholdSpin, 6, 2);
-    connect(breedThresholdSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    organismSettingsGrid->addWidget(breedThresholdLabel, 6, 1);
+    organismSettingsGrid->addWidget(breedThresholdSpin, 6, 2);
+    connect(breedThresholdSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         breedThreshold = i;
     });
 
-    QLabel *breedCost_label = new QLabel("Breed cost:");
-    breedCost_label->setToolTip("<font>Sets the 'Breed Cost'. Min = 0; Max = 10000.</font>");
+    QLabel *breedCostLabel = new QLabel("Breed cost:");
+    breedCostLabel->setToolTip("<font>Sets the 'Breed Cost'. Min = 0; Max = 10000.</font>");
     breedCostSpin = new QSpinBox;
     breedCostSpin->setMinimum(1);
     breedCostSpin->setMaximum(10000);
     breedCostSpin->setValue(breedCost);
     breedCostSpin->setToolTip("<font>Sets the 'Breed Cost'. Min = 0; Max = 10000.</font>");
-    org_settings_grid->addWidget(breedCost_label, 7, 1);
-    org_settings_grid->addWidget(breedCostSpin, 7, 2);
-    connect(breedCostSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    organismSettingsGrid->addWidget(breedCostLabel, 7, 1);
+    organismSettingsGrid->addWidget(breedCostSpin, 7, 2);
+    connect(breedCostSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         breedCost = i;
     });
 
-    QLabel *maxDiff_label = new QLabel("Max difference to breed:");
-    maxDiff_label->setToolTip("<font>Sets the maximum difference between organisms to allow breeding. Min = 1; Max = 31.</font>");
+    QLabel *maxDiffLabel = new QLabel("Max difference to breed:");
+    maxDiffLabel->setToolTip("<font>Sets the maximum difference between organisms to allow breeding. Min = 1; Max = 31.</font>");
     maxDifferenceSpin = new QSpinBox;
     maxDifferenceSpin->setMinimum(1);
     maxDifferenceSpin->setMaximum(31);
     maxDifferenceSpin->setValue(maxDiff);
     maxDifferenceSpin->setToolTip("<font>Sets the maximum difference between organisms to allow breeding. Min = 1; Max = 31.</font>");
-    org_settings_grid->addWidget(maxDiff_label, 8, 1);
-    org_settings_grid->addWidget(maxDifferenceSpin, 8, 2);
-    connect(maxDifferenceSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    organismSettingsGrid->addWidget(maxDiffLabel, 8, 1);
+    organismSettingsGrid->addWidget(maxDifferenceSpin, 8, 2);
+    connect(maxDifferenceSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         maxDiff = i;
     });
 
     breedDifferenceCheckbox = new QCheckBox("Use max diff to breed");
     breedDifferenceCheckbox->setToolTip("<font>Turn on/off the maximum difference between organisms test.</font>");
-    org_settings_grid->addWidget(breedDifferenceCheckbox, 9, 1, 1, 1);
+    organismSettingsGrid->addWidget(breedDifferenceCheckbox, 9, 1, 1, 1);
     breedDifferenceCheckbox->setChecked(breeddiff);
     connect(breedDifferenceCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i) {
         breeddiff = i;
@@ -831,27 +818,26 @@ QDockWidget *MainWindow::createOrganismSettingsDock()
 
     breedSpeciesCheckbox = new QCheckBox("Breed only within species");
     breedSpeciesCheckbox->setToolTip("<font>Turn on/off breeding only within the same species.</font>");
-    org_settings_grid->addWidget(breedSpeciesCheckbox, 10, 1, 1, 1);
+    organismSettingsGrid->addWidget(breedSpeciesCheckbox, 10, 1, 1, 1);
     breedSpeciesCheckbox->setChecked(breedspecies);
     connect(breedSpeciesCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i) {
         breedspecies = i;
     });
 
-    QLabel *breed_mode_label = new QLabel("Breed mode:");
-    org_settings_grid->addWidget(breed_mode_label, 11, 1, 1, 2);
+    QLabel *breed_modeLabel = new QLabel("Breed mode:");
+    organismSettingsGrid->addWidget(breed_modeLabel, 11, 1, 1, 2);
     sexualRadio = new QRadioButton("Sexual");
     sexualRadio->setToolTip("<font>Select to use 'Sexual' breeding.</font>");
     asexualRadio = new QRadioButton("Asexual");
     asexualRadio->setToolTip("<font>Select to use 'Asexual' breeding.</font>");
-    auto *breeding_button_group = new QButtonGroup;
-    breeding_button_group->addButton(sexualRadio, 0);
-    breeding_button_group->addButton(asexualRadio, 1);
+    auto *breedingButtonGroup = new QButtonGroup;
+    breedingButtonGroup->addButton(sexualRadio, 0);
+    breedingButtonGroup->addButton(asexualRadio, 1);
     sexualRadio->setChecked(sexual);
     asexualRadio->setChecked(asexual);
-    org_settings_grid->addWidget(sexualRadio, 12, 1, 1, 2);
-    org_settings_grid->addWidget(asexualRadio, 13, 1, 1, 2);
-    connect(breeding_button_group,
-    (void(QButtonGroup::*)(int))&QButtonGroup::buttonClicked, [ = ](const int &i) {
+    organismSettingsGrid->addWidget(sexualRadio, 12, 1, 1, 2);
+    organismSettingsGrid->addWidget(asexualRadio, 13, 1, 1, 2);
+    connect(breedingButtonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i) {
         if (i == 0) {
             sexual = true;
             asexual = false;
@@ -862,34 +848,34 @@ QDockWidget *MainWindow::createOrganismSettingsDock()
         }
     });
 
-    QLabel *settle_settings_label = new QLabel("Settle settings");
-    settle_settings_label->setStyleSheet("font-weight: bold");
-    org_settings_grid->addWidget(settle_settings_label, 15, 1, 1, 2);
+    QLabel *settleSettingsLabel = new QLabel("Settle settings");
+    settleSettingsLabel->setStyleSheet("font-weight: bold");
+    organismSettingsGrid->addWidget(settleSettingsLabel, 15, 1, 1, 2);
 
-    QLabel *dispersal_label = new QLabel("Dispersal:");
-    dispersal_label->setToolTip("<font>Set the maximum dispersal of offspring from parent. Min = 1; Max = 200.</font>");
+    QLabel *dispersalLabel = new QLabel("Dispersal:");
+    dispersalLabel->setToolTip("<font>Set the maximum dispersal of offspring from parent. Min = 1; Max = 200.</font>");
     dispersalSpin = new QSpinBox;
     dispersalSpin->setMinimum(1);
     dispersalSpin->setMaximum(200);
     dispersalSpin->setValue(dispersal);
     dispersalSpin->setToolTip("<font>Set the maximum dispersal of offspring from parent. Min = 1; Max = 200.</font>");
-    org_settings_grid->addWidget(dispersal_label, 16, 1);
-    org_settings_grid->addWidget(dispersalSpin, 16, 2);
-    connect(dispersalSpin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    organismSettingsGrid->addWidget(dispersalLabel, 16, 1);
+    organismSettingsGrid->addWidget(dispersalSpin, 16, 2);
+    connect(dispersalSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
         dispersal = i;
     });
 
     nonspatialCheckbox = new QCheckBox("Nonspatial settling");
     nonspatialCheckbox->setToolTip("<font>Turn on/off nonspatial settling of offspring.</font>");
-    org_settings_grid->addWidget(nonspatialCheckbox, 17, 1, 1, 2);
+    organismSettingsGrid->addWidget(nonspatialCheckbox, 17, 1, 1, 2);
     nonspatialCheckbox->setChecked(nonspatial);
     connect(nonspatialCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i) {
         nonspatial = i;
     });
 
-    QWidget *org_settings_layout_widget = new QWidget;
-    org_settings_layout_widget->setLayout(org_settings_grid);
-    organismSettingsDock->setWidget(org_settings_layout_widget);
+    QWidget *orgnismSettingsLayoutWidget = new QWidget;
+    orgnismSettingsLayoutWidget->setLayout(organismSettingsGrid);
+    organismSettingsDock->setWidget(orgnismSettingsLayoutWidget);
 
     return organismSettingsDock;
 }
@@ -901,8 +887,7 @@ QDockWidget *MainWindow::createOrganismSettingsDock()
  */
 void MainWindow::updateGlobalPath()
 {
-    QString dirname = QFileDialog::getExistingDirectory(this,
-                                                        "Select directory in which files should be saved.");
+    QString dirname = QFileDialog::getExistingDirectory(this, "Select directory in which files should be saved.");
     if (dirname.length() != 0) {
         dirname.append("/");
         globalSavePath->setText(dirname);
@@ -947,7 +932,7 @@ void MainWindow::resetSimulation()
     resetInformationBar();
 
     //RJG - This resets all the species logging stuff as well as setting up the run
-    TheSimManager->SetupRun();
+    simulationManager->setupRun();
     nextRefresh = 0;
 
     //ARTS - Update views based on the new reset simulation
@@ -970,9 +955,9 @@ void MainWindow::resetInformationBar()
     ui->LabelFitness->setText(tr("0.00%"));
     ui->LabelSpecies->setText(tr("-"));
 
-    QString environment_scene_value;
-    environment_scene_value.sprintf("%d/%d", CurrentEnvFile + 1, EnvFiles.count());
-    ui->LabelEnvironment->setText(environment_scene_value);
+    QString environmentSceneValue;
+    environmentSceneValue.sprintf("%d/%d", currentEnvironmentFile + 1, environmentFiles.count());
+    ui->LabelEnvironment->setText(environmentSceneValue);
 }
 
 /*!
@@ -1012,7 +997,7 @@ void MainWindow::changeEvent(QEvent *e)
 void MainWindow::startSimulation()
 {
 
-    if (CurrentEnvFile == -1) {
+    if (currentEnvironmentFile == -1) {
         QMessageBox::critical(nullptr, "", "Cannot start simulation without environment");
         if (!loadEnvironmentFiles()) {
             return;
@@ -1034,7 +1019,7 @@ void MainWindow::startSimulation()
         if (ui->actionGo_Slow->isChecked()) Sleeper::msleep(30);
 
         //ARTS - set Stop flag to returns true if reached end... but why? It will fire the finishRun() function at the end.
-        if (TheSimManager->iterate(environment_mode, environment_interpolate)) stopFlag = true;
+        if (simulationManager->iterate(environmentMode, environmentInterpolate)) stopFlag = true;
     }
 
     finishRun();
@@ -1047,7 +1032,7 @@ void MainWindow::startSimulation()
  */
 void MainWindow::runForNSimulation()
 {
-    if (CurrentEnvFile == -1) {
+    if (currentEnvironmentFile == -1) {
         QMessageBox::critical(nullptr, "", "Cannot start simulation without environment");
         if (!loadEnvironmentFiles()) {
             return;
@@ -1055,9 +1040,10 @@ void MainWindow::runForNSimulation()
     }
 
     bool ok = false;
-    int i, num_iterations;
-    num_iterations = QInputDialog::getInt(this, "", tr("Iterations: "), 1000, 1, 10000000, 1, &ok);
-    i = num_iterations;
+    int i;
+    int n;
+    n = QInputDialog::getInt(this, "", tr("Iterations: "), 1000, 1, 10000000, 1, &ok);
+    i = n;
     if (!ok) return;
 
     ui->LabelBatch->setText(tr("1/1"));
@@ -1073,7 +1059,7 @@ void MainWindow::runForNSimulation()
         report();
         qApp->processEvents();
 
-        if (TheSimManager->iterate(environment_mode, environment_interpolate)) stopFlag = true;
+        if (simulationManager->iterate(environmentMode, environmentInterpolate)) stopFlag = true;
         i--;
     }
 
@@ -1081,12 +1067,10 @@ void MainWindow::runForNSimulation()
 
     //ARTS Show finish message and run FinshRun()
     if (!stopFlag) {
-        QMessageBox::information(nullptr, tr("Run For... Finished"),
-                                 tr("The run for %1 iterations has finished.").arg(num_iterations));
+        QMessageBox::information(nullptr, tr("Run For... Finished"), tr("The run for %1 iterations has finished.").arg(n));
         finishRun();
     } else {
-        QMessageBox::information(nullptr, tr("Run For... Stopped"),
-                                 tr("The run for %1 iterations has been stopped at iteration %2.").arg(num_iterations).arg(i));
+        QMessageBox::information(nullptr, tr("Run For... Stopped"), tr("The run for %1 iterations has been stopped at iteration %2.").arg(n).arg(i));
         finishRun();
     }
 }
@@ -1101,10 +1085,10 @@ void MainWindow::startBatchSimulation()
     //ARTS - set default vaules
     batchRunning = true;
     batchRuns = 0;
-    int environment_start = CurrentEnvFile;
+    int environmentStart = currentEnvironmentFile;
 
     bool repeat_environment;
-    QString save_path(globalSavePath->text());
+    QString globalSavePathStr(globalSavePath->text());
 
     //ARTS - batch setup default and maxium values
     int maxIterations = 10000000;
@@ -1119,15 +1103,13 @@ void MainWindow::startBatchSimulation()
 
     QFormLayout form(&dialog);
     // Add some text above the fields
-    form.addRow(new
-                QLabel("You may: 1) set the number of runs you require; 2) set the number of iterations per run; and 3) choose to repeat or not to repeat the environment each run."));
+    form.addRow(new QLabel("You may: 1) set the number of runs you require; 2) set the number of iterations per run; and 3) choose to repeat or not to repeat the environment each run."));
 
     auto *iterationsSpinBox = new QSpinBox(&dialog);
     iterationsSpinBox->setRange(2, maxIterations);
     iterationsSpinBox->setSingleStep(1);
     iterationsSpinBox->setValue(defaultIterations);
-    QString iterationsLabel = QString(
-                                  tr("How many iterations would you like each run to go for (max = %1)?")).arg(maxIterations);
+    QString iterationsLabel = QString(tr("How many iterations would you like each run to go for (max = %1)?")).arg(maxIterations);
     form.addRow(iterationsLabel, iterationsSpinBox);
 
     auto *runsSpinBox = new QSpinBox(&dialog);
@@ -1157,8 +1139,8 @@ void MainWindow::startBatchSimulation()
 
     //ARTS - if OK has been pressed take values and update the defaults, else return false without running batch
     if (dialog.exec() == QDialog::Accepted) {
-        batchIterations = iterationsSpinBox->value();
-        batchTargetRuns = runsSpinBox->value();
+        batchIterations = static_cast<quint64>(iterationsSpinBox->value());
+        batchTargetRuns = static_cast<quint64>(runsSpinBox->value());
         repeat_environment = environmentComboBox->itemData(environmentComboBox->currentIndex()) == 1;
 
         // Reset before starting batch run
@@ -1174,14 +1156,14 @@ void MainWindow::startBatchSimulation()
 
         //RJG - Sort environment so it repeats
         if (repeat_environment) {
-            CurrentEnvFile = environment_start;
-            TheSimManager->loadEnvironmentFromFile(environment_mode);
+            currentEnvironmentFile = environmentStart;
+            simulationManager->loadEnvironmentFromFile(environmentMode);
         }
 
         //And run...
         ui->LabelBatch->setText(tr("%1/%2").arg((batchRuns + 1)).arg(batchTargetRuns));
 
-        if (CurrentEnvFile == -1) {
+        if (currentEnvironmentFile == -1) {
             QMessageBox::critical(nullptr, "", "Cannot start simulation without environment");
             if (!loadEnvironmentFiles()) {
                 return;
@@ -1189,7 +1171,7 @@ void MainWindow::startBatchSimulation()
         }
 
         runSetUp();
-        int i = batchIterations;
+        int i = static_cast<int>(batchIterations);
         while (!stopFlag && i > 0) {
             while (pauseFlag) {
                 waitUntilPauseSignalIsEmitted();
@@ -1199,7 +1181,7 @@ void MainWindow::startBatchSimulation()
             report();
             qApp->processEvents();
 
-            TheSimManager->iterate(environment_mode, environment_interpolate);
+            simulationManager->iterate(environmentMode, environmentInterpolate);
             i--;
         }
 
@@ -1215,16 +1197,25 @@ void MainWindow::startBatchSimulation()
 
     //ARTS Show finish message and reset batch counters
     if ((batchRuns) == batchTargetRuns) {
-        QMessageBox::information(nullptr, tr("Batch Finished"),
-                                 tr("The batch of %1 runs with %2 iterations has finished.").arg(batchTargetRuns).arg(
-                                     batchIterations));
+        QMessageBox::information(
+            nullptr,
+            tr("Batch Finished"),
+            tr("The batch of %1 runs with %2 iterations has finished.")
+            .arg(batchTargetRuns)
+            .arg(batchIterations)
+        );
     } else {
-        QMessageBox::information(nullptr, tr("Batch Stopped"),
-                                 tr("The batch of %1 runs with %2 iterations has been stopped at batch run number %3.").arg(
-                                     batchTargetRuns).arg(batchIterations).arg(batchRuns));
+        QMessageBox::information(
+            nullptr,
+            tr("Batch Stopped"),
+            tr("The batch of %1 runs with %2 iterations has been stopped at batch run number %3.")
+            .arg(batchTargetRuns)
+            .arg(batchIterations)
+            .arg(batchRuns)
+        );
     }
 
-    globalSavePath->setText(save_path);
+    globalSavePath->setText(globalSavePathStr);
     batchRuns = 0;
     batchRunning = false;
     finishRun();
@@ -1303,31 +1294,31 @@ void MainWindow::runSetUp()
     ui->actionReseed->setEnabled(false);
     reseedButton->setEnabled(false);
 
-    if (logging
-            && species_mode == SPECIES_MODE_NONE)QMessageBox::warning(this, "Be aware",
-                                                                          "Species tracking is off, so the log files won't show species information");
+    if (logging && speciesMode == SPECIES_MODE_NONE)
+        QMessageBox::warning(this, "Be aware", "Species tracking is off, so the log files won't show species information");
 
     //Sort out globalSavePath
     QString save_path_string(globalSavePath->text());
-    if (!save_path_string.endsWith(QDir::separator()))globalSavePath->setText(save_path_string +
-                                                                                  QDir::separator());
-    QDir save_path(globalSavePath->text());
-    if (!save_path.exists()) {
-        QMessageBox::warning(nullptr, "Error!",
-                             "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is.");
+    if (!save_path_string.endsWith(QDir::separator())) globalSavePath->setText(save_path_string + QDir::separator());
+    QDir globalSavePathStr(globalSavePath->text());
+    if (!globalSavePathStr.exists()) {
+        QMessageBox::warning(
+            nullptr,
+            "Error!",
+            "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is."
+        );
         QString program_path(QCoreApplication::applicationDirPath());
         program_path.append(QDir::separator());
         globalSavePath->setText(program_path);
-        save_path.setPath(program_path);
+        globalSavePathStr.setPath(program_path);
     }
     //RJG - Set up save directory
     if (!globalSavePath->text().endsWith(QString(PRODUCTNAME) + "_output" + QDir::separator())) {
-        if (!save_path.mkpath(QString(PRODUCTNAME) + "_output" + QDir::separator())) {
+        if (!globalSavePathStr.mkpath(QString(PRODUCTNAME) + "_output" + QDir::separator())) {
             QMessageBox::warning(this, "Error", "Cant save images. Permissions issue?");
             return;
         }
-        globalSavePath->setText(save_path.absolutePath() + QDir::separator() + QString(
-                                    PRODUCTNAME) + "_output" + QDir::separator());
+        globalSavePath->setText(globalSavePathStr.absolutePath() + QDir::separator() + QString(PRODUCTNAME) + "_output" + QDir::separator());
     }
 
     timer.restart();
@@ -1391,7 +1382,6 @@ void MainWindow::closeEvent(QCloseEvent *e)
  */
 void MainWindow::report()
 {
-
     if (--nextRefresh > 0) return;
 
     nextRefresh = refreshRate;
@@ -1400,50 +1390,50 @@ void MainWindow::report()
     QTextStream sout(&s);
 
     int time = timer.elapsed();
-    float atime = (float)time / (float) refreshRate;
+    float atime = static_cast<float>(time / refreshRate);
     timer.restart();
     double t = 0;
     for (int n2 = 0; n2 < gridX; n2++)
         for (int m2 = 0; m2 < gridY; m2++)
             t += totalfit[n2][m2];
-    t /= (double)AliveCount;
-    t /= (double)settleTolerance;
+    t /= static_cast<double>(aliveCount);
+    t /= static_cast<double>(settleTolerance);
     t *= 100; //now %age
 
     QString out;
     QTextStream o(&out);
 
-    o << generation; //need to use to avoid int64 descendantss
+    o << generation; //need to use to avoid int64 descendants
     ui->LabelIteration->setText(out);
 
-    out.sprintf("%.3f", (3600000 / atime) / 1000000);
+    out.sprintf("%.2fk", static_cast<double>((3600000 / atime) / 1000));
     ui->LabelIterationsPerHour->setText(out);
 
     //now back to sprintf for convenience
-    if (CurrentEnvFile >= EnvFiles.count())
-        out.sprintf("Finished (%d)", EnvFiles.count());
+    if (currentEnvironmentFile >= environmentFiles.count())
+        out.sprintf("Finished (%d)", environmentFiles.count());
     else
-        out.sprintf("%d/%d", CurrentEnvFile + 1, EnvFiles.count());
+        out.sprintf("%d/%d", currentEnvironmentFile + 1, environmentFiles.count());
     ui->LabelEnvironment->setText(out);
 
     out.sprintf("%.2f%%", t);
     ui->LabelFitness->setText(out);
 
-    out.sprintf("%.2f", atime);
+    out.sprintf("%.2f", static_cast<double>(atime));
     ui->LabelSpeed->setText(out);
 
-    out.sprintf("%d", AliveCount);
+    out.sprintf("%d", aliveCount);
     ui->LabelCritters->setText(out);
 
     calculateSpecies();
     out = "-";
-    if (species_mode != SPECIES_MODE_NONE) {
+    if (speciesMode != SPECIES_MODE_NONE) {
         int g5 = 0, g50 = 0;
-        for (int i = 0; i < oldspecieslist.count(); i++) {
-            if (oldspecieslist[i].size > 5) g5++;
-            if (oldspecieslist[i].size > 50) g50++;
+        for (int i = 0; i < oldSpeciesList.count(); i++) {
+            if (oldSpeciesList[i].size > 5) g5++;
+            if (oldSpeciesList[i].size > 50) g50++;
         }
-        out.sprintf("%d (>5:%d >50:%d)", oldspecieslist.count(), g5, g50);
+        out.sprintf("%d (>5:%d >50:%d)", oldSpeciesList.count(), g5, g50);
     }
     ui->LabelSpecies->setText(out);
 
@@ -1473,13 +1463,15 @@ void MainWindow::report()
  */
 int MainWindow::scaleFails(int fails, float generations)
 {
-    float ffails = ((float)fails) / generations;
+    float ffails = (static_cast<float>(fails)) / generations;
 
     ffails *= 100.0; // a fudge factor no less! Well it's only visualization...
-    ffails = pow(ffails, 0.8);
+    ffails = static_cast<float>(pow(static_cast<double>(ffails), 0.8));
 
-    if (ffails > 255.0) ffails = 255.0;
-    return (int)ffails;
+    if (ffails > static_cast<float>(255.0))
+        ffails = static_cast<float>(255.0);
+
+    return static_cast<int>(ffails);
 }
 
 /*!
@@ -1517,13 +1509,13 @@ void MainWindow::refreshPopulations()
 {
     //RJG - make globalSavePath if required - this way as if user adds file name to globalSavePath, this will create a
     //subfolder with the same file name as logs.
-    QString save_path(globalSavePath->text());
-    if (!save_path.endsWith(QDir::separator()))save_path.append(QDir::separator());
+    QString globalSavePathStr(globalSavePath->text());
+    if (!globalSavePathStr.endsWith(QDir::separator()))globalSavePathStr.append(QDir::separator());
     if (batchRunning) {
-        save_path.append(QString("Images_run_%1").arg(batchRuns, 4, 10, QChar('0')));
-        save_path.append(QDir::separator());
+        globalSavePathStr.append(QString("Images_run_%1").arg(batchRuns, 4, 10, QChar('0')));
+        globalSavePathStr.append(QDir::separator());
     }
-    QDir save_dir(save_path);
+    QDir save_dir(globalSavePathStr);
 
     // 0 = Population count
     // 1 = Mean fitness
@@ -1538,8 +1530,7 @@ void MainWindow::refreshPopulations()
     // 10 = Species
 
     //ARTS - Check to see what the mode is from the Population Window QComboBox; return the data as int.
-    int currentSelectedMode = ui->populationWindowComboBox->itemData(
-                                  ui->populationWindowComboBox->currentIndex()).toInt();
+    int currentSelectedMode = ui->populationWindowComboBox->itemData(ui->populationWindowComboBox->currentIndex()).toInt();
 
     // (0) Population Count
     //if (ui->actionPopulation_Count->isChecked()||savePopulationCount->isChecked())
@@ -1549,20 +1540,19 @@ void MainWindow::refreshPopulations()
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
                 int count = 0;
-                for (int c = 0; c < slotsPerSq; c++) {
+                for (int c = 0; c < slotsPerSquare; c++) {
                     if (critters[n][m][c].age) count++;
                 }
                 bigcount += count;
                 count *= 2;
                 if (count > 255) count = 255;
-                populationImage->setPixel(n, m, count);
+                populationImage->setPixel(n, m, static_cast<uint>(count));
             }
         //if (ui->actionPopulation_Count->isChecked())populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (currentSelectedMode == 0)populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (savePopulationCount->isChecked())
             if (save_dir.mkpath("population/"))
-                populationImageColour->save(QString(save_dir.path() + "/population/EvoSim_population_it_%1.png").arg(
-                                                generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/population/EvoSim_population_it_%1.png").arg(generation, 7, 10, QChar('0')));
     }
 
     // (1) Fitness
@@ -1572,20 +1562,19 @@ void MainWindow::refreshPopulations()
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
                 int count = 0;
-                for (int c = 0; c < slotsPerSq; c++) {
+                for (int c = 0; c < slotsPerSquare; c++) {
                     if (critters[n][m][c].age) count++;
                 }
                 if (count == 0)
                     populationImage->setPixel(n, m, 0);
                 else
-                    populationImage->setPixel(n, m, (totalfit[n][m] * multiplier) / count);
+                    populationImage->setPixel(n, m, static_cast<uint>((totalfit[n][m] * static_cast<uint>(multiplier)) / static_cast<uint>(count)));
 
             }
         if (currentSelectedMode == 1)populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (saveMeanFitness->isChecked())
             if (save_dir.mkpath("fitness/"))
-                populationImageColour->save(QString(save_dir.path() + "/fitness/EvoSim_mean_fitness_it_%1.png").arg(
-                                                generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/fitness/EvoSim_mean_fitness_it_%1.png").arg(generation, 7, 10, QChar('0')));
     }
 
     // (2) Genome as colour
@@ -1634,13 +1623,13 @@ gotcounts:
 
                     //now convert first 32 bits to a colour
                     // r,g,b each counts of 11,11,10 bits
-                    auto genome = (quint32)(maxg & ((quint64)65536 * (quint64)65536 - (quint64)1));
+                    auto genome = static_cast<quint32>((maxg & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))));
                     quint32 b = bitcounts[genome & 2047] * 23;
                     genome /= 2048;
                     quint32 g = bitcounts[genome & 2047] * 23;
                     genome /= 2048;
                     quint32 r = bitcounts[genome] * 25;
-                    populationImageColour->setPixel(n, m, qRgb(r, g, b));
+                    populationImageColour->setPixel(n, m, qRgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b)));
                 }
 
             }
@@ -1648,8 +1637,7 @@ gotcounts:
         if (currentSelectedMode == 2) populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("coding/"))
-                populationImageColour->save(QString(save_dir.path() + "/coding/EvoSim_coding_genome_it_%1.png").arg(
-                                                generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/coding/EvoSim_coding_genome_it_%1.png").arg(generation, 7, 10, QChar('0')));
     }
 
     // (3) Non-coding Genome
@@ -1699,21 +1687,20 @@ gotcounts2:
 
                     //now convert second 32 bits to a colour
                     // r,g,b each counts of 11,11,10 bits
-                    auto genome = (quint32)(maxg / ((quint64)65536 * (quint64)65536));
+                    auto genome = static_cast<quint32>((maxg / (static_cast<quint64>(65536) * static_cast<quint64>(65536))));
                     quint32 b = bitcounts[genome & 2047] * 23;
                     genome /= 2048;
                     quint32 g = bitcounts[genome & 2047] * 23;
                     genome /= 2048;
                     quint32 r = bitcounts[genome] * 25;
-                    populationImageColour->setPixel(n, m, qRgb(r, g, b));
+                    populationImageColour->setPixel(n, m, qRgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b)));
                 }
             }
 
         if (currentSelectedMode == 3)populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveNonCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("non_coding/"))
-                populationImageColour->save(QString(save_dir.path() + "/non_coding/EvoSim_non_coding_it_%1.png").arg(
-                                                generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/non_coding/EvoSim_non_coding_it_%1.png").arg(generation, 7, 10, QChar('0')));
     }
 
     // (4) Gene Frequencies
@@ -1725,7 +1712,7 @@ gotcounts2:
                 int gen0tot = 0;
                 int gen1tot = 0;
                 int gen2tot = 0;
-                for (int c = 0; c < slotsPerSq; c++) {
+                for (int c = 0; c < slotsPerSquare; c++) {
                     if (critters[n][m][c].age) {
                         count++;
                         if (critters[n][m][c].genome & 1) gen0tot++;
@@ -1735,18 +1722,17 @@ gotcounts2:
                 }
                 if (count == 0) populationImageColour->setPixel(n, m, qRgb(0, 0, 0));
                 else {
-                    quint32 r = gen0tot * 256 / count;
-                    quint32 g = gen1tot * 256 / count;
-                    quint32 b = gen2tot * 256 / count;
-                    populationImageColour->setPixel(n, m, qRgb(r, g, b));
+                    quint32 r = static_cast<quint32>(gen0tot * 256 / count);
+                    quint32 g = static_cast<quint32>(gen1tot * 256 / count);
+                    quint32 b = static_cast<quint32>(gen2tot * 256 / count);
+                    populationImageColour->setPixel(n, m, qRgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b)));
                 }
             }
 
         if (currentSelectedMode == 4)populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveGeneFrequencies->isChecked())
             if (save_dir.mkpath("gene_freq/"))
-                populationImageColour->save(QString(save_dir.path() + "/gene_freq/EvoSim_gene_freq_it_%1.png").arg(
-                                                generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/gene_freq/EvoSim_gene_freq_it_%1.png").arg(generation, 7, 10, QChar('0')));
     }
 
     // (5) Breed Attempts
@@ -1757,7 +1743,7 @@ gotcounts2:
             for (int m = 0; m < gridY; m++) {
                 int value = (breedattempts[n][m] * 10) / refreshRate;
                 if (value > 255) value = 255;
-                populationImage->setPixel(n, m, value);
+                populationImage->setPixel(n, m, static_cast<uint>(value));
             }
         populationItem->setPixmap(QPixmap::fromImage(*populationImage));
     }
@@ -1771,7 +1757,7 @@ gotcounts2:
                 if (breedattempts[n][m] == 0) populationImage->setPixel(n, m, 0);
                 else {
                     int value = (breedfails[n][m] * 255) / breedattempts[n][m];
-                    populationImage->setPixel(n, m, value);
+                    populationImage->setPixel(n, m, static_cast<uint>(value));
                 }
             }
         populationItem->setPixmap(QPixmap::fromImage(*populationImage));
@@ -1784,7 +1770,7 @@ gotcounts2:
             for (int m = 0; m < gridY; m++) {
                 int value = (settles[n][m] * 10) / refreshRate;
                 if (value > 255) value = 255;
-                populationImage->setPixel(n, m, value);
+                populationImage->setPixel(n, m, static_cast<uint>(value));
             }
 
         if (currentSelectedMode == 7)populationItem->setPixmap(QPixmap::fromImage(*populationImage));
@@ -1797,24 +1783,8 @@ gotcounts2:
     // (8) Breed/Settle Fails
     //RJG - this now combines breed fails (red) and settle fails (green)
     if (currentSelectedMode == 8 || saveFailsSettles->isChecked()) {
-        //work out max and ratios
-        /*int maxbf=1;
-        int maxsf=1;
-        for (int n=0; n<gridX; n++)
-        for (int m=0; m<gridY; m++)
-        {
-            if (settlefails[n][m]>maxsf) maxsf=settlefails[n][m];
-            if (breedfails[n][m]>maxsf) maxbf=breedfails[n][m];
-        }
-        float bf_mult=255.0 / (float)maxbf;
-        float sf_mult=255.0 / (float)maxsf;
-        qDebug()<<bf_mult<<sf_mult;
-        bf_mult=1.0;
-        sf_mult=1.0;
-        */
-
         //work out average per generation
-        float generations = generation - lastReport;
+        float generations = static_cast<float>(generation - static_cast<quint64>(lastReport));
 
 
         //Make image
@@ -1828,8 +1798,7 @@ gotcounts2:
         if (currentSelectedMode == 8)populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveFailsSettles->isChecked())
             if (save_dir.mkpath("breed_settle_fails/"))
-                populationImageColour->save(QString(save_dir.path() +
-                                                    "/breed_settle_fails/EvoSim_breed_settle_fails_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/breed_settle_fails/EvoSim_breed_settle_fails_it_%1.png").arg(generation, 7, 10, QChar('0')));
 
     }
 
@@ -1842,7 +1811,7 @@ gotcounts2:
                 else {
                     int value = (breedfails[n][m]);
                     if (value > 255) value = 255;
-                    populationImage->setPixel(n, m, value);
+                    populationImage->setPixel(n, m, static_cast<uint>(value));
                 }
             }
         populationItem->setPixmap(QPixmap::fromImage(*populationImage));
@@ -1856,7 +1825,7 @@ gotcounts2:
                 if (totalfit[n][m] == 0) populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else {
                     quint64 thisspecies = 0;
-                    for (int c = 0; c < slotsPerSq; c++) {
+                    for (int c = 0; c < slotsPerSquare; c++) {
                         if (critters[n][m][c].age > 0) {
                             thisspecies = critters[n][m][c].speciesID;
                             break;
@@ -1870,8 +1839,7 @@ gotcounts2:
         if (currentSelectedMode == 10)populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveSpecies->isChecked())
             if (save_dir.mkpath("species/"))
-                populationImageColour->save(QString(save_dir.path() + "/species/EvoSim_species_it_%1.png").arg(
-                                                generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/species/EvoSim_species_it_%1.png").arg(generation, 7, 10, QChar('0')));
 
     }
 
@@ -1885,13 +1853,13 @@ gotcounts2:
  */
 void MainWindow::refreshEnvironment()
 {
-    QString save_path(globalSavePath->text());
-    if (!save_path.endsWith(QDir::separator()))save_path.append(QDir::separator());
+    QString globalSavePathStr(globalSavePath->text());
+    if (!globalSavePathStr.endsWith(QDir::separator()))globalSavePathStr.append(QDir::separator());
     if (batchRunning) {
-        save_path.append(QString("Images_run_%1").arg(batchRuns, 4, 10, QChar('0')));
-        save_path.append(QDir::separator());
+        globalSavePathStr.append(QString("Images_run_%1").arg(batchRuns, 4, 10, QChar('0')));
+        globalSavePathStr.append(QDir::separator());
     }
-    QDir save_dir(save_path);
+    QDir save_dir(globalSavePathStr);
 
     for (int n = 0; n < gridX; n++)
         for (int m = 0; m < gridY; m++)
@@ -1900,8 +1868,7 @@ void MainWindow::refreshEnvironment()
     environmentItem->setPixmap(QPixmap::fromImage(*environmentImage));
     if (saveEnvironment->isChecked())
         if (save_dir.mkpath("environment/"))
-            environmentImage->save(QString(save_dir.path() + "/environment/EvoSim_environment_it_%1.png").arg(
-                                       generation, 7, 10, QChar('0')));
+            environmentImage->save(QString(save_dir.path() + "/environment/EvoSim_environment_it_%1.png").arg(generation, 7, 10, QChar('0')));
 }
 
 /*!
@@ -1912,7 +1879,6 @@ void MainWindow::refreshEnvironment()
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
     Q_UNUSED(e);
-
     resize();
 }
 
@@ -1929,13 +1895,13 @@ void MainWindow::resize()
 
 /*!
  * \brief MainWindow::guiCheckboxStateChanged
- * \param dont_update
+ * \param dontUpdate
  *
  * Sets the gui don't update flag on gui checkbox change.
  */
-void MainWindow::guiCheckboxStateChanged(bool dont_update)
+void MainWindow::guiCheckboxStateChanged(bool dontUpdate)
 {
-    if (dont_update
+    if (dontUpdate
             && QMessageBox::question(nullptr, "Heads up",
                                      "If you don't update the GUI, images will also not be saved. OK?",
                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::No) {
@@ -1943,7 +1909,7 @@ void MainWindow::guiCheckboxStateChanged(bool dont_update)
         return;
     }
 
-    gui = dont_update;
+    gui = dontUpdate;
 }
 
 /*!
@@ -2005,18 +1971,26 @@ void MainWindow::writeRunData()
 void MainWindow::environmentModeChanged(int changeEnvironmentMode, bool updateGUI)
 {
     int new_environment_mode = ENV_MODE_STATIC;
-    if (changeEnvironmentMode == ENV_MODE_ONCE) new_environment_mode = ENV_MODE_ONCE;
-    if (changeEnvironmentMode == ENV_MODE_LOOP) new_environment_mode = ENV_MODE_LOOP;
-    if (changeEnvironmentMode == ENV_MODE_BOUNCE) new_environment_mode = ENV_MODE_BOUNCE;
+
+    if (changeEnvironmentMode == ENV_MODE_ONCE)
+        new_environment_mode = ENV_MODE_ONCE;
+    if (changeEnvironmentMode == ENV_MODE_LOOP)
+        new_environment_mode = ENV_MODE_LOOP;
+    if (changeEnvironmentMode == ENV_MODE_BOUNCE)
+        new_environment_mode = ENV_MODE_BOUNCE;
 
     if (updateGUI) {
-        if (changeEnvironmentMode == ENV_MODE_STATIC)environmentModeStaticButton->setChecked(true);
-        if (changeEnvironmentMode == ENV_MODE_ONCE)environmentModeOnceButton->setChecked(true);
-        if (changeEnvironmentMode == ENV_MODE_LOOP)environmentModeLoopButton->setChecked(true);
-        if (changeEnvironmentMode == ENV_MODE_BOUNCE)environmentModeBounceButton->setChecked(true);
+        if (changeEnvironmentMode == ENV_MODE_STATIC)
+            environmentModeStaticButton->setChecked(true);
+        if (changeEnvironmentMode == ENV_MODE_ONCE)
+            environmentModeOnceButton->setChecked(true);
+        if (changeEnvironmentMode == ENV_MODE_LOOP)
+            environmentModeLoopButton->setChecked(true);
+        if (changeEnvironmentMode == ENV_MODE_BOUNCE)
+            environmentModeBounceButton->setChecked(true);
     }
 
-    environment_mode = new_environment_mode;
+    environmentMode = static_cast<quint8>(new_environment_mode);
 }
 
 /*!
@@ -2027,27 +2001,29 @@ void MainWindow::environmentModeChanged(int changeEnvironmentMode, bool updateGU
  */
 void MainWindow::speciesModeChanged(int changeSpeciesMode, bool updateGUI)
 {
-    int new_species_mode = SPECIES_MODE_NONE;
-    if (changeSpeciesMode == SPECIES_MODE_PHYLOGENY) new_species_mode = SPECIES_MODE_PHYLOGENY;
-    if (changeSpeciesMode == SPECIES_MODE_PHYLOGENY_AND_METRICS) new_species_mode =
-            SPECIES_MODE_PHYLOGENY_AND_METRICS;
-    if (changeSpeciesMode == SPECIES_MODE_BASIC) new_species_mode = SPECIES_MODE_BASIC;
+    int newSpeciesMode = SPECIES_MODE_NONE;
+
+    if (changeSpeciesMode == SPECIES_MODE_PHYLOGENY)
+        newSpeciesMode = SPECIES_MODE_PHYLOGENY;
+    if (changeSpeciesMode == SPECIES_MODE_PHYLOGENY_AND_METRICS)
+        newSpeciesMode = SPECIES_MODE_PHYLOGENY_AND_METRICS;
+    if (changeSpeciesMode == SPECIES_MODE_BASIC)
+        newSpeciesMode = SPECIES_MODE_BASIC;
 
     //some changes not allowed
     if (generation != 0) {
         //already running. Can switch tracking off - but not on
         //detailed tracking can be switched on/off at any point
-        if (species_mode == SPECIES_MODE_NONE) {
-            if (new_species_mode != SPECIES_MODE_NONE) {
+        if (speciesMode == SPECIES_MODE_NONE) {
+            if (newSpeciesMode != SPECIES_MODE_NONE) {
                 QMessageBox::warning(this, "Error", "Turning on species logging is not allowed mid-simulation");
                 phylogenyOffButton->setChecked(true);
                 return;
             }
         }
 
-        if (species_mode == SPECIES_MODE_BASIC) {
-            if (new_species_mode == SPECIES_MODE_PHYLOGENY
-                    || new_species_mode == SPECIES_MODE_PHYLOGENY_AND_METRICS) {
+        if (speciesMode == SPECIES_MODE_BASIC) {
+            if (newSpeciesMode == SPECIES_MODE_PHYLOGENY || newSpeciesMode == SPECIES_MODE_PHYLOGENY_AND_METRICS) {
                 QMessageBox::warning(this, "Error", "Turning on phylogeny tracking is not allowed mid-simulation");
                 basicPhylogenyButton->setChecked(true);
                 return;
@@ -2057,14 +2033,17 @@ void MainWindow::speciesModeChanged(int changeSpeciesMode, bool updateGUI)
     }
 
     if (updateGUI) {
-        if (changeSpeciesMode == SPECIES_MODE_BASIC)basicPhylogenyButton->setChecked(true);
+        if (changeSpeciesMode == SPECIES_MODE_BASIC)
+            basicPhylogenyButton->setChecked(true);
         if (changeSpeciesMode == SPECIES_MODE_PHYLOGENY_AND_METRICS)
             phylogenyAndMetricsButton->setChecked(true);
-        if (changeSpeciesMode == SPECIES_MODE_PHYLOGENY)phylogenyButton->setChecked(true);
-        if (changeSpeciesMode == SPECIES_MODE_NONE)phylogenyOffButton->setChecked(true);
+        if (changeSpeciesMode == SPECIES_MODE_PHYLOGENY)
+            phylogenyButton->setChecked(true);
+        if (changeSpeciesMode == SPECIES_MODE_NONE)
+            phylogenyOffButton->setChecked(true);
     }
 
-    species_mode = new_species_mode;
+    speciesMode = static_cast<quint8>(newSpeciesMode);
 }
 
 /*!
@@ -2077,7 +2056,7 @@ void MainWindow::speciesModeChanged(int changeSpeciesMode, bool updateGUI)
 void MainWindow::resetSquare(int n, int m)
 {
     //grid expanded - make sure everything is zeroed in new slots
-    for (int c = 0; c < slotsPerSq; c++) critters[n][m][c].age = 0;
+    for (int c = 0; c < slotsPerSquare; c++) critters[n][m][c].age = 0;
 
     totalfit[n][m] = 0;
 
@@ -2115,7 +2094,7 @@ void MainWindow::redoImages(int oldRows, int oldColumns)
     //check that the maxused's are in the new range
     for (int n = 0; n < gridX; n++)
         for (int m = 0; m < gridY; m++)
-            if (maxused[n][m] >= slotsPerSq) maxused[n][m] = slotsPerSq - 1;
+            if (maxused[n][m] >= slotsPerSquare) maxused[n][m] = slotsPerSquare - 1;
 
     //If either rows or cols are bigger - make sure age is set to 0 in all critters in new bit!
     if (gridX > oldRows) {
@@ -2166,10 +2145,12 @@ void MainWindow::writePeakCounts()
 
     QString peaks(handleAnalysisTool(ANALYSIS_TOOL_CODE_COUNT_PEAKS));
     //Count peaks returns empty string if error.
-    if (peaks.length() < 5)return;
+    if (peaks.length() < 5)
+        return;
 
     QString count_peaks_file(globalSavePath->text());
-    if (!count_peaks_file.endsWith(QDir::separator()))count_peaks_file.append(QDir::separator());
+    if (!count_peaks_file.endsWith(QDir::separator()))
+        count_peaks_file.append(QDir::separator());
     count_peaks_file.append(QString(PRODUCTNAME) + "_count_peaks.txt");
     QFile outputfile(count_peaks_file);
     outputfile.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -2202,7 +2183,9 @@ bool MainWindow::loadEnvironmentFiles()
 
     if (files.length() == 0) return false;
 
-    bool notsquare = false, different_size = false;
+    bool notsquare = false;
+    bool different_size = false;
+
     for (int i = 0; i < files.length(); i++) {
         QImage LoadImage(files[i]);
         int x = LoadImage.width();
@@ -2210,23 +2193,26 @@ bool MainWindow::loadEnvironmentFiles()
         if (x != y)notsquare = true;
         if (x != 100 || y != 100)different_size = true;
     }
-    if (notsquare
-            || different_size)QMessageBox::warning(this, "FYI",
-                                                       "For speed REvoSim currently has static arrays for the environment, which limits out of the box functionality to 100 x 100 square environments. "
-                                                       "It looks like some of your Environment images don't meet this requirement. Anything smaller than 100 x 100 will be stretched (irrespective of aspect ratio) to 100x100. Anything bigger, and we'll use the top left corner. Should you wish to use a different size environment, please email RJG or MDS.");
+    if (notsquare || different_size)
+        QMessageBox::warning(
+            this,
+            "FYI",
+            "For speed REvoSim currently has static arrays for the environment, which limits out of the box functionality to 100 x 100 square environments. "
+            "It looks like some of your Environment images don't meet this requirement. Anything smaller than 100 x 100 will be stretched (irrespective of aspect ratio) to 100x100. Anything bigger, and we'll use the top left corner. Should you wish to use a different size environment, please email RJG or MDS."
+        );
 
-    EnvFiles = files;
-    CurrentEnvFile = 0;
-    TheSimManager->loadEnvironmentFromFile(environment_mode);
+    environmentFiles = files;
+    currentEnvironmentFile = 0;
+    simulationManager->loadEnvironmentFromFile(environmentMode);
     refreshEnvironment();
 
     //RJG - Reset for this new environment
-    TheSimManager->SetupRun();
+    simulationManager->setupRun();
 
     //ARTS - Update the information bar
-    QString environment_scene_value;
-    environment_scene_value.sprintf("%d/%d", CurrentEnvFile + 1, EnvFiles.count());
-    ui->LabelEnvironment->setText(environment_scene_value);
+    QString environmentSceneValue;
+    environmentSceneValue.sprintf("%d/%d", currentEnvironmentFile + 1, environmentFiles.count());
+    ui->LabelEnvironment->setText(environmentSceneValue);
 
     return true;
 }
@@ -2243,7 +2229,8 @@ void MainWindow::saveSimulation()
                            this,
                            "Save file",
                            "",
-                           "REvoSim files (*.revosim)");
+                           "REvoSim files (*.revosim)"
+                       );
 
     if (filename.length() == 0) return;
 
@@ -2254,13 +2241,13 @@ void MainWindow::saveSimulation()
     QDataStream out(&outfile);
 
     out << QString("REvoSim Format File");
-    out << (int)FILEVERSION;
+    out << static_cast<int>(FILEVERSION);
 
     //Ints
     out << gridX;
     out << gridY;
     out << settleTolerance;
-    out << slotsPerSq;
+    out << slotsPerSquare;
     out << startAge;
     out << dispersal;
     out << food;
@@ -2269,17 +2256,17 @@ void MainWindow::saveSimulation()
     out << maxDiff;
     out << breedThreshold;
     out << target;
-    out << envchangerate;
-    out << environment_mode;
+    out << environmentChangeRate;
+    out << environmentMode;
     out << refreshRate;
     out << speciesSamples;
     out << speciesSensitivity;
     out << timeSliceConnect;
-    out << minspeciessize;
-    out << species_mode;
+    out << minSpeciesSize;
+    out << speciesMode;
 
     //Bools
-    out << recalcFitness;
+    out << recalculateFitness;
     out << toroidal;
     out << nonspatial;
     out << breeddiff;
@@ -2289,7 +2276,7 @@ void MainWindow::saveSimulation()
     out << asexual;
     out << logging;
     out << gui;
-    out << environment_interpolate;
+    out << environmentInterpolate;
     out << fitnessLoggingToFile;
     out << autowriteLogCheckbox->isChecked();
     out << savePopulationCount->isChecked();
@@ -2311,16 +2298,16 @@ void MainWindow::saveSimulation()
     out << vmode;
 
     //file list
-    out << EnvFiles.count();
-    for (int i = 0; i < EnvFiles.count(); i++)
-        out << EnvFiles[i];
+    out << environmentFiles.count();
+    for (int i = 0; i < environmentFiles.count(); i++)
+        out << environmentFiles[i];
 
     //now the big arrays
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++)
-            for (int k = 0; k < slotsPerSq; k++) {
+            for (int k = 0; k < slotsPerSquare; k++) {
                 if ((critters[i][j][k]).age == 0) //its dead
-                    out << (int)0;
+                    out << static_cast<int>(0);
                 else {
                     out << critters[i][j][k].age;
                     out << critters[i][j][k].genome;
@@ -2366,7 +2353,7 @@ void MainWindow::saveSimulation()
     out << ui->actionGenomeComparison->isChecked();
 
     //interpolate environment stuff
-    out << environment_interpolate;
+    out << environmentInterpolate;
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
             out << environmentlast[i][j][0];
@@ -2385,14 +2372,14 @@ void MainWindow::saveSimulation()
     out << timeSliceConnect;
 
     //now the species archive
-    out << oldspecieslist.count();
-    for (int j = 0; j < oldspecieslist.count(); j++) {
-        out << oldspecieslist[j].ID;
-        out << oldspecieslist[j].type;
-        out << oldspecieslist[j].originTime;
-        out << oldspecieslist[j].parent;
-        out << oldspecieslist[j].size;
-        out << oldspecieslist[j].internalID;
+    out << oldSpeciesList.count();
+    for (int j = 0; j < oldSpeciesList.count(); j++) {
+        out << oldSpeciesList[j].ID;
+        out << oldSpeciesList[j].type;
+        out << oldSpeciesList[j].originTime;
+        out << oldSpeciesList[j].parent;
+        out << oldSpeciesList[j].size;
+        out << oldSpeciesList[j].internalID;
     }
 
     out << archivedspecieslists.count();
@@ -2430,7 +2417,8 @@ void MainWindow::loadSimulation()
                            this,
                            "Save file",
                            "",
-                           "REvoSim files (*.revosim)");
+                           "REvoSim files (*.revosim)"
+                       );
 
     if (filename.length() == 0) return;
 
@@ -2459,7 +2447,7 @@ void MainWindow::loadSimulation()
     in >> gridX;
     in >> gridY;
     in >> settleTolerance;
-    in >> slotsPerSq;
+    in >> slotsPerSquare;
     in >> startAge;
     in >> dispersal;
     in >> food;
@@ -2468,17 +2456,17 @@ void MainWindow::loadSimulation()
     in >> maxDiff;
     in >> breedThreshold;
     in >> target;
-    in >> envchangerate;
-    in >> environment_mode;
+    in >> environmentChangeRate;
+    in >> environmentMode;
     in >> refreshRate;
     in >> speciesSamples;
     in >> speciesSensitivity;
     in >> timeSliceConnect;
-    in >> minspeciessize;
-    in >> species_mode;
+    in >> minSpeciesSize;
+    in >> speciesMode;
 
     //Bools
-    in >> recalcFitness;
+    in >> recalculateFitness;
     in >> toroidal;
     in >> nonspatial;
     in >> breeddiff;
@@ -2488,7 +2476,7 @@ void MainWindow::loadSimulation()
     in >> asexual;
     in >> logging;
     in >> gui;
-    in >> environment_interpolate;
+    in >> environmentInterpolate;
     in >> fitnessLoggingToFile;
     bool in_bool;
     in >> in_bool;
@@ -2521,12 +2509,16 @@ void MainWindow::loadSimulation()
     // 1 = Once
     // 2 = Looped (default)
     // 3 = Bounce
-    environment_mode = ENV_MODE_LOOP;
-    in >> environment_mode;
-    if (environment_mode == 0) environmentModeStaticButton->setChecked(true);
-    if (environment_mode == 1) environmentModeOnceButton->setChecked(true);
-    if (environment_mode == 2) environmentModeLoopButton->setChecked(true);
-    if (environment_mode == 3) environmentModeBounceButton->setChecked(true);
+    environmentMode = ENV_MODE_LOOP;
+    in >> environmentMode;
+    if (environmentMode == 0)
+        environmentModeStaticButton->setChecked(true);
+    if (environmentMode == 1)
+        environmentModeOnceButton->setChecked(true);
+    if (environmentMode == 2)
+        environmentModeLoopButton->setChecked(true);
+    if (environmentMode == 3)
+        environmentModeBounceButton->setChecked(true);
 
     // 0 = Population count
     // 1 = Mean fitnessFails (R-Breed, G=Settle)
@@ -2550,18 +2542,18 @@ void MainWindow::loadSimulation()
 
     //file list
     in >> count;
-    EnvFiles.clear();
+    environmentFiles.clear();
 
     for (int i = 0; i < count; i++) {
         QString t;
         in >> t;
-        EnvFiles.append(t);
+        environmentFiles.append(t);
     }
 
     //now the big arrays
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++)
-            for (int k = 0; k < slotsPerSq; k++) {
+            for (int k = 0; k < slotsPerSquare; k++) {
                 in >> critters[i][j][k].age;
                 if (critters[i][j][k].age > 0) {
                     in >> critters[i][j][k].genome;
@@ -2613,8 +2605,8 @@ void MainWindow::loadSimulation()
     ui->actionGenomeComparison->setChecked(btemp);
 
     //interpolate environment stuff
-    environment_interpolate = true;
-    in >> environment_interpolate;
+    environmentInterpolate = true;
+    in >> environmentInterpolate;
 
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
@@ -2636,10 +2628,10 @@ void MainWindow::loadSimulation()
 
     //now the species archive
     archivedspecieslists.clear();
-    oldspecieslist.clear();
+    oldSpeciesList.clear();
 
     int temp;
-    in >> temp; //oldspecieslist.count();
+    in >> temp; //oldSpeciesList.count();
     for (int j = 0; j < temp; j++) {
         Species s;
         in >> s.ID;
@@ -2648,7 +2640,7 @@ void MainWindow::loadSimulation()
         in >> s.parent;
         in >> s.size;
         in >> s.internalID;
-        oldspecieslist.append(s);
+        oldSpeciesList.append(s);
     }
 
     in >> temp; //archivedspecieslists.count();
@@ -2700,7 +2692,7 @@ bool MainWindow::genomeComparisonAdd()
 
     //---- Get genome colour
     if (totalfit[x][y] != 0) {
-        for (int c = 0; c < slotsPerSq; c++) {
+        for (int c = 0; c < slotsPerSquare; c++) {
             if (critters[x][y][c].age > 0) {
                 genoneComparison->addGenomeCritter(critters[x][y][c], environment[x][y]);
                 return true;
@@ -2715,13 +2707,15 @@ bool MainWindow::genomeComparisonAdd()
  */
 void MainWindow::calculateSpecies()
 {
-    if (species_mode == SPECIES_MODE_NONE) return; //do nothing!
+    if (speciesMode == SPECIES_MODE_NONE)
+        return; //do nothing!
+
     if (generation != lastSpeciesCalc) {
-        delete a;  //replace old analyser object with new
-        a = new Analyser;
+        delete analyser;  //replace old analyser object with new
+        analyser = new Analyser;
 
         //New species analyser
-        a->groupsGenealogicalTracker();
+        analyser->groupsGenealogicalTracker();
 
         //Makre sure this is updated
         lastSpeciesCalc = generation;
@@ -2737,12 +2731,14 @@ void MainWindow::writeLog()
 {
     //RJG - write main ongoing log
     if (logging) {
-        SpeciesLoggingFile = globalSavePath->text();
-        if (!SpeciesLoggingFile.endsWith(QDir::separator()))SpeciesLoggingFile.append(QDir::separator());
-        SpeciesLoggingFile.append(QString(PRODUCTNAME) + "_log");
-        if (batchRunning)SpeciesLoggingFile.append(QString("_run_%1").arg(batchRuns, 4, 10, QChar('0')));
-        SpeciesLoggingFile.append(".txt");
-        QFile outputfile(SpeciesLoggingFile);
+        speciesLoggingFile = globalSavePath->text();
+        if (!speciesLoggingFile.endsWith(QDir::separator()))
+            speciesLoggingFile.append(QDir::separator());
+        speciesLoggingFile.append(QString(PRODUCTNAME) + "_log");
+        if (batchRunning)
+            speciesLoggingFile.append(QString("_run_%1").arg(batchRuns, 4, 10, QChar('0')));
+        speciesLoggingFile.append(".txt");
+        QFile outputfile(speciesLoggingFile);
 
         if (generation == 0) {
             outputfile.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -2786,26 +2782,26 @@ void MainWindow::writeLog()
                 gridBreedEntries += breedattempts[i][j];
                 gridBreedFails += breedfails[i][j];
                 //----RJG: Manually count number alive thanks to maxused descendants
-                for  (int k = 0; k < slotsPerSq; k++)if (critters[i][j][k].fitness)gridNumberAlive++;
+                for  (int k = 0; k < slotsPerSquare; k++)if (critters[i][j][k].fitness)gridNumberAlive++;
             }
         double meanFitness = double(gridTotalFitness) / double(gridNumberAlive);
 
         out << "[P] " << gridNumberAlive << "," << meanFitness << "," << gridBreedEntries << "," <<
-            gridBreedFails << "," << oldspecieslist.count() << "\n";
+            gridBreedFails << "," << oldSpeciesList.count() << "\n";
 
         //----RJG: And species details for each iteration
-        for (int i = 0; i < oldspecieslist.count(); i++) {
+        for (int i = 0; i < oldSpeciesList.count(); i++) {
             //----RJG: Unable to exclude species without descendants, for obvious reasons.
-            if (quint64(oldspecieslist[i].size) > minspeciessize) {
+            if (quint64(oldSpeciesList[i].size) > minSpeciesSize) {
                 out << "[S] ";
-                out << (oldspecieslist[i].ID) << ",";
-                out << oldspecieslist[i].originTime << ",";
-                out << oldspecieslist[i].parent << ",";
-                out << oldspecieslist[i].size << ",";
+                out << (oldSpeciesList[i].ID) << ",";
+                out << oldSpeciesList[i].originTime << ",";
+                out << oldSpeciesList[i].parent << ",";
+                out << oldSpeciesList[i].size << ",";
                 //---- RJG - output binary genome if needed
-                for (int j = 0; j < 63; j++)if (tweakers64[63 - j] & oldspecieslist[i].type) out << "1";
+                for (int j = 0; j < 63; j++)if (tweakers64[63 - j] & oldSpeciesList[i].type) out << "1";
                     else out << "0";
-                if (tweakers64[0] & oldspecieslist[i].type) out << "1";
+                if (tweakers64[0] & oldSpeciesList[i].type) out << "1";
                 else out << "0";
                 out << "\n";
             }
@@ -2865,9 +2861,9 @@ void MainWindow::on_actionLoad_Random_Numbers_triggered()
 
     rfile.seek(seedoffset);
 
-    int i = rfile.read((char *)randoms, 65536);
-    if (i != 65536) QMessageBox::warning(this, "Oops",
-                                             "Failed to read 65536 bytes from file - random numbers may be compromised - try again or restart program");
+    qint64 i = rfile.read(reinterpret_cast<char *>(randoms), static_cast<qint64>(65536));
+    if (i != 65536)
+        QMessageBox::warning(this, "Oops", "Failed to read 65536 bytes from file - random numbers may be compromised - try again or restart program");
     else QMessageBox::information(this, "Success", "New random numbers read successfully");
 }
 
@@ -2901,15 +2897,14 @@ QString MainWindow::handleAnalysisTool(int code)
     }
 
     case ANALYSIS_TOOL_CODE_MAKE_NEWICK:
-        if (phylogenyButton->isChecked()
-                || phylogenyAndMetricsButton->isChecked())OutputString = a.makeNewick(rootspecies,
-                                                                                          minspeciessize, allowExcludeWithDescendants);
+        if (phylogenyButton->isChecked() || phylogenyAndMetricsButton->isChecked())
+            OutputString = a.makeNewick(rootspecies, minSpeciesSize, allowExcludeWithDescendants);
         else OutputString = "Species tracking is not enabled.";
         break;
 
     case ANALYSIS_TOOL_CODE_WRITE_DATA:
-        if (phylogenyAndMetricsButton->isChecked())OutputString = a.writeData(rootspecies, minspeciessize,
-                                                                                  allowExcludeWithDescendants);
+        if (phylogenyAndMetricsButton->isChecked())
+            OutputString = a.writeData(rootspecies, minSpeciesSize, allowExcludeWithDescendants);
         else OutputString = "Species tracking is not enabled, or is set to phylogeny only.";
         break;
 
@@ -2918,10 +2913,6 @@ QString MainWindow::handleAnalysisTool(int code)
         return QString("Error, No handler for analysis tool");
 
     }
-
-    //write result to screen
-    //ui->plainTextEdit->clear();
-    //ui->plainTextEdit->appendPlainText(OutputString);
 
     return OutputString;
 }
@@ -2948,17 +2939,17 @@ QString MainWindow::printSettings()
     settings_out << "-- Mutate: " << mutate << "\n";
     settings_out << "-- Max diff to breed: " << maxDiff << "\n";
     settings_out << "-- Breed threshold: " << breedThreshold << "\n";
-    settings_out << "-- Slots per square: " << slotsPerSq << "\n";
+    settings_out << "-- Slots per square: " << slotsPerSquare << "\n";
     settings_out << "-- Fitness target: " << target << "\n";
-    settings_out << "-- Environmental change rate: " << envchangerate << "\n";
-    settings_out << "-- Minimum species size:" << minspeciessize << "\n";
-    settings_out << "-- Environment mode:" << environment_mode << "\n";
-    settings_out << "-- Speices mode:" << species_mode << "\n";
+    settings_out << "-- Environmental change rate: " << environmentChangeRate << "\n";
+    settings_out << "-- Minimum species size:" << minSpeciesSize << "\n";
+    settings_out << "-- Environment mode:" << environmentMode << "\n";
+    settings_out << "-- Speices mode:" << speciesMode << "\n";
 
     settings_out << "\n- Bools:\n";
-    settings_out << "-- Recalculate fitness: " << recalcFitness << "\n";
+    settings_out << "-- Recalculate fitness: " << recalculateFitness << "\n";
     settings_out << "-- Toroidal environment: " << toroidal << "\n";
-    settings_out << "-- Interpolate environment: " << environment_interpolate << "\n";
+    settings_out << "-- Interpolate environment: " << environmentInterpolate << "\n";
     settings_out << "-- Nonspatial setling: " << nonspatial << "\n";
     settings_out << "-- Enforce max diff to breed:" << breeddiff << "\n";
     settings_out << "-- Only breed within species:" << breedspecies << "\n";
@@ -2978,9 +2969,9 @@ QString MainWindow::printSettings()
  */
 void MainWindow::loadSettings()
 {
-    QString settings_filename = QFileDialog::getOpenFileName(this, tr("Open File"), globalSavePath->text(),
-                                                             "XML files (*.xml)");
-    if (settings_filename.length() < 3) return;
+    QString settings_filename = QFileDialog::getOpenFileName(this, tr("Open File"), globalSavePath->text(), "XML files (*.xml)");
+    if (settings_filename.length() < 3)
+        return;
     QFile settings_file(settings_filename);
     if (!settings_file.open(QIODevice::ReadOnly)) {
         setStatusBarText("Error opening file.");
@@ -2995,86 +2986,105 @@ void MainWindow::loadSettings()
         QXmlStreamReader::TokenType token = settings_file_in.readNext();
         /* If token is just StartDocument, we'll go to next.*/
 
-        if (token == QXmlStreamReader::StartDocument)continue;
+        if (token == QXmlStreamReader::StartDocument)
+            continue;
         if (token == QXmlStreamReader::StartElement) {
             //Ints
-            if (settings_file_in.name() == "revosim")continue;
-            if (settings_file_in.name() == "gridX")gridX = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "gridY")gridY = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "settleTolerance")settleTolerance =
-                    settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "slotsPerSq")slotsPerSq = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "startAge")startAge = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "dispersal")dispersal = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "food")food = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "breedCost")breedCost = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "mutate")mutate = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "maxDiff")maxDiff = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "breedThreshold")breedThreshold =
-                    settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "target")target = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "envchangerate")envchangerate =
-                    settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "revosim")
+                continue;
+            if (settings_file_in.name() == "gridX")
+                gridX = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "gridY")
+                gridY = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "settleTolerance")
+                settleTolerance = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "slotsPerSquare")
+                slotsPerSquare = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "startAge")
+                startAge = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "dispersal")
+                dispersal = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "food")
+                food = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "breedCost")
+                breedCost = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "mutate")
+                mutate = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "maxDiff")
+                maxDiff = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "breedThreshold")
+                breedThreshold = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "target")
+                target = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "environmentChangeRate")
+                environmentChangeRate = settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "refreshRate")refreshRate =
                     settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "environment_mode")environmentModeChanged(
-                    settings_file_in.readElementText().toInt(), true);
+            if (settings_file_in.name() == "environmentMode")
+                environmentModeChanged(settings_file_in.readElementText().toInt(), true);
             //No Gui options for the remaining settings as yet.
-            if (settings_file_in.name() == "speciesSamples")speciesSamples =
-                    settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "speciesSensitivity")speciesSensitivity =
-                    settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "timeSliceConnect")timeSliceConnect =
-                    settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "minspeciessize")minspeciessize =
-                    settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "species_mode")minspeciessize =
-                    settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "speciesSamples")
+                speciesSamples = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "speciesSensitivity")
+                speciesSensitivity = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "timeSliceConnect")
+                timeSliceConnect = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "minSpeciesSize")
+                minSpeciesSize = static_cast<quint64>(settings_file_in.readElementText().toInt());
+            if (settings_file_in.name() == "speciesMode")
+                minSpeciesSize = static_cast<quint64>(settings_file_in.readElementText().toInt());
 
             //Bools
-            if (settings_file_in.name() == "recalcFitness")recalcFitness =
-                    settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "toroidal")toroidal = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "nonspatial")nonspatial = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "breeddiff")breeddiff = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "breedspecies")breedspecies =
-                    settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "allowExcludeWithDescendants")allowExcludeWithDescendants =
-                    settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "sexual")sexual = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "asexual")asexual = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "logging")logging = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "gui")gui = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "environment_interpolate")environment_interpolate =
-                    settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "recalculateFitness")
+                recalculateFitness = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "toroidal")
+                toroidal = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "nonspatial")
+                nonspatial = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "breeddiff")
+                breeddiff = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "breedspecies")
+                breedspecies = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "allowExcludeWithDescendants")
+                allowExcludeWithDescendants = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "sexual")
+                sexual = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "asexual")
+                asexual = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "logging")
+                logging = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "gui")
+                gui = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "environmentInterpolate")
+                environmentInterpolate = settings_file_in.readElementText().toInt();
             //No gui options for below
-            if (settings_file_in.name() == "fitnessLoggingToFile")fitnessLoggingToFile =
-                    settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "fitnessLoggingToFile")
+                fitnessLoggingToFile = settings_file_in.readElementText().toInt();
             //Only GUI options
-            if (settings_file_in.name() == "autowrite")autowriteLogCheckbox->setChecked(
-                    settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "savePopulationCount")savePopulationCount->setChecked(
-                    settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveMeanFitness")saveMeanFitness->setChecked(
-                    settings_file_in.readElementText().toInt());
+            if (settings_file_in.name() == "autowrite")
+                autowriteLogCheckbox->setChecked(settings_file_in.readElementText().toInt());
+            if (settings_file_in.name() == "savePopulationCount")
+                savePopulationCount->setChecked(settings_file_in.readElementText().toInt());
+            if (settings_file_in.name() == "saveMeanFitness")
+                saveMeanFitness->setChecked( settings_file_in.readElementText().toInt());
             if (settings_file_in.name() == "saveCodingGenomeAsColour")
                 saveCodingGenomeAsColour->setChecked(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveSpecies")saveSpecies->setChecked(
-                    settings_file_in.readElementText().toInt());
+            if (settings_file_in.name() == "saveSpecies")
+                saveSpecies->setChecked(settings_file_in.readElementText().toInt());
             if (settings_file_in.name() == "saveNonCodingGenomeAsColour")
                 saveNonCodingGenomeAsColour->setChecked(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveGeneFrequencies")saveGeneFrequencies->setChecked(
-                    settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveSettles")saveSettles->setChecked(
-                    settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveFailsSettles")saveFailsSettles->setChecked(
-                    settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveEnvironment")saveEnvironment->setChecked(
-                    settings_file_in.readElementText().toInt());
+            if (settings_file_in.name() == "saveGeneFrequencies")
+                saveGeneFrequencies->setChecked(settings_file_in.readElementText().toInt());
+            if (settings_file_in.name() == "saveSettles")
+                saveSettles->setChecked(settings_file_in.readElementText().toInt());
+            if (settings_file_in.name() == "saveFailsSettles")
+                saveFailsSettles->setChecked(settings_file_in.readElementText().toInt());
+            if (settings_file_in.name() == "saveEnvironment")
+                saveEnvironment->setChecked(settings_file_in.readElementText().toInt());
 
             //Strings
-            if (settings_file_in.name() == "globalSavePath")globalSavePath->setText(settings_file_in.readElementText());
-
+            if (settings_file_in.name() == "globalSavePath")
+                globalSavePath->setText(settings_file_in.readElementText());
         }
     }
     // Error
@@ -3098,7 +3108,7 @@ void MainWindow::updateGUIFromVariables()
     gridXSpin->setValue(gridX);
     gridYSpin->setValue(gridY);
     settleToleranceSpin->setValue(settleTolerance);
-    slotsSpin->setValue(slotsPerSq);
+    slotsSpin->setValue(slotsPerSquare);
     startAgeSpin->setValue(startAge);
     dispersalSpin->setValue(dispersal);
     energySpin->setValue(food);
@@ -3107,15 +3117,15 @@ void MainWindow::updateGUIFromVariables()
     maxDifferenceSpin->setValue(maxDiff);
     breedThresholdSpin->setValue(breedThreshold);
     targetSpin->setValue(target);
-    environmentRateSpin->setValue(envchangerate);
+    environmentRateSpin->setValue(environmentChangeRate);
     refreshRateSpin->setValue(refreshRate);
-    // Add species_mode
-    speciesModeChanged(species_mode, true);
-    // Add environment_mode
-    environmentModeChanged(environment_mode, true);
+    // Add speciesMode
+    speciesModeChanged(speciesMode, true);
+    // Add environmentMode
+    environmentModeChanged(environmentMode, true);
 
     //Bools
-    recalculateFitnessCheckbox->setChecked(recalcFitness);
+    recalculateFitnessCheckbox->setChecked(recalculateFitness);
     toroidalCheckbox->setChecked(toroidal);
     nonspatialCheckbox->setChecked(nonspatial);
     breedDifferenceCheckbox->setChecked(breeddiff);
@@ -3125,7 +3135,7 @@ void MainWindow::updateGUIFromVariables()
     asexualRadio->setChecked(asexual);
     loggingCheckbox->setChecked(logging);
     guiCheckbox->setChecked(gui);
-    interpolateCheckbox->setChecked(environment_interpolate);
+    interpolateCheckbox->setChecked(environmentInterpolate);
 }
 
 /*!
@@ -3133,9 +3143,13 @@ void MainWindow::updateGUIFromVariables()
  */
 void MainWindow::saveSettings()
 {
-    QString settings_filename = QFileDialog::getSaveFileName(this, tr("Save file as..."),
-                                                             QString(globalSavePath->text() + QString(PRODUCTNAME) + "_settings.xml"));
-    if (!settings_filename.endsWith(".xml"))settings_filename.append(".xml");
+    QString settings_filename = QFileDialog::getSaveFileName(
+                                    this,
+                                    tr("Save file as..."),
+                                    QString(globalSavePath->text() + QString(PRODUCTNAME) + "Settings.xml")
+                                );
+    if (!settings_filename.endsWith(".xml"))
+        settings_filename.append(".xml");
     QFile settings_file(settings_filename);
     if (!settings_file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         setStatusBarText("Error opening settings file to write to.");
@@ -3163,8 +3177,8 @@ void MainWindow::saveSettings()
     settings_file_out.writeCharacters(QString("%1").arg(settleTolerance));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("slotsPerSq");
-    settings_file_out.writeCharacters(QString("%1").arg(slotsPerSq));
+    settings_file_out.writeStartElement("slotsPerSquare");
+    settings_file_out.writeCharacters(QString("%1").arg(slotsPerSquare));
     settings_file_out.writeEndElement();
 
     settings_file_out.writeStartElement("startAge");
@@ -3199,12 +3213,12 @@ void MainWindow::saveSettings()
     settings_file_out.writeCharacters(QString("%1").arg(target));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("envchangerate");
-    settings_file_out.writeCharacters(QString("%1").arg(envchangerate));
+    settings_file_out.writeStartElement("environmentChangeRate");
+    settings_file_out.writeCharacters(QString("%1").arg(environmentChangeRate));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("environment_mode");
-    settings_file_out.writeCharacters(QString("%1").arg(environment_mode));
+    settings_file_out.writeStartElement("environmentMode");
+    settings_file_out.writeCharacters(QString("%1").arg(environmentMode));
     settings_file_out.writeEndElement();
 
     settings_file_out.writeStartElement("refreshRate");
@@ -3223,17 +3237,17 @@ void MainWindow::saveSettings()
     settings_file_out.writeCharacters(QString("%1").arg(timeSliceConnect));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("minspeciessize");
-    settings_file_out.writeCharacters(QString("%1").arg(minspeciessize));
+    settings_file_out.writeStartElement("minSpeciesSize");
+    settings_file_out.writeCharacters(QString("%1").arg(minSpeciesSize));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("species_mode");
-    settings_file_out.writeCharacters(QString("%1").arg(species_mode));
+    settings_file_out.writeStartElement("speciesMode");
+    settings_file_out.writeCharacters(QString("%1").arg(speciesMode));
     settings_file_out.writeEndElement();
 
     //Bools
-    settings_file_out.writeStartElement("recalcFitness");
-    settings_file_out.writeCharacters(QString("%1").arg(recalcFitness));
+    settings_file_out.writeStartElement("recalculateFitness");
+    settings_file_out.writeCharacters(QString("%1").arg(recalculateFitness));
     settings_file_out.writeEndElement();
 
     settings_file_out.writeStartElement("toroidal");
@@ -3272,8 +3286,8 @@ void MainWindow::saveSettings()
     settings_file_out.writeCharacters(QString("%1").arg(gui));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("environment_interpolate");
-    settings_file_out.writeCharacters(QString("%1").arg(environment_interpolate));
+    settings_file_out.writeStartElement("environmentInterpolate");
+    settings_file_out.writeCharacters(QString("%1").arg(environmentInterpolate));
     settings_file_out.writeEndElement();
 
     settings_file_out.writeStartElement("fitnessLoggingToFile");

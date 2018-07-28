@@ -29,7 +29,7 @@ bool ResizeCatcher::eventFilter(QObject *obj, QEvent *event)
 {
     //if it's a resize event - do resize via Main Window
     if (event->type() == QEvent::Resize)
-        MainWin->resize();
+        mainWindow->resize();
 
     return QObject::eventFilter(obj, event);
 }

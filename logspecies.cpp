@@ -144,7 +144,7 @@ quint32 LogSpecies::maxSizeIncludingChildren()
  *
  * Tests if a species has become 'extinct', this will return TRUE if:
  * a) the species is only fetured in one iteration
- * b) one has no descendants and is smaller than minspeciessize (used by Newick string)
+ * b) one has no descendants and is smaller than minSpeciesSize (used by Newick string)
  * Will return FALSE otherwise
  *
  * \return bool
@@ -154,7 +154,7 @@ bool LogSpecies::isFluff()
     // Always fluff if only in one iteration
     if (timeOfFirstAppearance == timeOfLastAppearance) return true;
 
-    // Is this a 'fluff' species - i.e. one has no descendants and is smaller than minspeciessize?
+    // Is this a 'fluff' species - i.e. one has no descendants and is smaller than minSpeciesSize?
     // Used by filter of writeNewickString and other recursives
     if (children.count() != 0 && !allowExcludeWithDescendants)
         return false;
@@ -162,7 +162,7 @@ bool LogSpecies::isFluff()
     quint32 recurseMaxSize = maxSize;
     if (allowExcludeWithDescendants) recurseMaxSize = maxSizeIncludingChildren();
 
-    return recurseMaxSize <= minspeciessize;
+    return recurseMaxSize <= minSpeciesSize;
 }
 
 /*!

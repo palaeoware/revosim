@@ -34,7 +34,7 @@
 #include <QSpinBox>
 #include <QStandardPaths>
 
-extern MainWindow *MainWin;
+extern MainWindow *mainWindow;
 
 namespace Ui {
 class MainWindow;
@@ -74,7 +74,7 @@ protected:
     void resizeEvent(QResizeEvent *e);
 
 private:
-    Analyser *a;
+    Analyser *analyser;
 
     void closeEvent(QCloseEvent *e);
     void report();
