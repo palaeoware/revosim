@@ -45,7 +45,8 @@
 #include <QThread>
 #include <QXmlStreamReader>
 
-#ifndef M_SQRT1_2 //not defined in all versions
+//not defined in all versions
+#ifndef M_SQRT1_2
 #define M_SQRT1_2 0.7071067811865475
 #endif
 
@@ -208,14 +209,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     //RJG - Now load randoms into program - portable rand is just plain pseudorandom number - initially used in makelookups (called from simmanager contructor) to write to randoms array
     int seedoffset = simulationManager->portable_rand();
     QFile rfile(":/randoms.dat");
-    if (!rfile.exists()) QMessageBox::warning(this, "Oops", "Error loading randoms. Please do so manually.");
+    if (!rfile.exists())
+        QMessageBox::warning(this, "Oops", "Error loading randoms. Please do so manually.");
     rfile.open(QIODevice::ReadOnly);
 
     rfile.seek(seedoffset);
 
     //RJG - overwrite pseudorandoms with genuine randoms
-    int i = static_cast<int>(rfile.read(reinterpret_cast<char *>(randoms), 65536));
-    if (i != 65536) QMessageBox::warning(this, "Oops", "Failed to read 65536 bytes from file - random numbers may be compromised - try again or restart program");
+    qint64 i = rfile.read(reinterpret_cast<char *>(randoms), 65536);
+    if (i != static_cast<qint64>(65536))
+        QMessageBox::warning(this, "Oops", "Failed to read 65536 bytes from file - random numbers may be compromised - try again or restart program");
 }
 
 /*!
@@ -1019,7 +1022,8 @@ void MainWindow::startSimulation()
         if (ui->actionGo_Slow->isChecked()) Sleeper::msleep(30);
 
         //ARTS - set Stop flag to returns true if reached end... but why? It will fire the finishRun() function at the end.
-        if (simulationManager->iterate(environmentMode, environmentInterpolate)) stopFlag = true;
+        if (simulationManager->iterate(environmentMode, environmentInterpolate))
+            stopFlag = true;
     }
 
     finishRun();
@@ -1324,7 +1328,8 @@ void MainWindow::runSetUp()
     timer.restart();
     nextRefresh = refreshRate;
 
-    if (loggingCheckbox->isChecked())writeLog();
+    if (loggingCheckbox->isChecked())
+        writeLog();
 }
 
 /*!
@@ -1510,7 +1515,8 @@ void MainWindow::refreshPopulations()
     //RJG - make globalSavePath if required - this way as if user adds file name to globalSavePath, this will create a
     //subfolder with the same file name as logs.
     QString globalSavePathStr(globalSavePath->text());
-    if (!globalSavePathStr.endsWith(QDir::separator()))globalSavePathStr.append(QDir::separator());
+    if (!globalSavePathStr.endsWith(QDir::separator()))
+        globalSavePathStr.append(QDir::separator());
     if (batchRunning) {
         globalSavePathStr.append(QString("Images_run_%1").arg(batchRuns, 4, 10, QChar('0')));
         globalSavePathStr.append(QDir::separator());
@@ -1549,7 +1555,8 @@ void MainWindow::refreshPopulations()
                 populationImage->setPixel(n, m, static_cast<uint>(count));
             }
         //if (ui->actionPopulation_Count->isChecked())populationItem->setPixmap(QPixmap::fromImage(*populationImage));
-        if (currentSelectedMode == 0)populationItem->setPixmap(QPixmap::fromImage(*populationImage));
+        if (currentSelectedMode == 0)
+            populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (savePopulationCount->isChecked())
             if (save_dir.mkpath("population/"))
                 populationImageColour->save(QString(save_dir.path() + "/population/EvoSim_population_it_%1.png").arg(generation, 7, 10, QChar('0')));
@@ -1571,7 +1578,8 @@ void MainWindow::refreshPopulations()
                     populationImage->setPixel(n, m, static_cast<uint>((totalfit[n][m] * static_cast<uint>(multiplier)) / static_cast<uint>(count)));
 
             }
-        if (currentSelectedMode == 1)populationItem->setPixmap(QPixmap::fromImage(*populationImage));
+        if (currentSelectedMode == 1)
+            populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (saveMeanFitness->isChecked())
             if (save_dir.mkpath("fitness/"))
                 populationImageColour->save(QString(save_dir.path() + "/fitness/EvoSim_mean_fitness_it_%1.png").arg(generation, 7, 10, QChar('0')));
@@ -1634,7 +1642,8 @@ gotcounts:
 
             }
 
-        if (currentSelectedMode == 2) populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
+        if (currentSelectedMode == 2)
+            populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("coding/"))
                 populationImageColour->save(QString(save_dir.path() + "/coding/EvoSim_coding_genome_it_%1.png").arg(generation, 7, 10, QChar('0')));
@@ -1650,7 +1659,8 @@ gotcounts:
                 int counts[SLOTS_PER_GRID_SQUARE];
                 int arraypos = 0; //pointer
 
-                if (totalfit[n][m] == 0) populationImageColour->setPixel(n, m, 0); //black if square is empty
+                if (totalfit[n][m] == 0)
+                    populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else {
                     //for each used slot
                     for (int c = 0; c < maxused[n][m]; c++) {
@@ -1697,7 +1707,8 @@ gotcounts2:
                 }
             }
 
-        if (currentSelectedMode == 3)populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
+        if (currentSelectedMode == 3)
+            populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveNonCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("non_coding/"))
                 populationImageColour->save(QString(save_dir.path() + "/non_coding/EvoSim_non_coding_it_%1.png").arg(generation, 7, 10, QChar('0')));
@@ -1729,7 +1740,8 @@ gotcounts2:
                 }
             }
 
-        if (currentSelectedMode == 4)populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
+        if (currentSelectedMode == 4)
+            populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveGeneFrequencies->isChecked())
             if (save_dir.mkpath("gene_freq/"))
                 populationImageColour->save(QString(save_dir.path() + "/gene_freq/EvoSim_gene_freq_it_%1.png").arg(generation, 7, 10, QChar('0')));
@@ -1773,7 +1785,8 @@ gotcounts2:
                 populationImage->setPixel(n, m, static_cast<uint>(value));
             }
 
-        if (currentSelectedMode == 7)populationItem->setPixmap(QPixmap::fromImage(*populationImage));
+        if (currentSelectedMode == 7)
+            populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (saveSettles->isChecked())
             if (save_dir.mkpath("settles/"))
                 populationImage->save(QString(save_dir.path() + "/settles/EvoSim_settles_it_%1.png").arg(generation, 7,
@@ -1795,7 +1808,8 @@ gotcounts2:
                 populationImageColour->setPixel(n, m, qRgb(r, g, 0));
             }
 
-        if (currentSelectedMode == 8)populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
+        if (currentSelectedMode == 8)
+            populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveFailsSettles->isChecked())
             if (save_dir.mkpath("breed_settle_fails/"))
                 populationImageColour->save(QString(save_dir.path() + "/breed_settle_fails/EvoSim_breed_settle_fails_it_%1.png").arg(generation, 7, 10, QChar('0')));
@@ -1822,7 +1836,8 @@ gotcounts2:
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
 
-                if (totalfit[n][m] == 0) populationImageColour->setPixel(n, m, 0); //black if square is empty
+                if (totalfit[n][m] == 0)
+                    populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else {
                     quint64 thisspecies = 0;
                     for (int c = 0; c < slotsPerSquare; c++) {
@@ -1836,7 +1851,8 @@ gotcounts2:
                 }
             }
 
-        if (currentSelectedMode == 10)populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
+        if (currentSelectedMode == 10)
+            populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveSpecies->isChecked())
             if (save_dir.mkpath("species/"))
                 populationImageColour->save(QString(save_dir.path() + "/species/EvoSim_species_it_%1.png").arg(generation, 7, 10, QChar('0')));
@@ -1854,7 +1870,8 @@ gotcounts2:
 void MainWindow::refreshEnvironment()
 {
     QString globalSavePathStr(globalSavePath->text());
-    if (!globalSavePathStr.endsWith(QDir::separator()))globalSavePathStr.append(QDir::separator());
+    if (!globalSavePathStr.endsWith(QDir::separator()))
+        globalSavePathStr.append(QDir::separator());
     if (batchRunning) {
         globalSavePathStr.append(QString("Images_run_%1").arg(batchRuns, 4, 10, QChar('0')));
         globalSavePathStr.append(QDir::separator());
@@ -1901,10 +1918,14 @@ void MainWindow::resize()
  */
 void MainWindow::guiCheckboxStateChanged(bool dontUpdate)
 {
-    if (dontUpdate
-            && QMessageBox::question(nullptr, "Heads up",
-                                     "If you don't update the GUI, images will also not be saved. OK?",
-                                     QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::No) {
+    if (dontUpdate && QMessageBox::question(
+                nullptr,
+                "Heads up",
+                "If you don't update the GUI, images will also not be saved. OK?",
+                QMessageBox::Yes | QMessageBox::No,
+                QMessageBox::Yes
+            ) == QMessageBox::No
+       ) {
         guiCheckbox->setChecked(false);
         return;
     }
@@ -1941,9 +1962,11 @@ void MainWindow::writeRunData()
 {
 
     QString FinalLoggingFile(globalSavePath->text());
-    if (!FinalLoggingFile.endsWith(QDir::separator()))FinalLoggingFile.append(QDir::separator());
+    if (!FinalLoggingFile.endsWith(QDir::separator()))
+        FinalLoggingFile.append(QDir::separator());
     FinalLoggingFile.append(QString(PRODUCTNAME) + "_end_run_log");
-    if (batchRunning)FinalLoggingFile.append(QString("_run_%1").arg(batchRuns, 4, 10, QChar('0')));
+    if (batchRunning)
+        FinalLoggingFile.append(QString("_run_%1").arg(batchRuns, 4, 10, QChar('0')));
     FinalLoggingFile.append(".txt");
     QFile outputfile(FinalLoggingFile);
     outputfile.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -2076,7 +2099,8 @@ void MainWindow::resizeImageObjects()
     delete populationImageColour;
     populationImage = new QImage(gridX, gridY, QImage::Format_Indexed8);
     QVector <QRgb> clut(256);
-    for (int ic = 0; ic < 256; ic++) clut[ic] = qRgb(ic, ic, ic);
+    for (int ic = 0; ic < 256; ic++)
+        clut[ic] = qRgb(ic, ic, ic);
     populationImage->setColorTable(clut);
 
     environmentImage = new QImage(gridX, gridY, QImage::Format_RGB32);
@@ -2179,9 +2203,11 @@ bool MainWindow::loadEnvironmentFiles()
                             this,
                             "Select one or more image files to load in simulation environment...",
                             "",
-                            "Images (*.png *.bmp)");
+                            "Images (*.png *.bmp)"
+                        );
 
-    if (files.length() == 0) return false;
+    if (files.length() == 0)
+        return false;
 
     bool notsquare = false;
     bool different_size = false;
@@ -2232,7 +2258,8 @@ void MainWindow::saveSimulation()
                            "REvoSim files (*.revosim)"
                        );
 
-    if (filename.length() == 0) return;
+    if (filename.length() == 0)
+        return;
 
     //Otherwise - serialise all my crap
     QFile outfile(filename);
@@ -2293,8 +2320,7 @@ void MainWindow::saveSimulation()
     out << globalSavePath->text();
 
     int vmode = 0;
-    vmode = ui->populationWindowComboBox->itemData(
-                ui->populationWindowComboBox->currentIndex()).toInt();
+    vmode = ui->populationWindowComboBox->itemData(ui->populationWindowComboBox->currentIndex()).toInt();
     out << vmode;
 
     //file list
@@ -2420,9 +2446,11 @@ void MainWindow::loadSimulation()
                            "REvoSim files (*.revosim)"
                        );
 
-    if (filename.length() == 0) return;
+    if (filename.length() == 0)
+        return;
 
-    if (!stopFlag) stopFlag = true;
+    if (!stopFlag)
+        stopFlag = true;
 
     //Otherwise - serialise all my crap
     QFile infile(filename);
@@ -2847,13 +2875,13 @@ void MainWindow::on_actionLoad_Random_Numbers_triggered()
                        this,
                        "Select random number file",
                        "",
-                       "*.*");
+                       "*.*"
+                   );
 
     if (file.length() == 0) return;
 
     int seedoffset;
-    seedoffset = QInputDialog::getInt(this, "Seed value",
-                                      "Byte offset to start reading from (will read 65536 bytes)");
+    seedoffset = QInputDialog::getInt(this, "Seed value", "Byte offset to start reading from (will read 65536 bytes)");
 
     //now read in values to array
     QFile rfile(file);
@@ -2864,7 +2892,8 @@ void MainWindow::on_actionLoad_Random_Numbers_triggered()
     qint64 i = rfile.read(reinterpret_cast<char *>(randoms), static_cast<qint64>(65536));
     if (i != 65536)
         QMessageBox::warning(this, "Oops", "Failed to read 65536 bytes from file - random numbers may be compromised - try again or restart program");
-    else QMessageBox::information(this, "Success", "New random numbers read successfully");
+    else
+        QMessageBox::information(this, "Success", "New random numbers read successfully");
 }
 
 /*!
@@ -2887,11 +2916,14 @@ QString MainWindow::handleAnalysisTool(int code)
     case ANALYSIS_TOOL_CODE_COUNT_PEAKS: {
         bool ok;
         int red = QInputDialog::getInt(this, "Count peaks...", "Red level?", 128, 0, 255, 1, &ok);
-        if (!ok)return QString("");
+        if (!ok)
+            return QString("");
         int green = QInputDialog::getInt(this, "Count peaks...", "Green level?", 128, 0, 255, 1, &ok);
-        if (!ok)return QString("");;
+        if (!ok)
+            return QString("");;
         int blue = QInputDialog::getInt(this, "Count peaks...", "Green level?", 128, 0, 255, 1, &ok);
-        if (!ok)return QString("");
+        if (!ok)
+            return QString("");
         OutputString = a.countPeaks(red, green, blue);
         break;
     }
@@ -2899,13 +2931,15 @@ QString MainWindow::handleAnalysisTool(int code)
     case ANALYSIS_TOOL_CODE_MAKE_NEWICK:
         if (phylogenyButton->isChecked() || phylogenyAndMetricsButton->isChecked())
             OutputString = a.makeNewick(rootspecies, minSpeciesSize, allowExcludeWithDescendants);
-        else OutputString = "Species tracking is not enabled.";
+        else
+            OutputString = "Species tracking is not enabled.";
         break;
 
     case ANALYSIS_TOOL_CODE_WRITE_DATA:
         if (phylogenyAndMetricsButton->isChecked())
             OutputString = a.writeData(rootspecies, minSpeciesSize, allowExcludeWithDescendants);
-        else OutputString = "Species tracking is not enabled, or is set to phylogeny only.";
+        else
+            OutputString = "Species tracking is not enabled, or is set to phylogeny only.";
         break;
 
     default:
@@ -2955,9 +2989,12 @@ QString MainWindow::printSettings()
     settings_out << "-- Only breed within species:" << breedspecies << "\n";
     settings_out << "-- Exclude species without descendants:" << allowExcludeWithDescendants << "\n";
     settings_out << "-- Breeding: ";
-    if (sexual)settings_out << "sexual" << "\n";
-    else if (asexual)settings_out << "asexual" << "\n";
-    else settings_out << "variable" << "\n";
+    if (sexual)
+        settings_out << "sexual" << "\n";
+    else if (asexual)
+        settings_out << "asexual" << "\n";
+    else
+        settings_out << "variable" << "\n";
 
     return settings;
 }
@@ -3018,8 +3055,8 @@ void MainWindow::loadSettings()
                 target = settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "environmentChangeRate")
                 environmentChangeRate = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "refreshRate")refreshRate =
-                    settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "refreshRate")
+                refreshRate = settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "environmentMode")
                 environmentModeChanged(settings_file_in.readElementText().toInt(), true);
             //No Gui options for the remaining settings as yet.
@@ -3090,7 +3127,8 @@ void MainWindow::loadSettings()
     // Error
     if (settings_file_in.hasError())
         setStatusBarText("There seems to have been an error reading in the XML file. Not all settings will have been loaded.");
-    else setStatusBarText("Loaded settings file");
+    else
+        setStatusBarText("Loaded settings file");
 
     settings_file.close();
 
@@ -3355,7 +3393,8 @@ void MainWindow::saveSettings()
  */
 void MainWindow::exitProgram()
 {
-    if (pauseFlag) pauseSimulation();
+    if (pauseFlag)
+        pauseSimulation();
     stopSimulation();
     QApplication::quit();
 }
