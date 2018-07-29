@@ -34,6 +34,9 @@
 
 #define SCALE 100
 
+/**
+ * @brief The LoggedSpecies class
+ */
 class LoggedSpecies
 {
 public:
@@ -41,7 +44,7 @@ public:
 
     int maxSize{};
     int occurrences{};
-    int sizes[SCALE]{};
+    int sizes[SCALE] {};
     QList<float> averageSizes;
     QList<float> averageChanges;
 
@@ -50,9 +53,12 @@ public:
     quint64 parent{};
     quint64 totalSize{};
     quint64 lastGenome;
-    quint64 genomes[SCALE]{};
+    quint64 genomes[SCALE] {};
 };
 
+/**
+ * @brief The StasisSpecies class
+ */
 class StasisSpecies
 {
 public:
@@ -66,6 +72,9 @@ public:
     QList<float> resampledAverageGenomeChanges;
 };
 
+/**
+ * @brief The AnalysisTools class
+ */
 class AnalysisTools
 {
 public:
@@ -75,10 +84,10 @@ public:
 
     bool dataFileNeededCheck(int code);
     int findClosestIndex(QList <quint64>timeList, float lookFor, float slotWidth);
-    QString generateTree(const QString& filename);
-    QString extinctOrigin(const QString& filename);
-    QString speciesRatesOfChange(const QString& filename);
-    QString stasis(const QString& filename, int slotCount, float percentileCut, int qualifyingSlotCount);
+    QString generateTree(const QString &filename);
+    QString extinctOrigin(const QString &filename);
+    QString speciesRatesOfChange(const QString &filename);
+    QString stasis(const QString &filename, int slotCount, float percentileCut, int qualifyingSlotCount);
     QString countPeaks(int r, int g, int b);
     QString makeNewick(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude);
     QString writeData(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude);

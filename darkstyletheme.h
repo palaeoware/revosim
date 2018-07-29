@@ -24,6 +24,9 @@
 #include <QProxyStyle>
 #include <QStyleFactory>
 
+/**
+ * @brief The DarkStyleTheme class
+ */
 class DarkStyleTheme : public QProxyStyle
 {
     Q_OBJECT

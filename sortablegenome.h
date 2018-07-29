@@ -17,18 +17,23 @@
 
 #ifndef SORTABLEGENOME_H
 #define SORTABLEGENOME_H
+
 #include "QtGlobal"
 
-class sortablegenome
+/**
+ * @brief The SortableGenome class
+ */
+class SortableGenome
 {
 public:
-    sortablegenome(quint64 genome, int f, int c);
-    bool operator<(const sortablegenome &rhs) const;
-    bool operator==(const sortablegenome &rhs) const;
+    SortableGenome(quint64 genome, int f, int c);
+
+    bool operator<(const SortableGenome &rhs) const;
+    bool operator==(const SortableGenome &rhs) const;
     int fit;
-    quint64 genome;
     int group;
     int count;
+    quint64 genome;
 };
 
 #endif // SORTABLEGENOME_H

@@ -19,21 +19,24 @@
 #define RESEED_H
 
 #include <QDialog>
-#include <QMessageBox>
 #include <QLabel>
+#include <QMessageBox>
 #include <QRadioButton>
 
 namespace Ui {
-class reseed;
+class Reseed;
 }
 
-class reseed : public QDialog
+/**
+ * @brief The Reseed class
+ */
+class Reseed : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit reseed(QWidget *parent = 0);
-    ~reseed();
+    explicit Reseed(QWidget *parent = nullptr);
+    ~Reseed();
 
     QList<QRadioButton *> radios;
 
@@ -43,7 +46,7 @@ private slots:
     void radio_toggled();
 
 private:
-    Ui::reseed *ui;
+    Ui::Reseed *ui;
 };
 
 #endif // RESEED_H

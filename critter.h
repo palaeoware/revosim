@@ -20,6 +20,9 @@
 
 #include <QtGlobal>
 
+/**
+ * @brief The Critter class
+ */
 class Critter
 {
 public:

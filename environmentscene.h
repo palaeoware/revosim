@@ -22,6 +22,9 @@
 
 class MainWindow;
 
+/**
+ * @brief The EnvironmentScene class
+ */
 class EnvironmentScene : public QGraphicsScene
 {
 public:

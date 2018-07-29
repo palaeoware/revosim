@@ -15,66 +15,91 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY.
  */
 
+#include "mainwindow.h"
 #include "populationscene.h"
 #include "simmanager.h"
+
 #include <QGraphicsView>
 #include <QDebug>
 #include <QPointF>
-#include "mainwindow.h"
 
-/*********************************************
-Subclassed QGraphicsScene object -
-basically just has mouse handlers for main window
-**********************************************/
+/**
+ * @brief PopulationScene::PopulationScene
+ *
+ * Subclassed QGraphicsScene object - just has mouse handlers for main window
+ */
 PopulationScene::PopulationScene()
 {
-    selectedx = 0;
-    selectedy = 0;
+    selectedX = 0;
+    selectedY = 0;
 }
 
-void PopulationScene::DoMouse(int x, int y, int button)
+/**
+ * @brief PopulationScene::doMouse
+ * @param x
+ * @param y
+ * @param button
+ */
+void PopulationScene::doMouse(int x, int y, int button)
 {
     //ARTS - Genome Comparison Dock uses right mouse button for selection of grid cell
     if (button == 2 && x >= 0 && x < gridX && y >= 0 && y < gridY) {
-        selectedx = x;
-        selectedy = y;
+        selectedX = x;
+        selectedY = y;
         mainWindow->genomeComparisonAdd();
     }
 }
 
+/**
+ * @brief PopulationScene::mouseMoveEvent
+ * @param event
+ */
 void PopulationScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 //this gets string of calls if mouse button is held
 {
     QPointF position = event->scenePos();
-    int x, y;
+    int x;
+    int y;
 
-    x = (int)position.x();
-    y = (int)position.y();
+    x = static_cast<int>(position.x());
+    y = static_cast<int>(position.y());
+
     int but = 0;
-    if (event->button() == Qt::LeftButton) but = 1;
-    if (event->button() == Qt::RightButton) but = 2;
-    if (but > 0) DoMouse(x, y, but);
+    if (event->button() == Qt::LeftButton)
+        but = 1;
+    if (event->button() == Qt::RightButton)
+        but = 2;
+    if (but > 0)
+        doMouse(x, y, but);
 }
 
-
+/**
+ * @brief PopulationScene::mousePressEvent
+ * @param event
+ */
 void PopulationScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     QPointF position = event->scenePos();
-    int x, y;
+    int x;
+    int y;
 
-    x = (int)position.x();
-    y = (int)position.y();
+    x = static_cast<int>(position.x());
+    y = static_cast<int>(position.y());
 
     int but = 0;
-    if (event->button() == Qt::LeftButton) but = 1;
-    if (event->button() == Qt::RightButton) but = 2;
+    if (event->button() == Qt::LeftButton)
+        but = 1;
+    if (event->button() == Qt::RightButton)
+        but = 2;
 
-    DoMouse(x, y, but);
+    doMouse(x, y, but);
 }
 
+/**
+ * @brief PopulationScene::mouseReleaseEvent
+ * @param event
+ */
 void PopulationScene::mouseReleaseEvent (QGraphicsSceneMouseEvent *event)
 {
     Q_UNUSED(event);
-
-    //don't do anything
 }

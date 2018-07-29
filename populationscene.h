@@ -24,22 +24,26 @@
 
 class MainWindow;
 
+/**
+ * @brief The PopulationScene class
+ */
 class PopulationScene : public QGraphicsScene
 {
 public:
     PopulationScene();
-    int selectedx;
-    int selectedy;
+
+    int selectedX;
+    int selectedY;
     MainWindow *mainWindow{};
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    void DoMouse(int x, int y, int button);
-private slots:
-    void ScreenUpdate();
-};
+    void doMouse(int x, int y, int button);
 
+private slots:
+    void screenUpdate();
+};
 
 #endif // POPULATIONSCENE_H

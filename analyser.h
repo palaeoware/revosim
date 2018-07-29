@@ -26,6 +26,9 @@
 #include <QList>
 #include <QString>
 
+/**
+ * @brief The Species class
+ */
 class Species
 {
 public:
@@ -40,6 +43,9 @@ public:
     quint64 parent;
 };
 
+/**
+ * @brief The Analyser class
+ */
 class Analyser
 {
 public:
@@ -57,7 +63,7 @@ public:
 
 private:
     int genomesTotalCount;
-    QList<sortablegenome> genomes;
+    QList<SortableGenome> genomes;
 };
 
 #endif // ANALYSER_H

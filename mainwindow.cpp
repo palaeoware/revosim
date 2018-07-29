@@ -971,7 +971,7 @@ void MainWindow::resetInformationBar()
  */
 void MainWindow::launchReseedDialog()
 {
-    reseed reseed_dialogue;
+    Reseed reseed_dialogue;
     reseed_dialogue.exec();
     resetSimulation();
 }
@@ -2715,8 +2715,8 @@ void MainWindow::loadSimulation()
  */
 bool MainWindow::genomeComparisonAdd()
 {
-    int x = populationScene->selectedx;
-    int y = populationScene->selectedy;
+    int x = populationScene->selectedX;
+    int y = populationScene->selectedY;
 
     //---- Get genome colour
     if (totalfit[x][y] != 0) {

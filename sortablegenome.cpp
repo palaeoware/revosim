@@ -17,7 +17,13 @@
 
 #include "sortablegenome.h"
 
-sortablegenome::sortablegenome(quint64 generation, int f, int c)
+/**
+ * @brief SortableGenome::SortableGenome
+ * @param generation
+ * @param f
+ * @param c
+ */
+SortableGenome::SortableGenome(quint64 generation, int f, int c)
 {
     fit = f;
     count = c;
@@ -25,13 +31,23 @@ sortablegenome::sortablegenome(quint64 generation, int f, int c)
     group = 0;
 }
 
-bool sortablegenome::operator<(const sortablegenome &rhs) const
+/**
+ * @brief SortableGenome::operator <
+ * @param rhs
+ * @return
+ */
+bool SortableGenome::operator<(const SortableGenome &rhs) const
 {
     if (count > rhs.count) return true; //to reverse the sort
     return false;
 }
 
-bool sortablegenome::operator==(const sortablegenome &rhs) const
+/**
+ * @brief SortableGenome::operator ==
+ * @param rhs
+ * @return
+ */
+bool SortableGenome::operator==(const SortableGenome &rhs) const
 {
     return genome == rhs.genome;
 }

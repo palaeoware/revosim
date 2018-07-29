@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>reseed</class>
- <widget class="QDialog" name="reseed">
+ <class>Reseed</class>
+ <widget class="QDialog" name="Reseed">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -52,7 +52,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QCheckBox" name="CheckBoxReseedSession">
+  <widget class="QCheckBox" name="checkBoxReseedSession">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -95,7 +95,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>reseed</receiver>
+   <receiver>Reseed</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -111,7 +111,7 @@
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>reseed</receiver>
+   <receiver>Reseed</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

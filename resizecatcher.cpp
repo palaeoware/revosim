@@ -18,13 +18,24 @@
 #include "resizecatcher.h"
 #include "mainwindow.h"
 
-//Exists to act as an event filter and catch resize of mainwidget of main window - avoid needs to subclass the widget
-//while still catching dock resizes
-ResizeCatcher::ResizeCatcher(QObject *parent) :
-    QObject(parent)
+/**
+ * @brief ResizeCatcher::ResizeCatcher
+ *
+ * Exists to act as an event filter and catch resize of mainwidget of main window - avoid needs to subclass the widget
+ * while still catching dock resizes
+ *
+ * @param parent
+ */
+ResizeCatcher::ResizeCatcher(QObject *parent) : QObject(parent)
 {
-    }
+}
 
+/**
+ * @brief ResizeCatcher::eventFilter
+ * @param obj
+ * @param event
+ * @return
+ */
 bool ResizeCatcher::eventFilter(QObject *obj, QEvent *event)
 {
     //if it's a resize event - do resize via Main Window
@@ -33,4 +44,3 @@ bool ResizeCatcher::eventFilter(QObject *obj, QEvent *event)
 
     return QObject::eventFilter(obj, event);
 }
-

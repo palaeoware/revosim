@@ -20,6 +20,9 @@
 
 #include <QtGlobal>
 
+/**
+ * @brief The LogSpeciesDataItem class
+ */
 class LogSpeciesDataItem
 {
 public:
@@ -34,9 +37,9 @@ public:
     quint8 centroidRangeX{}; //mean of x positions
     quint8 centroidRangeY{}; //mean of y positions
     quint16 meanFitness{}; //mean of all critter fitnesses, stored as x1000
-    quint8 minEnvironment[3]{}; //min red, green, blue found in
-    quint8 maxEnvironment[3]{}; //max red, green, blue found in
-    quint8 meanEnvironment[3]{}; //mean environmental colour found in
+    quint8 minEnvironment[3] {}; //min red, green, blue found in
+    quint8 maxEnvironment[3] {}; //max red, green, blue found in
+    quint8 meanEnvironment[3] {}; //mean environmental colour found in
 };
 
 #endif // LOGSPECIESDATAITEM_H
