@@ -56,9 +56,9 @@ QString LogSpecies::writeDataLine(quint64 start, quint64 end, quint64 speciesID,
     QTextStream out(&outstring);
 
     foreach (LogSpeciesDataItem *di, dataItems) {
-        if (di->generation >= start && di->generation < end) {
+        if (di->itteration >= start && di->itteration < end) {
             out << speciesID << "," << parentID << ",";
-            out << di->generation << "," << di->size << "," << di->sampleGenome << ","
+            out << di->itteration << "," << di->size << "," << di->sampleGenome << ","
                 << AnalysisTools::returnBinary(di->sampleGenome) << ","
                 << di->genomicDiversity << "," << di->cellsOccupied << ","
                 << di->geographicalRange << "," << di->centroidRangeX << "," << di->centroidRangeY << ",";
@@ -173,7 +173,7 @@ bool LogSpecies::isFluff()
  * send it a 0 initially
  * and lastTimeBase needs to be timeOfFirstAppearance initially too.
  * no, it can be 0 - picked up in functoin
- * killfFuff flag - ignore any children that have a single generation life and no children of their own
+ * killfFuff flag - ignore any children that have a single itteration life and no children of their own
  *
  * \param childIndex
  * \param lastTimeBase

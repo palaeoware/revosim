@@ -207,7 +207,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     qsrand(static_cast<uint>(QTime::currentTime().msec()));
 
     //RJG - Now load randoms into program - portable rand is just plain pseudorandom number - initially used in makelookups (called from simmanager contructor) to write to randoms array
-    int seedoffset = simulationManager->portable_rand();
+    int seedoffset = simulationManager->portableRandom();
     QFile rfile(":/randoms.dat");
     if (!rfile.exists())
         QMessageBox::warning(this, "Oops", "Error loading randoms. Please do so manually.");
@@ -798,33 +798,33 @@ QDockWidget *MainWindow::createOrganismSettingsDock()
         breedCost = i;
     });
 
-    QLabel *maxDiffLabel = new QLabel("Max difference to breed:");
-    maxDiffLabel->setToolTip("<font>Sets the maximum difference between organisms to allow breeding. Min = 1; Max = 31.</font>");
-    maxDifferenceSpin = new QSpinBox;
-    maxDifferenceSpin->setMinimum(1);
-    maxDifferenceSpin->setMaximum(31);
-    maxDifferenceSpin->setValue(maxDiff);
-    maxDifferenceSpin->setToolTip("<font>Sets the maximum difference between organisms to allow breeding. Min = 1; Max = 31.</font>");
-    organismSettingsGrid->addWidget(maxDiffLabel, 8, 1);
-    organismSettingsGrid->addWidget(maxDifferenceSpin, 8, 2);
-    connect(maxDifferenceSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
-        maxDiff = i;
+    QLabel *maxDifferenceLabel = new QLabel("Max difference to breed:");
+    maxDifferenceLabel->setToolTip("<font>Sets the maximum difference between organisms to allow breeding. Min = 1; Max = 31.</font>");
+    maxDifferenceerenceSpin = new QSpinBox;
+    maxDifferenceerenceSpin->setMinimum(1);
+    maxDifferenceerenceSpin->setMaximum(31);
+    maxDifferenceerenceSpin->setValue(maxDifference);
+    maxDifferenceerenceSpin->setToolTip("<font>Sets the maximum difference between organisms to allow breeding. Min = 1; Max = 31.</font>");
+    organismSettingsGrid->addWidget(maxDifferenceLabel, 8, 1);
+    organismSettingsGrid->addWidget(maxDifferenceerenceSpin, 8, 2);
+    connect(maxDifferenceerenceSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i) {
+        maxDifference = i;
     });
 
-    breedDifferenceCheckbox = new QCheckBox("Use max diff to breed");
-    breedDifferenceCheckbox->setToolTip("<font>Turn on/off the maximum difference between organisms test.</font>");
-    organismSettingsGrid->addWidget(breedDifferenceCheckbox, 9, 1, 1, 1);
-    breedDifferenceCheckbox->setChecked(breeddiff);
-    connect(breedDifferenceCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i) {
-        breeddiff = i;
+    breedDifferenceerenceCheckbox = new QCheckBox("Use max diff to breed");
+    breedDifferenceerenceCheckbox->setToolTip("<font>Turn on/off the maximum difference between organisms test.</font>");
+    organismSettingsGrid->addWidget(breedDifferenceerenceCheckbox, 9, 1, 1, 1);
+    breedDifferenceerenceCheckbox->setChecked(breedDifference);
+    connect(breedDifferenceerenceCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i) {
+        breedDifference = i;
     });
 
     breedSpeciesCheckbox = new QCheckBox("Breed only within species");
     breedSpeciesCheckbox->setToolTip("<font>Turn on/off breeding only within the same species.</font>");
     organismSettingsGrid->addWidget(breedSpeciesCheckbox, 10, 1, 1, 1);
-    breedSpeciesCheckbox->setChecked(breedspecies);
+    breedSpeciesCheckbox->setChecked(breedSpecies);
     connect(breedSpeciesCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i) {
-        breedspecies = i;
+        breedSpecies = i;
     });
 
     QLabel *breed_modeLabel = new QLabel("Breed mode:");
@@ -1400,7 +1400,7 @@ void MainWindow::report()
     double t = 0;
     for (int n2 = 0; n2 < gridX; n2++)
         for (int m2 = 0; m2 < gridY; m2++)
-            t += totalfit[n2][m2];
+            t += totalFittness[n2][m2];
     t /= static_cast<double>(aliveCount);
     t /= static_cast<double>(settleTolerance);
     t *= 100; //now %age
@@ -1408,7 +1408,7 @@ void MainWindow::report()
     QString out;
     QTextStream o(&out);
 
-    o << generation; //need to use to avoid int64 descendants
+    o << itteration; //need to use to avoid int64 descendants
     ui->LabelIteration->setText(out);
 
     out.sprintf("%.2fk", static_cast<double>((3600000 / atime) / 1000));
@@ -1448,13 +1448,13 @@ void MainWindow::report()
 
     writeLog();
 
-    //reset the breedattempts and breedfails arrays
+    //reset the breedAttempts and breedFails arrays
     for (int n2 = 0; n2 < gridX; n2++)
         for (int m2 = 0; m2 < gridY; m2++) {
-            //breedattempts[n2][m2]=0;
-            breedfails[n2][m2] = 0;
+            //breedAttempts[n2][m2]=0;
+            breedFails[n2][m2] = 0;
             settles[n2][m2] = 0;
-            settlefails[n2][m2] = 0;
+            settleFails[n2][m2] = 0;
         }
 }
 
@@ -1559,7 +1559,7 @@ void MainWindow::refreshPopulations()
             populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (savePopulationCount->isChecked())
             if (save_dir.mkpath("population/"))
-                populationImageColour->save(QString(save_dir.path() + "/population/EvoSim_population_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/population/EvoSim_population_it_%1.png").arg(itteration, 7, 10, QChar('0')));
     }
 
     // (1) Fitness
@@ -1575,14 +1575,14 @@ void MainWindow::refreshPopulations()
                 if (count == 0)
                     populationImage->setPixel(n, m, 0);
                 else
-                    populationImage->setPixel(n, m, static_cast<uint>((totalfit[n][m] * static_cast<uint>(multiplier)) / static_cast<uint>(count)));
+                    populationImage->setPixel(n, m, static_cast<uint>((totalFittness[n][m] * static_cast<uint>(multiplier)) / static_cast<uint>(count)));
 
             }
         if (currentSelectedMode == 1)
             populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (saveMeanFitness->isChecked())
             if (save_dir.mkpath("fitness/"))
-                populationImageColour->save(QString(save_dir.path() + "/fitness/EvoSim_mean_fitness_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/fitness/EvoSim_mean_fitness_it_%1.png").arg(itteration, 7, 10, QChar('0')));
     }
 
     // (2) Genome as colour
@@ -1595,10 +1595,10 @@ void MainWindow::refreshPopulations()
                 int counts[SLOTS_PER_GRID_SQUARE];
                 int arraypos = 0; //pointer
 
-                if (totalfit[n][m] == 0) populationImageColour->setPixel(n, m, 0); //black if square is empty
+                if (totalFittness[n][m] == 0) populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else {
                     //for each used slot
-                    for (int c = 0; c < maxused[n][m]; c++) {
+                    for (int c = 0; c < maxUsed[n][m]; c++) {
                         if (critters[n][m][c].age > 0) {
                             //If critter is alive
 
@@ -1632,11 +1632,11 @@ gotcounts:
                     //now convert first 32 bits to a colour
                     // r,g,b each counts of 11,11,10 bits
                     auto genome = static_cast<quint32>((maxg & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))));
-                    quint32 b = bitcounts[genome & 2047] * 23;
+                    quint32 b = bitCounts[genome & 2047] * 23;
                     genome /= 2048;
-                    quint32 g = bitcounts[genome & 2047] * 23;
+                    quint32 g = bitCounts[genome & 2047] * 23;
                     genome /= 2048;
-                    quint32 r = bitcounts[genome] * 25;
+                    quint32 r = bitCounts[genome] * 25;
                     populationImageColour->setPixel(n, m, qRgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b)));
                 }
 
@@ -1646,7 +1646,7 @@ gotcounts:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("coding/"))
-                populationImageColour->save(QString(save_dir.path() + "/coding/EvoSim_coding_genome_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/coding/EvoSim_coding_genome_it_%1.png").arg(itteration, 7, 10, QChar('0')));
     }
 
     // (3) Non-coding Genome
@@ -1659,11 +1659,11 @@ gotcounts:
                 int counts[SLOTS_PER_GRID_SQUARE];
                 int arraypos = 0; //pointer
 
-                if (totalfit[n][m] == 0)
+                if (totalFittness[n][m] == 0)
                     populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else {
                     //for each used slot
-                    for (int c = 0; c < maxused[n][m]; c++) {
+                    for (int c = 0; c < maxUsed[n][m]; c++) {
                         if (critters[n][m][c].age > 0) {
                             //If critter is alive
 
@@ -1698,11 +1698,11 @@ gotcounts2:
                     //now convert second 32 bits to a colour
                     // r,g,b each counts of 11,11,10 bits
                     auto genome = static_cast<quint32>((maxg / (static_cast<quint64>(65536) * static_cast<quint64>(65536))));
-                    quint32 b = bitcounts[genome & 2047] * 23;
+                    quint32 b = bitCounts[genome & 2047] * 23;
                     genome /= 2048;
-                    quint32 g = bitcounts[genome & 2047] * 23;
+                    quint32 g = bitCounts[genome & 2047] * 23;
                     genome /= 2048;
-                    quint32 r = bitcounts[genome] * 25;
+                    quint32 r = bitCounts[genome] * 25;
                     populationImageColour->setPixel(n, m, qRgb(static_cast<int>(r), static_cast<int>(g), static_cast<int>(b)));
                 }
             }
@@ -1711,7 +1711,7 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveNonCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("non_coding/"))
-                populationImageColour->save(QString(save_dir.path() + "/non_coding/EvoSim_non_coding_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/non_coding/EvoSim_non_coding_it_%1.png").arg(itteration, 7, 10, QChar('0')));
     }
 
     // (4) Gene Frequencies
@@ -1744,7 +1744,7 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveGeneFrequencies->isChecked())
             if (save_dir.mkpath("gene_freq/"))
-                populationImageColour->save(QString(save_dir.path() + "/gene_freq/EvoSim_gene_freq_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/gene_freq/EvoSim_gene_freq_it_%1.png").arg(itteration, 7, 10, QChar('0')));
     }
 
     // (5) Breed Attempts
@@ -1753,7 +1753,7 @@ gotcounts2:
         //Popcount
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
-                int value = (breedattempts[n][m] * 10) / refreshRate;
+                int value = (breedAttempts[n][m] * 10) / refreshRate;
                 if (value > 255) value = 255;
                 populationImage->setPixel(n, m, static_cast<uint>(value));
             }
@@ -1766,9 +1766,9 @@ gotcounts2:
         //Popcount
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
-                if (breedattempts[n][m] == 0) populationImage->setPixel(n, m, 0);
+                if (breedAttempts[n][m] == 0) populationImage->setPixel(n, m, 0);
                 else {
-                    int value = (breedfails[n][m] * 255) / breedattempts[n][m];
+                    int value = (breedFails[n][m] * 255) / breedAttempts[n][m];
                     populationImage->setPixel(n, m, static_cast<uint>(value));
                 }
             }
@@ -1789,22 +1789,22 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (saveSettles->isChecked())
             if (save_dir.mkpath("settles/"))
-                populationImage->save(QString(save_dir.path() + "/settles/EvoSim_settles_it_%1.png").arg(generation, 7,
+                populationImage->save(QString(save_dir.path() + "/settles/EvoSim_settles_it_%1.png").arg(itteration, 7,
                                                                                                          10, QChar('0')));
     }
 
     // (8) Breed/Settle Fails
     //RJG - this now combines breed fails (red) and settle fails (green)
     if (currentSelectedMode == 8 || saveFailsSettles->isChecked()) {
-        //work out average per generation
-        float generations = static_cast<float>(generation - static_cast<quint64>(lastReport));
+        //work out average per itteration
+        float generations = static_cast<float>(itteration - static_cast<quint64>(lastReport));
 
 
         //Make image
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
-                int r = scaleFails(breedfails[n][m], generations);
-                int g = scaleFails(settlefails[n][m], generations);
+                int r = scaleFails(breedFails[n][m], generations);
+                int g = scaleFails(settleFails[n][m], generations);
                 populationImageColour->setPixel(n, m, qRgb(r, g, 0));
             }
 
@@ -1812,7 +1812,7 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveFailsSettles->isChecked())
             if (save_dir.mkpath("breed_settle_fails/"))
-                populationImageColour->save(QString(save_dir.path() + "/breed_settle_fails/EvoSim_breed_settle_fails_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/breed_settle_fails/EvoSim_breed_settle_fails_it_%1.png").arg(itteration, 7, 10, QChar('0')));
 
     }
 
@@ -1821,9 +1821,9 @@ gotcounts2:
         //Popcount
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
-                if (breedfails[n][m] == 0) populationImage->setPixel(n, m, 0);
+                if (breedFails[n][m] == 0) populationImage->setPixel(n, m, 0);
                 else {
-                    int value = (breedfails[n][m]);
+                    int value = (breedFails[n][m]);
                     if (value > 255) value = 255;
                     populationImage->setPixel(n, m, static_cast<uint>(value));
                 }
@@ -1836,7 +1836,7 @@ gotcounts2:
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
 
-                if (totalfit[n][m] == 0)
+                if (totalFittness[n][m] == 0)
                     populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else {
                     quint64 thisspecies = 0;
@@ -1847,7 +1847,7 @@ gotcounts2:
                         }
                     }
 
-                    populationImageColour->setPixel(n, m, species_colours[thisspecies % 65536]);
+                    populationImageColour->setPixel(n, m, speciesColours[thisspecies % 65536]);
                 }
             }
 
@@ -1855,11 +1855,11 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveSpecies->isChecked())
             if (save_dir.mkpath("species/"))
-                populationImageColour->save(QString(save_dir.path() + "/species/EvoSim_species_it_%1.png").arg(generation, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/species/EvoSim_species_it_%1.png").arg(itteration, 7, 10, QChar('0')));
 
     }
 
-    lastReport = generation;
+    lastReport = itteration;
 }
 
 /*!
@@ -1885,7 +1885,7 @@ void MainWindow::refreshEnvironment()
     environmentItem->setPixmap(QPixmap::fromImage(*environmentImage));
     if (saveEnvironment->isChecked())
         if (save_dir.mkpath("environment/"))
-            environmentImage->save(QString(save_dir.path() + "/environment/EvoSim_environment_it_%1.png").arg(generation, 7, 10, QChar('0')));
+            environmentImage->save(QString(save_dir.path() + "/environment/EvoSim_environment_it_%1.png").arg(itteration, 7, 10, QChar('0')));
 }
 
 /*!
@@ -2034,7 +2034,7 @@ void MainWindow::speciesModeChanged(int changeSpeciesMode, bool updateGUI)
         newSpeciesMode = SPECIES_MODE_BASIC;
 
     //some changes not allowed
-    if (generation != 0) {
+    if (itteration != 0) {
         //already running. Can switch tracking off - but not on
         //detailed tracking can be switched on/off at any point
         if (speciesMode == SPECIES_MODE_NONE) {
@@ -2081,12 +2081,12 @@ void MainWindow::resetSquare(int n, int m)
     //grid expanded - make sure everything is zeroed in new slots
     for (int c = 0; c < slotsPerSquare; c++) critters[n][m][c].age = 0;
 
-    totalfit[n][m] = 0;
+    totalFittness[n][m] = 0;
 
-    breedattempts[n][m] = 0;
-    breedfails[n][m] = 0;
+    breedAttempts[n][m] = 0;
+    breedFails[n][m] = 0;
     settles[n][m] = 0;
-    settlefails[n][m] = 0;
+    settleFails[n][m] = 0;
 }
 
 /*!
@@ -2115,10 +2115,10 @@ void MainWindow::resizeImageObjects()
  */
 void MainWindow::redoImages(int oldRows, int oldColumns)
 {
-    //check that the maxused's are in the new range
+    //check that the maxUsed's are in the new range
     for (int n = 0; n < gridX; n++)
         for (int m = 0; m < gridY; m++)
-            if (maxused[n][m] >= slotsPerSquare) maxused[n][m] = slotsPerSquare - 1;
+            if (maxUsed[n][m] >= slotsPerSquare) maxUsed[n][m] = slotsPerSquare - 1;
 
     //If either rows or cols are bigger - make sure age is set to 0 in all critters in new bit!
     if (gridX > oldRows) {
@@ -2280,7 +2280,7 @@ void MainWindow::saveSimulation()
     out << food;
     out << breedCost;
     out << mutate;
-    out << maxDiff;
+    out << maxDifference;
     out << breedThreshold;
     out << target;
     out << environmentChangeRate;
@@ -2296,8 +2296,8 @@ void MainWindow::saveSimulation()
     out << recalculateFitness;
     out << toroidal;
     out << nonspatial;
-    out << breeddiff;
-    out << breedspecies;
+    out << breedDifference;
+    out << breedSpecies;
     out << allowExcludeWithDescendants;
     out << sexual;
     out << asexual;
@@ -2354,10 +2354,10 @@ void MainWindow::saveSimulation()
 
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
-            out << totalfit[i][j];
+            out << totalFittness[i][j];
         }
 
-    for (auto &xormask : xormasks)
+    for (auto &xormask : xorMasks)
         for (int j = 0; j < 3; j++) {
             out << xormask[j];
         }
@@ -2367,11 +2367,11 @@ void MainWindow::saveSimulation()
 
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
-            out << breedattempts[i][j];
-            out << breedfails[i][j];
+            out << breedAttempts[i][j];
+            out << breedFails[i][j];
             out << settles[i][j];
-            out << settlefails[i][j];
-            out << maxused[i][j];
+            out << settleFails[i][j];
+            out << maxUsed[i][j];
         }
 
     //And some window state stuff
@@ -2382,15 +2382,15 @@ void MainWindow::saveSimulation()
     out << environmentInterpolate;
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
-            out << environmentlast[i][j][0];
-            out << environmentlast[i][j][1];
-            out << environmentlast[i][j][2];
+            out << environmentLast[i][j][0];
+            out << environmentLast[i][j][1];
+            out << environmentLast[i][j][2];
         }
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
-            out << environmentnext[i][j][0];
-            out << environmentnext[i][j][1];
-            out << environmentnext[i][j][2];
+            out << environmentNext[i][j][0];
+            out << environmentNext[i][j][1];
+            out << environmentNext[i][j][2];
         }
 
     out << speciesSamples;
@@ -2408,20 +2408,20 @@ void MainWindow::saveSimulation()
         out << oldSpeciesList[j].internalID;
     }
 
-    out << archivedspecieslists.count();
-    for (int i = 0; i < archivedspecieslists.count(); i++) {
-        out << archivedspecieslists[i].count();
-        for (int j = 0; j < archivedspecieslists[i].count(); j++) {
-            out << archivedspecieslists[i][j].ID;
-            out << archivedspecieslists[i][j].type;
-            out << archivedspecieslists[i][j].originTime;
-            out << archivedspecieslists[i][j].parent;
-            out << archivedspecieslists[i][j].size;
-            out << archivedspecieslists[i][j].internalID;
+    out << archivedSpeciesLists.count();
+    for (int i = 0; i < archivedSpeciesLists.count(); i++) {
+        out << archivedSpeciesLists[i].count();
+        for (int j = 0; j < archivedSpeciesLists[i].count(); j++) {
+            out << archivedSpeciesLists[i][j].ID;
+            out << archivedSpeciesLists[i][j].type;
+            out << archivedSpeciesLists[i][j].originTime;
+            out << archivedSpeciesLists[i][j].parent;
+            out << archivedSpeciesLists[i][j].size;
+            out << archivedSpeciesLists[i][j].internalID;
         }
     }
-    out << nextspeciesid;
-    out << lastSpeciesCalc;
+    out << nextSpeciesID;
+    out << lastSpeciesCalculated;
 
     //now random number array
     for (unsigned char random : randoms)
@@ -2481,7 +2481,7 @@ void MainWindow::loadSimulation()
     in >> food;
     in >> breedCost;
     in >> mutate;
-    in >> maxDiff;
+    in >> maxDifference;
     in >> breedThreshold;
     in >> target;
     in >> environmentChangeRate;
@@ -2497,8 +2497,8 @@ void MainWindow::loadSimulation()
     in >> recalculateFitness;
     in >> toroidal;
     in >> nonspatial;
-    in >> breeddiff;
-    in >> breedspecies;
+    in >> breedDifference;
+    in >> breedSpecies;
     in >> allowExcludeWithDescendants;
     in >> sexual;
     in >> asexual;
@@ -2602,10 +2602,10 @@ void MainWindow::loadSimulation()
 
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
-            in >> totalfit[i][j];
+            in >> totalFittness[i][j];
         }
 
-    for (auto &xormask : xormasks)
+    for (auto &xormask : xorMasks)
         for (int j = 0; j < 3; j++) {
             in >> xormask[j];
         }
@@ -2618,11 +2618,11 @@ void MainWindow::loadSimulation()
 
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
-            in >> breedattempts[i][j];
-            in >> breedfails[i][j];
+            in >> breedAttempts[i][j];
+            in >> breedFails[i][j];
             in >> settles[i][j];
-            in >> settlefails[i][j];
-            in >> maxused[i][j];
+            in >> settleFails[i][j];
+            in >> maxUsed[i][j];
         }
 
     in >> Temp;
@@ -2638,16 +2638,16 @@ void MainWindow::loadSimulation()
 
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
-            in >> environmentlast[i][j][0];
-            in >> environmentlast[i][j][1];
-            in >> environmentlast[i][j][2];
+            in >> environmentLast[i][j][0];
+            in >> environmentLast[i][j][1];
+            in >> environmentLast[i][j][2];
         }
 
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
-            in >> environmentnext[i][j][0];
-            in >> environmentnext[i][j][1];
-            in >> environmentnext[i][j][2];
+            in >> environmentNext[i][j][0];
+            in >> environmentNext[i][j][1];
+            in >> environmentNext[i][j][2];
         }
 
     in >> speciesSamples;
@@ -2655,7 +2655,7 @@ void MainWindow::loadSimulation()
     in >> timeSliceConnect;
 
     //now the species archive
-    archivedspecieslists.clear();
+    archivedSpeciesLists.clear();
     oldSpeciesList.clear();
 
     int temp;
@@ -2671,11 +2671,11 @@ void MainWindow::loadSimulation()
         oldSpeciesList.append(s);
     }
 
-    in >> temp; //archivedspecieslists.count();
+    in >> temp; //archivedSpeciesLists.count();
 
     for (int i = 0; i < temp; i++) {
         int temp2;
-        in >> temp2; //archivedspecieslists.count();
+        in >> temp2; //archivedSpeciesLists.count();
         QList<Species> ql;
         for (int j = 0; j < temp2; j++) {
             Species s;
@@ -2687,12 +2687,12 @@ void MainWindow::loadSimulation()
             in >> s.internalID;
             ql.append(s);
         }
-        archivedspecieslists.append(ql);
+        archivedSpeciesLists.append(ql);
     }
-    in >> nextspeciesid;
-    in >> lastSpeciesCalc; //actually no - if we import this it will assume an 'a' object exists.
+    in >> nextSpeciesID;
+    in >> lastSpeciesCalculated; //actually no - if we import this it will assume an 'a' object exists.
     //bodge
-    lastSpeciesCalc--;
+    lastSpeciesCalculated--;
 
     //now random array
     for (unsigned char &random : randoms)
@@ -2719,7 +2719,7 @@ bool MainWindow::genomeComparisonAdd()
     int y = populationScene->selectedY;
 
     //---- Get genome colour
-    if (totalfit[x][y] != 0) {
+    if (totalFittness[x][y] != 0) {
         for (int c = 0; c < slotsPerSquare; c++) {
             if (critters[x][y][c].age > 0) {
                 genoneComparison->addGenomeCritter(critters[x][y][c], environment[x][y]);
@@ -2738,7 +2738,7 @@ void MainWindow::calculateSpecies()
     if (speciesMode == SPECIES_MODE_NONE)
         return; //do nothing!
 
-    if (generation != lastSpeciesCalc) {
+    if (itteration != lastSpeciesCalculated) {
         delete analyser;  //replace old analyser object with new
         analyser = new Analyser;
 
@@ -2746,7 +2746,7 @@ void MainWindow::calculateSpecies()
         analyser->groupsGenealogicalTracker();
 
         //Makre sure this is updated
-        lastSpeciesCalc = generation;
+        lastSpeciesCalculated = itteration;
     }
 }
 
@@ -2768,7 +2768,7 @@ void MainWindow::writeLog()
         speciesLoggingFile.append(".txt");
         QFile outputfile(speciesLoggingFile);
 
-        if (generation == 0) {
+        if (itteration == 0) {
             outputfile.open(QIODevice::WriteOnly | QIODevice::Text);
             QTextStream out(&outputfile);
             out << "New run ";
@@ -2800,16 +2800,16 @@ void MainWindow::writeLog()
         outputfile.open(QIODevice::Append | QIODevice::Text);
         QTextStream out(&outputfile);
 
-        out << "[I] " << generation << "\n";
+        out << "[I] " << itteration << "\n";
 
         int gridNumberAlive = 0, gridTotalFitness = 0, gridBreedEntries = 0, gridBreedFails = 0;
         for (int i = 0; i < gridX; i++)
             for (int j = 0; j < gridY; j++) {
-                gridTotalFitness += totalfit[i][j];
+                gridTotalFitness += totalFittness[i][j];
                 //----RJG: Manually count breed stufffor grid
-                gridBreedEntries += breedattempts[i][j];
-                gridBreedFails += breedfails[i][j];
-                //----RJG: Manually count number alive thanks to maxused descendants
+                gridBreedEntries += breedAttempts[i][j];
+                gridBreedFails += breedFails[i][j];
+                //----RJG: Manually count number alive thanks to maxUsed descendants
                 for  (int k = 0; k < slotsPerSquare; k++)if (critters[i][j][k].fitness)gridNumberAlive++;
             }
         double meanFitness = double(gridTotalFitness) / double(gridNumberAlive);
@@ -2930,14 +2930,14 @@ QString MainWindow::handleAnalysisTool(int code)
 
     case ANALYSIS_TOOL_CODE_MAKE_NEWICK:
         if (phylogenyButton->isChecked() || phylogenyAndMetricsButton->isChecked())
-            OutputString = a.makeNewick(rootspecies, minSpeciesSize, allowExcludeWithDescendants);
+            OutputString = a.makeNewick(rootSpecies, minSpeciesSize, allowExcludeWithDescendants);
         else
             OutputString = "Species tracking is not enabled.";
         break;
 
     case ANALYSIS_TOOL_CODE_WRITE_DATA:
         if (phylogenyAndMetricsButton->isChecked())
-            OutputString = a.writeData(rootspecies, minSpeciesSize, allowExcludeWithDescendants);
+            OutputString = a.writeData(rootSpecies, minSpeciesSize, allowExcludeWithDescendants);
         else
             OutputString = "Species tracking is not enabled, or is set to phylogeny only.";
         break;
@@ -2971,7 +2971,7 @@ QString MainWindow::printSettings()
     settings_out << "-- Food: " << food << "\n";
     settings_out << "-- Breed cost: " << breedCost << "\n";
     settings_out << "-- Mutate: " << mutate << "\n";
-    settings_out << "-- Max diff to breed: " << maxDiff << "\n";
+    settings_out << "-- Max diff to breed: " << maxDifference << "\n";
     settings_out << "-- Breed threshold: " << breedThreshold << "\n";
     settings_out << "-- Slots per square: " << slotsPerSquare << "\n";
     settings_out << "-- Fitness target: " << target << "\n";
@@ -2985,8 +2985,8 @@ QString MainWindow::printSettings()
     settings_out << "-- Toroidal environment: " << toroidal << "\n";
     settings_out << "-- Interpolate environment: " << environmentInterpolate << "\n";
     settings_out << "-- Nonspatial setling: " << nonspatial << "\n";
-    settings_out << "-- Enforce max diff to breed:" << breeddiff << "\n";
-    settings_out << "-- Only breed within species:" << breedspecies << "\n";
+    settings_out << "-- Enforce max diff to breed:" << breedDifference << "\n";
+    settings_out << "-- Only breed within species:" << breedSpecies << "\n";
     settings_out << "-- Exclude species without descendants:" << allowExcludeWithDescendants << "\n";
     settings_out << "-- Breeding: ";
     if (sexual)
@@ -3047,8 +3047,8 @@ void MainWindow::loadSettings()
                 breedCost = settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "mutate")
                 mutate = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "maxDiff")
-                maxDiff = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "maxDifference")
+                maxDifference = settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "breedThreshold")
                 breedThreshold = settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "target")
@@ -3078,10 +3078,10 @@ void MainWindow::loadSettings()
                 toroidal = settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "nonspatial")
                 nonspatial = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "breeddiff")
-                breeddiff = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "breedspecies")
-                breedspecies = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "breedDifference")
+                breedDifference = settings_file_in.readElementText().toInt();
+            if (settings_file_in.name() == "breedSpecies")
+                breedSpecies = settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "allowExcludeWithDescendants")
                 allowExcludeWithDescendants = settings_file_in.readElementText().toInt();
             if (settings_file_in.name() == "sexual")
@@ -3152,7 +3152,7 @@ void MainWindow::updateGUIFromVariables()
     energySpin->setValue(food);
     breedCostSpin->setValue(breedCost);
     mutateSpin->setValue(mutate);
-    maxDifferenceSpin->setValue(maxDiff);
+    maxDifferenceerenceSpin->setValue(maxDifference);
     breedThresholdSpin->setValue(breedThreshold);
     targetSpin->setValue(target);
     environmentRateSpin->setValue(environmentChangeRate);
@@ -3166,8 +3166,8 @@ void MainWindow::updateGUIFromVariables()
     recalculateFitnessCheckbox->setChecked(recalculateFitness);
     toroidalCheckbox->setChecked(toroidal);
     nonspatialCheckbox->setChecked(nonspatial);
-    breedDifferenceCheckbox->setChecked(breeddiff);
-    breedSpeciesCheckbox->setChecked(breedspecies);
+    breedDifferenceerenceCheckbox->setChecked(breedDifference);
+    breedSpeciesCheckbox->setChecked(breedSpecies);
     excludeWithoutDescendantsCheckbox->setChecked(allowExcludeWithDescendants);
     sexualRadio->setChecked(sexual);
     asexualRadio->setChecked(asexual);
@@ -3239,8 +3239,8 @@ void MainWindow::saveSettings()
     settings_file_out.writeCharacters(QString("%1").arg(mutate));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("maxDiff");
-    settings_file_out.writeCharacters(QString("%1").arg(maxDiff));
+    settings_file_out.writeStartElement("maxDifference");
+    settings_file_out.writeCharacters(QString("%1").arg(maxDifference));
     settings_file_out.writeEndElement();
 
     settings_file_out.writeStartElement("breedThreshold");
@@ -3296,12 +3296,12 @@ void MainWindow::saveSettings()
     settings_file_out.writeCharacters(QString("%1").arg(nonspatial));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("breeddiff");
-    settings_file_out.writeCharacters(QString("%1").arg(breeddiff));
+    settings_file_out.writeStartElement("breedDifference");
+    settings_file_out.writeCharacters(QString("%1").arg(breedDifference));
     settings_file_out.writeEndElement();
 
-    settings_file_out.writeStartElement("breedspecies");
-    settings_file_out.writeCharacters(QString("%1").arg(breedspecies));
+    settings_file_out.writeStartElement("breedSpecies");
+    settings_file_out.writeCharacters(QString("%1").arg(breedSpecies));
     settings_file_out.writeEndElement();
 
     settings_file_out.writeStartElement("allowExcludeWithDescendants");

@@ -131,7 +131,7 @@ private:
     QCheckBox *recalculateFitnessCheckbox{};
     QCheckBox *toroidalCheckbox{};
     QCheckBox *nonspatialCheckbox{};
-    QCheckBox *breedDifferenceCheckbox{};
+    QCheckBox *breedDifferenceerenceCheckbox{};
     QCheckBox *breedSpeciesCheckbox{};
     QCheckBox *excludeWithoutDescendantsCheckbox{};
     QCheckBox *loggingCheckbox{};
@@ -151,7 +151,7 @@ private:
 
     QSpinBox *mutateSpin{};
     QSpinBox *refreshRateSpin{};
-    QSpinBox *maxDifferenceSpin{};
+    QSpinBox *maxDifferenceerenceSpin{};
     QSpinBox *breedThresholdSpin{};
     QSpinBox *targetSpin{};
     QSpinBox *environmentRateSpin{};

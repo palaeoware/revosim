@@ -314,11 +314,11 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
 
                         //Coding half
                         auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-                        int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
+                        int t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
 
                         //non-Coding half
                         auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-                        t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
+                        t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
 
                         //if (t1>0) qDebug()<<"T1 not 0!"<<t1;
                         steps++;
@@ -335,11 +335,11 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
 
             //Coding half
             auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-            int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
+            int t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
 
             //non-Coding half
             auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-            t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
+            t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
 
             QString changestring1 = "'NA'";
             if (steps > 0) changestring1.sprintf("%0.5f", ((float)t1) / ((float)(steps + 1)));
@@ -716,9 +716,9 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
                 quint64 cg1x = genome1 ^ genome2; //XOR the two to compare
 
                 auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-                int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
+                int t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
                 auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-                t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
+                t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
 
                 float avdiff = ((float)t1) / ((float)this_species->genomeSampleTimes[closestindexend] -
                                               this_species->genomeSampleTimes[closestindexstart]);
@@ -1401,7 +1401,7 @@ QString AnalysisTools::writeData(LogSpecies *root, quint64 minSpeciesSize, bool 
     quint32 maxSize;
 
 
-    quint64 generation;
+    quint64 itteration;
     quint64 sampleGenome;
     quint32 size; //number of critters
     quint32 genomicDiversity; //number of genomes
@@ -1418,7 +1418,7 @@ QString AnalysisTools::writeData(LogSpecies *root, quint64 minSpeciesSize, bool 
     minSpeciesSize = minSpeciesSize;
     allowExcludeWithDescendants = allowExclude;
     if (root)
-        return "ID,ParentID,generation,size,sampleGenome,sampleGenome_binary,diversity,cellsOccupied,geog_range,centroid_x,centroid_y,mean_fit,min_env_red,min_env_green,min_env_blue,max_env_red,max_env_green,max_env_blue,mean_env_red,mean_env_green,mean_env_blue\n"
+        return "ID,ParentID,itteration,size,sampleGenome,sampleGenome_binary,diversity,cellsOccupied,geog_range,centroid_x,centroid_y,mean_fit,min_env_red,min_env_green,min_env_blue,max_env_red,max_env_green,max_env_blue,mean_env_red,mean_env_green,mean_env_blue\n"
                +
                root->writeData(0, 0, true);
 
@@ -1432,7 +1432,7 @@ QString AnalysisTools::writeData(LogSpecies *root, quint64 minSpeciesSize, bool 
     Q_UNUSED(timeOfFirstAppearance);
     Q_UNUSED(timeOfLastAppearance);
     Q_UNUSED(maxSize);
-    Q_UNUSED(generation);
+    Q_UNUSED(itteration);
     Q_UNUSED(sampleGenome);
     Q_UNUSED(size);
     Q_UNUSED(genomicDiversity);

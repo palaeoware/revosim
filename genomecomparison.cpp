@@ -466,19 +466,19 @@ bool GenomeComparison::addGenomeCritter(Critter critter, quint8 *environment)
 
     //Coding Genome Colour
     genome = (quint32)(critter.genome & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-    quint32 genomeB = bitcounts[genome & 2047] * 23;
+    quint32 genomeB = bitCounts[genome & 2047] * 23;
     genome /= 2048;
-    quint32 genomeG = bitcounts[genome & 2047] * 23;
+    quint32 genomeG = bitCounts[genome & 2047] * 23;
     genome /= 2048;
-    quint32 genomeR = bitcounts[genome] * 25;
+    quint32 genomeR = bitCounts[genome] * 25;
 
     //Non-coding Genome Colour
     genome = (quint32)(critter.genome / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-    quint32 nonCodeB = bitcounts[genome & 2047] * 23;
+    quint32 nonCodeB = bitCounts[genome & 2047] * 23;
     genome /= 2048;
-    quint32 nonCodeG = bitcounts[genome & 2047] * 23;
+    quint32 nonCodeG = bitCounts[genome & 2047] * 23;
     genome /= 2048;
-    quint32 nonCodeR = bitcounts[genome] * 25;
+    quint32 nonCodeR = bitCounts[genome] * 25;
 
     //Fitness
     int fitness = critter.fitness;

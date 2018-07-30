@@ -32,17 +32,17 @@ Critter::Critter()
 
 /**
  * @brief Critter::initialise
- * @param generation
+ * @param itteration
  * @param environment
  * @param x
  * @param y
  * @param z
  * @param species
  */
-void Critter::initialise(quint64 generation, quint8 *environment, int x, int y, int z, quint64 species)
+void Critter::initialise(quint64 itteration, quint8 *environment, int x, int y, int z, quint64 species)
 {
     //Restart a slot - set up properly
-    genome = generation;
+    genome = itteration;
 
     age = startAge;
     //RJG - start with 0 energy
@@ -65,25 +65,25 @@ int Critter::recalculateFitness(const quint8 *environment)
 {
     auto lowergenome = (quint32)(genome & ((quint64)65536 * (quint64)65536 - (quint64)1));
 
-    quint32 answer = lowergenome ^ xormasks[environment[0]][0]; //apply redmask
+    quint32 answer = lowergenome ^ xorMasks[environment[0]][0]; //apply redmask
     quint32 a2 = answer / 65536;
     answer &= (quint32) 65535;
 
     //RJG - add a counter for final bitcount
-    int finalanswer = bitcounts[answer];
-    finalanswer += bitcounts[a2];
+    int finalanswer = bitCounts[answer];
+    finalanswer += bitCounts[a2];
 
-    answer = lowergenome ^ xormasks[environment[1]][1]; //apply greenmask
+    answer = lowergenome ^ xorMasks[environment[1]][1]; //apply greenmask
     a2 = answer / 65536;
     answer &= (unsigned int) 65535;
-    finalanswer += bitcounts[answer];
-    finalanswer += bitcounts[a2];
+    finalanswer += bitCounts[answer];
+    finalanswer += bitCounts[a2];
 
-    answer = lowergenome ^ xormasks[environment[2]][2]; //apply bluemask
+    answer = lowergenome ^ xorMasks[environment[2]][2]; //apply bluemask
     a2 = answer / 65536;
     answer &= (unsigned int) 65535;
-    finalanswer += bitcounts[answer];
-    finalanswer += bitcounts[a2];
+    finalanswer += bitCounts[answer];
+    finalanswer += bitCounts[a2];
 
     if (finalanswer >= target + settleTolerance) {
         fitness = 0;    // no use
@@ -116,22 +116,22 @@ bool Critter::iterateParallel(int *killCountLocal, int addFood)
         //RJG - Here is where an individual dies.
         if ((--age) == 0) {
             (*killCountLocal)++;
-            totalfit[xPosition][yPosition] -= fitness;
+            totalFittness[xPosition][yPosition] -= fitness;
             fitness = 0;
-            if (maxused[xPosition][yPosition] == zPosition) {
+            if (maxUsed[xPosition][yPosition] == zPosition) {
                 for (int n = zPosition - 1; n >= 0; n--)
                     if (critters[xPosition][yPosition][n].age > 0) {
-                        maxused[xPosition][yPosition] = n;
+                        maxUsed[xPosition][yPosition] = n;
                         goto past;
                     }
-                maxused[xPosition][yPosition] = -1;
+                maxUsed[xPosition][yPosition] = -1;
 past:
                 ;
             }
             return false;
         }
         energy +=  fitness * addFood;
-        //energy+= (fitness * food) / totalfit[xPosition][yPosition];]
+        //energy+= (fitness * food) / totalFittness[xPosition][yPosition];]
 
         //non-slot version - try breeding if our energy is high enough
         if (energy > (breedThreshold + breedCost)) {
@@ -160,23 +160,23 @@ int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, i
     bool breedsuccess1 = true; //for species restricted breeding
     bool breedsuccess2 = true; //for difference breeding
 
-    if (breedspecies) {
+    if (breedSpecies) {
         if (partner->speciesID != speciesID) breedsuccess1 = false;
     }
 
-    if (breeddiff) {
+    if (breedDifference) {
         int t1 = 0;
         // - determine success.. use genetic similarity
         quint64 cg1x = genome ^ partner->genome; //XOR the two to compare
 
         //Coding half
         auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-        t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
+        t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
 
         //non-Coding half
         auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-        t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
-        if (t1 > maxDiff) {
+        t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
+        if (t1 > maxDifference) {
             breedsuccess2 = false;
         }
     }
@@ -184,8 +184,8 @@ int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, i
     if (breedsuccess1 && breedsuccess2) {
         //work out new genome
 
-        quint64 g1x = genex[nextgenex++];
-        if (nextgenex >= 65536) nextgenex = 0;
+        quint64 g1x = geneX[nextGeneX++];
+        if (nextGeneX >= 65536) nextGeneX = 0;
         quint64 g2x = ~g1x; // inverse
 
         g2x &= genome;
@@ -195,22 +195,22 @@ int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, i
         bool local_mutate = false;
 
         //this is technically not threadsafe, but it doesn't matter - any value for nextrand is fine
-        if ((simulationManager->Rand8()) < mutate)
+        if ((simulationManager->random8()) < mutate)
             local_mutate = true;
 
         if (local_mutate) {
-            int w = simulationManager->Rand8();
+            int w = simulationManager->random8();
             w &= 63;
             g2x ^= tweakers64[w];
         }
 
         //store it all
 
-        newgenomes[*newGenomeCountLocal] = g2x;
-        newgenomeX[*newGenomeCountLocal] = xPosition;
-        newgenomeY[*newGenomeCountLocal] = yPosition;
-        newgenomespecies[*newGenomeCountLocal] = speciesID;
-        newgenomeDisp[(*newGenomeCountLocal)++] =
+        newGenomes[*newGenomeCountLocal] = g2x;
+        newGenomeX[*newGenomeCountLocal] = xPosition;
+        newGenomeY[*newGenomeCountLocal] = yPosition;
+        newGenomeSpecies[*newGenomeCountLocal] = speciesID;
+        newGenomeDispersal[(*newGenomeCountLocal)++] =
             dispersal; //how far to disperse - low is actually far (it's a divider - max is 240, <10% are >30
         return 0;
     } 

@@ -178,7 +178,7 @@ void Analyser::groupsGenealogicalTracker()
     //Loop over all critters and gather data (this is 1. above)
     for (int n = 0; n < gridX; n++)
         for (int m = 0; m < gridY; m++) {
-            if (totalfit[n][m] == 0) continue; //nothing alive in the cell - skip
+            if (totalFittness[n][m] == 0) continue; //nothing alive in the cell - skip
             for (int c = 0; c < slotsPerSquare; c++) {
                 if (critters[n][m][c].age > 0) { //if critter is alive
                     QHash<quint64, QList<quint32>*>
@@ -233,7 +233,7 @@ void Analyser::groupsGenealogicalTracker()
     QProgressBar prBar;
     //Work out limits
     int count = 0;
-    if (simulationManager->warning_count > 0) {
+    if (simulationManager->warningCount > 0) {
         while (ii.hasNext()) {
             count++;
             ii.next();
@@ -248,7 +248,7 @@ void Analyser::groupsGenealogicalTracker()
     while (ii.hasNext()) { //for each entry in genomedata hash
         ii.next();
 
-        if (simulationManager->warning_count > 0) {
+        if (simulationManager->warningCount > 0) {
             count++;
             prBar.setValue(count);
             mainWindow->processAppEvents();
@@ -259,7 +259,7 @@ void Analyser::groupsGenealogicalTracker()
         LogSpecies *thislogspecies;
 
         if (speciesMode >= SPECIES_MODE_PHYLOGENY) {
-            thislogspecies = LogSpeciesById.value(speciesID, (LogSpecies *)nullptr);
+            thislogspecies = logSpeciesByID.value(speciesID, (LogSpecies *)nullptr);
             if (!thislogspecies) {
                 QMessageBox::warning(mainWindow, "Oops",
                                      "Internal error - species not found in log hash. Please email MDS / RJG with this message");
@@ -319,14 +319,14 @@ void Analyser::groupsGenealogicalTracker()
                     //Already in same group - so no work to do, onto next iteration
                 }
                 //do comparison using standard (for REvoSim) xor/bitcount code. By nd, t1 is bit-distance.
-                //maxDiff is set by user in the settings dialog
+                //maxDifference is set by user in the settings dialog
                 quint64 g1x = firstgenome ^ genomes[second]; //XOR the two to compare
                 auto g1xl = quint32(g1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-                int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
-                if (t1 <= maxDiff) {
+                int t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
+                if (t1 <= maxDifference) {
                     auto g1xu = quint32(g1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-                    t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
-                    if (t1 <= maxDiff) {
+                    t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
+                    if (t1 <= maxDifference) {
                         //Pair IS within tolerances - so second should be in the same group as first
                         //if second not in a group - place it in group of first
                         if (gcs == -1)
@@ -400,7 +400,7 @@ void Analyser::groupsGenealogicalTracker()
                             int ls = v % 65536;
                             int y = ls / 256;
                             int z = ls % 256;
-                            critters[x][y][z].speciesID = nextspeciesid;
+                            critters[x][y][z].speciesID = nextSpeciesID;
 
                         }
 
@@ -408,37 +408,37 @@ void Analyser::groupsGenealogicalTracker()
                         //probably actually the most efficient way to do this
                     }
 
-                speciessizes[nextspeciesid] = speciessize; //can set species size now in the hash
+                speciessizes[nextSpeciesID] = speciessize; //can set species size now in the hash
                 speciessizes[speciesID] = speciessizes[speciesID] - speciessize; //remove this number from parent
 
                 Species newsp;          //new species object
                 newsp.parent = speciesID; //parent is the species we are splitting from
-                newsp.originTime = generation; //i.e. now (generation is a global)
-                newsp.ID = nextspeciesid;   //set the ID - last use so increment
+                newsp.originTime = itteration; //i.e. now (itteration is a global)
+                newsp.ID = nextSpeciesID;   //set the ID - last use so increment
                 newsp.type = samplegenome;    //put in our selected type genome
 
                 if (speciesMode >= SPECIES_MODE_PHYLOGENY) {
                     //sort out the logspecies object
                     auto *newlogspecies = new LogSpecies;
                     auto *newdata = new LogSpeciesDataItem;
-                    newdata->generation = generation;
+                    newdata->itteration = itteration;
 
-                    newlogspecies->ID = nextspeciesid;
-                    newlogspecies->timeOfFirstAppearance = generation;
-                    newlogspecies->timeOfLastAppearance = generation;
+                    newlogspecies->ID = nextSpeciesID;
+                    newlogspecies->timeOfFirstAppearance = itteration;
+                    newlogspecies->timeOfLastAppearance = itteration;
                     newlogspecies->parent = thislogspecies;
                     newlogspecies->maxSize = speciessize;
                     thislogspecies->children.append(newlogspecies);
 
                     newlogspecies->dataItems.append(newdata);
-                    LogSpeciesById.insert(nextspeciesid, newlogspecies);
+                    logSpeciesByID.insert(nextSpeciesID, newlogspecies);
                     newsp.logSpeciesStructure = newlogspecies;
                     logspeciespointers[groupcode] = newlogspecies;
                 }
 
                 newspecieslist.append(newsp);
 
-                nextspeciesid++;
+                nextSpeciesID++;
             } else { //this is the continuing species
                 //find it in the old list and copy
                 Species newsp;
@@ -447,9 +447,9 @@ void Analyser::groupsGenealogicalTracker()
                         newsp = oldSpeciesList[j];
                         if (speciesMode >= SPECIES_MODE_PHYLOGENY) {
                             logspeciespointers[jj.key()] = newsp.logSpeciesStructure;
-                            newsp.logSpeciesStructure->timeOfLastAppearance = generation;
+                            newsp.logSpeciesStructure->timeOfLastAppearance = itteration;
                             auto *newdata = new LogSpeciesDataItem;
-                            newdata->generation = generation;
+                            newdata->itteration = itteration;
                             newsp.logSpeciesStructure->dataItems.append(newdata);
                         }
                     }
@@ -577,7 +577,7 @@ void Analyser::groupsGenealogicalTracker()
 
     }
 
-    if (simulationManager->warning_count > 0) mainWindow->statusProgressBar(&prBar, false);
+    if (simulationManager->warningCount > 0) mainWindow->statusProgressBar(&prBar, false);
 
     //Nearly there! Just need to put size data into correct species
     for (int f = 0; f < newspecieslist.count(); f++) { //go through new species list
@@ -606,7 +606,7 @@ void Analyser::groupsGenealogicalTracker()
     //Done!
 
     //RJG - need to give user heads up if species ID is taking > 5 seconds, and allow them to turn it off.
-    if (t.elapsed() > 5000)simulationManager->warning_count++;
+    if (t.elapsed() > 5000)simulationManager->warningCount++;
 }
 
 
@@ -693,11 +693,11 @@ void Analyser::groupsWithHistoryModal()
         for (int i = 0; i < genome_list_count; i++) {
             quint64 g1x = mygenome ^ genomeList[i]; //XOR the two to compare
             auto g1xl = quint32(g1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-            int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
-            if (t1 <= maxDiff) {
+            int t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
+            if (t1 <= maxDifference) {
                 auto g1xu = quint32(g1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-                t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
-                if (t1 <= maxDiff) {
+                t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
+                if (t1 <= maxDifference) {
                     if (speciesID[i] >
                             0) { //already in a species, mark to merge- summing the number of genome occurences creating the link
                         int key = speciesID[i];
@@ -788,11 +788,11 @@ void Analyser::groupsWithHistoryModal()
     for (int i = 0; i < oldSpeciesList.count(); i++) IDs.insert(oldSpeciesList[i].ID);
 
     //now append all previous list items that are not already in list with a more recent ID!
-    for (int l = 0; l < (timeSliceConnect - 1) && l < archivedspecieslists.count(); l++)
-        for (int m = 0; m < archivedspecieslists[l].count(); m++) {
-            if (!(IDs.contains(archivedspecieslists[l][m].ID))) {
-                IDs.insert(archivedspecieslists[l][m].ID);
-                oldspecieslist_combined.append(archivedspecieslists[l][m]);
+    for (int l = 0; l < (timeSliceConnect - 1) && l < archivedSpeciesLists.count(); l++)
+        for (int m = 0; m < archivedSpeciesLists[l].count(); m++) {
+            if (!(IDs.contains(archivedSpeciesLists[l][m].ID))) {
+                IDs.insert(archivedSpeciesLists[l][m].ID);
+                oldspecieslist_combined.append(archivedSpeciesLists[l][m]);
             }
         }
 
@@ -810,9 +810,9 @@ void Analyser::groupsWithHistoryModal()
             for (int j = 0; j < oldspecieslist_combined.count(); j++) {
                 quint64 g1x = oldspecieslist_combined[j].type ^ newspecieslist[i].type; //XOR the two to compare
                 auto g1xl = quint32(g1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-                int t1 = bitcounts[g1xl / (quint32)65536] +  bitcounts[g1xl & (quint32)65535];
+                int t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
                 auto g1xu = quint32(g1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-                t1 += bitcounts[g1xu / (quint32)65536] +  bitcounts[g1xu & (quint32)65535];
+                t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
 
                 if (t1 == bestdist) {
                     //found two same distance. Parent most likely to be the one with the bigger population, so tiebreak on this!
@@ -878,16 +878,16 @@ void Analyser::groupsWithHistoryModal()
         //fill in blanks - new species
         for (int i = 0; i < newspecieslist.count(); i++)
             if (newspecieslist[i].ID == 0) {
-                newspecieslist[i].ID = nextspeciesid++;
+                newspecieslist[i].ID = nextSpeciesID++;
                 newspecieslist[i].parent = oldspecieslist_combined[parents[i]].ID;
-                newspecieslist[i].originTime = generation;
+                newspecieslist[i].originTime = itteration;
             }
 
     } else {
         //handle first time round - basically give species proper IDs
         for (int i = 0; i < newspecieslist.count(); i++) {
-            newspecieslist[i].ID = nextspeciesid++;
-            newspecieslist[i].originTime = generation;
+            newspecieslist[i].ID = nextSpeciesID++;
+            newspecieslist[i].originTime = itteration;
         }
     }
 
@@ -919,9 +919,9 @@ void Analyser::groupsWithHistoryModal()
     //handle archive of old species lists (prior to last time slice)
     if (oldSpeciesList.count() > 0
             && timeSliceConnect > 1) { //if there IS an old species list, and if we are storing them
-        archivedspecieslists.prepend(oldSpeciesList); //put the last old one in position 0
-        while (archivedspecieslists.count() > timeSliceConnect - 1)
-            archivedspecieslists.removeLast(); //trim list to correct size
+        archivedSpeciesLists.prepend(oldSpeciesList); //put the last old one in position 0
+        while (archivedSpeciesLists.count() > timeSliceConnect - 1)
+            archivedSpeciesLists.removeLast(); //trim list to correct size
         // will normally only remove one from end, unless timeSliceConnect has changed
         // TO DO - note species going extinct here?
     }
