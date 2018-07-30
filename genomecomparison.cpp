@@ -245,8 +245,8 @@ bool GenomeComparison::renderGenomesTable()
  */
 void GenomeComparison::insertRow(
     int row,
-    const QString& genomeName,
-    const QString& genomeStr,
+    const QString &genomeName,
+    const QString &genomeStr,
     int environmentR,
     int environmentG,
     int environmentB,
@@ -258,7 +258,7 @@ void GenomeComparison::insertRow(
     int nonCodeB,
     int fitness,
     QTableWidget *table,
-    const QString& comparisonMask)
+    const QString &comparisonMask)
 {
     table->blockSignals(true);
     table->insertRow(row);
@@ -465,7 +465,7 @@ bool GenomeComparison::addGenomeCritter(Critter critter, quint8 *environment)
         else genomeStr.append("0");
 
     //Coding Genome Colour
-    genome = (quint32)(critter.genome & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
+    genome = static_cast<quint32>(critter.genome & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
     quint32 genomeB = bitCounts[genome & 2047] * 23;
     genome /= 2048;
     quint32 genomeG = bitCounts[genome & 2047] * 23;
@@ -473,7 +473,7 @@ bool GenomeComparison::addGenomeCritter(Critter critter, quint8 *environment)
     quint32 genomeR = bitCounts[genome] * 25;
 
     //Non-coding Genome Colour
-    genome = (quint32)(critter.genome / ((quint64)65536 * (quint64)65536)); //upper 32 bits
+    genome = static_cast<quint32>(critter.genome / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
     quint32 nonCodeB = bitCounts[genome & 2047] * 23;
     genome /= 2048;
     quint32 nonCodeG = bitCounts[genome & 2047] * 23;
@@ -626,7 +626,8 @@ bool GenomeComparison::compareGenomes()
         msgBox.setText(tr("You need to select 2 genomes from the table in order to compare."));
         msgBox.exec();
         return false;
-    } if (numChecked == 1) {
+    }
+    if (numChecked == 1) {
         QMessageBox msgBox;
         msgBox.setWindowTitle(tr("Genome Comparison: Error"));
         msgBox.setText(tr("You need to select 1 more genome from the table to begin comparing."));
@@ -681,14 +682,14 @@ bool GenomeComparison::deleteGenome()
         msgBox.setText(tr("You need to select at least 1 genome from the table to delete."));
         msgBox.exec();
         return false;
-    } 
-        //Something Checked, Remove selected from genomeList
-        for (int i = 0; i < numChecked; i++) {
-            genomeList.removeAt(checkedList[i - i]);
-        }
-        renderGenomesTable();
-        buttonUpdate();
-    
+    }
+    //Something Checked, Remove selected from genomeList
+    for (int i = 0; i < numChecked; i++) {
+        genomeList.removeAt(checkedList[i - i]);
+    }
+    renderGenomesTable();
+    buttonUpdate();
+
     return true;
 }
 

@@ -28,6 +28,7 @@ Critter::Critter()
     fitness = 0;
     energy = 0;
     speciesID = -1; //=not assigned
+    //speciesID = std::numeric_limits<quint64>::max(); //=not assigned
 }
 
 /**
@@ -63,25 +64,25 @@ void Critter::initialise(quint64 itteration, quint8 *environment, int x, int y, 
  */
 int Critter::recalculateFitness(const quint8 *environment)
 {
-    auto lowergenome = (quint32)(genome & ((quint64)65536 * (quint64)65536 - (quint64)1));
+    auto lowergenome = static_cast<quint32>(genome & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1)));
 
     quint32 answer = lowergenome ^ xorMasks[environment[0]][0]; //apply redmask
     quint32 a2 = answer / 65536;
-    answer &= (quint32) 65535;
+    answer &= static_cast<quint32>(65535);
 
     //RJG - add a counter for final bitcount
-    int finalanswer = bitCounts[answer];
+    int finalanswer = static_cast<int>(bitCounts[answer]);
     finalanswer += bitCounts[a2];
 
     answer = lowergenome ^ xorMasks[environment[1]][1]; //apply greenmask
     a2 = answer / 65536;
-    answer &= (unsigned int) 65535;
+    answer &= static_cast<quint32>(65535);
     finalanswer += bitCounts[answer];
     finalanswer += bitCounts[a2];
 
     answer = lowergenome ^ xorMasks[environment[2]][2]; //apply bluemask
     a2 = answer / 65536;
-    answer &= (unsigned int) 65535;
+    answer &= static_cast<quint32>(65535);
     finalanswer += bitCounts[answer];
     finalanswer += bitCounts[a2];
 
@@ -116,7 +117,7 @@ bool Critter::iterateParallel(int *killCountLocal, int addFood)
         //RJG - Here is where an individual dies.
         if ((--age) == 0) {
             (*killCountLocal)++;
-            totalFittness[xPosition][yPosition] -= fitness;
+            totalFittness[xPosition][yPosition] -= static_cast<quint32>(fitness);
             fitness = 0;
             if (maxUsed[xPosition][yPosition] == zPosition) {
                 for (int n = zPosition - 1; n >= 0; n--)
@@ -137,7 +138,8 @@ past:
         if (energy > (breedThreshold + breedCost)) {
             energy -= breedCost;
             return true;
-        } return false;
+        }
+        return false;
 
     }
     return false;
@@ -161,7 +163,8 @@ int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, i
     bool breedsuccess2 = true; //for difference breeding
 
     if (breedSpecies) {
-        if (partner->speciesID != speciesID) breedsuccess1 = false;
+        if (partner->speciesID != speciesID)
+            breedsuccess1 = false;
     }
 
     if (breedDifference) {
@@ -170,12 +173,12 @@ int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, i
         quint64 cg1x = genome ^ partner->genome; //XOR the two to compare
 
         //Coding half
-        auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-        t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
+        auto g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
+        t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
 
         //non-Coding half
-        auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-        t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
+        auto g1xu = static_cast<quint32>(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
+        t1 += bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)];
         if (t1 > maxDifference) {
             breedsuccess2 = false;
         }
@@ -205,20 +208,16 @@ int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, i
         }
 
         //store it all
-
         newGenomes[*newGenomeCountLocal] = g2x;
-        newGenomeX[*newGenomeCountLocal] = xPosition;
-        newGenomeY[*newGenomeCountLocal] = yPosition;
+        newGenomeX[*newGenomeCountLocal] = static_cast<quint32>(xPosition);
+        newGenomeY[*newGenomeCountLocal] = static_cast<quint32>(yPosition);
         newGenomeSpecies[*newGenomeCountLocal] = speciesID;
-        newGenomeDispersal[(*newGenomeCountLocal)++] =
-            dispersal; //how far to disperse - low is actually far (it's a divider - max is 240, <10% are >30
+        newGenomeDispersal[(*newGenomeCountLocal)++] = dispersal; //how far to disperse - low is actually far (it's a divider - max is 240, <10% are >30
         return 0;
-    } 
-        //breeders get their energy back - this is an 'abort'
-        //---- RJG: Note that this refund is different to and exclusive from that in Simmanager, which refunds if no partner found.
-        energy += breedCost;
-        //---- RJG: Presumably removed to prevent critters getting multiple refunds
-        //partner->energy+=breedCost;
-        return 1;
-    
+    }
+    //breeders get their energy back - this is an 'abort'
+    //---- RJG: Note that this refund is different to and exclusive from that in Simmanager, which refunds if no partner found.
+    energy += breedCost;
+
+    return 1;
 }

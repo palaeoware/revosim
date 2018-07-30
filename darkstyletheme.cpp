@@ -97,11 +97,11 @@ void DarkStyleTheme::polish(QApplication *app)
     QApplication::setFont(defaultFont);
 
     // Load CSS Stylesheet from resources
-    QFile darkstyle_qss(QStringLiteral(":/darkstyle/stylesheet_dark.qss"));
-    if (darkstyle_qss.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    QFile darkstyleQSS(QStringLiteral(":/darkstyle/stylesheet_dark.qss"));
+    if (darkstyleQSS.open(QIODevice::ReadOnly | QIODevice::Text)) {
         // Set stylesheet
-        QString stylesheet_qss = QString::fromLatin1(darkstyle_qss.readAll());
+        QString stylesheet_qss = QString::fromLatin1(darkstyleQSS.readAll());
         app->setStyleSheet(stylesheet_qss);
-        darkstyle_qss.close();
+        darkstyleQSS.close();
     }
 }

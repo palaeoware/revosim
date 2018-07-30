@@ -103,12 +103,12 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
         while (!(s1.isNull())) {
             QStringList split_up;
             split_up = s1.split(',');
-            lasttime = (quint64) (split_up[0].toULongLong());
+            lasttime = static_cast<quint64>(split_up[0].toULongLong());
             s1 = in1.readLine();
         }
 
         //OK, lasttime should be correct
-        float timescale = (float)lasttime / (float)SCALE; //scale factor for working out the timeslice for diagram
+        float timescale = static_cast<float>(lasttime / SCALE); //scale factor for working out the timeslice for diagram
 
         f.seek(0); //reset to start of file
         QTextStream in(&f);
@@ -121,10 +121,10 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
             QStringList split_up;
             split_up = s.split(',');
             //0 Time,1 Species_ID,2 Species_origin_time,3 Species_parent_ID,4 Species_current_size,5 Species_current_genome
-            auto species_ID = (quint64) (split_up[1].toULongLong());
+            auto species_ID = static_cast<quint64>(split_up[1].toULongLong());
 
             //work out slot in 0-(SCALE-1)
-            auto xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            auto xPosition = static_cast<int>((static_cast<float>(split_up[0].toInt())) / timescale);
             if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
 
@@ -133,18 +133,18 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
                 int ssize = split_up[4].toInt();
                 speciesList[species_ID].sizes[xPosition] = ssize; //record last size in each slot, will be fine
                 if (speciesList[species_ID].maxSize < ssize) speciesList[species_ID].maxSize = ssize;
-                speciesList[species_ID].totalSize += (quint64) (split_up[4].toULongLong());
+                speciesList[species_ID].totalSize += static_cast<quint64>(split_up[4].toULongLong());
                 speciesList[species_ID].occurrences++;
-                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = (quint64) (split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
+                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = static_cast<quint64>(split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
             } else { //not yet recorded
                 LoggedSpecies spe;
-                spe.start = (quint64) (split_up[2].toULongLong());
-                speciesList[species_ID].sizes[xPosition] = spe.end = (quint64) (split_up[0].toULongLong());
-                spe.parent = (quint64) (split_up[3].toULongLong());
+                spe.start = static_cast<quint64>(split_up[2].toULongLong());
+                speciesList[species_ID].sizes[xPosition] = spe.end = static_cast<quint64>(split_up[0].toULongLong());
+                spe.parent = static_cast<quint64>(split_up[3].toULongLong());
                 spe.maxSize = split_up[4].toInt();
-                spe.totalSize = (quint64) (split_up[4].toULongLong());
+                spe.totalSize = static_cast<quint64>(split_up[4].toULongLong());
                 spe.occurrences = 1;
-                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
+                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = static_cast<quint64>(split_up[5].toULongLong());
                 speciesList.insert(species_ID, spe);
             }
 
@@ -152,7 +152,7 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
             if (count % 1000 == 0)
                 //do some display in status bar every 1000 iterations to show user that algorithm didn't die
             {
-                auto thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
+                auto thistime = static_cast<quint64>(split_up[0].toULongLong()); //record latest timestamp
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
@@ -177,12 +177,12 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
             quint64 ID = i.key();
             LoggedSpecies spe = i.value();
             int pval;
-            if (spe.end != spe.start) pval = (100 * ((spe.end - spe.start) - spe.occurrences)) /
-                                                 (spe.end - spe.start);
-            else pval = 100;
-            out << "Species: " << ID << ": " << spe.start << "-" << spe.end << " Parent " << spe.parent <<
-                "  maxSize " << spe.maxSize << "  Av size " << (spe.totalSize / spe.occurrences) << "  %missing " <<
-                100 - pval << endl;
+            if (spe.end != spe.start)
+                pval = static_cast<int>((100 * ((spe.end - spe.start) - static_cast<quint64>(spe.occurrences))) / (spe.end - spe.start));
+            else
+                pval = 100;
+            out << "Species: " << ID << ": " << spe.start << "-" << spe.end << " Parent " << spe.parent << "  maxSize " << spe.maxSize << "  Av size " << (spe.totalSize / static_cast<quint64>
+                    (spe.occurrences)) << "  %missing " << 100 - pval << endl;
         }
 
         //Now cull  extinct species without descendants
@@ -230,12 +230,11 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
             quint64 ID = i.key();
             LoggedSpecies spe = i.value();
             int pval;
-            if (spe.end != spe.start) pval = (100 * ((spe.end - spe.start) - spe.occurrences)) /
-                                                 (spe.end - spe.start);
+            if (spe.end != spe.start)
+                pval = static_cast<int>(100 * ((spe.end - spe.start) - static_cast<quint64>(spe.occurrences))) / (spe.end - spe.start);
             else pval = 100;
-            out << "Species: " << ID << ": " << spe.start << "-" << spe.end << " Parent " << spe.parent <<
-                "  maxSize " << spe.maxSize << "  Av size " << (spe.totalSize / spe.occurrences) << "  %missing " <<
-                100 - pval << endl;
+            out << "Species: " << ID << ": " << spe.start << "-" << spe.end << " Parent " << spe.parent << "  maxSize " << spe.maxSize << "  Av size " <<
+                (spe.totalSize / static_cast<quint64>(spe.occurrences)) << "  %missing " << 100 - pval << endl;
         }
 
         //Tree version reordered here, I just create magicList as a copy of culled list
@@ -299,8 +298,8 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
                         }
                         if (start != -1 && tonextav <= 0) {
                             tonextav = 5;
-                            speciesList[magicList[j]].averageSizes.append((float)local_tot_size / (float)act_av_count);
-                            speciesList[magicList[j]].averageChanges.append((float)local_tot_change / (float)act_av_count);
+                            speciesList[magicList[j]].averageSizes.append(static_cast<float>(local_tot_size / act_av_count));
+                            speciesList[magicList[j]].averageChanges.append(static_cast<float>(local_tot_change / act_av_count));
                             local_tot_size = 0;
                             local_tot_change = 0;
                             act_av_count = 0;
@@ -313,12 +312,12 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
                         quint64 cg1x = thisgenome ^ lastGenome; //XOR the two to compare
 
                         //Coding half
-                        auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-                        int t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
+                        auto g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
+                        int t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
 
                         //non-Coding half
-                        auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-                        t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
+                        auto g1xu = static_cast<quint32>(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
+                        t1 += bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)];
 
                         //if (t1>0) qDebug()<<"T1 not 0!"<<t1;
                         steps++;
@@ -334,26 +333,29 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
             quint64 cg1x = speciesList[magicList[j]].lastGenome ^ firstgenome; //XOR the two to compare
 
             //Coding half
-            auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-            int t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
+            auto g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
+            int t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
 
             //non-Coding half
-            auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-            t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
+            auto g1xu = quint32(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
+            t1 += bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)];
 
             QString changestring1 = "'NA'";
-            if (steps > 0) changestring1.sprintf("%0.5f", ((float)t1) / ((float)(steps + 1)));
+            if (steps > 0)
+                changestring1.sprintf("%0.5f", (static_cast<float>(t1) / static_cast<float>(steps + 1)));
 
             QString changestring = "'NA'";
-            if (steps > 0)  changestring.sprintf("%0.5f", ((float)change) / ((float)steps));
+            if (steps > 0)
+                changestring.sprintf("%0.5f", (static_cast<float>(change) / static_cast<float>(steps)));
             out << magicList[j] << "," << changestring << "," << changestring1 << "," << steps << ",";
-            // qDebug()<<magicList[j]<<","<<changestring<<","<<changestring1<<","<<steps,<",";
+
             int countsizes = speciesList[magicList[j]].averageSizes.count();
 
             for (int k = 0; k < 20; k++) {
                 QString outstringtemp;
 
-                if (k >= countsizes) out << "0,";
+                if (k >= countsizes)
+                    out << "0,";
                 else {
                     outstringtemp.sprintf("%0.5f", speciesList[magicList[j]].averageSizes[k]);
                     out << outstringtemp << ",";
@@ -361,10 +363,13 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
             }
             for (int k = 0; k < 20; k++) {
                 QString outstringtemp, commastring;
-                if (k == 19) commastring = "";
-                else commastring = ",";
+                if (k == 19)
+                    commastring = "";
+                else
+                    commastring = ",";
 
-                if (k >= countsizes) out << "0" << commastring;
+                if (k >= countsizes)
+                    out << "0" << commastring;
                 else {
                     outstringtemp.sprintf("%0.5f", speciesList[magicList[j]].averageChanges[k]);
                     out << outstringtemp << commastring;
@@ -395,14 +400,14 @@ QString AnalysisTools::speciesRatesOfChange(const QString &filename)
  */
 int AnalysisTools::findClosestIndex(QList <quint64>timeList, float lookFor, float slotWidth)
 {
-    auto look_for_int = (quint64)(lookFor + .5);
+    auto look_for_int = static_cast<quint64>(static_cast<double>(lookFor) + .5);
     //check the before and after possibilities first
     if (look_for_int <= timeList[0]) //before start - should be impossible to be so
         return 0;
 
     //off end?
     if (look_for_int >= timeList.last()) {
-        if ((float)(timeList.last() - look_for_int) > slotWidth) //off end, and more than one slot width away - so genuinely off end
+        if (static_cast<float>(timeList.last() - look_for_int) > slotWidth) //off end, and more than one slot width away - so genuinely off end
             return -1;
         return timeList.count() - 1;
     }
@@ -459,13 +464,13 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
         while (!(s1.isNull())) {
             QStringList split_up;
             split_up = s1.split(',');
-            lasttime = (quint64) (split_up[0].toULongLong());
+            lasttime = static_cast<quint64>(split_up[0].toULongLong());
             qDebug() << s1 << lasttime;
             s1 = in1.readLine();
         }
 
         //OK, lasttime should be correct
-        float timescale = (float)lasttime / (float)SCALE; //scale factor for working out the timeslice for diagram
+        float timescale = static_cast<float>(lasttime / SCALE); //scale factor for working out the timeslice for diagram
 
 
         f.seek(0); //reset to start of file
@@ -479,12 +484,12 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
             QStringList split_up;
             split_up = s.split(',');
             //0 Time,1 Species_ID,2 Species_origin_time,3 Species_parent_ID,4 Species_current_size,5 Species_current_genome
-            auto species_ID = (quint64) (split_up[1].toULongLong());
+            auto species_ID = static_cast<quint64>(split_up[1].toULongLong());
 
-            if (((qint64)species_ID) > maxspeciesID)
-                maxspeciesID = (qint64)species_ID;
+            if (static_cast<qint64>(species_ID) > maxspeciesID)
+                maxspeciesID = static_cast<qint64>(species_ID);
             //work out slot in 0-(SCALE-1)
-            auto xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            auto xPosition = static_cast<int>((static_cast<float>(split_up[0].toInt())) / timescale);
             if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
 
@@ -493,19 +498,18 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
                 int ssize = split_up[4].toInt();
                 speciesList[species_ID].sizes[xPosition] = ssize; //record last size in each slot, will be fine
                 if (speciesList[species_ID].maxSize < ssize) speciesList[species_ID].maxSize = ssize;
-                speciesList[species_ID].totalSize += (quint64) (split_up[4].toULongLong());
+                speciesList[species_ID].totalSize += static_cast<quint64>(split_up[4].toULongLong());
                 speciesList[species_ID].occurrences++;
-                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = (quint64) (
-                                                                                                      split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
+                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = static_cast<quint64>(split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
             } else { //not yet recorded
                 LoggedSpecies spe;
-                spe.start = (quint64) (split_up[2].toULongLong());
-                speciesList[species_ID].sizes[xPosition] = spe.end = (quint64) (split_up[0].toULongLong());
-                spe.parent = (quint64) (split_up[3].toULongLong());
+                spe.start = static_cast<quint64>(split_up[2].toULongLong());
+                speciesList[species_ID].sizes[xPosition] = spe.end = static_cast<quint64>(split_up[0].toULongLong());
+                spe.parent = static_cast<quint64>(split_up[3].toULongLong());
                 spe.maxSize = split_up[4].toInt();
-                spe.totalSize = (quint64) (split_up[4].toULongLong());
+                spe.totalSize = static_cast<quint64>(split_up[4].toULongLong());
                 spe.occurrences = 1;
-                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
+                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = static_cast<quint64>(split_up[5].toULongLong());
                 speciesList.insert(species_ID, spe);
             }
 
@@ -513,7 +517,7 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
             if (count % 1000 == 0)
                 //do some display in status bar every 1000 iterations to show user that algorithm didn't die
             {
-                auto thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
+                auto thistime = static_cast<quint64>(split_up[0].toULongLong()); //record latest timestamp
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
@@ -531,10 +535,10 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
             //quint64 ID=i.key();
             LoggedSpecies spe = i.value();
             int pval;
-            if (spe.end != spe.start) pval = (100 * ((spe.end - spe.start) - spe.occurrences)) /
-                                                 (spe.end - spe.start);
-            else pval = 100;
-            //out << "Species: "<<ID << ": " << spe.start << "-"<<spe.end<<" Parent "<<spe.parent<<"  maxSize "<<spe.maxSize<<"  Av size "<<(spe.totalSize/spe.occurrences)<< "  %missing "<<100-pval<< endl;
+            if (spe.end != spe.start)
+                pval = static_cast<int>(100 * ((spe.end - spe.start) - static_cast<quint64>(spe.occurrences))) / (spe.end - spe.start);
+            else
+                pval = 100;
 
             //ARTS - compiler warning supression
             Q_UNUSED(pval);
@@ -583,10 +587,10 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
             //quint64 ID=i.key();
             LoggedSpecies spe = i.value();
             int pval;
-            if (spe.end != spe.start) pval = (100 * ((spe.end - spe.start) - spe.occurrences)) /
-                                                 (spe.end - spe.start);
-            else pval = 100;
-            //out << "Species: "<<ID << ": " << spe.start << "-"<<spe.end<<" Parent "<<spe.parent<<"  maxSize "<<spe.maxSize<<"  Av size "<<(spe.totalSize/spe.occurrences)<< "  %missing "<<100-pval<<endl;
+            if (spe.end != spe.start)
+                pval = static_cast<int>(100 * ((spe.end - spe.start) - static_cast<quint64>(spe.occurrences))) / (spe.end - spe.start);
+            else
+                pval = 100;
 
             //ARTS - compiler warning supression
             Q_UNUSED(pval);
@@ -607,7 +611,7 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
             auto *newspecies = new StasisSpecies;
             newspecies->ID = ID;
             stasis_species_list.append(newspecies);
-            species_lookup[(int)ID] = apos;
+            species_lookup[static_cast<int>(ID)] = apos;
             apos++;
         }
 
@@ -623,17 +627,18 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
             QStringList split_up;
             split_up = s.split(',');
             //0 Time,1 Species_ID,2 Species_origin_time,3 Species_parent_ID,4 Species_current_size,5 Species_current_genome
-            auto species_ID = (quint64) (split_up[1].toULongLong());
+            auto species_ID = static_cast<quint64>(split_up[1].toULongLong());
 
-            if (species_lookup[(int)species_ID] != -1) {
+            if (species_lookup[static_cast<int>(species_ID)] != -1) {
                 //it's a real one
-                StasisSpecies *this_species = stasis_species_list[species_lookup[(int)species_ID]];
+                StasisSpecies *this_species = stasis_species_list[species_lookup[static_cast<int>(species_ID)]];
 
-                this_species->end = (qint64) (split_up[0].toLongLong());  //always update end
+                this_species->end = static_cast<qint64>(split_up[0].toLongLong());  //always update end
 
-                if (this_species->start == -1) this_species->start = (qint64) (split_up[0].toLongLong());
-                this_species->genomes.append(((quint64) (split_up[5].toULongLong())));
-                this_species->genomeSampleTimes.append(this_species->end);
+                if (this_species->start == -1)
+                    this_species->start = static_cast<qint64>(split_up[0].toLongLong());
+                this_species->genomes.append((static_cast<quint64>(split_up[5].toULongLong())));
+                this_species->genomeSampleTimes.append(static_cast<quint64>(this_species->end));
             }
             s = in.readLine(); //next line
         }
@@ -715,13 +720,12 @@ QString AnalysisTools::stasis(const QString &filename, int slotCount, float perc
 
                 quint64 cg1x = genome1 ^ genome2; //XOR the two to compare
 
-                auto g1xl = quint32(cg1x & ((quint64)65536 * (quint64)65536 - (quint64)1)); //lower 32 bits
-                int t1 = bitCounts[g1xl / (quint32)65536] +  bitCounts[g1xl & (quint32)65535];
-                auto g1xu = quint32(cg1x / ((quint64)65536 * (quint64)65536)); //upper 32 bits
-                t1 += bitCounts[g1xu / (quint32)65536] +  bitCounts[g1xu & (quint32)65535];
+                auto g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
+                int t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
+                auto g1xu = quint32(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
+                t1 += bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)];
 
-                float avdiff = ((float)t1) / ((float)this_species->genomeSampleTimes[closestindexend] -
-                                              this_species->genomeSampleTimes[closestindexstart]);
+                float avdiff = (static_cast<float>(t1) / (static_cast<float>(this_species->genomeSampleTimes[closestindexend]) - this_species->genomeSampleTimes[closestindexstart]));
 
                 this_species->resampledAverageGenomeChanges.append(avdiff);
 
@@ -791,12 +795,12 @@ QString AnalysisTools::extinctOrigin(const QString &filename)
         while (!(s1.isNull())) {
             QStringList split_up;
             split_up = s1.split(',');
-            lasttime = (quint64) (split_up[0].toULongLong());
+            lasttime = static_cast<quint64>(split_up[0].toULongLong());
             s1 = in1.readLine();
         }
 
         //OK, lasttime should be correct
-        float timescale = (float)lasttime / (float)SCALE; //scale factor for working out the timeslice for diagram
+        float timescale = static_cast<float>(lasttime / SCALE); //scale factor for working out the timeslice for diagram
 
 
         f.seek(0); //reset to start of file
@@ -806,7 +810,7 @@ QString AnalysisTools::extinctOrigin(const QString &filename)
         s = in.readLine(); //first data line
 
         QList<int> RealSpeciesCounts; //for counting the actual species/look data
-        QList<int> RealSpeciesTimeSlots;
+        QList<int> realSpeciesTimeSlots;
 
         int LastTime = -1;
         int RealCount = 0;
@@ -823,17 +827,16 @@ QString AnalysisTools::extinctOrigin(const QString &filename)
                 if (LastTime != -1) {
                     //record old if not first time
                     RealSpeciesCounts.append(RealCount);
-                    RealSpeciesTimeSlots.append(LastTime);
+                    realSpeciesTimeSlots.append(LastTime);
                 }
                 LastTime = split_up[0].toInt(); //record timeslot
                 RealCount = 1;
             }
 
-
-            auto species_ID = (quint64) (split_up[1].toULongLong());
+            auto species_ID = static_cast<quint64>(split_up[1].toULongLong());
 
             //work out slot in 0-(SCALE-1)
-            auto xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            auto xPosition = static_cast<int>((static_cast<float>(split_up[0].toInt())) / timescale);
             if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
 
@@ -842,19 +845,20 @@ QString AnalysisTools::extinctOrigin(const QString &filename)
                 speciesList[species_ID].end = (split_up[0].toULongLong());
                 int ssize = split_up[4].toInt();
                 speciesList[species_ID].sizes[xPosition] = ssize; //record last size in each slot, will be fine
-                if (speciesList[species_ID].maxSize < ssize) speciesList[species_ID].maxSize = ssize;
-                speciesList[species_ID].totalSize += (quint64) (split_up[4].toULongLong());
+                if (speciesList[species_ID].maxSize < ssize)
+                    speciesList[species_ID].maxSize = ssize;
+                speciesList[species_ID].totalSize += static_cast<quint64>(split_up[4].toULongLong());
                 speciesList[species_ID].occurrences++;
-                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = (quint64) (split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
+                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = static_cast<quint64>(split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
             } else { //not yet recorded
                 LoggedSpecies spe;
-                spe.start = (quint64) (split_up[2].toULongLong());
-                speciesList[species_ID].sizes[xPosition] = spe.end = (quint64) (split_up[0].toULongLong());
-                spe.parent = (quint64) (split_up[3].toULongLong());
+                spe.start = static_cast<quint64>(split_up[2].toULongLong());
+                speciesList[species_ID].sizes[xPosition] = spe.end = static_cast<quint64>(split_up[0].toULongLong());
+                spe.parent = static_cast<quint64>(split_up[3].toULongLong());
                 spe.maxSize = split_up[4].toInt();
-                spe.totalSize = (quint64) (split_up[4].toULongLong());
+                spe.totalSize = static_cast<quint64>(split_up[4].toULongLong());
                 spe.occurrences = 1;
-                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
+                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = static_cast<quint64>(split_up[5].toULongLong());
                 speciesList.insert(species_ID, spe);
             }
 
@@ -862,7 +866,7 @@ QString AnalysisTools::extinctOrigin(const QString &filename)
             if (count % 1000 == 0)
                 //do some display in status bar every 1000 iterations to show user that algorithm didn't die
             {
-                auto thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
+                auto thistime = static_cast<quint64>(split_up[0].toULongLong()); //record latest timestamp
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
@@ -886,11 +890,11 @@ QString AnalysisTools::extinctOrigin(const QString &filename)
             int acount = 0;
             int bcount = 0;
             foreach (LoggedSpecies spec, speciesList) {
-                auto xPosition = (int)(((float)(spec.start)) / timescale);
+                auto xPosition = static_cast<int>((static_cast<float>(spec.start)) / timescale);
                 if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
                 if (xPosition == i) count++;
 
-                auto xpos2 = (int)(((float)(spec.end)) / timescale);
+                auto xpos2 = static_cast<int>((static_cast<float>(spec.end)) / timescale);
                 if (xpos2 > (SCALE - 1)) xpos2 = SCALE - 1;
                 if (xpos2 == i) ecount++;
 
@@ -904,28 +908,29 @@ QString AnalysisTools::extinctOrigin(const QString &filename)
         }
 
         //calc av species alive
-        for (int i = 0; i < RealSpeciesTimeSlots.count(); i++) {
-            auto xPosition = (int)(((float)(RealSpeciesTimeSlots[i])) / timescale);
+        for (int i = 0; i < realSpeciesTimeSlots.count(); i++) {
+            auto xPosition = static_cast<int>(static_cast<float>(realSpeciesTimeSlots[i]) / timescale);
             if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
-            RealSpeciesTimeSlots[i] = xPosition;
+            realSpeciesTimeSlots[i] = xPosition;
         }
 
         float avspeciescounts[SCALE];
-        for (float &avspeciescount : avspeciescounts) avspeciescount = -1.0;
+        for (float &avspeciescount : avspeciescounts)
+            avspeciescount = -1.0;
 
         int countspecies = 1;
         int total = RealSpeciesCounts[0];
-        int last = RealSpeciesTimeSlots[0];
-        for (int i = 1; i < RealSpeciesTimeSlots.count(); i++) {
-            if (RealSpeciesTimeSlots[i] == last) {
+        int last = realSpeciesTimeSlots[0];
+        for (int i = 1; i < realSpeciesTimeSlots.count(); i++) {
+            if (realSpeciesTimeSlots[i] == last) {
                 countspecies++;
                 total += RealSpeciesCounts[i];
             } else {
                 //next slot
-                avspeciescounts[last] = (float)total / (float)countspecies;
+                avspeciescounts[last] = static_cast<float>(total / countspecies);
                 qDebug() << total << countspecies;
                 countspecies = 1;
-                last = RealSpeciesTimeSlots[i];
+                last = realSpeciesTimeSlots[i];
                 total = RealSpeciesCounts[i];
             }
         }
@@ -980,12 +985,12 @@ QString AnalysisTools::generateTree(const QString &filename)
         while (!(s1.isNull())) {
             QStringList split_up;
             split_up = s1.split(',');
-            lasttime = (quint64) (split_up[0].toULongLong());
+            lasttime = static_cast<quint64>(split_up[0].toULongLong());
             s1 = in1.readLine();
         }
 
         //OK, lasttime should be correct
-        float timescale = (float)lasttime / (float)SCALE; //scale factor for working out the timeslice for diagram
+        float timescale = static_cast<float>(lasttime / SCALE); //scale factor for working out the timeslice for diagram
 
         f.seek(0); //reset to start of file
         QTextStream in(&f);
@@ -998,10 +1003,10 @@ QString AnalysisTools::generateTree(const QString &filename)
             QStringList split_up;
             split_up = s.split(',');
             //0 Time,1 Species_ID,2 Species_origin_time,3 Species_parent_ID,4 Species_current_size,5 Species_current_genome
-            auto species_ID = (quint64) (split_up[1].toULongLong());
+            auto species_ID = static_cast<quint64>(split_up[1].toULongLong());
 
             //work out slot in 0-(SCALE-1)
-            auto xPosition = (int)(((float)(split_up[0].toInt())) / timescale);
+            auto xPosition = static_cast<int>((static_cast<float>(split_up[0].toInt())) / timescale);
             if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
 
             if (speciesList.contains(species_ID)) { //if ID species already recorded, update details
@@ -1009,25 +1014,25 @@ QString AnalysisTools::generateTree(const QString &filename)
                 int ssize = split_up[4].toInt();
                 speciesList[species_ID].sizes[xPosition] = ssize; //record last size in each slot, will be fine
                 if (speciesList[species_ID].maxSize < ssize) speciesList[species_ID].maxSize = ssize;
-                speciesList[species_ID].totalSize += (quint64) (split_up[4].toULongLong());
+                speciesList[species_ID].totalSize += static_cast<quint64>(split_up[4].toULongLong());
                 speciesList[species_ID].occurrences++;
-                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = (quint64) (split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
+                speciesList[species_ID].genomes[xPosition] = speciesList[species_ID].lastGenome = static_cast<quint64>(split_up[5].toULongLong());  //record all genomes - as yet do nothing with them except last
             } else { //not yet recorded
                 LoggedSpecies spe;
-                spe.start = (quint64) (split_up[2].toULongLong());
-                speciesList[species_ID].sizes[xPosition] = spe.end = (quint64) (split_up[0].toULongLong());
-                spe.parent = (quint64) (split_up[3].toULongLong());
+                spe.start = static_cast<quint64>(split_up[2].toULongLong());
+                speciesList[species_ID].sizes[xPosition] = spe.end = static_cast<quint64>(split_up[0].toULongLong());
+                spe.parent = static_cast<quint64>(split_up[3].toULongLong());
                 spe.maxSize = split_up[4].toInt();
-                spe.totalSize = (quint64) (split_up[4].toULongLong());
+                spe.totalSize = static_cast<quint64>(split_up[4].toULongLong());
                 spe.occurrences = 1;
-                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = (quint64) (split_up[5].toULongLong());
+                speciesList[species_ID].genomes[xPosition] = spe.lastGenome = static_cast<quint64>(split_up[5].toULongLong());
                 speciesList.insert(species_ID, spe);
             }
 
             count++;
             //do some display in status bar every 1000 iterations to show user that algorithm didn't die
             if (count % 1000 == 0) {
-                auto thistime = (quint64) (split_up[0].toULongLong()); //record latest timestamp
+                auto thistime = static_cast<quint64>(split_up[0].toULongLong()); //record latest timestamp
                 QString outstring;
                 QTextStream out(&outstring);
                 out << "Read to iteration " << thistime << " (" << ((thistime * 100) / lasttime) << "%)";
@@ -1051,11 +1056,12 @@ QString AnalysisTools::generateTree(const QString &filename)
             quint64 ID = i.key();
             LoggedSpecies spe = i.value();
             int pval;
-            if (spe.end != spe.start) pval = (100 * ((spe.end - spe.start) - spe.occurrences)) /
-                                                 (spe.end - spe.start);
-            else pval = 100;
+            if (spe.end != spe.start)
+                pval = static_cast<int>(100 * ((spe.end - spe.start) - static_cast<quint64>(spe.occurrences))) / (spe.end - spe.start);
+            else
+                pval = 100;
             out << "Species: " << ID << ": " << spe.start << "-" << spe.end << " Parent " << spe.parent <<
-                "  maxSize " << spe.maxSize << "  Av size " << (spe.totalSize / spe.occurrences) << "  %missing " <<
+                "  maxSize " << spe.maxSize << "  Av size " << (spe.totalSize / static_cast<quint64>(spe.occurrences)) << "  %missing " <<
                 100 - pval << endl;
         }
 
@@ -1102,11 +1108,12 @@ QString AnalysisTools::generateTree(const QString &filename)
             quint64 ID = i.key();
             LoggedSpecies spe = i.value();
             int pval;
-            if (spe.end != spe.start) pval = (100 * ((spe.end - spe.start) - spe.occurrences)) /
-                                                 (spe.end - spe.start);
-            else pval = 100;
+            if (spe.end != spe.start)
+                pval = static_cast<int>(100 * ((spe.end - spe.start) - static_cast<quint64>(spe.occurrences))) / (spe.end - spe.start);
+            else
+                pval = 100;
             out << "Species: " << ID << ": " << spe.start << "-" << spe.end << " Parent " << spe.parent <<
-                "  maxSize " << spe.maxSize << "  Av size " << (spe.totalSize / spe.occurrences) << "  %missing " <<
+                "  maxSize " << spe.maxSize << "  Av size " << (spe.totalSize / static_cast<quint64>(spe.occurrences)) << "  %missing " <<
                 100 - pval << endl;
         }
 
@@ -1156,8 +1163,8 @@ QString AnalysisTools::generateTree(const QString &filename)
             QVector <int> line;
             for (int j = 0; j < SCALE; j++) { //+1 in case of rounding cockups
                 //work out what start and end time this means
-                auto starttime = (quint64)((float)j * timescale);
-                auto endtime = (quint64)((float)(j + 1) * timescale);
+                auto starttime = static_cast<quint64>(static_cast<float>(j) * timescale);
+                auto endtime = static_cast<quint64>(static_cast<float>(j + 1) * timescale);
 
                 if (speciesList[ID].start <= endtime && speciesList[ID].end >= starttime) {
                     //do by size
@@ -1174,12 +1181,12 @@ QString AnalysisTools::generateTree(const QString &filename)
         int myline = 0;
         foreach (quint64 ID, magicList) {
             //find parent
-            int parent = speciesList[ID].parent;
+            int parent = static_cast<int>(speciesList[ID].parent);
 
             if (parent > 0) {
                 //find parent's line number
-                int pline = magicList.indexOf(parent) * 2;
-                auto xPosition = (int)(((float)speciesList[ID].start) / timescale);
+                int pline = magicList.indexOf(static_cast<quint64>(parent)) * 2;
+                auto xPosition = static_cast<int>(static_cast<float>(speciesList[ID].start) / timescale);
                 if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
                 output_grid[pline][xPosition] = 2;
                 if (pline > myline) { // below
@@ -1255,8 +1262,10 @@ QString AnalysisTools::returnBinary(quint64 genome)
     QTextStream sout(&s);
 
     for (int j = 0; j < 64; j++)
-        if (tweakers64[63 - j] & genome) sout << "1";
-        else sout << "0";
+        if (tweakers64[63 - j] & genome)
+            sout << "1";
+        else
+            sout << "0";
 
     return s;
 }
@@ -1313,27 +1322,27 @@ QString AnalysisTools::countPeaks(int r, int g, int b)
 
     for (unsigned int &fit : fits) fit = 0;
 
-    environment[0] = (quint8)r;
-    environment[1] = (quint8)g;
-    environment[2] = (quint8)b;
+    environment[0] = static_cast<quint8>(r);
+    environment[1] = static_cast<quint8>(g);
+    environment[2] = static_cast<quint8>(b);
 
     QString s;
     QTextStream out(&s);
 
     out << "Fitness counts for red=" << r << " green=" << g << " blue=" << b << endl << endl;
 
-    quint64 max = (qint64)65536 * (qint64)65536;
+    quint64 max = static_cast<qint64>(65536) * static_cast<qint64>(65536);
 
     //quint64 max = 1000000;
     for (quint64 genome = 0; genome < max; genome++) {
         Critter c;
-        c.initialise((quint32)genome, environment, 0, 0, 0, 0);
+        c.initialise(static_cast<quint32>(genome), environment, 0, 0, 0, 0);
         fits[c.fitness]++;
 
         if (!(genome % 6553600)) {
             QString s2;
             QTextStream out2(&s2);
-            out2 << (double)genome*(double)100 / (double)max << "% done...";
+            out2 << static_cast<double>(genome)*static_cast<double>(100) / static_cast<double>(max) << "% done...";
 
             mainWindow->setStatusBarText(s2);
             qApp->processEvents();
@@ -1368,10 +1377,10 @@ QString AnalysisTools::countPeaks(int r, int g, int b)
  * @param allowExclude
  * @return
  */
-QString AnalysisTools::makeNewick(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude)
+QString AnalysisTools::makeNewick(LogSpecies *root, quint64 minSpeciesSizeLocal, bool allowExclude)
 {
     ids = 0;
-    minSpeciesSize = minSpeciesSize;
+    minSpeciesSize = minSpeciesSizeLocal;
     allowExcludeWithDescendants = allowExclude;
 
     if (root)
@@ -1387,10 +1396,9 @@ QString AnalysisTools::makeNewick(LogSpecies *root, quint64 minSpeciesSize, bool
  * @param allowExclude
  * @return
  */
-QString AnalysisTools::writeData(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude)
+QString AnalysisTools::writeData(LogSpecies *root, quint64 minSpeciesSizeLocal, bool allowExclude)
 {
     ids = 0;
-
 
     quint64 ID;
     LogSpecies *parent;
@@ -1399,7 +1407,6 @@ QString AnalysisTools::writeData(LogSpecies *root, quint64 minSpeciesSize, bool 
     QList<LogSpeciesDataItem *>dataItems;
     QList<LogSpecies *>children;
     quint32 maxSize;
-
 
     quint64 itteration;
     quint64 sampleGenome;
@@ -1414,8 +1421,7 @@ QString AnalysisTools::writeData(LogSpecies *root, quint64 minSpeciesSize, bool 
     quint8 maxEnvironment[3]; //max red, green, blue found in
     quint8 meanEnvironment[3]; //mean environmental colour found in
 
-
-    minSpeciesSize = minSpeciesSize;
+    minSpeciesSize = minSpeciesSizeLocal;
     allowExcludeWithDescendants = allowExclude;
     if (root)
         return "ID,ParentID,itteration,size,sampleGenome,sampleGenome_binary,diversity,cellsOccupied,geog_range,centroid_x,centroid_y,mean_fit,min_env_red,min_env_green,min_env_blue,max_env_red,max_env_green,max_env_blue,mean_env_red,mean_env_green,mean_env_blue\n"

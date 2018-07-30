@@ -186,17 +186,19 @@ int SimManager::portableRandom()
  */
 void SimManager::makeLookups()
 {
-    //These are 00000001, 000000010, 0000000100 etc
+    // These are 00000001, 000000010, 0000000100 etc
     tweakers[0] = 1;
-    for (int n = 1; n < 32; n++) tweakers[n] = tweakers[n - 1] * 2;
+    for (int n = 1; n < 32; n++)
+        tweakers[n] = tweakers[n - 1] * 2;
 
     tweakers64[0] = 1;
-    for (int n = 1; n < 64; n++) tweakers64[n] = tweakers64[n - 1] * 2;
+    for (int n = 1; n < 64; n++)
+        tweakers64[n] = tweakers64[n - 1] * 2;
 
-    //and now the bitcounting...
+    // and now the bitcounting...
     // set up lookup 0 to 65535 to enable bits to be counted for each
-    for (qint32 n = 0; n < 65536; n++) {
-        qint32 count = 0;
+    for (quint32 n = 0; n < 65536; n++) {
+        quint32 count = 0;
         for (int m = 0; m < 16; m++)
             if ((n & tweakers[m]) != 0)
                 ++count; // count the bits
@@ -204,50 +206,48 @@ void SimManager::makeLookups()
     }
 
     //RJG - seed random from time qsrand(RAND_SEED);
-    qsrand(QTime::currentTime().msec());
+    qsrand(static_cast<uint>(QTime::currentTime().msec()));
 
     //now set up xor masks for 3 variables - these are used for each of R G and B to work out fitness
     //Start - random bit pattern for each
-    xorMasks[0][0] = portableRandom() * portableRandom() * 2;
-    xorMasks[0][1] = portableRandom() * portableRandom() * 2;
-    xorMasks[0][2] = portableRandom() * portableRandom() * 2;
+    xorMasks[0][0] = static_cast<quint32>(portableRandom() * portableRandom() * 2);
+    xorMasks[0][1] = static_cast<quint32>(portableRandom() * portableRandom() * 2);
+    xorMasks[0][2] = static_cast<quint32>(portableRandom() * portableRandom() * 2);
 
-    for (int n = 1; n < 256;
-            n++) { //for all the others - flip a random bit each time (^ is xor) - will slowly modify from 0 to 255
+    for (int n = 1; n < 256; n++) {
+        //for all the others - flip a random bit each time (^ is xor) - will slowly modify from 0 to 255
         xorMasks[n][0] = xorMasks[n - 1][0] ^ tweakers[portableRandom() / (PORTABLE_RAND_MAX / 32)];
         xorMasks[n][1] = xorMasks[n - 1][1] ^ tweakers[portableRandom() / (PORTABLE_RAND_MAX / 32)];
         xorMasks[n][2] = xorMasks[n - 1][2] ^ tweakers[portableRandom() / (PORTABLE_RAND_MAX / 32)];
     }
 
-    //now the randoms - pre_rolled random numbers 0-255
-    for (unsigned char &random : randoms)
+    // Now the randoms - pre_rolled random numbers 0-255
+    for (quint8 &random : randoms)
         random = static_cast<quint8>(((portableRandom() & 255)));
     nextRandom = 0;
 
-    // gene exchange lookup
-    for (unsigned long long &n : geneX) {  //random bit combs, averaging every other bit on
+    // Gene exchange lookup
+    for (quint64 &n : geneX) {  //random bit combs, averaging every other bit on
         quint64 value = 0;
-        for (unsigned long long m : tweakers64)
+        for (quint64 m : tweakers64)
             if (portableRandom() > (PORTABLE_RAND_MAX / 2))
                 value += m;
         n = value;
     }
     nextGeneX = 0;
 
-    //dispersal table - lookups for dispersal amount
-    //n is the distance to be dispersed - biased locally (the sqrt)
-    //m is angle
-    for (int n = 0; n < 256; n++) {
-        double d = sqrt(65536 / static_cast<double>((n + 1))) - 16;
-        if (d < 0)
-            d = 0;
-        for (int m = 0; m < 256; m++) {
-            dispersalX[n][m] = static_cast<int>(d * sin(static_cast<double>(m) / 40.5845));
-            dispersalY[n][m] = static_cast<int>(d * cos(static_cast<double>(m) / 40.5845));
+    // Dispersal table - lookups for dispersal amount
+    for (int distance = 0; distance < 256; distance++) {
+        double newDistance = sqrt(65536 / static_cast<double>((distance + 1))) - 16;
+        if (newDistance < 0)
+            newDistance = 0;
+        for (int angle = 0; angle < 256; angle++) {
+            dispersalX[distance][angle] = static_cast<int>(newDistance * sin(static_cast<double>(angle) / 40.5845));
+            dispersalY[distance][angle] = static_cast<int>(newDistance * cos(static_cast<double>(angle) / 40.5845));
         }
     }
 
-    //colours
+    // Colours
     for (int i = 0; i < 65536; i++) {
         speciesColours.append(qRgb(random8(), random8(), random8()));
     }
@@ -663,24 +663,25 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
     if (nonspatial) {
         //settling with no geography - just randomly pick a cell
         for (int n = newGenomeCountsStart; n < newGenomeCountsEnd; n++) {
-            quint64 xPosition = ((quint64)random32()) * (quint64)gridX;
-            xPosition /= (((quint64)65536) * ((quint64)65536));
-            quint64 yPosition = ((quint64)random32()) * (quint64)gridY;
-            yPosition /= (((quint64)65536) * ((quint64)65536));
+            quint64 xPosition = static_cast<quint64>(random32()) * static_cast<quint64>(gridX);
+            xPosition /= static_cast<quint64>(65536) * static_cast<quint64>(65536);
 
-            mutexes[(int)xPosition][(int)yPosition]->lock(); //ensure no-one else buggers with this square
+            quint64 yPosition = static_cast<quint64>(random32()) * static_cast<quint64>(gridY);
+            yPosition /= static_cast<quint64>(65536) * static_cast<quint64>(65536);
+
+            mutexes[static_cast<int>(xPosition)][static_cast<int>(yPosition)]->lock(); //ensure no-one else buggers with this square
             (*tryCountLocal)++;
-            Critter *crit = critters[(int)xPosition][(int)yPosition];
+            Critter *crit = critters[static_cast<int>(xPosition)][static_cast<int>(yPosition)];
             //Now put the baby into any free slot here
             for (int m = 0; m < slotsPerSquare; m++) {
                 Critter *crit2 = &(crit[m]);
                 if (crit2->age == 0) {
                     //place it
 
-                    crit2->initialise(newGenomes[n], environment[xPosition][yPosition], xPosition, yPosition, m, newGenomeSpecies[n]);
+                    crit2->initialise(newGenomes[n], environment[xPosition][yPosition], static_cast<int>(xPosition), static_cast<int>(yPosition), m, newGenomeSpecies[n]);
                     if (crit2->age) {
                         int fit = crit2->fitness;
-                        totalFittness[xPosition][yPosition] += fit;
+                        totalFittness[xPosition][yPosition] += static_cast<quint32>(fit);
                         (*birthCountsLocal)++;
                         if (m > maxUsed[xPosition][yPosition]) maxUsed[xPosition][yPosition] = m;
                         settles[xPosition][yPosition]++;
@@ -726,16 +727,17 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
                 Critter *crit2 = &(crit[m]);
                 if (crit2->age == 0) {
                     //place it
-
                     crit2->initialise(newGenomes[n], environment[xPosition][yPosition], xPosition, yPosition, m, newGenomeSpecies[n]);
                     if (crit2->age) {
                         int fit = crit2->fitness;
-                        totalFittness[xPosition][yPosition] += fit;
+                        totalFittness[xPosition][yPosition] += static_cast<quint32>(fit);
                         (*birthCountsLocal)++;
-                        if (m > maxUsed[xPosition][yPosition]) maxUsed[xPosition][yPosition] = m;
+                        if (m > maxUsed[xPosition][yPosition])
+                            maxUsed[xPosition][yPosition] = m;
                         settles[xPosition][yPosition]++;
                         (*settleCountLocal)++;
-                    } else settleFails[xPosition][yPosition]++;
+                    } else
+                        settleFails[xPosition][yPosition]++;
                     break;
                 }
             }
