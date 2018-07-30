@@ -2225,7 +2225,8 @@ bool MainWindow::loadEnvironmentFiles()
             this,
             "FYI",
             "For speed REvoSim currently has static arrays for the environment, which limits out of the box functionality to 100 x 100 square environments. "
-            "It looks like some of your Environment images don't meet this requirement. Anything smaller than 100 x 100 will be stretched (irrespective of aspect ratio) to 100x100. Anything bigger, and we'll use the top left corner. Should you wish to use a different size environment, please email RJG or MDS."
+            "It looks like some of your Environment images don't meet this requirement. Anything smaller than 100 x 100 will be stretched (irrespective of aspect ratio) to 100x100. Anything bigger, and we'll use the top left corner. Should you wish to use a different size environment, please email "
+            + QString(EMAIL) + " with this message or go to " + QString(GITURL) + QString(GITREPOSITORY) + QString(GITISSUE) + " and raise a feature request."
         );
 
     environmentFiles = files;
@@ -3447,4 +3448,12 @@ void MainWindow::updateGenomeComparisonDockVisability(bool checked)
 void MainWindow::processAppEvents()
 {
     qApp->processEvents();
+}
+
+/**
+ * @brief MainWindow::on_actionBugIssueFeatureRequest_triggered
+ */
+void MainWindow::on_actionBugIssueFeatureRequest_triggered()
+{
+    QDesktopServices::openUrl(QUrl(QString(GITURL) + QString(GITREPOSITORY) + QString(GITISSUE)));
 }

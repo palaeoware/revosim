@@ -213,6 +213,7 @@ private slots:
     void on_actionAbout_triggered(); //auto
     void on_actionOnline_User_Manual_triggered(); // auto
     void on_actionSettings_Dock_triggered(); // auto
+    void on_actionBugIssueFeatureRequest_triggered();
 };
 
 #endif // MAINWINDOW_H

@@ -525,7 +525,7 @@
      <x>0</x>
      <y>0</y>
      <width>1220</width>
-     <height>22</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuCommands">
@@ -569,6 +569,7 @@
      <string>Help</string>
     </property>
     <addaction name="actionCode_on_GitHub"/>
+    <addaction name="actionBugIssueFeatureRequest"/>
     <addaction name="actionOnline_User_Manual"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
@@ -751,6 +752,11 @@
    </property>
    <property name="text">
     <string>Settings Dock</string>
+   </property>
+  </action>
+  <action name="actionBugIssueFeatureRequest">
+   <property name="text">
+    <string>Report Bug/Issue/Feature Request</string>
    </property>
   </action>
  </widget>
