@@ -33,17 +33,17 @@ Critter::Critter()
 
 /**
  * @brief Critter::initialise
- * @param itteration
+ * @param iteration
  * @param environment
  * @param x
  * @param y
  * @param z
  * @param species
  */
-void Critter::initialise(quint64 itteration, quint8 *environment, int x, int y, int z, quint64 species)
+void Critter::initialise(quint64 iteration, quint8 *environment, int x, int y, int z, quint64 species)
 {
     //Restart a slot - set up properly
-    genome = itteration;
+    genome = iteration;
 
     age = startAge;
     //RJG - start with 0 energy

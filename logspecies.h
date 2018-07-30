@@ -45,7 +45,7 @@ public:
     QList<LogSpeciesDataItem *> dataItems;
     QList<LogSpecies *> children;
     quint32 maxSize{};
-    quint64 ID{};
+    quint64 id{};
     quint64 timeOfFirstAppearance{};
     quint64 timeOfLastAppearance{};
 };

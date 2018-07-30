@@ -34,11 +34,15 @@
 #define PRODUCTNAME "REvoSim"
 #define PRODUCTTAG "The [R]apid [Evo]lutionary [Sim]ulator"
 
+//Email
+#define EMAIL "palaeoware@gmail.com"
+
 //Github
-#define GITHUB_URL "https://github.com/"
+#define GITURL "https://github.com/"
 #define GITREPOSITORY "palaeoware/revosim"
+#define GITISSUE "/issues"
 
 //Readthedocs
-#define READTHEDOCS_URL "https://revosim.readthedocs.io/en/latest/"
+#define READTHEDOCS "https://revosim.readthedocs.io/en/latest/"
 
 #endif // VERSION_H

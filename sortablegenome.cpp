@@ -19,15 +19,15 @@
 
 /**
  * @brief SortableGenome::SortableGenome
- * @param itteration
+ * @param iteration
  * @param f
  * @param c
  */
-SortableGenome::SortableGenome(quint64 itteration, int f, int c)
+SortableGenome::SortableGenome(quint64 iteration, int f, int c)
 {
     fit = f;
     count = c;
-    genome = itteration;
+    genome = iteration;
     group = 0;
 }
 

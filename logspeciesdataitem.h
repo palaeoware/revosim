@@ -28,7 +28,7 @@ class LogSpeciesDataItem
 public:
     LogSpeciesDataItem();
 
-    quint64 itteration{};
+    quint64 iteration{};
     quint64 sampleGenome{};
     quint32 size{}; //number of critters
     quint32 genomicDiversity{}; //number of genomes

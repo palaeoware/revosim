@@ -56,9 +56,9 @@ QString LogSpecies::writeDataLine(quint64 start, quint64 end, quint64 speciesID,
     QTextStream out(&outstring);
 
     foreach (LogSpeciesDataItem *di, dataItems) {
-        if (di->itteration >= start && di->itteration < end) {
+        if (di->iteration >= start && di->iteration < end) {
             out << speciesID << "," << parentID << ",";
-            out << di->itteration << "," << di->size << "," << di->sampleGenome << ","
+            out << di->iteration << "," << di->size << "," << di->sampleGenome << ","
                 << AnalysisTools::returnBinary(di->sampleGenome) << ","
                 << di->genomicDiversity << "," << di->cellsOccupied << ","
                 << di->geographicalRange << "," << di->centroidRangeX << "," << di->centroidRangeY << ",";
@@ -173,7 +173,7 @@ bool LogSpecies::isFluff()
  * send it a 0 initially
  * and lastTimeBase needs to be timeOfFirstAppearance initially too.
  * no, it can be 0 - picked up in functoin
- * killfFuff flag - ignore any children that have a single itteration life and no children of their own
+ * killfFuff flag - ignore any children that have a single iteration life and no children of their own
  *
  * \param childIndex
  * \param lastTimeBase
@@ -191,7 +191,7 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
     if (cc <= childIndex) {
         bl = timeOfLastAppearance - lastTimeBase;
         QString s;
-        s.sprintf("ID%lld-%d:%lld", speciesID, maxSize, bl);
+        s.sprintf("id%lld-%d:%lld", speciesID, maxSize, bl);
         return s;
     }
     int nextchildindex = cc; //for if it runs off the end
@@ -214,7 +214,7 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
         //actually no children
         bl = timeOfLastAppearance - lastTimeBase;
         QString s;
-        s.sprintf("ID%lld-%d:%lld", speciesID, maxSize, bl);
+        s.sprintf("id%lld-%d:%lld", speciesID, maxSize, bl);
         return s;
     }
     bl = thisgeneration - lastTimeBase;
@@ -227,7 +227,7 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
         if (!(children[i]->isFluff()))
             out << "," << children.at(i)->writeNewickString(0, thisgeneration, killfFuff);
     }
-    out << ")ID" << speciesID << "-" << maxSize << ":" << bl;
+    out << ")id" << speciesID << "-" << maxSize << ":" << bl;
     return s;
 
 }

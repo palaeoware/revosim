@@ -1387,7 +1387,8 @@ void MainWindow::closeEvent(QCloseEvent *e)
  */
 void MainWindow::report()
 {
-    if (--nextRefresh > 0) return;
+    if (--nextRefresh > 0)
+        return;
 
     nextRefresh = refreshRate;
 
@@ -1408,7 +1409,7 @@ void MainWindow::report()
     QString out;
     QTextStream o(&out);
 
-    o << itteration; //need to use to avoid int64 descendants
+    o << iteration; //need to use to avoid int64 descendants
     ui->LabelIteration->setText(out);
 
     out.sprintf("%.2fk", static_cast<double>((3600000 / atime) / 1000));
@@ -1559,7 +1560,7 @@ void MainWindow::refreshPopulations()
             populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (savePopulationCount->isChecked())
             if (save_dir.mkpath("population/"))
-                populationImageColour->save(QString(save_dir.path() + "/population/EvoSim_population_it_%1.png").arg(itteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/population/EvoSim_population_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (1) Fitness
@@ -1582,7 +1583,7 @@ void MainWindow::refreshPopulations()
             populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (saveMeanFitness->isChecked())
             if (save_dir.mkpath("fitness/"))
-                populationImageColour->save(QString(save_dir.path() + "/fitness/EvoSim_mean_fitness_it_%1.png").arg(itteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/fitness/EvoSim_mean_fitness_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (2) Genome as colour
@@ -1646,7 +1647,7 @@ gotcounts:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("coding/"))
-                populationImageColour->save(QString(save_dir.path() + "/coding/EvoSim_coding_genome_it_%1.png").arg(itteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/coding/EvoSim_coding_genome_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (3) Non-coding Genome
@@ -1711,7 +1712,7 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveNonCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("non_coding/"))
-                populationImageColour->save(QString(save_dir.path() + "/non_coding/EvoSim_non_coding_it_%1.png").arg(itteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/non_coding/EvoSim_non_coding_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (4) Gene Frequencies
@@ -1744,7 +1745,7 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveGeneFrequencies->isChecked())
             if (save_dir.mkpath("gene_freq/"))
-                populationImageColour->save(QString(save_dir.path() + "/gene_freq/EvoSim_gene_freq_it_%1.png").arg(itteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/gene_freq/EvoSim_gene_freq_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (5) Breed Attempts
@@ -1789,15 +1790,15 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (saveSettles->isChecked())
             if (save_dir.mkpath("settles/"))
-                populationImage->save(QString(save_dir.path() + "/settles/EvoSim_settles_it_%1.png").arg(itteration, 7,
+                populationImage->save(QString(save_dir.path() + "/settles/EvoSim_settles_it_%1.png").arg(iteration, 7,
                                                                                                          10, QChar('0')));
     }
 
     // (8) Breed/Settle Fails
     //RJG - this now combines breed fails (red) and settle fails (green)
     if (currentSelectedMode == 8 || saveFailsSettles->isChecked()) {
-        //work out average per itteration
-        float generations = static_cast<float>(itteration - static_cast<quint64>(lastReport));
+        //work out average per iteration
+        float generations = static_cast<float>(iteration - static_cast<quint64>(lastReport));
 
 
         //Make image
@@ -1812,7 +1813,7 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveFailsSettles->isChecked())
             if (save_dir.mkpath("breed_settle_fails/"))
-                populationImageColour->save(QString(save_dir.path() + "/breed_settle_fails/EvoSim_breed_settle_fails_it_%1.png").arg(itteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/breed_settle_fails/EvoSim_breed_settle_fails_it_%1.png").arg(iteration, 7, 10, QChar('0')));
 
     }
 
@@ -1855,11 +1856,11 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveSpecies->isChecked())
             if (save_dir.mkpath("species/"))
-                populationImageColour->save(QString(save_dir.path() + "/species/EvoSim_species_it_%1.png").arg(itteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/species/EvoSim_species_it_%1.png").arg(iteration, 7, 10, QChar('0')));
 
     }
 
-    lastReport = itteration;
+    lastReport = iteration;
 }
 
 /*!
@@ -1885,7 +1886,7 @@ void MainWindow::refreshEnvironment()
     environmentItem->setPixmap(QPixmap::fromImage(*environmentImage));
     if (saveEnvironment->isChecked())
         if (save_dir.mkpath("environment/"))
-            environmentImage->save(QString(save_dir.path() + "/environment/EvoSim_environment_it_%1.png").arg(itteration, 7, 10, QChar('0')));
+            environmentImage->save(QString(save_dir.path() + "/environment/EvoSim_environment_it_%1.png").arg(iteration, 7, 10, QChar('0')));
 }
 
 /*!
@@ -2034,7 +2035,7 @@ void MainWindow::speciesModeChanged(int changeSpeciesMode, bool updateGUI)
         newSpeciesMode = SPECIES_MODE_BASIC;
 
     //some changes not allowed
-    if (itteration != 0) {
+    if (iteration != static_cast<quint64>(0)) {
         //already running. Can switch tracking off - but not on
         //detailed tracking can be switched on/off at any point
         if (speciesMode == SPECIES_MODE_NONE) {
@@ -2400,7 +2401,7 @@ void MainWindow::saveSimulation()
     //now the species archive
     out << oldSpeciesList.count();
     for (int j = 0; j < oldSpeciesList.count(); j++) {
-        out << oldSpeciesList[j].ID;
+        out << oldSpeciesList[j].id;
         out << oldSpeciesList[j].type;
         out << oldSpeciesList[j].originTime;
         out << oldSpeciesList[j].parent;
@@ -2412,7 +2413,7 @@ void MainWindow::saveSimulation()
     for (int i = 0; i < archivedSpeciesLists.count(); i++) {
         out << archivedSpeciesLists[i].count();
         for (int j = 0; j < archivedSpeciesLists[i].count(); j++) {
-            out << archivedSpeciesLists[i][j].ID;
+            out << archivedSpeciesLists[i][j].id;
             out << archivedSpeciesLists[i][j].type;
             out << archivedSpeciesLists[i][j].originTime;
             out << archivedSpeciesLists[i][j].parent;
@@ -2662,7 +2663,7 @@ void MainWindow::loadSimulation()
     in >> temp; //oldSpeciesList.count();
     for (int j = 0; j < temp; j++) {
         Species s;
-        in >> s.ID;
+        in >> s.id;
         in >> s.type;
         in >> s.originTime;
         in >> s.parent;
@@ -2679,7 +2680,7 @@ void MainWindow::loadSimulation()
         QList<Species> ql;
         for (int j = 0; j < temp2; j++) {
             Species s;
-            in >> s.ID;
+            in >> s.id;
             in >> s.type;
             in >> s.originTime;
             in >> s.parent;
@@ -2738,7 +2739,7 @@ void MainWindow::calculateSpecies()
     if (speciesMode == SPECIES_MODE_NONE)
         return; //do nothing!
 
-    if (itteration != lastSpeciesCalculated) {
+    if (iteration != lastSpeciesCalculated) {
         delete analyser;  //replace old analyser object with new
         analyser = new Analyser;
 
@@ -2746,7 +2747,7 @@ void MainWindow::calculateSpecies()
         analyser->groupsGenealogicalTracker();
 
         //Makre sure this is updated
-        lastSpeciesCalculated = itteration;
+        lastSpeciesCalculated = iteration;
     }
 }
 
@@ -2768,7 +2769,7 @@ void MainWindow::writeLog()
         speciesLoggingFile.append(".txt");
         QFile outputfile(speciesLoggingFile);
 
-        if (itteration == 0) {
+        if (iteration == 0) {
             outputfile.open(QIODevice::WriteOnly | QIODevice::Text);
             QTextStream out(&outputfile);
             out << "New run ";
@@ -2787,7 +2788,7 @@ void MainWindow::writeLog()
             out << "-- Number of failed breed attempts\n";
             out << "-- Number of species\n";
             out << "- [S] Species Data:\n";
-            out << "-- Species ID\n";
+            out << "-- Species id\n";
             out << "-- Species origin (iterations)\n";
             out << "-- Species parent\n";
             out << "-- Species current size (number of individuals)\n";
@@ -2800,7 +2801,7 @@ void MainWindow::writeLog()
         outputfile.open(QIODevice::Append | QIODevice::Text);
         QTextStream out(&outputfile);
 
-        out << "[I] " << itteration << "\n";
+        out << "[I] " << iteration << "\n";
 
         int gridNumberAlive = 0, gridTotalFitness = 0, gridBreedEntries = 0, gridBreedFails = 0;
         for (int i = 0; i < gridX; i++)
@@ -2822,7 +2823,7 @@ void MainWindow::writeLog()
             //----RJG: Unable to exclude species without descendants, for obvious reasons.
             if (quint64(oldSpeciesList[i].size) > minSpeciesSize) {
                 out << "[S] ";
-                out << (oldSpeciesList[i].ID) << ",";
+                out << (oldSpeciesList[i].id) << ",";
                 out << oldSpeciesList[i].originTime << ",";
                 out << oldSpeciesList[i].parent << ",";
                 out << oldSpeciesList[i].size << ",";
@@ -2958,43 +2959,43 @@ QString MainWindow::handleAnalysisTool(int code)
 QString MainWindow::printSettings()
 {
     QString settings;
-    QTextStream settings_out(&settings);
+    QTextStream settingsOut(&settings);
 
-    settings_out << "EvoSim settings:\n\n";
+    settingsOut << "EvoSim settings:\n\n";
 
-    settings_out << "- Integers:\n";
-    settings_out << "-- Grid X: " << gridX << "\n";
-    settings_out << "-- Grid Y: " << gridY << "\n";
-    settings_out << "-- Settle tolerance: " << settleTolerance << "\n";
-    settings_out << "-- Start age: " << startAge << "\n";
-    settings_out << "-- Disperal: " << dispersal << "\n";
-    settings_out << "-- Food: " << food << "\n";
-    settings_out << "-- Breed cost: " << breedCost << "\n";
-    settings_out << "-- Mutate: " << mutate << "\n";
-    settings_out << "-- Max diff to breed: " << maxDifference << "\n";
-    settings_out << "-- Breed threshold: " << breedThreshold << "\n";
-    settings_out << "-- Slots per square: " << slotsPerSquare << "\n";
-    settings_out << "-- Fitness target: " << target << "\n";
-    settings_out << "-- Environmental change rate: " << environmentChangeRate << "\n";
-    settings_out << "-- Minimum species size:" << minSpeciesSize << "\n";
-    settings_out << "-- Environment mode:" << environmentMode << "\n";
-    settings_out << "-- Speices mode:" << speciesMode << "\n";
+    settingsOut << "- Integers:\n";
+    settingsOut << "-- Grid X: " << gridX << "\n";
+    settingsOut << "-- Grid Y: " << gridY << "\n";
+    settingsOut << "-- Settle tolerance: " << settleTolerance << "\n";
+    settingsOut << "-- Start age: " << startAge << "\n";
+    settingsOut << "-- Disperal: " << dispersal << "\n";
+    settingsOut << "-- Food: " << food << "\n";
+    settingsOut << "-- Breed cost: " << breedCost << "\n";
+    settingsOut << "-- Mutate: " << mutate << "\n";
+    settingsOut << "-- Max diff to breed: " << maxDifference << "\n";
+    settingsOut << "-- Breed threshold: " << breedThreshold << "\n";
+    settingsOut << "-- Slots per square: " << slotsPerSquare << "\n";
+    settingsOut << "-- Fitness target: " << target << "\n";
+    settingsOut << "-- Environmental change rate: " << environmentChangeRate << "\n";
+    settingsOut << "-- Minimum species size:" << minSpeciesSize << "\n";
+    settingsOut << "-- Environment mode:" << environmentMode << "\n";
+    settingsOut << "-- Speices mode:" << speciesMode << "\n";
 
-    settings_out << "\n- Bools:\n";
-    settings_out << "-- Recalculate fitness: " << recalculateFitness << "\n";
-    settings_out << "-- Toroidal environment: " << toroidal << "\n";
-    settings_out << "-- Interpolate environment: " << environmentInterpolate << "\n";
-    settings_out << "-- Nonspatial setling: " << nonspatial << "\n";
-    settings_out << "-- Enforce max diff to breed:" << breedDifference << "\n";
-    settings_out << "-- Only breed within species:" << breedSpecies << "\n";
-    settings_out << "-- Exclude species without descendants:" << allowExcludeWithDescendants << "\n";
-    settings_out << "-- Breeding: ";
+    settingsOut << "\n- Bools:\n";
+    settingsOut << "-- Recalculate fitness: " << recalculateFitness << "\n";
+    settingsOut << "-- Toroidal environment: " << toroidal << "\n";
+    settingsOut << "-- Interpolate environment: " << environmentInterpolate << "\n";
+    settingsOut << "-- Nonspatial setling: " << nonspatial << "\n";
+    settingsOut << "-- Enforce max diff to breed:" << breedDifference << "\n";
+    settingsOut << "-- Only breed within species:" << breedSpecies << "\n";
+    settingsOut << "-- Exclude species without descendants:" << allowExcludeWithDescendants << "\n";
+    settingsOut << "-- Breeding: ";
     if (sexual)
-        settings_out << "sexual" << "\n";
+        settingsOut << "sexual" << "\n";
     else if (asexual)
-        settings_out << "asexual" << "\n";
+        settingsOut << "asexual" << "\n";
     else
-        settings_out << "variable" << "\n";
+        settingsOut << "variable" << "\n";
 
     return settings;
 }
@@ -3015,117 +3016,117 @@ void MainWindow::loadSettings()
         return;
     }
 
-    QXmlStreamReader settings_file_in(&settings_file);
+    QXmlStreamReader settingsFileIn(&settings_file);
 
-    while (!settings_file_in.atEnd() && !settings_file_in.hasError()) {
+    while (!settingsFileIn.atEnd() && !settingsFileIn.hasError()) {
 
         /* Read next element.*/
-        QXmlStreamReader::TokenType token = settings_file_in.readNext();
+        QXmlStreamReader::TokenType token = settingsFileIn.readNext();
         /* If token is just StartDocument, we'll go to next.*/
 
         if (token == QXmlStreamReader::StartDocument)
             continue;
         if (token == QXmlStreamReader::StartElement) {
             //Ints
-            if (settings_file_in.name() == "revosim")
+            if (settingsFileIn.name() == "revosim")
                 continue;
-            if (settings_file_in.name() == "gridX")
-                gridX = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "gridY")
-                gridY = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "settleTolerance")
-                settleTolerance = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "slotsPerSquare")
-                slotsPerSquare = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "startAge")
-                startAge = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "dispersal")
-                dispersal = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "food")
-                food = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "breedCost")
-                breedCost = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "mutate")
-                mutate = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "maxDifference")
-                maxDifference = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "breedThreshold")
-                breedThreshold = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "target")
-                target = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "environmentChangeRate")
-                environmentChangeRate = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "refreshRate")
-                refreshRate = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "environmentMode")
-                environmentModeChanged(settings_file_in.readElementText().toInt(), true);
+            if (settingsFileIn.name() == "gridX")
+                gridX = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "gridY")
+                gridY = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "settleTolerance")
+                settleTolerance = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "slotsPerSquare")
+                slotsPerSquare = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "startAge")
+                startAge = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "dispersal")
+                dispersal = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "food")
+                food = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "breedCost")
+                breedCost = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "mutate")
+                mutate = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "maxDifference")
+                maxDifference = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "breedThreshold")
+                breedThreshold = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "target")
+                target = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "environmentChangeRate")
+                environmentChangeRate = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "refreshRate")
+                refreshRate = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "environmentMode")
+                environmentModeChanged(settingsFileIn.readElementText().toInt(), true);
             //No Gui options for the remaining settings as yet.
-            if (settings_file_in.name() == "speciesSamples")
-                speciesSamples = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "speciesSensitivity")
-                speciesSensitivity = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "timeSliceConnect")
-                timeSliceConnect = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "minSpeciesSize")
-                minSpeciesSize = static_cast<quint64>(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "speciesMode")
-                minSpeciesSize = static_cast<quint64>(settings_file_in.readElementText().toInt());
+            if (settingsFileIn.name() == "speciesSamples")
+                speciesSamples = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "speciesSensitivity")
+                speciesSensitivity = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "timeSliceConnect")
+                timeSliceConnect = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "minSpeciesSize")
+                minSpeciesSize = static_cast<quint64>(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "speciesMode")
+                minSpeciesSize = static_cast<quint64>(settingsFileIn.readElementText().toInt());
 
             //Bools
-            if (settings_file_in.name() == "recalculateFitness")
-                recalculateFitness = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "toroidal")
-                toroidal = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "nonspatial")
-                nonspatial = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "breedDifference")
-                breedDifference = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "breedSpecies")
-                breedSpecies = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "allowExcludeWithDescendants")
-                allowExcludeWithDescendants = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "sexual")
-                sexual = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "asexual")
-                asexual = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "logging")
-                logging = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "gui")
-                gui = settings_file_in.readElementText().toInt();
-            if (settings_file_in.name() == "environmentInterpolate")
-                environmentInterpolate = settings_file_in.readElementText().toInt();
+            if (settingsFileIn.name() == "recalculateFitness")
+                recalculateFitness = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "toroidal")
+                toroidal = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "nonspatial")
+                nonspatial = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "breedDifference")
+                breedDifference = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "breedSpecies")
+                breedSpecies = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "allowExcludeWithDescendants")
+                allowExcludeWithDescendants = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "sexual")
+                sexual = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "asexual")
+                asexual = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "logging")
+                logging = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "gui")
+                gui = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "environmentInterpolate")
+                environmentInterpolate = settingsFileIn.readElementText().toInt();
             //No gui options for below
-            if (settings_file_in.name() == "fitnessLoggingToFile")
-                fitnessLoggingToFile = settings_file_in.readElementText().toInt();
+            if (settingsFileIn.name() == "fitnessLoggingToFile")
+                fitnessLoggingToFile = settingsFileIn.readElementText().toInt();
             //Only GUI options
-            if (settings_file_in.name() == "autowrite")
-                autowriteLogCheckbox->setChecked(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "savePopulationCount")
-                savePopulationCount->setChecked(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveMeanFitness")
-                saveMeanFitness->setChecked( settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveCodingGenomeAsColour")
-                saveCodingGenomeAsColour->setChecked(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveSpecies")
-                saveSpecies->setChecked(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveNonCodingGenomeAsColour")
-                saveNonCodingGenomeAsColour->setChecked(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveGeneFrequencies")
-                saveGeneFrequencies->setChecked(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveSettles")
-                saveSettles->setChecked(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveFailsSettles")
-                saveFailsSettles->setChecked(settings_file_in.readElementText().toInt());
-            if (settings_file_in.name() == "saveEnvironment")
-                saveEnvironment->setChecked(settings_file_in.readElementText().toInt());
+            if (settingsFileIn.name() == "autowrite")
+                autowriteLogCheckbox->setChecked(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "savePopulationCount")
+                savePopulationCount->setChecked(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "saveMeanFitness")
+                saveMeanFitness->setChecked( settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "saveCodingGenomeAsColour")
+                saveCodingGenomeAsColour->setChecked(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "saveSpecies")
+                saveSpecies->setChecked(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "saveNonCodingGenomeAsColour")
+                saveNonCodingGenomeAsColour->setChecked(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "saveGeneFrequencies")
+                saveGeneFrequencies->setChecked(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "saveSettles")
+                saveSettles->setChecked(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "saveFailsSettles")
+                saveFailsSettles->setChecked(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "saveEnvironment")
+                saveEnvironment->setChecked(settingsFileIn.readElementText().toInt());
 
             //Strings
-            if (settings_file_in.name() == "globalSavePath")
-                globalSavePath->setText(settings_file_in.readElementText());
+            if (settingsFileIn.name() == "globalSavePath")
+                globalSavePath->setText(settingsFileIn.readElementText());
         }
     }
     // Error
-    if (settings_file_in.hasError())
+    if (settingsFileIn.hasError())
         setStatusBarText("There seems to have been an error reading in the XML file. Not all settings will have been loaded.");
     else
         setStatusBarText("Loaded settings file");
@@ -3194,192 +3195,192 @@ void MainWindow::saveSettings()
         return;
     }
 
-    QXmlStreamWriter settings_file_out(&settings_file);
-    settings_file_out.setAutoFormatting(true);
-    settings_file_out.setAutoFormattingIndent(-2);
+    QXmlStreamWriter settingsFileOut(&settings_file);
+    settingsFileOut.setAutoFormatting(true);
+    settingsFileOut.setAutoFormattingIndent(-2);
 
-    settings_file_out.writeStartDocument();
+    settingsFileOut.writeStartDocument();
 
-    settings_file_out.writeStartElement("revosim");
+    settingsFileOut.writeStartElement("revosim");
 
     //Ints
-    settings_file_out.writeStartElement("gridX");
-    settings_file_out.writeCharacters(QString("%1").arg(gridX));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("gridX");
+    settingsFileOut.writeCharacters(QString("%1").arg(gridX));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("gridY");
-    settings_file_out.writeCharacters(QString("%1").arg(gridY));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("gridY");
+    settingsFileOut.writeCharacters(QString("%1").arg(gridY));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("settleTolerance");
-    settings_file_out.writeCharacters(QString("%1").arg(settleTolerance));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("settleTolerance");
+    settingsFileOut.writeCharacters(QString("%1").arg(settleTolerance));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("slotsPerSquare");
-    settings_file_out.writeCharacters(QString("%1").arg(slotsPerSquare));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("slotsPerSquare");
+    settingsFileOut.writeCharacters(QString("%1").arg(slotsPerSquare));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("startAge");
-    settings_file_out.writeCharacters(QString("%1").arg(startAge));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("startAge");
+    settingsFileOut.writeCharacters(QString("%1").arg(startAge));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("dispersal");
-    settings_file_out.writeCharacters(QString("%1").arg(dispersal));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("dispersal");
+    settingsFileOut.writeCharacters(QString("%1").arg(dispersal));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("food");
-    settings_file_out.writeCharacters(QString("%1").arg(food));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("food");
+    settingsFileOut.writeCharacters(QString("%1").arg(food));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("breedCost");
-    settings_file_out.writeCharacters(QString("%1").arg(breedCost));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("breedCost");
+    settingsFileOut.writeCharacters(QString("%1").arg(breedCost));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("mutate");
-    settings_file_out.writeCharacters(QString("%1").arg(mutate));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("mutate");
+    settingsFileOut.writeCharacters(QString("%1").arg(mutate));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("maxDifference");
-    settings_file_out.writeCharacters(QString("%1").arg(maxDifference));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("maxDifference");
+    settingsFileOut.writeCharacters(QString("%1").arg(maxDifference));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("breedThreshold");
-    settings_file_out.writeCharacters(QString("%1").arg(breedThreshold));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("breedThreshold");
+    settingsFileOut.writeCharacters(QString("%1").arg(breedThreshold));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("target");
-    settings_file_out.writeCharacters(QString("%1").arg(target));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("target");
+    settingsFileOut.writeCharacters(QString("%1").arg(target));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("environmentChangeRate");
-    settings_file_out.writeCharacters(QString("%1").arg(environmentChangeRate));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("environmentChangeRate");
+    settingsFileOut.writeCharacters(QString("%1").arg(environmentChangeRate));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("environmentMode");
-    settings_file_out.writeCharacters(QString("%1").arg(environmentMode));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("environmentMode");
+    settingsFileOut.writeCharacters(QString("%1").arg(environmentMode));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("refreshRate");
-    settings_file_out.writeCharacters(QString("%1").arg(refreshRate));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("refreshRate");
+    settingsFileOut.writeCharacters(QString("%1").arg(refreshRate));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("speciesSamples");
-    settings_file_out.writeCharacters(QString("%1").arg(speciesSamples));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("speciesSamples");
+    settingsFileOut.writeCharacters(QString("%1").arg(speciesSamples));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("speciesSensitivity");
-    settings_file_out.writeCharacters(QString("%1").arg(speciesSensitivity));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("speciesSensitivity");
+    settingsFileOut.writeCharacters(QString("%1").arg(speciesSensitivity));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("timeSliceConnect");
-    settings_file_out.writeCharacters(QString("%1").arg(timeSliceConnect));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("timeSliceConnect");
+    settingsFileOut.writeCharacters(QString("%1").arg(timeSliceConnect));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("minSpeciesSize");
-    settings_file_out.writeCharacters(QString("%1").arg(minSpeciesSize));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("minSpeciesSize");
+    settingsFileOut.writeCharacters(QString("%1").arg(minSpeciesSize));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("speciesMode");
-    settings_file_out.writeCharacters(QString("%1").arg(speciesMode));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("speciesMode");
+    settingsFileOut.writeCharacters(QString("%1").arg(speciesMode));
+    settingsFileOut.writeEndElement();
 
     //Bools
-    settings_file_out.writeStartElement("recalculateFitness");
-    settings_file_out.writeCharacters(QString("%1").arg(recalculateFitness));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("recalculateFitness");
+    settingsFileOut.writeCharacters(QString("%1").arg(recalculateFitness));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("toroidal");
-    settings_file_out.writeCharacters(QString("%1").arg(toroidal));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("toroidal");
+    settingsFileOut.writeCharacters(QString("%1").arg(toroidal));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("nonspatial");
-    settings_file_out.writeCharacters(QString("%1").arg(nonspatial));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("nonspatial");
+    settingsFileOut.writeCharacters(QString("%1").arg(nonspatial));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("breedDifference");
-    settings_file_out.writeCharacters(QString("%1").arg(breedDifference));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("breedDifference");
+    settingsFileOut.writeCharacters(QString("%1").arg(breedDifference));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("breedSpecies");
-    settings_file_out.writeCharacters(QString("%1").arg(breedSpecies));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("breedSpecies");
+    settingsFileOut.writeCharacters(QString("%1").arg(breedSpecies));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("allowExcludeWithDescendants");
-    settings_file_out.writeCharacters(QString("%1").arg(allowExcludeWithDescendants));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("allowExcludeWithDescendants");
+    settingsFileOut.writeCharacters(QString("%1").arg(allowExcludeWithDescendants));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("sexual");
-    settings_file_out.writeCharacters(QString("%1").arg(sexual));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("sexual");
+    settingsFileOut.writeCharacters(QString("%1").arg(sexual));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("asexual");
-    settings_file_out.writeCharacters(QString("%1").arg(asexual));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("asexual");
+    settingsFileOut.writeCharacters(QString("%1").arg(asexual));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("logging");
-    settings_file_out.writeCharacters(QString("%1").arg(logging));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("logging");
+    settingsFileOut.writeCharacters(QString("%1").arg(logging));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("gui");
-    settings_file_out.writeCharacters(QString("%1").arg(gui));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("gui");
+    settingsFileOut.writeCharacters(QString("%1").arg(gui));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("environmentInterpolate");
-    settings_file_out.writeCharacters(QString("%1").arg(environmentInterpolate));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("environmentInterpolate");
+    settingsFileOut.writeCharacters(QString("%1").arg(environmentInterpolate));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("fitnessLoggingToFile");
-    settings_file_out.writeCharacters(QString("%1").arg(fitnessLoggingToFile));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("fitnessLoggingToFile");
+    settingsFileOut.writeCharacters(QString("%1").arg(fitnessLoggingToFile));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("autowrite");
-    settings_file_out.writeCharacters(QString("%1").arg(autowriteLogCheckbox->isChecked()));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("autowrite");
+    settingsFileOut.writeCharacters(QString("%1").arg(autowriteLogCheckbox->isChecked()));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("savePopulationCount");
-    settings_file_out.writeCharacters(QString("%1").arg(savePopulationCount->isChecked()));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("savePopulationCount");
+    settingsFileOut.writeCharacters(QString("%1").arg(savePopulationCount->isChecked()));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("saveMeanFitness");
-    settings_file_out.writeCharacters(QString("%1").arg(saveMeanFitness->isChecked()));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("saveMeanFitness");
+    settingsFileOut.writeCharacters(QString("%1").arg(saveMeanFitness->isChecked()));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("saveCodingGenomeAsColour");
-    settings_file_out.writeCharacters(QString("%1").arg(saveCodingGenomeAsColour->isChecked()));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("saveCodingGenomeAsColour");
+    settingsFileOut.writeCharacters(QString("%1").arg(saveCodingGenomeAsColour->isChecked()));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("saveSpecies");
-    settings_file_out.writeCharacters(QString("%1").arg(saveSpecies->isChecked()));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("saveSpecies");
+    settingsFileOut.writeCharacters(QString("%1").arg(saveSpecies->isChecked()));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("saveNonCodingGenomeAsColour");
-    settings_file_out.writeCharacters(QString("%1").arg(saveNonCodingGenomeAsColour->isChecked()));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("saveNonCodingGenomeAsColour");
+    settingsFileOut.writeCharacters(QString("%1").arg(saveNonCodingGenomeAsColour->isChecked()));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("saveGeneFrequencies");
-    settings_file_out.writeCharacters(QString("%1").arg(saveGeneFrequencies->isChecked()));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("saveGeneFrequencies");
+    settingsFileOut.writeCharacters(QString("%1").arg(saveGeneFrequencies->isChecked()));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("saveSettles");
-    settings_file_out.writeCharacters(QString("%1").arg(saveSettles->isChecked()));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("saveSettles");
+    settingsFileOut.writeCharacters(QString("%1").arg(saveSettles->isChecked()));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("saveFailsSettles");
-    settings_file_out.writeCharacters(QString("%1").arg(saveFailsSettles->isChecked()));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("saveFailsSettles");
+    settingsFileOut.writeCharacters(QString("%1").arg(saveFailsSettles->isChecked()));
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeStartElement("saveEnvironment");
-    settings_file_out.writeCharacters(QString("%1").arg(saveEnvironment->isChecked()));
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("saveEnvironment");
+    settingsFileOut.writeCharacters(QString("%1").arg(saveEnvironment->isChecked()));
+    settingsFileOut.writeEndElement();
 
     //Strings
-    settings_file_out.writeStartElement("globalSavePath");
-    settings_file_out.writeCharacters(globalSavePath->text());
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeStartElement("globalSavePath");
+    settingsFileOut.writeCharacters(globalSavePath->text());
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeEndElement();
+    settingsFileOut.writeEndElement();
 
-    settings_file_out.writeEndDocument();
+    settingsFileOut.writeEndDocument();
 
     settings_file.close();
 
@@ -3406,7 +3407,7 @@ void MainWindow::exitProgram()
  */
 void MainWindow::on_actionCode_on_GitHub_triggered()
 {
-    QDesktopServices::openUrl(QUrl(QString(GITHUB_URL) + QString(GITREPOSITORY)));
+    QDesktopServices::openUrl(QUrl(QString(GITURL) + QString(GITREPOSITORY)));
 }
 
 /*!
@@ -3416,7 +3417,7 @@ void MainWindow::on_actionCode_on_GitHub_triggered()
  */
 void MainWindow::on_actionOnline_User_Manual_triggered()
 {
-    QDesktopServices::openUrl(QUrl(QString(READTHEDOCS_URL)));
+    QDesktopServices::openUrl(QUrl(QString(READTHEDOCS)));
 }
 
 /*!

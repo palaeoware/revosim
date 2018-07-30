@@ -104,7 +104,7 @@ extern quint8 environment[GRID_X][GRID_Y][3];  //0 = red, 1 = green, 2 = blue
 extern quint8 environmentLast[GRID_X][GRID_Y][3];  //Used for interpolation
 extern quint8 environmentNext[GRID_X][GRID_Y][3];  //Used for interpolation
 extern quint32 totalFittness[GRID_X][GRID_Y]; // Sum fitness critters in each square
-extern quint64 itteration;
+extern quint64 iteration;
 
 //These next to hold the babies... old style arrays for max speed
 extern quint64 newGenomes[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];

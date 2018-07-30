@@ -28,7 +28,7 @@ class Critter
 public:
     Critter();
 
-    void initialise(quint64 itteration, quint8 *environment, int x, int y, int z, quint64 species);
+    void initialise(quint64 iteration, quint8 *environment, int x, int y, int z, quint64 species);
     bool iterateParallel(int *killCountLocal, int addFood);
     int recalculateFitness(const quint8 *environment);
     int breedWithParallel(int xPosition, int yPosition, Critter *partner, int *newGenomeCountLocal);

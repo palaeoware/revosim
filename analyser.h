@@ -39,7 +39,7 @@ public:
     int originTime;
     LogSpecies *logSpeciesStructure;
     quint64 type;
-    quint64 ID;
+    quint64 id;
     quint64 parent;
 };
 

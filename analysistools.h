@@ -64,7 +64,7 @@ class StasisSpecies
 public:
     StasisSpecies();
 
-    quint64 ID{};
+    quint64 id{};
     qint64 start;
     qint64 end;
     QList<quint64> genomes;
@@ -94,7 +94,7 @@ public:
 
 private:
     void makeListRecursive(QList<quint64> *magicList, QMap <quint64, LoggedSpecies> *speciesList,
-                           quint64 ID, int insertPosition);
+                           quint64 id, int insertPosition);
 };
 
 #endif // ANALYSISTOOLS_H

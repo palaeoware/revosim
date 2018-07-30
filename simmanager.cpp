@@ -80,13 +80,13 @@ QStringList environmentFiles;
 QString speciesLoggingFile = "";
 QString fitnessLoggingFile = "";
 
-// Globabl data
+// Global data
 Critter critters[GRID_X][GRID_Y][SLOTS_PER_GRID_SQUARE]; //main array - static for speed
 quint8 environment[GRID_X][GRID_Y][3];  //0 = red, 1 = green, 2 = blue
 quint8 environmentLast[GRID_X][GRID_Y][3];  //Used for interpolation
 quint8 environmentNext[GRID_X][GRID_Y][3];  //Used for interpolation
 quint32 totalFittness[GRID_X][GRID_Y];
-quint64 itteration;
+quint64 iteration;
 
 // These next to hold the babies... old style arrays for max speed
 quint64 newGenomes[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];
@@ -458,9 +458,10 @@ void SimManager::setupRun()
             settleFails[n][m] = 0;
         }
 
-    nextSpeciesID = 1; //reset ID counter
+    nextSpeciesID = 1; //reset id counter
 
-    int n = gridX / 2, m = gridY / 2;
+    int n = gridX / 2;
+    int m = gridY / 2;
 
     //RJG - Either reseed with known genome if set
     if (reseedKnown) {
@@ -479,7 +480,7 @@ void SimManager::setupRun()
 
         //RJG - I think this is a good thing to flag in an obvious fashion.
         QString reseedGenomeString("Started simulation with known genome: ");
-        for (unsigned long long i : tweakers64)
+        for (quint64 i : tweakers64)
             if (i & reseedGenome)
                 reseedGenomeString.append("1");
             else
@@ -495,11 +496,13 @@ void SimManager::setupRun()
     totalFittness[n][m] = static_cast<quint32>(critters[n][m][0].fitness); //may have gone wrong from above
 
     aliveCount = 1;
-    quint64 itteration = critters[n][m][0].genome;
+    iteration = 0;
+
+    quint64 iteration = critters[n][m][0].genome;
 
     //RJG - Fill square with successful critter
     for (int c = 1; c < slotsPerSquare; c++) {
-        critters[n][m][c].initialise(itteration, environment[n][m], n, m, c, nextSpeciesID);
+        critters[n][m][c].initialise(iteration, environment[n][m], n, m, c, nextSpeciesID);
 
         if (critters[n][m][c].age > 0) {
             critters[n][m][c].age /= ((random8() / 10) + 1);
@@ -509,8 +512,6 @@ void SimManager::setupRun()
             totalFittness[n][m] += static_cast<quint32>(critters[n][m][c].fitness);
         }
     }
-
-    itteration = 0;
 
     environmentChangeCounter = environmentChangeRate;
     environmentChangeForward = true;
@@ -522,20 +523,20 @@ void SimManager::setupRun()
     rootSpecies = new LogSpecies;
 
     rootSpecies->maxSize = static_cast<quint32>(aliveCount);
-    rootSpecies->ID = nextSpeciesID;
+    rootSpecies->id = nextSpeciesID;
     rootSpecies->timeOfFirstAppearance = 0;
     rootSpecies->timeOfLastAppearance = 0;
     rootSpecies->parent = static_cast<LogSpecies *>(nullptr);
     auto *newdata = new LogSpeciesDataItem;
     newdata->centroidRangeX = static_cast<quint8>(n);
     newdata->centroidRangeY = static_cast<quint8>(m);
-    newdata->itteration = 0;
+    newdata->iteration = 0;
     newdata->cellsOccupied = 1;
     newdata->genomicDiversity = 1;
     newdata->size = static_cast<quint32>(aliveCount);
     newdata->geographicalRange = 0;
     newdata->cellsOccupied = 0; //=1, this is stored as -1
-    newdata->sampleGenome = itteration;
+    newdata->sampleGenome = iteration;
     newdata->maxEnvironment[0] = environment[n][m][0];
     newdata->maxEnvironment[1] = environment[n][m][1];
     newdata->maxEnvironment[2] = environment[n][m][2];
@@ -556,11 +557,11 @@ void SimManager::setupRun()
 
     oldSpeciesList.clear();
     Species newsp;
-    newsp.ID = nextSpeciesID;
+    newsp.id = nextSpeciesID;
     newsp.originTime = 0;
     newsp.parent = 0;
     newsp.size = slotsPerSquare;
-    newsp.type = itteration;
+    newsp.type = iteration;
     newsp.logSpeciesStructure = rootSpecies;
     oldSpeciesList.append(newsp);
 
@@ -756,7 +757,7 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
  */
 bool SimManager::iterate(int emode, bool interpolate)
 {
-    itteration++;
+    iteration++;
 
     //RJG - Provide user with warning if the system is grinding through so many species it's taking>5 seconds.Option to turn off species mode.
     if (warningCount == 1) {
@@ -787,8 +788,9 @@ bool SimManager::iterate(int emode, bool interpolate)
     for (int i = 0; i < processorCount; i++)
         newgenomecounts_starts[i] = i * positionadd;
 
-    int KillCounts[256];
-    for (int i = 0; i < processorCount; i++) KillCounts[i] = 0;
+    int killCounts[256];
+    for (int i = 0; i < processorCount; i++)
+        killCounts[i] = 0;
 
     //do the magic! Set up futures objects, call the functions, wait till done, retrieve values
 
@@ -797,7 +799,7 @@ bool SimManager::iterate(int emode, bool interpolate)
                                 this,
                                 &SimManager::iterateParallel,
                                 (i * gridX) / processorCount, (((i + 1) * gridX) / processorCount) - 1, newgenomecounts_starts[i],
-                                &(KillCounts[i])
+                                &(killCounts[i])
                             );
 
     for (int i = 0; i < processorCount; i++)
@@ -808,7 +810,7 @@ bool SimManager::iterate(int emode, bool interpolate)
 
     //apply all the kills to the global count
     for (int i = 0; i < processorCount; i++)
-        aliveCount -= KillCounts[i];
+        aliveCount -= killCounts[i];
 
     //Now handle spat settling
     int trycount = 0;
