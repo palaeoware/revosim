@@ -17,7 +17,7 @@
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
-      <string>Columns: 1-32 = coding genome; 1-64 = non-coding genome; E = environment colour; G = coding genome colour; N = non-coding genome colour; F = fitness.</string>
+      <string>Columns: 1-32 = coding genome; 33-64 = non-coding genome; E = environment colour; G = coding genome colour; N = non-coding genome colour; F = fitness.</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
