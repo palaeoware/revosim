@@ -2923,7 +2923,7 @@ QString MainWindow::handleAnalysisTool(int code)
         int green = QInputDialog::getInt(this, "Count peaks...", "Green level?", 128, 0, 255, 1, &ok);
         if (!ok)
             return QString("");;
-        int blue = QInputDialog::getInt(this, "Count peaks...", "Green level?", 128, 0, 255, 1, &ok);
+        int blue = QInputDialog::getInt(this, "Count peaks...", "Blue level?", 128, 0, 255, 1, &ok);
         if (!ok)
             return QString("");
         OutputString = a.countPeaks(red, green, blue);
