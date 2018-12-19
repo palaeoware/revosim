@@ -85,6 +85,7 @@ private:
     void resetSquare(int n, int m);
     void resizeImageObjects();
     void writeLog();
+    void simulationDead();
     void calculateSpecies();
     int scaleFails(int fails, float generations);
     int waitUntilPauseSignalIsEmitted();

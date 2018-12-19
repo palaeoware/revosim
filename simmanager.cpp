@@ -457,22 +457,23 @@ void SimManager::setupRun()
             settles[n][m] = 0;
             settleFails[n][m] = 0;
         }
+    aliveCount = 0;
 
     nextSpeciesID = 1; //reset id counter
 
     int n = gridX / 2;
     int m = gridY / 2;
 
+    int count = 0;
+
     //RJG - Either reseed with known genome if set
     if (reseedKnown) {
         critters[n][m][0].initialise(reseedGenome, environment[n][m], n, m, 0, nextSpeciesID);
         if (critters[n][m][0].fitness == 0) {
             // RJG - But sort out if it can't survive...
-            QMessageBox::warning(
-                nullptr,
-                "Oops",
-                "The genome you're trying to reseed with can't survive in this environment. There could be a number of reasons why this is. Please contact RJG or MDS to discuss."
-            );
+            QMessageBox::warning(nullptr, "Oops",
+                                 "The genome you're trying to reseed with can't survive in one of the two chosen environmental pixels. Please either try different settings, or contact the Palaeoware team to discuss.");
+
             reseedKnown = false;
             setupRun();
             return;
@@ -488,8 +489,15 @@ void SimManager::setupRun()
 
         mainWindow->setStatusBarText(reseedGenomeString);
     } else {
-        while (critters[n][m][0].fitness < 1)
+        while (critters[n][m][0].fitness < 1) {
             critters[n][m][0].initialise(random64(), environment[n][m], n, m, 0, nextSpeciesID);
+            count ++;
+            if (count > 10000000) {
+                QMessageBox::warning(nullptr, "Problem",
+                                     "It looks like no digital organisms are capable of surviving using the current settings. There could be a number of reasons why this is: either try different settings, or contact the Palaeoware team to discuss.");
+                return;
+            }
+        }
         mainWindow->setStatusBarText("");
     }
 

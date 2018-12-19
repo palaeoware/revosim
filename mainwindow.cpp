@@ -44,6 +44,7 @@
 #include <QTimer>
 #include <QThread>
 #include <QXmlStreamReader>
+#include <QButtonGroup>
 
 //not defined in all versions
 #ifndef M_SQRT1_2
@@ -1022,11 +1023,23 @@ void MainWindow::startSimulation()
         if (ui->actionGo_Slow->isChecked()) Sleeper::msleep(30);
 
         //ARTS - set Stop flag to returns true if reached end... but why? It will fire the finishRun() function at the end.
-        if (simulationManager->iterate(environmentMode, environmentInterpolate))
-            stopFlag = true;
+        if (simulationManager->iterate(environmentMode, environmentInterpolate))stopFlag = true;
+        if (!aliveCount) simulationDead();
     }
 
     finishRun();
+}
+
+void MainWindow::simulationDead()
+{
+    nextRefresh = 1;
+    report();
+
+    QMessageBox::warning(nullptr, "Stopping simulation",
+                         "It looks like nothing is alive in your simulation. This could be due to the settings you are using, or just bad luck. The simulation will terminate and reseed for you.");
+    stopFlag = true;
+
+    resetSimulation();
 }
 
 /*!
@@ -1064,6 +1077,7 @@ void MainWindow::runForNSimulation()
         qApp->processEvents();
 
         if (simulationManager->iterate(environmentMode, environmentInterpolate)) stopFlag = true;
+        if (!aliveCount) simulationDead();
         i--;
     }
 
@@ -1186,6 +1200,7 @@ void MainWindow::startBatchSimulation()
             qApp->processEvents();
 
             simulationManager->iterate(environmentMode, environmentInterpolate);
+            if (!aliveCount) break;
             i--;
         }
 
