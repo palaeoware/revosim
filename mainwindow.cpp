@@ -1794,19 +1794,43 @@ gotcounts2:
     // (7) Settles
     if (currentSelectedMode == 7 || saveSettles->isChecked()) {
         //Popcount
-        for (int n = 0; n < gridX; n++)
+
+        // Workout min and max values
+        int max = -1;
+        int min = -1;
+
+        // Get min and max values
+        for (int n = 0; n < gridX; n++) {
             for (int m = 0; m < gridY; m++) {
                 int value = (settles[n][m] * 10) / refreshRate;
-                if (value > 255) value = 255;
+                //qDebug() << value;
+                if (min < 0) min = value;
+                if (max < 0) max = value;
+                if (value < min) min = value;
+                if (value > max) max = value;
+            }
+        }
+
+        // Scale each value to 0-255
+        for (int n = 0; n < gridX; n++) {
+            for (int m = 0; m < gridY; m++) {
+                int value = (settles[n][m] * 10) / refreshRate;
+
+                // Scale values ( x - min(x) ) * (smax - smin) / ( max(x) - min(x) ) + smin
+                if (max - min > 0)
+                    value = (value - min) * 255 / (max - min);
+                else
+                    value = 0;
+
+                //qDebug() << value;
                 populationImage->setPixel(n, m, static_cast<uint>(value));
             }
+        }
 
-        if (currentSelectedMode == 7)
-            populationItem->setPixmap(QPixmap::fromImage(*populationImage));
+        if (currentSelectedMode == 7)populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (saveSettles->isChecked())
             if (save_dir.mkpath("settles/"))
-                populationImage->save(QString(save_dir.path() + "/settles/EvoSim_settles_it_%1.png").arg(iteration, 7,
-                                                                                                         10, QChar('0')));
+                populationImage->save(QString(save_dir.path() + "/settles/EvoSim_settles_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (8) Breed/Settle Fails
