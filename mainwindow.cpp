@@ -575,7 +575,7 @@ QDockWidget *MainWindow::createOutputSettingsDock()
 
     //ARTS - Output Save Path
     auto *savePathGrid = new QGridLayout;
-    QLabel *savePathLabel = new QLabel("Output save globalSavePath");
+    QLabel *savePathLabel = new QLabel("Output save path:");
     savePathLabel->setObjectName("savePathLabel");
     savePathGrid->addWidget(savePathLabel, 1, 1, 1, 2);
     QString program_path(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
