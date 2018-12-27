@@ -1,7 +1,7 @@
 <RCC>
     <qresource prefix="/">
         <file alias="randoms.dat">resources/randoms.dat</file>
-        <file alias="EvoSim_default_env.png">resources/EvoSim_default_env.png</file>
+        <file alias="REvoSim_default_env.png">resources/REvoSim_default_env.png</file>
         <file alias="img.png">resources/img.png</file>
         <file alias="gplV3Logo">resources/gplv3-127x51.png</file>
         <file alias="icon.png">resources/icon.png</file>

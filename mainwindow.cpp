@@ -187,7 +187,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     pauseFlag = false;
 
     //RJG - load default environment image to allow program to run out of box (quicker for testing)
-    environmentFiles.append(":/EvoSim_default_env.png");
+    environmentFiles.append(":/REvoSim_default_env.png");
     currentEnvironmentFile = 0;
     simulationManager->loadEnvironmentFromFile(1);
 
@@ -1575,7 +1575,7 @@ void MainWindow::refreshPopulations()
             populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (savePopulationCount->isChecked())
             if (save_dir.mkpath("population/"))
-                populationImageColour->save(QString(save_dir.path() + "/population/EvoSim_population_it_%1.png").arg(iteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/population/REvoSim_population_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (1) Fitness
@@ -1598,7 +1598,7 @@ void MainWindow::refreshPopulations()
             populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (saveMeanFitness->isChecked())
             if (save_dir.mkpath("fitness/"))
-                populationImageColour->save(QString(save_dir.path() + "/fitness/EvoSim_mean_fitness_it_%1.png").arg(iteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/fitness/REvoSim_mean_fitness_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (2) Genome as colour
@@ -1662,7 +1662,7 @@ gotcounts:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("coding/"))
-                populationImageColour->save(QString(save_dir.path() + "/coding/EvoSim_coding_genome_it_%1.png").arg(iteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/coding/REvoSim_coding_genome_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (3) Non-coding Genome
@@ -1727,7 +1727,7 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveNonCodingGenomeAsColour->isChecked())
             if (save_dir.mkpath("non_coding/"))
-                populationImageColour->save(QString(save_dir.path() + "/non_coding/EvoSim_non_coding_it_%1.png").arg(iteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/non_coding/REvoSim_non_coding_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (4) Gene Frequencies
@@ -1760,7 +1760,7 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveGeneFrequencies->isChecked())
             if (save_dir.mkpath("gene_freq/"))
-                populationImageColour->save(QString(save_dir.path() + "/gene_freq/EvoSim_gene_freq_it_%1.png").arg(iteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/gene_freq/REvoSim_gene_freq_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (5) Breed Attempts
@@ -1830,7 +1830,7 @@ gotcounts2:
         if (currentSelectedMode == 7)populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (saveSettles->isChecked())
             if (save_dir.mkpath("settles/"))
-                populationImage->save(QString(save_dir.path() + "/settles/EvoSim_settles_it_%1.png").arg(iteration, 7, 10, QChar('0')));
+                populationImage->save(QString(save_dir.path() + "/settles/REvoSim_settles_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (8) Breed/Settle Fails
@@ -1852,7 +1852,7 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveFailsSettles->isChecked())
             if (save_dir.mkpath("breed_settle_fails/"))
-                populationImageColour->save(QString(save_dir.path() + "/breed_settle_fails/EvoSim_breed_settle_fails_it_%1.png").arg(iteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/breed_settle_fails/REvoSim_breed_settle_fails_it_%1.png").arg(iteration, 7, 10, QChar('0')));
 
     }
 
@@ -1895,7 +1895,7 @@ gotcounts2:
             populationItem->setPixmap(QPixmap::fromImage(*populationImageColour));
         if (saveSpecies->isChecked())
             if (save_dir.mkpath("species/"))
-                populationImageColour->save(QString(save_dir.path() + "/species/EvoSim_species_it_%1.png").arg(iteration, 7, 10, QChar('0')));
+                populationImageColour->save(QString(save_dir.path() + "/species/REvoSim_species_it_%1.png").arg(iteration, 7, 10, QChar('0')));
 
     }
 
@@ -1925,7 +1925,7 @@ void MainWindow::refreshEnvironment()
     environmentItem->setPixmap(QPixmap::fromImage(*environmentImage));
     if (saveEnvironment->isChecked())
         if (save_dir.mkpath("environment/"))
-            environmentImage->save(QString(save_dir.path() + "/environment/EvoSim_environment_it_%1.png").arg(iteration, 7, 10, QChar('0')));
+            environmentImage->save(QString(save_dir.path() + "/environment/REvoSim_environment_it_%1.png").arg(iteration, 7, 10, QChar('0')));
 }
 
 /*!
@@ -2287,7 +2287,7 @@ bool MainWindow::loadEnvironmentFiles()
 /*!
  * \brief MainWindow::saveSimulation
  *
- * Action to save the current settings and simulation to an .evosim file.
+ * Action to save the current settings and simulation to an .revosim file.
  *
  */
 void MainWindow::saveSimulation()
@@ -3001,7 +3001,7 @@ QString MainWindow::printSettings()
     QString settings;
     QTextStream settingsOut(&settings);
 
-    settingsOut << "EvoSim settings:\n\n";
+    settingsOut << "REvoSim settings:\n\n";
 
     settingsOut << "- Integers:\n";
     settingsOut << "-- Grid X: " << gridX << "\n";
