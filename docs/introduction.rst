@@ -1,8 +1,43 @@
 Introduction
 ============
 
-REvoSim === [R]apid [Evo]lutionary [Sim]ulator
+Overview
+-----------
 
-REvoSim is an individual-based model, using a simplified first-principles evolutionary model to facilitate high computational efficiency, enabling the simulation of large populations incorporating space, over geological time, using modest computer hardware. It can simulate populations of 10\ :sup:`5` \–10\ :sup:`7` digital organisms over geological timescales, and incorporates spatial and temporal environmental variation, recombinant reproduction, mutation and dispersal. Speeds attainable depend on the computer hardware in use, the size of the populations simulated, and details of the experimental setup (most especially on whether species tracking and fitness recalculation are activated). With a typical 2018 desktop computer, speeds of between 500,000 and 1,000,000 iterations per hour can be achieved for populations of around 250,000.
+REvoSim can be used to study a range of evolutionary processes. It is based on 64-bit digital organisms, within an environment defined by RGB values of a two-dimensional image. It is highly abstracted, and is designed for computational efficiency. For versatility there are a large number of user-defined variables: an overview is provided below. This assumes the software has already been installed (instructions can be found on the page :ref:`requirements`). We recommend reading the paper below for full discussion of REvoSim's approach, potential limitations, and its strengths:
 
-REvoSim has been in development since 2008, and has been released with the intention that it can be used as a multipurpose platform for the study of many evolutionary phenomena (both macro- and microevolution). While it was designed with macroevolutionary studies in mind, it is also applicable to microevolutionary problems. As such it is complementary to the many other approaches of studying evolution on a range of different timescales, and will be continually developed by the core team to expand its capabilities.
+Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology.
+
+A utility program, EnviroGen, is available to generate environments for REvoSim. Controls for the simulation are found on the toolbar at the top of the main window. Hovering a mouse over each toolbar button will provide an overview of what it does. The buttons are as follows:
+
+:Run: Launch a simulation
+:Run for: Launch a simulation and then allow it to continue for a set number of iterations.
+:Batch: Repeat Run for *n* times.
+:Pause: Pause a simulation.
+:Stop: Cancel a simulation.
+:Reset: Reset the simulation and reseeds with a random digital organism in the central pixel.
+:Reseed: Launches a dialogue to allow the simulation to be reseeded with a known genome, or with two individuals that share a (random one, or user defined) genome.
+:Genome: Launch Genome Comparison Dock which allows genomes to be inspected and compared.
+:Settings: Launch Settings Dock which allows variables to be defined.
+:About: Launch dialogue with information about REvoSim.
+
+The main part of the window comprises two panels:
+
+:Population view: Provides an overview of the population alive at any given polling iteration. The information shown can be selected with a drop down menu at the top.
+:Environment: Shows the RGB environment which is used to calculate organism fitness.
+
+Below this is the :ref:`information`, which shows a number of statistics for the given run, updated each polling iteration. These include population size, number of species, iterations and speed. You can find more information on the :ref:`maintoolbar` and :ref:`populationscene` pages.
+
+Variables
+---------
+
+Variables can be set within the settings dock on the right. Full descriptions of these and their implications can be found in the REvoSim paper. Clicking settings on the toolbar at the top of a window toggles the visibility of this dock. At the bottom of the dock are three tabs, each of which has variables associated with different aspects of the simulation.
+
+:Organism tab: This includes the variables which dictate the behaviour of the digital organisms in a REvoSim run. This includes chance of mutation, starting age (i.e. length of life), breed threshold and cost, mode of breeding, and settle settings. More information: :ref:`organisms`
+:Simulation tab: This includes the settings for the environment and associated files, simulation size, fitness target, energy input, settle tolerance, and species tracking. More information: :ref:`simulations`
+:Output tab: This includes output options for the simulation: save directory, refresh rate, and logging/output options. More information: :ref:`outputs`
+
+Quick start
+-----------
+
+A simulation - using default settings and environment - can be started by hitting the Run button. In addition to the visualisation, runs can be analysed using log files which are placed by default in a folder called *REvoSim_output* on the desktop for all operating systems. A log is written during a run when "Write Log Files" (Settings dock, Output tab) is checked, and a the phylogenetic tree and other more detailed statistics for a run can be written at any point by clicking the button "Write data".

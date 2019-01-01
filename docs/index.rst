@@ -22,7 +22,7 @@ w:https://github.com/palaeoware.
 Relevant references
 -------------------
 
-Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2018. REvoSim: Organism-level simulation of macro- and microevolution.
+Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology.
 
 
 Table of Contents
@@ -30,13 +30,13 @@ Table of Contents
 .. toctree::
    :maxdepth: 3
    :numbered:
-   
+
    introduction
    requirements
-   thebasics
-   runfirstsim
-   runforandbatch
+   windowlayout
    settingsorganisms
    settingssiumlation
+   settingsoutput
    loggingsim
+   genomecomparison
    advanced

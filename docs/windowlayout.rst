@@ -1,4 +1,4 @@
-.. windowlayout
+.. _windowlayout:
 
 Window Layout
 =============
@@ -10,7 +10,7 @@ Each of the above mentioned features is documented in more detail on the followi
 
 .. toctree::
    :maxdepth: 1
-   
+
    mainmenu
    maintoolbar
    populationscene
