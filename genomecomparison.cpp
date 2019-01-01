@@ -33,10 +33,10 @@ GenomeComparison::GenomeComparison(QWidget *parent) : QWidget(parent), ui(new Ui
     autoComparison = true;
 
     //Set Column Colours
-    first32 = QColor(0, 100, 0); // Green
-    last32 = QColor(200, 0, 0); // Red
-    spacerColumn = QColor(255, 255, 255); //White
-    highlight = QColor(127, 127, 127); //Gray
+    first32 = QColor(QPalette().color(QPalette::Text).rgb());
+    last32 = QColor(QPalette().color(QPalette::Text).rgb());
+    spacerColumn = QColor(QPalette().color(QPalette::Base).rgb());
+    highlight = QColor(QPalette().color(QPalette::Highlight).rgb());
 
     columnWidth = 30;
 
