@@ -89,7 +89,7 @@ void russellenvironment::regenerate()
           for (int j=0;j<3;j++)seeds[i].colour[j]+=factor*((double)((Rand8()-128.)*((double)maxcvel/128.)));
           for (int j=0;j<3;j++)if((int)seeds[i].colour[j]>255)seeds[i].colour[j]=255.;
           for (int j=0;j<3;j++)if((int)seeds[i].colour[j]<=0)seeds[i].colour[j]=0.;
-          seeds[i].size+=factor*((Rand8()-128)*((float)sizevel/128.));
+          seeds[i].size+=factor*((Rand8()-128)*((double)sizevel/128.));
 
 
           if(periodic){if(seeds[i].n>(MainWin->ui->spinSize->value()-.1))seeds[i].n=0.;

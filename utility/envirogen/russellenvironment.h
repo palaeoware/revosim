@@ -31,7 +31,7 @@ private:
 
     int sizevel;
 
-    float maxvel;
+    double maxvel;
     int maxacc;
 
     int maxcvel;
@@ -41,7 +41,7 @@ private:
     double factor;
     int numbGenerations;
 
-    float na, ma;
+    double na, ma;
 
 };
 

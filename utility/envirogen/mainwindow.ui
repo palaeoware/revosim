@@ -121,7 +121,7 @@
         <item>
          <widget class="QTabWidget" name="settings_tab_widget">
           <property name="currentIndex">
-           <number>3</number>
+           <number>1</number>
           </property>
           <widget class="QWidget" name="output_tab">
            <attribute name="title">
@@ -451,7 +451,7 @@ p, li { white-space: pre-wrap; }
             <item row="5" column="1">
              <widget class="QSpinBox" name="sMin">
               <property name="minimum">
-               <number>1</number>
+               <number>0</number>
               </property>
               <property name="value">
                <number>5</number>
