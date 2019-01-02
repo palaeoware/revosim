@@ -28,7 +28,7 @@ We recommend you install and use MSYS2 (64-bit) a Windows package manager, based
 **Ubuntu 18.04 64-bit**
 *QT Creator + QT v5.x and using GCC (64-bit)*
 
-#. The simplest way to install Q5.X on your system is to download and run the installer from `Qt <https://www.qt.io/download>`_ Further instructions are available `from the Qt website <https://wiki.qt.io/Install_Qt_5_on_Ubuntu>`_
+#. The simplest way to install Q5.X on your system is to download and run the installer from `Qt <https://www.qt.io/download>`_. Further instructions are available `from the Qt website <https://wiki.qt.io/Install_Qt_5_on_Ubuntu>`_
 #. Open the .pro file in QT Creator, set up an appropriate kit using the installed version of QT, and follow the standard debug/release procedure.
 
 **MacOS**

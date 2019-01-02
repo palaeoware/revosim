@@ -37,7 +37,7 @@ Tools
 .. figure:: _static/toolsMenu.png
     :align: center
 
-The Tools menu allows access to the built-in dockable widgets (called 'Docks') which alter or extend the core program functions. This includes the main simulation settings dock, described in :ref:`organisms`, :ref:`simulations` and :ref:`outputs`, and the genome comparison dock (:ref:`genomecomparison`)
+The Tools menu allows access to the built-in dockable widgets (called 'Docks') which alter or extend the core program functions. This includes the main simulation settings dock, described in :ref:`organisms`, :ref:`simulations` and :ref:`outputs`, and the genome comparison dock (:ref:`genomecomparison`).
 
 .. _mainmenu-help:
 

@@ -19,7 +19,7 @@ A genome can be added to the comparison dock by right clicking on the population
 
 The genomes can be deleted individually from the table by selecting a genome and using the Delete button. Alternatively all genomes in the table can be removed from Genome Comparison Dock the using the Reset All button (this will also remove any manually compared genomes).
 
-The first ten genomes from the Genome Comparison Dock are pulled through to the reseed dialogue (Fig. 8.1): this allows one to be selected as the starting genome for a new run. This allows multiple repeats of simulations using the same, known, genome, which is known to be capable of surviving within a given environment.
+The first ten genomes from the Genome Comparison Dock are pulled through to the reseed dialogue (Fig. 8.1): this allows one to be selected as the starting genome for a new run. This allows multiple repeats of simulations using the same genome, which is known to be capable of surviving within a given environment using the masks loaded at launch (note that these will not persist between sessions unless through loading a saved simulation).
 
 .. figure:: _static/reseedDialog.png
     :align: center

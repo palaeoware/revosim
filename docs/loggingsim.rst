@@ -40,9 +40,7 @@ REvoSim provides an alternative, more detailed log for anaylsis of runs. This ca
 
 :Timestamp: The first line is a time stamp highlighting when the run was written, in the following format: 2018-12-30T11:57:51
 :Settings: A printout of all REvoSim settings for this run then follows, divided into integers and then bools. This means that at any point it is possible to revisit and check all settings for that run.
-:Legend: There is then an explanation of the contents of this log file:
-
-- This log features the tree from a finished run, in Newick format, and then data for all the species that have existed with more individuals than minimum species size. The exact data provided depends on the phylogeny tracking mode selected in the GUI.
+:Legend: There is then an explanation of the contents of this log file: "This log features the tree from a finished run, in Newick format, and then data for all the species that have existed with more individuals than minimum species size. The exact data provided depends on the phylogeny tracking mode selected in the GUI."
 
 :Tree: There then follows a tree in Newick format for the run to the point at which the log is written, excluding species below minimum species as requested, and also excluding species without descendents if requested. This can then be loaded into, e.g. FigTree to be rendered, or into e.g. R, for analysis. An example tree is shown below - note species labels are prefaced with id for clarity, and also include the maximum size of that species as part of their species name, after a hyphen:
 
