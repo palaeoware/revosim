@@ -4,11 +4,22 @@
 #
 #-------------------------------------------------
 
-QT       += core gui widgets concurrent
+QT  += core gui widgets concurrent
 
-TARGET = GitEvoSimEnvironment
+TARGET = EnviroGen
+
+DESTDIR \
+    += \
+    bin
+
 TEMPLATE = app
 
+# Load the SPIERS version number
+include(../../version.pri)
+
+MOC_DIR += build
+
+OBJECTS_DIR += build
 
 SOURCES += \
     russellenvironment.cpp \
@@ -24,7 +35,6 @@ SOURCES += \
     randoms.cpp \
     darkstyletheme.cpp \
     about.cpp
-
 
 HEADERS  += \
     ui_mainwindow.h \
@@ -52,4 +62,3 @@ RESOURCES += \
 
 #Needed to use C++ lamda functions
 CONFIG += c++11
-

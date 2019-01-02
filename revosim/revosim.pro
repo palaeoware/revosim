@@ -2,8 +2,22 @@
 # Project created by QtCreator 2010-02-10T13:30:03
 # -------------------------------------------------
 QT += widgets concurrent
-TARGET = revosim
+
+TARGET = REvoSim
+
+DESTDIR \
+    += \
+    bin
+
 TEMPLATE = app
+
+# Load the SPIERS version number
+include(../version.pri)
+
+MOC_DIR += build
+
+OBJECTS_DIR += build
+
 SOURCES += main.cpp \
     mainwindow.cpp \
     simmanager.cpp \
@@ -20,6 +34,7 @@ SOURCES += main.cpp \
     logspeciesdataitem.cpp \
     about.cpp \
     darkstyletheme.cpp
+
 HEADERS += mainwindow.h \
     simmanager.h \
     critter.h \
@@ -36,6 +51,7 @@ HEADERS += mainwindow.h \
     logspeciesdataitem.h \
     about.h \
     darkstyletheme.h
+
 FORMS += mainwindow.ui \
     genomecomparison.ui \
     reseed.ui \
