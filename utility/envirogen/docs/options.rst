@@ -44,4 +44,10 @@ Dyn 2
 
 [Image]
 
- 
+The second model for generation of dynamic environments is also based on moving seeds, but differs in being additive, and lacking smoothing. As such, it tends to have higher gradients between pixels than the first dynamic environment, and using the default settings it changes more rapidly. It is quicker generating environments than dynamic environment one. Options are as follows:
+
+:Object count: This is the number of seeds which are used to create the environment.
+:Maximum object size: The maximum possible object size. In this dynamic environment all limits are hard, and thus cannot be exceeded.
+:Minimum object size: This is the minimum size.
+:Maximum tightness: To do.
+:Minimum tightness: To do. 

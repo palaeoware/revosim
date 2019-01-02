@@ -12,7 +12,8 @@ markenvironment::markenvironment()
 {
     ReadSettings();
 
-    for (int i = 0; i < objectcount; i++) {
+    for (int i = 0; i < objectcount; i++)
+    {
         objxpos[i] = RandFloat() * MainWin->ui->spinSize->value();
         objypos[i] = RandFloat() * MainWin->ui->spinSize->value();
         objxvel[i] = RandFloat() * maxvel * 2 - maxvel;
@@ -60,7 +61,8 @@ void markenvironment::regenerate()
 
     //reset to black
     for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++) {
+        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+        {
 
             environment[n][m][2] = 127;
             environment[n][m][1] = 127;
@@ -68,47 +70,57 @@ void markenvironment::regenerate()
         }
 
     //iterate and apply lights
-    for (int i = 0; i < objectcount; i++) {
+    for (int i = 0; i < objectcount; i++)
+    {
         //add velocities
         objxpos[i] += (objxvel[i] * speedfactor);
         objypos[i] += (objyvel[i] * speedfactor);
         //handle bouncing
-        if (objxpos[i] < 0) {
+        if (objxpos[i] < 0)
+        {
             objxpos[i] = 0 - objxpos[i];
             objxvel[i] = 0 - objxvel[i];
         }
-        if (objypos[i] < 0) {
+        if (objypos[i] < 0)
+        {
             objypos[i] = 0 - objypos[i];
             objyvel[i] = 0 - objyvel[i];
         }
-        if (objxpos[i] > (MainWin->ui->spinSize->value() - 1)) {
+        if (objxpos[i] > (MainWin->ui->spinSize->value() - 1))
+        {
             objxpos[i] = (2 * (MainWin->ui->spinSize->value() - 1)) - objxpos[i];
             objxvel[i] = 0 - objxvel[i];
         }
-        if (objypos[i] > (MainWin->ui->spinSize->value() - 1)) {
+        if (objypos[i] > (MainWin->ui->spinSize->value() - 1))
+        {
             objypos[i] = (2 * (MainWin->ui->spinSize->value() - 1)) - objypos[i];
             objyvel[i] = 0 - objyvel[i];
         }
 
         //add size change, apply limits
         objsize[i] += (objsizevel[i] * speedfactor);
-        if (objsize[i] > maxsize) {
+        if (objsize[i] > maxsize)
+        {
             objsize[i] = maxsize;
             objsizevel[i] = 0;
         }
-        if (objsize[i] < minsize) {
+        if (objsize[i] < minsize)
+        {
             objsize[i] = minsize;
             objsizevel[i] = 0;
         }
 
         //do colour
-        for (int o = 0; o < 3; o++) {
+        for (int o = 0; o < 3; o++)
+        {
             objcolours[i][o] += (objcolvel[i][o] * speedfactor);
-            if (objcolours[i][o] > 128) {
+            if (objcolours[i][o] > 128)
+            {
                 objcolours[i][o] = 128;
                 objcolvel[i][o] = 0;
             }
-            if (objcolours[i][o] < -127) {
+            if (objcolours[i][o] < -127)
+            {
                 objcolours[i][o] = -127;
                 objcolvel[i][o] = 0;
             }
@@ -116,18 +128,21 @@ void markenvironment::regenerate()
 
         //do tightness
         objtightness[i] += (objtightvel[i] * speedfactor);
-        if (objtightness[i] > maxtight) {
+        if (objtightness[i] > maxtight)
+        {
             objtightness[i] = maxtight;
             objtightvel[i] = 0;
         }
-        if (objtightness[i] < mintight) {
+        if (objtightness[i] < mintight)
+        {
             objtightness[i] = mintight;
             objtightvel[i] = 0;
         }
 
         //tweak velocities
         iter_to_accel--;
-        if (iter_to_accel <= 0) {
+        if (iter_to_accel <= 0)
+        {
             objxvel[i] += (RandFloat() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
             objyvel[i] += (RandFloat() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
             objsizevel[i] += (RandFloat() * sizetweak * 2 - sizetweak) * speedfactor / (double)iter_reset;
@@ -149,10 +164,12 @@ void markenvironment::regenerate()
 
 
         for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-            for (int m = 0; m < MainWin->ui->spinSize->value(); m++) {
+            for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+            {
                 //work out distance
                 double dist = sqrt((n - objxpos[i]) * (n - objxpos[i]) + (m - objypos[i]) * (m - objypos[i]));
-                if (dist < objsize[i]) {
+                if (dist < objsize[i])
+                {
                     for (int o = 0; o < 3; o++)
                         environment[n][m][o] = add_and_limit(environment[n][m][o], (int)(objcolours[i][o]), dist, objsize[i], objtightness[i]);
                 }
