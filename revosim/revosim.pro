@@ -70,3 +70,5 @@ DISTFILES += \
     LICENSE.md \
     .astylerc
 
+RC_FILE = resources\revosim.rc
+

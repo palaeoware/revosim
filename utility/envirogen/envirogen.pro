@@ -62,3 +62,5 @@ RESOURCES += \
 
 #Needed to use C++ lamda functions
 CONFIG += c++11
+
+RC_FILE = resources\envirogen.rc
