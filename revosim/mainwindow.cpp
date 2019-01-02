@@ -1573,7 +1573,7 @@ void MainWindow::refreshPopulations()
             populationItem->setPixmap(QPixmap::fromImage(*populationImage));
         if (savePopulationCount->isChecked())
             if (save_dir.mkpath("population/"))
-                populationImageColour->save(QString(save_dir.path() + "/population/REvoSim_population_it_%1.png").arg(iteration, 7, 10, QChar('0')));
+                populationImage->save(QString(save_dir.path() + "/population/REvoSim_population_it_%1.png").arg(iteration, 7, 10, QChar('0')));
     }
 
     // (1) Fitness
