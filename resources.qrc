@@ -1,0 +1,55 @@
+<RCC>
+    <qresource prefix="/">
+        <file alias="randoms.dat">resources/randoms.dat</file>
+        <file alias="img.png">resources/img.png</file>
+        <file alias="gplV3Logo">resources/gplv3-127x51.png</file>
+        <file alias="icon.png">resources/icon.png</file>
+        <file alias="palaeoware_logo_square.png">resources/palaeoware_logo_square.png</file>
+        <file alias="builtWithQTLogo">resources/Built_with_Qt_RGB_logo.png</file>
+    </qresource>
+    <qresource prefix="/darkstyle">
+        <file alias="stylesheet_dark.qss">resources/darkstyle/stylesheet_dark.qss</file>
+        <file alias="icon_branch_closed.png">resources/darkstyle/icon_branch_closed.png</file>
+        <file alias="icon_branch_end.png">resources/darkstyle/icon_branch_end.png</file>
+        <file alias="icon_branch_more.png">resources/darkstyle/icon_branch_more.png</file>
+        <file alias="icon_branch_open.png">resources/darkstyle/icon_branch_open.png</file>
+        <file alias="icon_checkbox_checked.png">resources/darkstyle/icon_checkbox_checked.png</file>
+        <file alias="icon_checkbox_checked_disabled.png">resources/darkstyle/icon_checkbox_checked_disabled.png</file>
+        <file alias="icon_checkbox_checked_pressed.png">resources/darkstyle/icon_checkbox_checked_pressed.png</file>
+        <file alias="icon_checkbox_indeterminate.png">resources/darkstyle/icon_checkbox_indeterminate.png</file>
+        <file alias="icon_checkbox_indeterminate_disabled.png">resources/darkstyle/icon_checkbox_indeterminate_disabled.png</file>
+        <file alias="icon_checkbox_indeterminate_pressed.png">resources/darkstyle/icon_checkbox_indeterminate_pressed.png</file>
+        <file alias="icon_checkbox_unchecked.png">resources/darkstyle/icon_checkbox_unchecked.png</file>
+        <file alias="icon_checkbox_unchecked_disabled.png">resources/darkstyle/icon_checkbox_unchecked_disabled.png</file>
+        <file alias="icon_checkbox_unchecked_pressed.png">resources/darkstyle/icon_checkbox_unchecked_pressed.png</file>
+        <file alias="icon_close.png">resources/darkstyle/icon_close.png</file>
+        <file alias="icon_radiobutton_checked.png">resources/darkstyle/icon_radiobutton_checked.png</file>
+        <file alias="icon_radiobutton_checked_disabled.png">resources/darkstyle/icon_radiobutton_checked_disabled.png</file>
+        <file alias="icon_radiobutton_pressed.png">resources/darkstyle/icon_radiobutton_checked_pressed.png</file>
+        <file alias="icon_radiobutton_unchecked.png">resources/darkstyle/icon_radiobutton_unchecked.png</file>
+        <file alias="icon_radiobutton_disabled.png">resources/darkstyle/icon_radiobutton_unchecked_disabled.png</file>
+        <file alias="icon_radiobutton_unchecked_pressed.png">resources/darkstyle/icon_radiobutton_unchecked_pressed.png</file>
+        <file alias="icon_restore.png">resources/darkstyle/icon_restore.png</file>
+        <file alias="icon_undock.png">resources/darkstyle/icon_undock.png</file>
+        <file alias="icon_vline.png">resources/darkstyle/icon_vline.png</file>
+        <file alias="icon_about_button.png">resources/darkstyle/icon_about_button.png</file>
+        <file alias="icon_genome_button.png">resources/darkstyle/icon_genome_button.png</file>
+        <file alias="icon_log_button.png">resources/darkstyle/icon_log_button.png</file>
+        <file alias="icon_settings_1_button.png">resources/darkstyle/icon_settings_1_button.png</file>
+        <file alias="icon_settings_2_button.png">resources/darkstyle/icon_settings_2_button.png</file>
+        <file alias="icon_play_batch_button.png">resources/darkstyle/icon_play_batch_button.png</file>
+        <file alias="icon_play_batch_button_green.png">resources/darkstyle/icon_play_batch_button_green.png</file>
+        <file alias="icon_play_button.png">resources/darkstyle/icon_play_button.png</file>
+        <file alias="icon_play_button_green.png">resources/darkstyle/icon_play_button_green.png</file>
+        <file alias="icon_play_n_button.png">resources/darkstyle/icon_play_n_button.png</file>
+        <file alias="icon_play_n_button_green.png">resources/darkstyle/icon_play_n_button_green.png</file>
+        <file alias="icon_reset_button.png">resources/darkstyle/icon_reset_button.png</file>
+        <file alias="icon_reset_button_red.png">resources/darkstyle/icon_reset_button_red.png</file>
+        <file alias="icon_reset_known_genome_button.png">resources/darkstyle/icon_reset_known_genome_button.png</file>
+        <file alias="icon_reset_known_genome_button_red.png">resources/darkstyle/icon_reset_known_genome_button_red.png</file>
+        <file alias="icon_stop_button.png">resources/darkstyle/icon_stop_button.png</file>
+        <file alias="icon_stop_button_red.png">resources/darkstyle/icon_stop_button_red.png</file>
+        <file alias="icon_pause_button.png">resources/darkstyle/icon_pause_button.png</file>
+        <file alias="icon_pause_button_orange.png">resources/darkstyle/icon_pause_button_orange.png</file>
+    </qresource>
+</RCC>
