@@ -15,20 +15,15 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY.
  */
 
-#ifndef VERSION_H
-#define VERSION_H
-
-//Software Versions
-#define MAJORVERSION 2
-#define MINORVERSION 0
-#define PATCHVERSION 0
+#ifndef GLOBALS_H
+#define GLOBALS_H
 
 //Save File Version
 #define FILEVERSION 1
 
 //Legal Stuff
 #define COPYRIGHT "Copyright © 2018 Mark D. Sutton, Russell J. Garwood, Alan R.T.Spencer"
-#define LICENCE "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under the conditions of the GPL v3  license"
+#define LICENCE "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under the conditions of the GPL v3 license"
 
 //Programme Name
 #define PRODUCTNAME "REvoSim"
@@ -45,4 +40,4 @@
 //Readthedocs
 #define READTHEDOCS "https://revosim.readthedocs.io/en/latest/"
 
-#endif // VERSION_H
+#endif // GLOBALS_H

@@ -18,7 +18,7 @@
 #include "analyser.h"
 #include "mainwindow.h"
 #include "simmanager.h"
-#include "version.h"
+#include "globals.h"
 
 #include <QDebug>
 #include <QHash>

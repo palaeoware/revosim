@@ -6,7 +6,7 @@
 #include <QDesktopWidget>
 
 #include "mainwindow.h"
-#include "version.h"
+#include "globals.h"
 #include "darkstyletheme.h"
 
 int main(int argc, char *argv[])

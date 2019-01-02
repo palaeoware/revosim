@@ -49,9 +49,9 @@ HEADERS  += \
     makestack.h \
     randoms.h \
     russellenvironment.h \
-    version.h \
     darkstyletheme.h \
-    about.h
+    about.h \
+    globals.h
 
 FORMS    += \
     mainwindow.ui \

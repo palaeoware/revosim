@@ -45,12 +45,12 @@ HEADERS += mainwindow.h \
     genomecomparison.h \
     resizecatcher.h \
     analysistools.h \
-    version.h \
     reseed.h \
     logspecies.h \
     logspeciesdataitem.h \
     about.h \
-    darkstyletheme.h
+    darkstyletheme.h \
+    globals.h
 
 FORMS += mainwindow.ui \
     genomecomparison.ui \

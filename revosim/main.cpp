@@ -17,7 +17,7 @@
 
 #include "darkstyletheme.h"
 #include "mainwindow.h"
-#include "version.h"
+#include "globals.h"
 
 #include <QApplication>
 #include <QDesktopWidget>

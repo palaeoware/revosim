@@ -17,7 +17,7 @@
 
 #include "about.h"
 #include "ui_about.h"
-#include "version.h"
+#include "globals.h"
 
 #include <QString>
 

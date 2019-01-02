@@ -23,7 +23,7 @@
 #include "reseed.h"
 #include "resizecatcher.h"
 #include "ui_mainwindow.h"
-#include "version.h"
+#include "globals.h"
 
 #include <QActionGroup>
 #include <QComboBox>
@@ -84,10 +84,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
     mainWindow = this;
 
-    //RJG - Output version, but also date compiled for clarity
-    QString version;
-    version.sprintf("%d.%d.%d", MAJORVERSION, MINORVERSION, PATCHVERSION);
-    setWindowTitle(QString(PRODUCTNAME) + " v" + version + " - compiled - " + __DATE__);
+    // Output version, but also date compiled for clarity
+    setWindowTitle(QString(PRODUCTNAME) + " v" + QString(SOFTWARE_VERSION) + " - compiled - " + __DATE__);
     setWindowIcon(QIcon (":/icon.png"));
 
     //Install filter to catch resize events to central widget and deliver to mainwindow (handle dock resizes)

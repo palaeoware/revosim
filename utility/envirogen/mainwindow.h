@@ -21,7 +21,7 @@
 #include "randoms.h"
 #include "russellenvironment.h"
 #include "about.h"
-#include "version.h"
+#include "globals.h"
 
 namespace Ui {
 class MainWindow;
