@@ -1,7 +1,6 @@
 #-------------------------------------------------
-#
+# EnviroGen project
 # Project created by QtCreator 2012-03-20T17:38:53
-#
 #-------------------------------------------------
 
 QT  += core gui widgets concurrent

@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     a.setStyle(new DarkStyleTheme);
 
     //Splash image
-    QPixmap splashPixmap(":/palaeoware_logo_square.png");
+    QPixmap splashPixmap(":/palaeoware_logo_square_Envirogen.png");
     QSplashScreen splash(splashPixmap,Qt::WindowStaysOnTopHint);
     splash.show();
     splash.showMessage("<font><b>" + QString(PRODUCTNAME) + " - " + QString(PRODUCTTAG) + "</b></font>",Qt::AlignHCenter,Qt::white);
