@@ -13,7 +13,7 @@ public:
     ~randoms();
     quint16 gen_Rand16();
     quint8 gen_Rand8();
-    float gen_float();
+    double gen_float();
 
 private:
     quint16 random_array[65536];
