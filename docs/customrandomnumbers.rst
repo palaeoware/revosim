@@ -3,7 +3,7 @@
 Custom Random Numbers
 =====================
 
-REvoSim employs a pre-generated table of 65,536 random numbers 0–255 whicvh it uses by default during the simulation, both for speed and to avoid potential biases from pseudo-random number generators. 10Mb of quantum-generated random numbers from `randomnumbers.info<http://www.randomnumbers.info>`_ are packaged into the executable and used to generate this table on load (i.e. different runs will have different random numbers, based on the quantum-generated random numbers); these can be replaced with any other random number file preferred by the user.
+REvoSim employs a pre-generated table of 65,536 random numbers 0–255 whicvh it uses by default during the simulation, both for speed and to avoid potential biases from pseudo-random number generators. 10Mb of quantum-generated random numbers from `randomnumbers.info <http://www.randomnumbers.info>`_ are packaged into the executable and used to generate this table on load (i.e. different runs will have different random numbers, based on the quantum-generated random numbers); these can be replaced with any other random number file preferred by the user.
 
 To load a custom file of random numbers use the ‘Commands > Load Random Numbers…’ command from the main menu to open a file selection dialog.
 
