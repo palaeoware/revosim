@@ -80,6 +80,7 @@ extern bool gui;
 extern bool speciesLogging;
 extern bool speciesLoggingToFile;
 extern bool reseedKnown;
+extern bool reseedDual;
 extern bool environmentChangeForward;
 extern bool environmentInterpolate;
 extern bool allowExcludeWithDescendants;
@@ -103,7 +104,7 @@ extern Critter critters[GRID_X][GRID_Y][SLOTS_PER_GRID_SQUARE]; //main array - s
 extern quint8 environment[GRID_X][GRID_Y][3];  //0 = red, 1 = green, 2 = blue
 extern quint8 environmentLast[GRID_X][GRID_Y][3];  //Used for interpolation
 extern quint8 environmentNext[GRID_X][GRID_Y][3];  //Used for interpolation
-extern quint32 totalFittness[GRID_X][GRID_Y]; // Sum fitness critters in each square
+extern quint32 totalFitness[GRID_X][GRID_Y]; // Sum fitness critters in each square
 extern quint64 iteration;
 
 //These next to hold the babies... old style arrays for max speed
@@ -122,7 +123,6 @@ extern int timeSliceConnect; // no longer used - keep for backwards compat of fi
 extern QString speciesLoggingFile;
 extern bool fitnessLoggingToFile;
 extern QString fitnessLoggingFile;
-
 
 // File handling
 extern QStringList environmentFiles;

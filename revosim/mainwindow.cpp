@@ -1414,7 +1414,7 @@ void MainWindow::report()
     double t = 0;
     for (int n2 = 0; n2 < gridX; n2++)
         for (int m2 = 0; m2 < gridY; m2++)
-            t += totalFittness[n2][m2];
+            t += totalFitness[n2][m2];
     t /= static_cast<double>(aliveCount);
     t /= static_cast<double>(settleTolerance);
     t *= 100; //now %age
@@ -1589,7 +1589,7 @@ void MainWindow::refreshPopulations()
                 if (count == 0)
                     populationImage->setPixel(n, m, 0);
                 else
-                    populationImage->setPixel(n, m, static_cast<uint>((totalFittness[n][m] * static_cast<uint>(multiplier)) / static_cast<uint>(count)));
+                    populationImage->setPixel(n, m, static_cast<uint>((totalFitness[n][m] * static_cast<uint>(multiplier)) / static_cast<uint>(count)));
 
             }
         if (currentSelectedMode == 1)
@@ -1609,7 +1609,7 @@ void MainWindow::refreshPopulations()
                 int counts[SLOTS_PER_GRID_SQUARE];
                 int arraypos = 0; //pointer
 
-                if (totalFittness[n][m] == 0) populationImageColour->setPixel(n, m, 0); //black if square is empty
+                if (totalFitness[n][m] == 0) populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else {
                     //for each used slot
                     for (int c = 0; c < maxUsed[n][m]; c++) {
@@ -1673,7 +1673,7 @@ gotcounts:
                 int counts[SLOTS_PER_GRID_SQUARE];
                 int arraypos = 0; //pointer
 
-                if (totalFittness[n][m] == 0)
+                if (totalFitness[n][m] == 0)
                     populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else {
                     //for each used slot
@@ -1874,7 +1874,7 @@ gotcounts2:
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++) {
 
-                if (totalFittness[n][m] == 0)
+                if (totalFitness[n][m] == 0)
                     populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else {
                     quint64 thisspecies = 0;
@@ -2119,7 +2119,7 @@ void MainWindow::resetSquare(int n, int m)
     //grid expanded - make sure everything is zeroed in new slots
     for (int c = 0; c < slotsPerSquare; c++) critters[n][m][c].age = 0;
 
-    totalFittness[n][m] = 0;
+    totalFitness[n][m] = 0;
 
     breedAttempts[n][m] = 0;
     breedFails[n][m] = 0;
@@ -2393,7 +2393,7 @@ void MainWindow::saveSimulation()
 
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
-            out << totalFittness[i][j];
+            out << totalFitness[i][j];
         }
 
     for (auto &xormask : xorMasks)
@@ -2641,7 +2641,7 @@ void MainWindow::loadSimulation()
 
     for (int i = 0; i < gridX; i++)
         for (int j = 0; j < gridY; j++) {
-            in >> totalFittness[i][j];
+            in >> totalFitness[i][j];
         }
 
     for (auto &xormask : xorMasks)
@@ -2758,7 +2758,7 @@ bool MainWindow::genomeComparisonAdd()
     int y = populationScene->selectedY;
 
     //---- Get genome colour
-    if (totalFittness[x][y] != 0) {
+    if (totalFitness[x][y] != 0) {
         for (int c = 0; c < slotsPerSquare; c++) {
             if (critters[x][y][c].age > 0) {
                 genoneComparison->addGenomeCritter(critters[x][y][c], environment[x][y]);
@@ -2844,7 +2844,7 @@ void MainWindow::writeLog()
         int gridNumberAlive = 0, gridTotalFitness = 0, gridBreedEntries = 0, gridBreedFails = 0;
         for (int i = 0; i < gridX; i++)
             for (int j = 0; j < gridY; j++) {
-                gridTotalFitness += totalFittness[i][j];
+                gridTotalFitness += totalFitness[i][j];
                 //----RJG: Manually count breed stufffor grid
                 gridBreedEntries += breedAttempts[i][j];
                 gridBreedFails += breedFails[i][j];

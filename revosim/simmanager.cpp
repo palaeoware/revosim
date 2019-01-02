@@ -69,6 +69,7 @@ bool nonspatial = false;
 bool environmentInterpolate = true;
 bool toroidal = false;
 bool reseedKnown = false;
+bool reseedDual = false;
 bool breedSpecies = false;
 bool breedDifference = true;
 bool gui = false;
@@ -85,7 +86,7 @@ Critter critters[GRID_X][GRID_Y][SLOTS_PER_GRID_SQUARE]; //main array - static f
 quint8 environment[GRID_X][GRID_Y][3];  //0 = red, 1 = green, 2 = blue
 quint8 environmentLast[GRID_X][GRID_Y][3];  //Used for interpolation
 quint8 environmentNext[GRID_X][GRID_Y][3];  //Used for interpolation
-quint32 totalFittness[GRID_X][GRID_Y];
+quint32 totalFitness[GRID_X][GRID_Y];
 quint64 iteration;
 
 // These next to hold the babies... old style arrays for max speed
@@ -450,24 +451,31 @@ void SimManager::setupRun()
                 critters[n][m][c].age = 0;
                 critters[n][m][c].fitness = 0;
             }
-            totalFittness[n][m] = 0;
+            totalFitness[n][m] = 0;
             maxUsed[n][m] = -1;
             breedAttempts[n][m] = 0;
             breedFails[n][m] = 0;
             settles[n][m] = 0;
             settleFails[n][m] = 0;
         }
-    aliveCount = 0;
 
+    aliveCount = 0;
     nextSpeciesID = 1; //reset id counter
 
     int n = gridX / 2;
     int m = gridY / 2;
+    int n2 = 0;
+
+    //Dual seed if required
+    if (reseedDual) {
+        n = 2;
+        n2 = gridX - 2;
+    }
 
     int count = 0;
 
     //RJG - Either reseed with known genome if set
-    if (reseedKnown) {
+    if (reseedKnown && !reseedDual) {
         critters[n][m][0].initialise(reseedGenome, environment[n][m], n, m, 0, nextSpeciesID);
         if (critters[n][m][0].fitness == 0) {
             // RJG - But sort out if it can't survive...
@@ -488,6 +496,35 @@ void SimManager::setupRun()
                 reseedGenomeString.append("0");
 
         mainWindow->setStatusBarText(reseedGenomeString);
+    } else if (reseedKnown && reseedDual) {
+        critters[n][m][0].initialise(reseedGenome, environment[n][m], n, m, 0, nextSpeciesID);
+        critters[n2][m][0].initialise(reseedGenome, environment[n2][m], n2, m, 0, nextSpeciesID);
+        if (critters[n][m][0].fitness == 0 || critters[n2][m][0].fitness == 0) {
+            // RJG - But sort out if it can't survive...
+            QMessageBox::warning(nullptr, "Oops",
+                                 "The genome you're trying to reseed with can't survive in one of the two chosen environmental pixels. Please either try different settings, or contact the Palaeoware team to discuss.");
+            reseedKnown = false;
+            setupRun();
+            return;
+        }
+        //RJG - I think this is a good thing to flag in an obvious fashion.
+        QString reseedGenomeString("Started simulation with dual known genomes: ");
+        for (unsigned long long i : tweakers64)if (i & reseedGenome) reseedGenomeString.append("1");
+            else reseedGenomeString.append("0");
+        mainWindow->setStatusBarText(reseedGenomeString);
+    } else if (!reseedKnown && reseedDual) {
+        //RJG - or try till one lives. If alive, fitness (in critter file) >0
+        int flag = 0;
+        do {
+            flag = 0;
+            do {
+                critters[n][m][0].initialise(random64(), environment[n][m], n, m, 0, nextSpeciesID);
+            } while (critters[n][m][0].fitness < 1);
+            quint64 iteration = critters[n][m][0].genome;
+            critters[n2][m][0].initialise(iteration, environment[n2][m], n2, m, 0, nextSpeciesID);
+            flag = critters[n2][m][0].fitness;
+        } while (flag < 1);
+        mainWindow->setStatusBarText("");
     } else {
         while (critters[n][m][0].fitness < 1) {
             critters[n][m][0].initialise(random64(), environment[n][m], n, m, 0, nextSpeciesID);
@@ -501,7 +538,8 @@ void SimManager::setupRun()
         mainWindow->setStatusBarText("");
     }
 
-    totalFittness[n][m] = static_cast<quint32>(critters[n][m][0].fitness); //may have gone wrong from above
+    totalFitness[n][m] = static_cast<quint32>(critters[n][m][0].fitness); //may have gone wrong from above
+    if (reseedDual)totalFitness[n2][m] = critters[n2][m][0].fitness;
 
     aliveCount = 1;
     iteration = 0;
@@ -511,13 +549,22 @@ void SimManager::setupRun()
     //RJG - Fill square with successful critter
     for (int c = 1; c < slotsPerSquare; c++) {
         critters[n][m][c].initialise(iteration, environment[n][m], n, m, c, nextSpeciesID);
+        if (reseedDual)critters[n2][m][c].initialise(iteration, environment[n2][m], n2, m, c, nextSpeciesID);
 
         if (critters[n][m][c].age > 0) {
             critters[n][m][c].age /= ((random8() / 10) + 1);
             critters[n][m][c].age += 10;
             aliveCount++;
             maxUsed[n][m] = c;
-            totalFittness[n][m] += static_cast<quint32>(critters[n][m][c].fitness);
+            totalFitness[n][m] += static_cast<quint32>(critters[n][m][c].fitness);
+        }
+
+        if (reseedDual && critters[n2][m][c].age > 0) {
+            critters[n2][m][c].age /= ((random8() / 10) + 1);
+            critters[n2][m][c].age += 10;
+            aliveCount++;
+            maxUsed[n2][m] = c;
+            totalFitness[n2][m] += critters[n2][m][c].fitness;
         }
     }
 
@@ -554,7 +601,7 @@ void SimManager::setupRun()
     newdata->meanEnvironment[0] = environment[n][m][0];
     newdata->meanEnvironment[1] = environment[n][m][1];
     newdata->meanEnvironment[2] = environment[n][m][2];
-    newdata->meanFitness = static_cast<quint16>((totalFittness[n][m] * 1000) / static_cast<quint32>(aliveCount));
+    newdata->meanFitness = static_cast<quint16>((totalFitness[n][m] * 1000) / static_cast<quint32>(aliveCount));
 
     rootSpecies->dataItems.append(newdata);
     logSpeciesByID.clear();
@@ -603,13 +650,13 @@ int SimManager::iterateParallel(int firstX, int lastX, int newGenomeCountLocal, 
             Critter *crit = critters[n][m];
 
             if (recalculateFitness) {
-                totalFittness[n][m] = 0;
+                totalFitness[n][m] = 0;
                 maxalive = 0;
                 deathcount = 0;
                 for (int c = 0; c <= maxv; c++) {
                     if (crit[c].age) {
                         quint32 f = static_cast<quint32>(crit[c].recalculateFitness(environment[n][m]));
-                        totalFittness[n][m] += f;
+                        totalFitness[n][m] += f;
                         if (f > 0) maxalive = c;
                         else deathcount++;
                     }
@@ -622,8 +669,8 @@ int SimManager::iterateParallel(int firstX, int lastX, int newGenomeCountLocal, 
             // RJG - reset counters for fitness logging to file
             if (fitnessLoggingToFile || logging)breedAttempts[n][m] = 0;
 
-            if (totalFittness[n][m]) { //skip whole square if needbe
-                int addFood = 1 + static_cast<int>(static_cast<quint32>(food) / totalFittness[n][m]);
+            if (totalFitness[n][m]) { //skip whole square if needbe
+                int addFood = 1 + static_cast<int>(static_cast<quint32>(food) / totalFitness[n][m]);
 
                 int breedListEntries = 0;
 
@@ -690,7 +737,7 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
                     crit2->initialise(newGenomes[n], environment[xPosition][yPosition], static_cast<int>(xPosition), static_cast<int>(yPosition), m, newGenomeSpecies[n]);
                     if (crit2->age) {
                         int fit = crit2->fitness;
-                        totalFittness[xPosition][yPosition] += static_cast<quint32>(fit);
+                        totalFitness[xPosition][yPosition] += static_cast<quint32>(fit);
                         (*birthCountsLocal)++;
                         if (m > maxUsed[xPosition][yPosition]) maxUsed[xPosition][yPosition] = m;
                         settles[xPosition][yPosition]++;
@@ -739,7 +786,7 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
                     crit2->initialise(newGenomes[n], environment[xPosition][yPosition], xPosition, yPosition, m, newGenomeSpecies[n]);
                     if (crit2->age) {
                         int fit = crit2->fitness;
-                        totalFittness[xPosition][yPosition] += static_cast<quint32>(fit);
+                        totalFitness[xPosition][yPosition] += static_cast<quint32>(fit);
                         (*birthCountsLocal)++;
                         if (m > maxUsed[xPosition][yPosition])
                             maxUsed[xPosition][yPosition] = m;

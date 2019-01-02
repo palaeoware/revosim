@@ -117,7 +117,7 @@ bool Critter::iterateParallel(int *killCountLocal, int addFood)
         //RJG - Here is where an individual dies.
         if ((--age) == 0) {
             (*killCountLocal)++;
-            totalFittness[xPosition][yPosition] -= static_cast<quint32>(fitness);
+            totalFitness[xPosition][yPosition] -= static_cast<quint32>(fitness);
             fitness = 0;
             if (maxUsed[xPosition][yPosition] == zPosition) {
                 for (int n = zPosition - 1; n >= 0; n--)
@@ -132,7 +132,7 @@ past:
             return false;
         }
         energy +=  fitness * addFood;
-        //energy+= (fitness * food) / totalFittness[xPosition][yPosition];]
+        //energy+= (fitness * food) / totalFitness[xPosition][yPosition];]
 
         //non-slot version - try breeding if our energy is high enough
         if (energy > (breedThreshold + breedCost)) {

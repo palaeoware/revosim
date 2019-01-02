@@ -178,7 +178,7 @@ void Analyser::groupsGenealogicalTracker()
     //Loop over all critters and gather data (this is 1. above)
     for (int n = 0; n < gridX; n++)
         for (int m = 0; m < gridY; m++) {
-            if (totalFittness[n][m] == 0) continue; //nothing alive in the cell - skip
+            if (totalFitness[n][m] == 0) continue; //nothing alive in the cell - skip
             for (int c = 0; c < slotsPerSquare; c++) {
                 if (critters[n][m][c].age > 0) { //if critter is alive
                     QHash<quint64, QList<quint32>*>
