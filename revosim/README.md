@@ -7,7 +7,7 @@ Coded by:
  - Alan R.T. Spencer (alan.spencer@imperial.ac.uk)
 
 <p align="center">
-  <img width="250" height="250" src="./resources/palaeoware_logo_square.png">
+  <img width="250" height="250" src="../resources/palaeoware_logo_square.png">
 </p>
 
 ______
