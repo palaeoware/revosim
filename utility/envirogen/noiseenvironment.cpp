@@ -14,25 +14,29 @@ noiseenvironment::noiseenvironment()
 
 void noiseenvironment::ReadSettings()
 {
-    nMin=MainWin->ui->noiseMin->value();
-    nMax=MainWin->ui->noiseMax->value();
+    nMin = MainWin->ui->noiseMin->value();
+    nMax = MainWin->ui->noiseMax->value();
 }
 
 void noiseenvironment::regenerate()
 {
     ReadSettings();
 
-    for (int n=0; n<MainWin->ui->spinSize->value(); n++)
-       for (int m=0; m<MainWin->ui->spinSize->value(); m++)
+    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
+        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+        {
+            for (int i = 0; i < 3; i++)
             {
-            for (int i=0;i<3;i++)
+                quint8 noiseVal;
+
+                do
                 {
-                int noiseVal;
-
-                do{noiseVal=Rand8();}while(noiseVal<nMin || noiseVal>nMax);
-
-                environment[n][m][i]=noiseVal;
+                    noiseVal = Rand8();
                 }
+                while (noiseVal < nMin || noiseVal > nMax);
+
+                environment[n][m][i] = noiseVal;
             }
+        }
 
 }

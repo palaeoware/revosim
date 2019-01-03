@@ -62,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->combine_label->setAlignment(Qt::AlignJustify);
     ui->combine_label->setWordWrap(true);
-    ui->combine_label->setText("Combines two stacks between the start and end slice. If start slice is greater than zero, "
+    ui->combine_label->setText("Combines two stacks between the start and end of either stack. If start slice is greater than zero, "
                                "it will copy stack one to start slice, and then combine stack two from that point on. "
                                "Percentage start and end dictate influence of stack one for slices which are combined, and "
                                "the programme interpolates between these. If stack one ends, stack two will be copied to "
@@ -121,10 +121,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->change_path, SIGNAL (clicked()), this, SLOT (change_path()));
     QObject::connect(ui->settings_tab_widget, SIGNAL (currentChanged(int)), this, SLOT (tab_changed(int)));
     //RJG - these ones are pretty simple. Use lamdas.
-    connect(ui->noiseMin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    connect(ui->noiseMin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i)
+    {
         ui->noiseMax->setMinimum(i + 1);
     });
-    connect(ui->noiseMax, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i) {
+    connect(ui->noiseMax, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i)
+    {
         ui->noiseMin->setMaximum(i - 1);
     });
     ui->noiseMin->setMaximum(ui->noiseMax->value() - 1);
@@ -156,8 +158,9 @@ void MainWindow::tab_changed(int index)
 void MainWindow::generateEnvironment()
 {
 
-    if (!Directory.exists() && ui->save_images_checkbox->isChecked()) {
-        QMessageBox::warning(0, "Error", "No such directory.", QMessageBox::Ok);
+    if (!Directory.exists() && ui->save_images_checkbox->isChecked())
+    {
+        QMessageBox::warning(nullptr, "Error", "No such directory.", QMessageBox::Ok);
         return;
     }
 
@@ -168,18 +171,22 @@ void MainWindow::generateEnvironment()
     if (ui->environment_comboBox->currentIndex() == 1) //Mark environment
         environmentobject = new markenvironment;
 
-    if (ui->environment_comboBox->currentIndex() == 2) { //Noise stack
+    if (ui->environment_comboBox->currentIndex() == 2)   //Noise stack
+    {
         environmentobject = new noiseenvironment;
-        if (MainWin->ui->noiseMin->value() >= MainWin->ui->noiseMax->value()) {
-            QMessageBox::warning(0, "Error", "Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
+        if (MainWin->ui->noiseMin->value() >= MainWin->ui->noiseMax->value())
+        {
+            QMessageBox::warning(nullptr, "Error", "Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
             reset_gui();
             return;
         }
     }
 
-    if (ui->environment_comboBox->currentIndex() == 3) { //Combine stacks
+    if (ui->environment_comboBox->currentIndex() == 3)   //Combine stacks
+    {
         environmentobject = new combine;
-        if (environmentobject->error) {
+        if (environmentobject->error)
+        {
             reset_gui();
             return;
         }
@@ -189,9 +196,11 @@ void MainWindow::generateEnvironment()
     if (ui->environment_comboBox->currentIndex() == 4) //Colour stacks
         environmentobject = new colour;
 
-    if (ui->environment_comboBox->currentIndex() == 5) { //Create stack from image
+    if (ui->environment_comboBox->currentIndex() == 5)   //Create stack from image
+    {
         environmentobject = new makestack;
-        if (environmentobject->error) {
+        if (environmentobject->error)
+        {
             reset_gui();
             return;
         }
@@ -221,20 +230,24 @@ void MainWindow::generateEnvironment()
 
     //RJG - Set up save directory
     Directory.setPath(ui->path->toPlainText());
-    if (!Directory.exists()) {
-        QMessageBox::warning(0, "Error!", "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is.");
+    if (!Directory.exists())
+    {
+        QMessageBox::warning(nullptr, "Error!", "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is.");
         QString program_path(QCoreApplication::applicationDirPath());
         program_path.append(QDir::separator());
         ui->path->setText(program_path);
         Directory.setPath(program_path);
     }
-    if (!Directory.mkpath(QString(PRODUCTNAME) + "_output")) {
+    if (!Directory.mkpath(QString(PRODUCTNAME) + "_output"))
+    {
         QMessageBox::warning(this, "Error", "Cant save images. Permissions issue?");
         return;
-    } else Directory.cd(QString(PRODUCTNAME) + "_output");
+    }
+    else Directory.cd(QString(PRODUCTNAME) + "_output");
 
     //RJG - Generate the environment
-    for (int i = 0; i < generations; i++) {
+    for (int i = 0; i < generations; i++)
+    {
 
         currentGeneration = i;
         environmentobject->regenerate();
@@ -244,7 +257,8 @@ void MainWindow::generateEnvironment()
 
         qApp->processEvents();
 
-        if (ui->save_images_checkbox->isChecked()) {
+        if (ui->save_images_checkbox->isChecked())
+        {
             QImage saveImage(MainWin->ui->spinSize->value(), MainWin->ui->spinSize->value(), QImage::Format_RGB32);
             for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
                 for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
@@ -258,7 +272,8 @@ void MainWindow::generateEnvironment()
             while (pause_flag && !stop_flag)
                 qApp->processEvents();
         //RJG - and stop.
-        if (stop_flag) {
+        if (stop_flag)
+        {
             stop_flag = false;
             generations = -1;
             break;
@@ -357,10 +372,12 @@ void MainWindow::on_pushButtonStackOne_clicked()
     QStringList filterList, dirList;
     filterList << "*.bmp" << "*.jpg" << "*.jpeg" << "*.png";
     dirList = current.entryList(filterList, QDir::Files, QDir::Name);
-    if (dirList.count() == 0) {
+    if (dirList.count() == 0)
+    {
         QMessageBox::warning(0, "Error", "No image files in this folder.", QMessageBox::Ok);
         return;
-    } else ui->stackOneText->setText(files_directory);
+    }
+    else ui->stackOneText->setText(files_directory);
     stackOneSize = dirList.count();
     ui->combineStart->setMaximum(stackOneSize);
 
@@ -377,10 +394,12 @@ void MainWindow::on_pushButtonStackTwo_clicked()
     QStringList filterList, dirList;
     filterList << "*.bmp" << "*.jpg" << "*.jpeg" << "*.png";
     dirList = current.entryList(filterList, QDir::Files, QDir::Name);
-    if (dirList.count() == 0) {
+    if (dirList.count() == 0)
+    {
         QMessageBox::warning(0, "Error", "No image files in this folder.", QMessageBox::Ok);
         return;
-    } else ui->stackTwoText->setText(files_directory);
+    }
+    else ui->stackTwoText->setText(files_directory);
 
     stackTwoSize = dirList.count();
 }
@@ -391,7 +410,8 @@ void MainWindow::on_selectColour_clicked()
     QColor mainWinColour(ui->spinRed->value(), ui->spinGreen->value(), ui->spinBlue->value());
     QColorDialog chooseColour;
     mainWinColour = chooseColour.getColor(mainWinColour);
-    if (mainWinColour.isValid()) {
+    if (mainWinColour.isValid())
+    {
         ui->spinRed->setValue(mainWinColour.red());
         ui->spinGreen->setValue(mainWinColour.green());
         ui->spinBlue->setValue(mainWinColour.blue());
@@ -435,10 +455,13 @@ void MainWindow::pause()
 //RJG - Show and hide settings docker
 void MainWindow::settings()
 {
-    if (ui->settings_tab_widget->isVisible()) {
+    if (ui->settings_tab_widget->isVisible())
+    {
         ui->envSettings->hide();
         settingsButton->setChecked(false);
-    } else {
+    }
+    else
+    {
         ui->envSettings->show();
         settingsButton->setChecked(true);
     }

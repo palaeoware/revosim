@@ -8,17 +8,18 @@ randoms::randoms()
 
 quint16 randoms::gen_Rand16()
 {
-    if (nextrandom == 65535) {
+    if (nextrandom == 65535)
+    {
         nextrandom = 0;
         load_randoms();
     }
     return random_array[nextrandom++];
-
 }
 
 quint8 randoms::gen_Rand8()
 {
-    if (nextrandom == 65535) {
+    if (nextrandom == 65535)
+    {
         nextrandom = 0;
         load_randoms();
     }

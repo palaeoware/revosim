@@ -44,10 +44,44 @@ Dyn 2
 
 [Image]
 
-The second model for generation of dynamic environments is also based on moving seeds, but differs in being additive, and lacking smoothing. As such, it tends to have higher gradients between pixels than the first dynamic environment, and using the default settings it changes more rapidly. It is quicker generating environments than dynamic environment one. Options are as follows:
+The second model for generation of dynamic environments is also based on moving seeds, but differs in being additive, and lacking smoothing. Seeds, or objects, have a sizes, colours and velocities, and changes ("accelerations") are applied to these. Limits can be placed on values, their first derivative (e.g. velocity), or their second derivative (e.g. acceleration). Dynamic environment two tends to have higher gradients between pixels than the first, and using the default settings it changes more rapidly. It is quicker generating environments than dynamic environment one. Options are as follows:
 
 :Object count: This is the number of seeds which are used to create the environment.
 :Maximum object size: The maximum possible object size. In this dynamic environment all limits are hard, and thus cannot be exceeded.
 :Minimum object size: This is the minimum size.
 :Maximum tightness: To do.
-:Minimum tightness: To do. 
+:Minimum tightness: To do.
+:Maximum ... velocity: There then follow options to provide a hard limits to the velocity of the objects, and also a maximum to the rate of change of their colour, size and tightness.
+:Maximum ... acceleration: The next four options allow limits to be placed on the rate of change of the rate of change of velocity, size, tightness and colour.
+:Speed factor: As with dynamic environment one, there is a multiplier allowing environmental settings to be repeated with the only difference being rate of change (i.e. all are multiplied by this factor).
+:Apply accelerations every...: Within this dynamic environment accelerations do not need to be applied every iteration. Rather than can be applied
+
+Noise
+-----
+
+To study some phenomena a level of noise on an environment may be desirable. This tab creates a noise image using 10Mb of quantum-generated random numbers from `randomnumbers.info <http://www.randomnumbers.info>`_ that are packaged into the executable. These are loaded on program launch from a starting point based on a pseudorandom number, seeded on the time at launch. These can then be combined with any other environment as required using the comb tab. It creates random R,G, and B values for every pixel within the limits desired, and offers two options:
+
+:Minimum value: This is the minimum value for the noise (i.e. the minimum value any R, G or B value can take).
+:Maximum value: The maximum value.
+
+Combine
+-------
+
+This allows image stacks to be combined or concatenated, and thus allows the construction of increasingly complex environments. It takes two input stacks, and allows the influence of each while they are being combined to be defined. RGB values for both stacks are added. If they are limited to a maximum of 255, and an 8 bit image is output. Options are as follows:
+
+:Stack one: This is the first image stack. The change button opens a file dialogue and allows a folder to be selected, the location of which appearshere.
+:Stack two: As above, but the second image stack.
+:Start slice: EnviroGen combines image stacks from this slice (note it employs C++ numbering, so zero is the first slice, etc.). Before this point, if this is not zero, it will merely copy stack one. If stack one ends before the last image in stack two, it will copy stack two to the end. Stacks can be concatenated by setting the starty slice to the size of stack one.
+:Percent influence: Percentage start and end dictate influence of stack one for slices which are combined; the programme interpolates between these percentages, allowing smooth or abrupt changes in the combined region as required.
+
+Note that if "generate for" in the output tab is set to be higher than the number of images tab one, or start slice plus tab two, EnviroGen will generate black environmental images for the remainder of the run.
+
+Col
+---
+
+This is a convenience function to create an image stack comprising a single colour (which can they be combined with other images if desired). The colour can be set either by entering red blue and green levels into the spin boxes on this tab, or using the colour picker.
+
+Stack
+-----
+
+This tab allows a stack to be created from a single image. Choose image launches a file dialogue, and once an image has been chosen, it is converted to a stack and placed in the output folder.

@@ -121,7 +121,7 @@
         <item>
          <widget class="QTabWidget" name="settings_tab_widget">
           <property name="currentIndex">
-           <number>2</number>
+           <number>4</number>
           </property>
           <widget class="QWidget" name="output_tab">
            <attribute name="title">
