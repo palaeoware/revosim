@@ -374,7 +374,7 @@ void MainWindow::on_pushButtonStackOne_clicked()
     dirList = current.entryList(filterList, QDir::Files, QDir::Name);
     if (dirList.count() == 0)
     {
-        QMessageBox::warning(0, "Error", "No image files in this folder.", QMessageBox::Ok);
+        QMessageBox::warning(nullptr, "Error", "No image files in this folder.", QMessageBox::Ok);
         return;
     }
     else ui->stackOneText->setText(files_directory);
@@ -396,7 +396,7 @@ void MainWindow::on_pushButtonStackTwo_clicked()
     dirList = current.entryList(filterList, QDir::Files, QDir::Name);
     if (dirList.count() == 0)
     {
-        QMessageBox::warning(0, "Error", "No image files in this folder.", QMessageBox::Ok);
+        QMessageBox::warning(nullptr, "Error", "No image files in this folder.", QMessageBox::Ok);
         return;
     }
     else ui->stackTwoText->setText(files_directory);

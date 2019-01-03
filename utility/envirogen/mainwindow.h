@@ -9,7 +9,6 @@
 #include <QFileDialog>
 #include <QStatusBar>
 #include <QColor>
-#include <QDebug>
 
 #include "environmentclass.h"
 #include "environmentscene.h"
@@ -18,10 +17,10 @@
 #include "combine.h"
 #include "colour.h"
 #include "makestack.h"
-#include "randoms.h"
 #include "russellenvironment.h"
 #include "about.h"
 #include "globals.h"
+#include "randoms.h"
 
 namespace Ui {
 class MainWindow;

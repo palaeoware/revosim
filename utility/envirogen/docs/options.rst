@@ -39,6 +39,11 @@ The following options are provided to control the environment:
 :Speed factor: This is a convenience option allowing the simulation to be changed only in speed: not any other factor. This option is a multiplier for all velocities.
 :Universal blur: By default the Laplacian smooth only creates gradients *between* the seeds. When this option is selected the seeds define pixel colours, but then the smoothing smooths over these, as well as the space between seeds.
 
+An example environment created with dynamic environment one is shown below.
+
+.. figure:: _static/Dyn_01.png
+    :align: center
+
 Dyn 2
 -----
 
@@ -54,7 +59,12 @@ The second model for generation of dynamic environments is also based on moving 
 :Maximum ... velocity: There then follow options to provide a hard limits to the velocity of the objects, and also a maximum to the rate of change of their colour, size and tightness.
 :Maximum ... acceleration: The next four options allow limits to be placed on the rate of change of the rate of change of velocity, size, tightness and colour.
 :Speed factor: As with dynamic environment one, there is a multiplier allowing environmental settings to be repeated with the only difference being rate of change (i.e. all are multiplied by this factor).
-:Apply accelerations every...: Within this dynamic environment accelerations do not need to be applied every iteration. Rather than can be applied
+:Apply accelerations every...: Within this dynamic environment accelerations do not need to be applied every iteration. Rather than can be applied.
+
+An example environment created with dynamic environment two is shown below.
+
+.. figure:: _static/Dyn_02.png
+    :align: center
 
 Noise
 -----
@@ -63,6 +73,12 @@ To study some phenomena a level of noise on an environment may be desirable. Thi
 
 :Minimum value: This is the minimum value for the noise (i.e. the minimum value any R, G or B value can take).
 :Maximum value: The maximum value.
+
+An example noise environment is shown below.
+
+.. figure:: _static/Noise.png
+    :align: center
+
 
 Combine
 -------

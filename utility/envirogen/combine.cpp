@@ -1,6 +1,5 @@
 #include <QFile>
 #include <QApplication>
-#include <QDebug>
 #include <QImage>
 #include <QStringList>
 #include "environmentclass.h"

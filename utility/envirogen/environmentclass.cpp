@@ -1,7 +1,6 @@
 #include "mainwindow.h"
 #include "environmentclass.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
 
 environmentclass::environmentclass()
 {

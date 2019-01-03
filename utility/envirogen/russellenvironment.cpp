@@ -1,5 +1,4 @@
 #include "environmentclass.h"
-#include <QDebug>
 #include <QTextStream>
 #include <QString>
 #include <QFile>

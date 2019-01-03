@@ -1,6 +1,5 @@
 #include <QFile>
 #include <QApplication>
-#include <QDebug>
 #include "environmentclass.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"

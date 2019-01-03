@@ -2,7 +2,6 @@
 #include "noiseenvironment.h"
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
 #include <time.h>
 
 noiseenvironment::noiseenvironment()

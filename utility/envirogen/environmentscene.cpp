@@ -9,7 +9,6 @@ basically just has mouse handlers for main window
 
 #include "environmentscene.h"
 #include <QGraphicsView>
-#include <QDebug>
 #include <QPointF>
 #include "mainwindow.h"
 
