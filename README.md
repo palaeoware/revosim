@@ -59,7 +59,7 @@ _____
 
 ## 5. Documentation
 
-All documentation for REvoSim is online at [http://revosim.readthedocs.io/](http://revosim.readthedocs.io/). This is a version controlled user manual automatically parsed from the .rst found under the ./revosim/docs folder in our git root. EnviroGen documentation is managed in the same way, and can be found at [http://envirogen.readthedocs.io/]((http://revosim.readthedocs.io/).
+All documentation for REvoSim is online at [http://revosim.readthedocs.io/](http://revosim.readthedocs.io/). This is a version controlled user manual automatically parsed from the .rst found under the docs folders in our software folders. EnviroGen documentation is managed in the same way, and can be found at [http://envirogen.readthedocs.io/]((http://revosim.readthedocs.io/).
 _____
 
 ## 6. Contributing to the code
