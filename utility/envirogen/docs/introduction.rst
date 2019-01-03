@@ -17,7 +17,8 @@ Variables
 
 Each mode of environmental generation has its own tab in the Environmental Setting dock, which by default is shown on the right of the main window.
 
-[Image]
+.. figure:: _static/envirogen_window.png
+    :align: center
 
 This has a number of tabs on the top: Dyn 1 and Dyn 2 are EnviroGen's dynamic environments, noise allows the user to create a stack of noise images, Comb allows stacks to be combined, Col allows the creation of solid colour stacks, and Stack allows the creation os a stack from a single image.The first tab, out, has output settings.
 

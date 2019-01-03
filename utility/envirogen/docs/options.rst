@@ -8,7 +8,8 @@ Within the Settings dock of EnviroGen are a number of different modes of creatin
 Out
 ---
 
-[Image]
+.. figure:: _static/settings_out.png
+    :align: center
 
 This tab has EnviroGren output options.
 
@@ -25,7 +26,8 @@ Dyn 1
 
 EnviroGen provides two primary models for the creation of dynamic environment. The first employs a user-defined number of seeds of varying colours and sizes, which drift across the environmental image. A Laplacian smooth is used to define the colour between these seed points.
 
-[image]
+.. figure:: _static/settings_dyn1.png
+    :align: center
 
 The following options are provided to control the environment:
 
@@ -47,7 +49,8 @@ An example environment created with dynamic environment one is shown below.
 Dyn 2
 -----
 
-[Image]
+.. figure:: _static/settings_dyn2.png
+    :align: center
 
 The second model for generation of dynamic environments is also based on moving seeds, but differs in being additive, and lacking smoothing. Seeds, or objects, have a sizes, colours and velocities, and changes ("accelerations") are applied to these. Limits can be placed on values, their first derivative (e.g. velocity), or their second derivative (e.g. acceleration). Dynamic environment two tends to have higher gradients between pixels than the first, and using the default settings it changes more rapidly. It is quicker generating environments than dynamic environment one. Options are as follows:
 
@@ -69,6 +72,9 @@ An example environment created with dynamic environment two is shown below.
 Noise
 -----
 
+.. figure:: _static/settings_noise.png
+    :align: center
+
 To study some phenomena a level of noise on an environment may be desirable. This tab creates a noise image using 10Mb of quantum-generated random numbers from `randomnumbers.info <http://www.randomnumbers.info>`_ that are packaged into the executable. These are loaded on program launch from a starting point based on a pseudorandom number, seeded on the time at launch. These can then be combined with any other environment as required using the comb tab. It creates random R,G, and B values for every pixel within the limits desired, and offers two options:
 
 :Minimum value: This is the minimum value for the noise (i.e. the minimum value any R, G or B value can take).
@@ -83,6 +89,9 @@ An example noise environment is shown below.
 Combine
 -------
 
+.. figure:: _static/settings_comb.png
+    :align: center
+
 This allows image stacks to be combined or concatenated, and thus allows the construction of increasingly complex environments. It takes two input stacks, and allows the influence of each while they are being combined to be defined. RGB values for both stacks are added. If they are limited to a maximum of 255, and an 8 bit image is output. Options are as follows:
 
 :Stack one: This is the first image stack. The change button opens a file dialogue and allows a folder to be selected, the location of which appearshere.
@@ -95,9 +104,15 @@ Note that if "generate for" in the output tab is set to be higher than the numbe
 Col
 ---
 
+.. figure:: _static/settings_col.png
+    :align: center
+
 This is a convenience function to create an image stack comprising a single colour (which can they be combined with other images if desired). The colour can be set either by entering red blue and green levels into the spin boxes on this tab, or using the colour picker.
 
 Stack
 -----
+
+.. figure:: _static/settings_stack.png
+    :align: center
 
 This tab allows a stack to be created from a single image. Choose image launches a file dialogue, and once an image has been chosen, it is converted to a stack and placed in the output folder.
