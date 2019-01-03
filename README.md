@@ -61,7 +61,7 @@ _____
 
 All documentation for REvoSim is online at [http://revosim.readthedocs.io/](http://revosim.readthedocs.io/). This is a version controlled user manual automatically parsed from the .rst found under the ./revosim/docs folder in our git root. EnviroGen documentation is managed in the same way, and can be found at [http://envirogen.readthedocs.io/]((http://revosim.readthedocs.io/).
 _____
-### and
+
 ## 6. Contributing to the code
 
 Contribution to the code in this repository is welcome. Please read the [Repository Contribution](https://github.com/palaeoware/repoconventions)  document for a guide to our coding style and repository structure before submitting any code updates.
