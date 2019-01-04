@@ -57,8 +57,8 @@ The second model for generation of dynamic environments is also based on moving 
 :Object count: This is the number of seeds which are used to create the environment.
 :Maximum object size: The maximum possible object size. In this dynamic environment all limits are hard, and thus cannot be exceeded.
 :Minimum object size: This is the minimum size.
-:Maximum tightness: To do.
-:Minimum tightness: To do.
+:Maximum tightness: Tightness controls the rate at which the colour-influence of each seed drops off away from its centre. High tightness values produce a rapid drop-off - i.e. the colour influence is more tightly concentrated near its centre. Maximum tightness is the hightest value this can reach
+:Minimum tightness: The minimum tightness value (see above).
 :Maximum ... velocity: There then follow options to provide a hard limits to the velocity of the objects, and also a maximum to the rate of change of their colour, size and tightness.
 :Maximum ... acceleration: The next four options allow limits to be placed on the rate of change of the rate of change of velocity, size, tightness and colour.
 :Speed factor: As with dynamic environment one, there is a multiplier allowing environmental settings to be repeated with the only difference being rate of change (i.e. all are multiplied by this factor).
