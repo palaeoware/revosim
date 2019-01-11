@@ -1144,7 +1144,7 @@ void MainWindow::startBatchSimulation()
     batchRuns = 0;
     int environmentStart = currentEnvironmentFile;
 
-    bool repeat_environment;
+    bool repeatEnvironment;
     QString globalSavePathStr(globalSavePath->text());
 
     //ARTS - batch setup default and maxium values
@@ -1180,7 +1180,7 @@ void MainWindow::startBatchSimulation()
     environmentComboBox->addItem("Yes", 1);
     environmentComboBox->addItem("No", 0);
     int index = environmentComboBox->findData(1);
-    if ( index != -1 )   // -1 for not found
+    if (index != -1 )   // -1 for not found
     {
         environmentComboBox->setCurrentIndex(index);
     }
@@ -1200,7 +1200,7 @@ void MainWindow::startBatchSimulation()
     {
         batchIterations = static_cast<quint64>(iterationsSpinBox->value());
         batchTargetRuns = static_cast<quint64>(runsSpinBox->value());
-        repeat_environment = environmentComboBox->itemData(environmentComboBox->currentIndex()) == 1;
+        repeatEnvironment = environmentComboBox->itemData(environmentComboBox->currentIndex()) == 1;
 
         // Reset before starting batch run
         resetSimulation();
@@ -1217,7 +1217,7 @@ void MainWindow::startBatchSimulation()
     {
 
         //RJG - Sort environment so it repeats
-        if (repeat_environment)
+        if (repeatEnvironment)
         {
             currentEnvironmentFile = environmentStart;
             simulationManager->loadEnvironmentFromFile(environmentMode);
@@ -1236,7 +1236,7 @@ void MainWindow::startBatchSimulation()
         }
 
         runSetUp();
-        int i = static_cast<int>(batchIterations);
+        quint64 i = batchIterations;
         while (!stopFlag && i > 0)
         {
             while (pauseFlag)

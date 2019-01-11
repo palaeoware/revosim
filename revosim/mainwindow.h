@@ -87,6 +87,7 @@ private:
     void writeLog();
     void simulationDead();
     void calculateSpecies();
+    void restartTimer();
     int scaleFails(int fails, float generations);
     int waitUntilPauseSignalIsEmitted();
     QString handleAnalysisTool(int code);
