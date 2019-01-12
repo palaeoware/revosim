@@ -1180,7 +1180,7 @@ void MainWindow::startBatchSimulation()
     environmentComboBox->addItem("Yes", 1);
     environmentComboBox->addItem("No", 0);
     int index = environmentComboBox->findData(1);
-    if (index != -1 )   // -1 for not found
+    if (index != -1)   // -1 for not found
     {
         environmentComboBox->setCurrentIndex(index);
     }
