@@ -699,14 +699,14 @@ QDockWidget *MainWindow::createOutputSettingsDock()
 
     QLabel *minSpeciesSizeLabel = new QLabel("Minimum species size:");
     minSpeciesSizeLabel->setToolTip("<font>Selects the minimum number of organisms needed to define a species. Min = 0; Max = 1000000.</font>");
-    auto *minSeciesSizeSpin = new QSpinBox;
-    minSeciesSizeSpin->setToolTip("<font>Selects the minimum number of organisms needed to define a species. Min = 0; Max = 1000000.</font>");
-    minSeciesSizeSpin->setMinimum(0);
-    minSeciesSizeSpin->setMaximum(1000000);
-    minSeciesSizeSpin->setValue(static_cast<int>(minSpeciesSize));
+    auto *minSpeciesSizeSpin = new QSpinBox;
+    minSpeciesSizeSpin->setToolTip("<font>Selects the minimum number of organisms needed to define a species. Min = 0; Max = 1000000.</font>");
+    minSpeciesSizeSpin->setMinimum(0);
+    minSpeciesSizeSpin->setMaximum(1000000);
+    minSpeciesSizeSpin->setValue(static_cast<int>(minSpeciesSize));
     fileLoggingGrid->addWidget(minSpeciesSizeLabel, 6, 1);
-    fileLoggingGrid->addWidget(minSeciesSizeSpin, 6, 2);
-    connect(minSeciesSizeSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
+    fileLoggingGrid->addWidget(minSpeciesSizeSpin, 6, 2);
+    connect(minSpeciesSizeSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
     {
         minSpeciesSize = static_cast<quint64>(i);
     });
