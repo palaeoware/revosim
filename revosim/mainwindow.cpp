@@ -862,7 +862,7 @@ QDockWidget *MainWindow::createOrganismSettingsDock()
     asexualRadio->setChecked(asexual);
     organismSettingsGrid->addWidget(sexualRadio, 12, 1, 1, 2);
     organismSettingsGrid->addWidget(asexualRadio, 13, 1, 1, 2);
-    connect(breedingButtonGroup, static_cast<void (QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i)
+    connect(breedingButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i)
     {
         if (i == 0)
         {
@@ -889,7 +889,7 @@ QDockWidget *MainWindow::createOrganismSettingsDock()
     dispersalSpin->setToolTip("<font>Set the maximum dispersal of offspring from parent. Min = 1; Max = 200.</font>");
     organismSettingsGrid->addWidget(dispersalLabel, 16, 1);
     organismSettingsGrid->addWidget(dispersalSpin, 16, 2);
-    connect(dispersalSpin, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
+    connect(dispersalSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
     {
         dispersal = i;
     });
