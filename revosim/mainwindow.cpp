@@ -1092,9 +1092,9 @@ void MainWindow::runForNSimulation()
 
     bool ok = false;
     int i;
-    int n;
-    n = QInputDialog::getInt(this, "", tr("Iterations: "), 1000, 1, 10000000, 1, &ok);
-    i = n;
+    int numIterations;
+    numIterations = QInputDialog::getInt(this, "", tr("Iterations: "), 1000, 1, 10000000, 1, &ok);
+    i = numIterations;
     if (!ok) return;
 
     ui->LabelBatch->setText(tr("1/1"));
@@ -1122,12 +1122,12 @@ void MainWindow::runForNSimulation()
     //ARTS Show finish message and run FinshRun()
     if (!stopFlag)
     {
-        QMessageBox::information(nullptr, tr("Run For... Finished"), tr("The run for %1 iterations has finished.").arg(n));
+        QMessageBox::information(nullptr, tr("Run For... Finished"), tr("The run for %1 iterations has finished.").arg(numIterations));
         finishRun();
     }
     else
     {
-        QMessageBox::information(nullptr, tr("Run For... Stopped"), tr("The run for %1 iterations has been stopped at iteration %2.").arg(n).arg(i));
+        QMessageBox::information(nullptr, tr("Run For... Stopped"), tr("The run for %1 iterations has been stopped at iteration %2.").arg(numIterations).arg(i));
         finishRun();
     }
 }
