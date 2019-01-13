@@ -1619,7 +1619,6 @@ void MainWindow::refreshPopulations()
     int currentSelectedMode = ui->populationWindowComboBox->itemData(ui->populationWindowComboBox->currentIndex()).toInt();
 
     // (0) Population Count
-    //if (ui->actionPopulation_Count->isChecked()||savePopulationCount->isChecked())
     if (currentSelectedMode == 0 || savePopulationCount->isChecked())
     {
         //Popcount
@@ -1755,8 +1754,7 @@ gotcounts:
                 int counts[SLOTS_PER_GRID_SQUARE];
                 int arraypos = 0; //pointer
 
-                if (totalFitness[n][m] == 0)
-                    populationImageColour->setPixel(n, m, 0); //black if square is empty
+                if (totalFitness[n][m] == 0) populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else
                 {
                     //for each used slot
@@ -2070,13 +2068,12 @@ void MainWindow::resize()
  */
 void MainWindow::guiCheckboxStateChanged(bool dontUpdate)
 {
-    if (dontUpdate && QMessageBox::question(
-                nullptr,
-                "Heads up",
-                "If you don't update the GUI, images will also not be saved. OK?",
-                QMessageBox::Yes | QMessageBox::No,
-                QMessageBox::Yes
-            ) == QMessageBox::No
+    if (dontUpdate && QMessageBox::question(nullptr,
+                                            "Heads up",
+                                            "If you don't update the GUI, images will also not be saved. OK?",
+                                            QMessageBox::Yes | QMessageBox::No,
+                                            QMessageBox::Yes
+                                           ) == QMessageBox::No
        )
     {
         guiCheckbox->setChecked(false);
@@ -2283,12 +2280,14 @@ void MainWindow::redoImages(int oldRows, int oldColumns)
     //If either rows or cols are bigger - make sure age is set to 0 in all critters in new bit!
     if (gridX > oldRows)
     {
-        for (int n = oldRows; n < gridX; n++) for (int m = 0; m < gridY; m++)
+        for (int n = oldRows; n < gridX; n++)
+            for (int m = 0; m < gridY; m++)
                 resetSquare(n, m);
     }
     if (gridY > oldColumns)
     {
-        for (int n = 0; n < gridX; n++) for (int m = oldColumns; m < gridY; m++)
+        for (int n = 0; n < gridX; n++)
+            for (int m = oldColumns; m < gridY; m++)
                 resetSquare(n, m);
     }
 
@@ -2576,7 +2575,7 @@ void MainWindow::saveSimulation()
     out << oldSpeciesList.count();
     for (int j = 0; j < oldSpeciesList.count(); j++)
     {
-        out << oldSpeciesList[j].id;
+        out << oldSpeciesList[j].ID;
         out << oldSpeciesList[j].type;
         out << oldSpeciesList[j].originTime;
         out << oldSpeciesList[j].parent;
@@ -2590,7 +2589,7 @@ void MainWindow::saveSimulation()
         out << archivedSpeciesLists[i].count();
         for (int j = 0; j < archivedSpeciesLists[i].count(); j++)
         {
-            out << archivedSpeciesLists[i][j].id;
+            out << archivedSpeciesLists[i][j].ID;
             out << archivedSpeciesLists[i][j].type;
             out << archivedSpeciesLists[i][j].originTime;
             out << archivedSpeciesLists[i][j].parent;
@@ -2742,7 +2741,7 @@ void MainWindow::loadSimulation()
     int vmode;
     in >> vmode;
     int index = ui->populationWindowComboBox->findData(vmode);
-    if ( index != -1 )   // -1 for not found
+    if (index != -1)   // -1 for not found
     {
         ui->populationWindowComboBox->setCurrentIndex(index);
     }
@@ -2853,7 +2852,7 @@ void MainWindow::loadSimulation()
     for (int j = 0; j < temp; j++)
     {
         Species s;
-        in >> s.id;
+        in >> s.ID;
         in >> s.type;
         in >> s.originTime;
         in >> s.parent;
@@ -2872,7 +2871,7 @@ void MainWindow::loadSimulation()
         for (int j = 0; j < temp2; j++)
         {
             Species s;
-            in >> s.id;
+            in >> s.ID;
             in >> s.type;
             in >> s.originTime;
             in >> s.parent;
@@ -2931,8 +2930,7 @@ bool MainWindow::genomeComparisonAdd()
  */
 void MainWindow::calculateSpecies()
 {
-    if (speciesMode == SPECIES_MODE_NONE)
-        return; //do nothing!
+    if (speciesMode == SPECIES_MODE_NONE) return; //do nothing!
 
     if (iteration != lastSpeciesCalculated)
     {
@@ -3024,7 +3022,7 @@ void MainWindow::writeLog()
             if (quint64(oldSpeciesList[i].size) > minSpeciesSize)
             {
                 out << "[S] ";
-                out << (oldSpeciesList[i].id) << ",";
+                out << (oldSpeciesList[i].ID) << ",";
                 out << oldSpeciesList[i].originTime << ",";
                 out << oldSpeciesList[i].parent << ",";
                 out << oldSpeciesList[i].size << ",";
@@ -3213,11 +3211,11 @@ QString MainWindow::printSettings()
  */
 void MainWindow::loadSettings()
 {
-    QString settings_filename = QFileDialog::getOpenFileName(this, tr("Open File"), globalSavePath->text(), "XML files (*.xml)");
-    if (settings_filename.length() < 3)
+    QString settingsFilename = QFileDialog::getOpenFileName(this, tr("Open File"), globalSavePath->text(), "XML files (*.xml)");
+    if (settingsFilename.length() < 3)
         return;
-    QFile settings_file(settings_filename);
-    if (!settings_file.open(QIODevice::ReadOnly))
+    QFile settingsFile(settingsFilename);
+    if (!settingsFile.open(QIODevice::ReadOnly))
     {
         setStatusBarText("Error opening file.");
         return;
@@ -3340,7 +3338,7 @@ void MainWindow::loadSettings()
     else
         setStatusBarText("Loaded settings file");
 
-    settings_file.close();
+    settingsFile.close();
 
     updateGUIFromVariables();
 }
@@ -3391,21 +3389,21 @@ void MainWindow::updateGUIFromVariables()
  */
 void MainWindow::saveSettings()
 {
-    QString settings_filename = QFileDialog::getSaveFileName(
-                                    this,
-                                    tr("Save file as..."),
-                                    QString(globalSavePath->text() + QString(PRODUCTNAME) + "Settings.xml")
-                                );
-    if (!settings_filename.endsWith(".xml"))
-        settings_filename.append(".xml");
-    QFile settings_file(settings_filename);
-    if (!settings_file.open(QIODevice::WriteOnly | QIODevice::Text))
+    QString settingsFilename = QFileDialog::getSaveFileName(
+                                   this,
+                                   tr("Save file as..."),
+                                   QString(globalSavePath->text() + QString(PRODUCTNAME) + "Settings.xml")
+                               );
+    if (!settingsFilename.endsWith(".xml"))
+        settingsFilename.append(".xml");
+    QFile settingsFile(settingsFilename);
+    if (!settingsFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         setStatusBarText("Error opening settings file to write to.");
         return;
     }
 
-    QXmlStreamWriter settingsFileOut(&settings_file);
+    QXmlStreamWriter settingsFileOut(&settingsFile);
     settingsFileOut.setAutoFormatting(true);
     settingsFileOut.setAutoFormattingIndent(-2);
 
@@ -3592,7 +3590,7 @@ void MainWindow::saveSettings()
 
     settingsFileOut.writeEndDocument();
 
-    settings_file.close();
+    settingsFile.close();
 
     setStatusBarText("File saved");
 }
