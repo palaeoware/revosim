@@ -1935,7 +1935,6 @@ gotcounts2:
         //work out average per iteration
         float generations = static_cast<float>(iteration - static_cast<quint64>(lastReport));
 
-
         //Make image
         for (int n = 0; n < gridX; n++)
             for (int m = 0; m < gridY; m++)
@@ -1978,8 +1977,7 @@ gotcounts2:
             for (int m = 0; m < gridY; m++)
             {
 
-                if (totalFitness[n][m] == 0)
-                    populationImageColour->setPixel(n, m, 0); //black if square is empty
+                if (totalFitness[n][m] == 0) populationImageColour->setPixel(n, m, 0); //black if square is empty
                 else
                 {
                     quint64 thisspecies = 0;
@@ -2064,13 +2062,9 @@ void MainWindow::resize()
  */
 void MainWindow::guiCheckboxStateChanged(bool dontUpdate)
 {
-    if (dontUpdate && QMessageBox::question(nullptr,
-                                            "Heads up",
-                                            "If you don't update the GUI, images will also not be saved. OK?",
-                                            QMessageBox::Yes | QMessageBox::No,
-                                            QMessageBox::Yes
-                                           ) == QMessageBox::No
-       )
+    if (dontUpdate
+            &&
+            QMessageBox::question(nullptr, "Heads up", "If you don't update the GUI, images will also not be saved. OK?", QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
     {
         guiCheckbox->setChecked(false);
         return;
