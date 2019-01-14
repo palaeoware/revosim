@@ -588,9 +588,9 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     QLabel *savePathLabel = new QLabel("Output save path:");
     savePathLabel->setObjectName("savePathLabel");
     savePathGrid->addWidget(savePathLabel, 1, 1, 1, 2);
-    QString program_path(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
-    program_path.append("/");
-    globalSavePath = new QLineEdit(program_path);
+    QString programPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
+    programPath.append("/");
+    globalSavePath = new QLineEdit(programPath);
     globalSavePath->setToolTip("<font>System globalSavePath where all logs, images, and output data is saved.</font>");
     savePathGrid->addWidget(globalSavePath, 2, 1, 1, 2);
     QPushButton *changePathButton = new QPushButton("&Change");
@@ -1379,15 +1379,11 @@ void MainWindow::runSetUp()
     QDir globalSavePathStr(globalSavePath->text());
     if (!globalSavePathStr.exists())
     {
-        QMessageBox::warning(
-            nullptr,
-            "Error!",
-            "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is."
-        );
-        QString program_path(QCoreApplication::applicationDirPath());
-        program_path.append(QDir::separator());
-        globalSavePath->setText(program_path);
-        globalSavePathStr.setPath(program_path);
+        QMessageBox::warning(this, "Error!", "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is.");
+        QString programPath(QCoreApplication::applicationDirPath());
+        programPath.append(QDir::separator());
+        globalSavePath->setText(programPath);
+        globalSavePathStr.setPath(programPath);
     }
     //RJG - Set up save directory
     if (!globalSavePath->text().endsWith(QString(PRODUCTNAME) + "_output" + QDir::separator()))
