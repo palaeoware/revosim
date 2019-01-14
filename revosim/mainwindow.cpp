@@ -1374,8 +1374,8 @@ void MainWindow::runSetUp()
         QMessageBox::warning(this, "Be aware", "Species tracking is off, so the log files won't show species information");
 
     //Sort out globalSavePath
-    QString save_path_string(globalSavePath->text());
-    if (!save_path_string.endsWith(QDir::separator())) globalSavePath->setText(save_path_string + QDir::separator());
+    QString savePathString(globalSavePath->text());
+    if (!savePathString.endsWith(QDir::separator())) globalSavePath->setText(savePathString + QDir::separator());
     QDir globalSavePathStr(globalSavePath->text());
     if (!globalSavePathStr.exists())
     {
