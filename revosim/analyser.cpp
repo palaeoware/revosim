@@ -489,7 +489,7 @@ void Analyser::groupsGenealogicalTracker()
 
                 nextSpeciesID++;
             }
-            else     //this is the continuing species
+            else //this is the continuing species
             {
                 //find it in the old list and copy
                 Species newsp;
@@ -847,18 +847,18 @@ void Analyser::groupsWithHistoryModal()
     QList<Species> oldSpeciesListCombined = oldSpeciesList;
 
     //Add in all past lists to oldSpeciesList  - might be slow, but simplest solution. Need to do an add that avoids duplicates though
-    QSet<quint64> ids;
+    QSet<quint64> IDs;
 
     //put all ids in the set from oldSpeciesList
-    for (int i = 0; i < oldSpeciesList.count(); i++) ids.insert(oldSpeciesList[i].ID);
+    for (int i = 0; i < oldSpeciesList.count(); i++) IDs.insert(oldSpeciesList[i].ID);
 
     //now append all previous list items that are not already in list with a more recent id!
     for (int l = 0; l < (timeSliceConnect - 1) && l < archivedSpeciesLists.count(); l++)
         for (int m = 0; m < archivedSpeciesLists[l].count(); m++)
         {
-            if (!(ids.contains(archivedSpeciesLists[l][m].ID)))
+            if (!(IDs.contains(archivedSpeciesLists[l][m].ID)))
             {
-                ids.insert(archivedSpeciesLists[l][m].ID);
+                IDs.insert(archivedSpeciesLists[l][m].ID);
                 oldSpeciesListCombined.append(archivedSpeciesLists[l][m]);
             }
         }
@@ -922,7 +922,7 @@ void Analyser::groupsWithHistoryModal()
             }
         }
 
-        //now handle id numbers. Loop over old
+        //now handle ID numbers. Loop over old
         for (int j = 0; j < oldSpeciesListCombined.count(); j++)
         {
             //for every old species
@@ -948,7 +948,7 @@ void Analyser::groupsWithHistoryModal()
     }
     else
     {
-        //handle first time round - basically give species proper ids
+        //handle first time round - basically give species proper IDs
         for (int i = 0; i < newSpeciesList.count(); i++)
         {
             newSpeciesList[i].ID = nextSpeciesID++;
