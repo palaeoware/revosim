@@ -849,7 +849,7 @@ void Analyser::groupsWithHistoryModal()
     //Add in all past lists to oldSpeciesList  - might be slow, but simplest solution. Need to do an add that avoids duplicates though
     QSet<quint64> IDs;
 
-    //put all ids in the set from oldSpeciesList
+    //put all IDs in the set from oldSpeciesList
     for (int i = 0; i < oldSpeciesList.count(); i++) IDs.insert(oldSpeciesList[i].ID);
 
     //now append all previous list items that are not already in list with a more recent id!
