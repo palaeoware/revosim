@@ -3379,7 +3379,7 @@ void MainWindow::saveSettings()
     QString settingsFilename = QFileDialog::getSaveFileName(
                                    this,
                                    tr("Save file as..."),
-                                   QString(globalSavePath->text() + QString(PRODUCTNAME) + "Settings.xml")
+                                   QString(globalSavePath->text() + QString(PRODUCTNAME) + "_settings.xml")
                                );
     if (!settingsFilename.endsWith(".xml"))
         settingsFilename.append(".xml");
