@@ -2359,12 +2359,10 @@ bool MainWindow::loadEnvironmentFiles()
                             "Images (*.png *.bmp)"
                         );
 
-    if (files.length() == 0)
-        return false;
+    if (files.length() == 0) return false;
 
     bool notsquare = false;
     bool different_size = false;
-
     for (int i = 0; i < files.length(); i++)
     {
         QImage LoadImage(files[i]);
