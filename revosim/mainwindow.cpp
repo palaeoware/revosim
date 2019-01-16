@@ -591,10 +591,10 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     QString programPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
     programPath.append("/");
     globalSavePath = new QLineEdit(programPath);
-    globalSavePath->setToolTip("<font>System globalSavePath where all logs, images, and output data is saved.</font>");
+    globalSavePath->setToolTip("<font>System save path where all logs, images, and output data is saved.</font>");
     savePathGrid->addWidget(globalSavePath, 2, 1, 1, 2);
     QPushButton *changePathButton = new QPushButton("&Change");
-    changePathButton->setToolTip("<font>System globalSavePath where all logs, images, and output data is saved.</font>");
+    changePathButton->setToolTip("<font>System save path where all logs, images, and output data is saved.</font>");
     changePathButton->setObjectName("changePathButton");
     savePathGrid->addWidget(changePathButton, 3, 1, 1, 2);
     connect(changePathButton, SIGNAL (clicked()), this, SLOT(updateGlobalPath()));
