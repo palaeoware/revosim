@@ -1590,8 +1590,7 @@ void MainWindow::refreshPopulations()
     //RJG - make globalSavePath if required - this way as if user adds file name to globalSavePath, this will create a
     //subfolder with the same file name as logs.
     QString globalSavePathStr(globalSavePath->text());
-    if (!globalSavePathStr.endsWith(QDir::separator()))
-        globalSavePathStr.append(QDir::separator());
+    if (!globalSavePathStr.endsWith(QDir::separator()))globalSavePathStr.append(QDir::separator());
     if (batchRunning)
     {
         globalSavePathStr.append(QString("Images_run_%1").arg(batchRuns, 4, 10, QChar('0')));
