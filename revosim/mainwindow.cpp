@@ -1548,8 +1548,7 @@ int MainWindow::scaleFails(int fails, float generations)
     ffails *= 100.0; // a fudge factor no less! Well it's only visualization...
     ffails = static_cast<float>(pow(static_cast<double>(ffails), 0.8));
 
-    if (ffails > static_cast<float>(255.0))
-        ffails = static_cast<float>(255.0);
+    if (ffails > static_cast<float>(255.0)) ffails = static_cast<float>(255.0);
 
     return static_cast<int>(ffails);
 }
