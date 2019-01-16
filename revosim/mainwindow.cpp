@@ -2013,8 +2013,7 @@ gotcounts2:
 void MainWindow::refreshEnvironment()
 {
     QString globalSavePathStr(globalSavePath->text());
-    if (!globalSavePathStr.endsWith(QDir::separator()))
-        globalSavePathStr.append(QDir::separator());
+    if (!globalSavePathStr.endsWith(QDir::separator()))globalSavePathStr.append(QDir::separator());
     if (batchRunning)
     {
         globalSavePathStr.append(QString("Images_run_%1").arg(batchRuns, 4, 10, QChar('0')));
