@@ -3206,7 +3206,7 @@ void MainWindow::loadSettings()
         return;
     }
 
-    QXmlStreamReader settingsFileIn(&settings_file);
+    QXmlStreamReader settingsFileIn(&settingsFile);
 
     while (!settingsFileIn.atEnd() && !settingsFileIn.hasError())
     {

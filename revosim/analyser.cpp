@@ -36,7 +36,7 @@
 Species::Species()
 {
     type = 0;
-    id = 0; //default, not assigned
+    ID = 0; //default, not assigned
     internalID = -1;
     parent = 0;
     size = -1;
