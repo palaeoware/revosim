@@ -612,7 +612,7 @@ void SimManager::setupRun()
 
     oldSpeciesList.clear();
     Species newsp;
-    newsp.id = nextSpeciesID;
+    newsp.ID = nextSpeciesID;
     newsp.originTime = 0;
     newsp.parent = 0;
     newsp.size = slotsPerSquare;

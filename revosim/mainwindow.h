@@ -87,6 +87,7 @@ private:
     void writeLog();
     void simulationDead();
     void calculateSpecies();
+    void restartTimer();
     int scaleFails(int fails, float generations);
     int waitUntilPauseSignalIsEmitted();
     QString handleAnalysisTool(int code);
@@ -132,7 +133,7 @@ private:
     QCheckBox *recalculateFitnessCheckbox{};
     QCheckBox *toroidalCheckbox{};
     QCheckBox *nonspatialCheckbox{};
-    QCheckBox *breedDifferenceerenceCheckbox{};
+    QCheckBox *breedDifferenceCheckbox{};
     QCheckBox *breedSpeciesCheckbox{};
     QCheckBox *excludeWithoutDescendantsCheckbox{};
     QCheckBox *loggingCheckbox{};
@@ -152,7 +153,7 @@ private:
 
     QSpinBox *mutateSpin{};
     QSpinBox *refreshRateSpin{};
-    QSpinBox *maxDifferenceerenceSpin{};
+    QSpinBox *maxDifferenceSpin{};
     QSpinBox *breedThresholdSpin{};
     QSpinBox *targetSpin{};
     QSpinBox *environmentRateSpin{};

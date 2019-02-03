@@ -233,10 +233,10 @@ void MainWindow::generateEnvironment()
     if (!Directory.exists())
     {
         QMessageBox::warning(nullptr, "Error!", "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is.");
-        QString program_path(QCoreApplication::applicationDirPath());
-        program_path.append(QDir::separator());
-        ui->path->setText(program_path);
-        Directory.setPath(program_path);
+        QString programPath(QCoreApplication::applicationDirPath());
+        programPath.append(QDir::separator());
+        ui->path->setText(programPath);
+        Directory.setPath(programPath);
     }
     if (!Directory.mkpath(QString(PRODUCTNAME) + "_output"))
     {
