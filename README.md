@@ -49,6 +49,54 @@ _____
 
 REvoSim and utility code may be compiled using QT from the source code or installed from the binary releases on our [GitHub](https://github.com/palaeoware).
 
+### Compiling from source
+
+#### Windows 64-bit - QT Creator + QT v5.x using MSYS2 (64-bit) and MinGW (64-bit)
+We recommend you install and use MSYS2 (64-bit) a Windows package manager, based on modern Cygwin (POSIX compatibility layer) and MinGW-w64, that allows easy installation of QT v5.x 64-bit.
+
+1. Download and run the latest version of MSYS2 https://www.msys2.org/ for 64-bit Windows. This will be name "mysys2-x86_64-..." for the 64-bit installer.
+2. Follow the install instructions. We have used the default install location of "C:\mysys64\" and it is here that includes required in the .pro files point. If you install MSYS2 to another location the .pro files will need to be updated to your install location.
+3. Once installed open up MSYS2 shell and run the pacman update command: pacman -Syu Note that as this will almost certainly update pacman itself you may have to close down and restart the MYSYS2 shell before re-running the command to finish.
+4. Once MSYS2 and pacman are fully updated run the following command to install QT 5.x and its dependencies: pacman -S mingw-w64-x86_64-qt-creator mingw-w64-x86_64-qt5
+5. (OPTIONAL) If you intend on debugging the software in QT and wish to use GDB then run the following to install the matching GBD debugger: pacman -S mingw-w64-x86_64-gdb
+6. At this stage you should have the following under the MYSYS2 install location:
+- {install location}/mingw64 (Main ming64 folder)
+- {install location}/mingw64/bin/qmake.exe (QMake for QT version)
+- {install location}/mingw64/bin/g++.exe (C++ complier)
+- {install location}/mingw64/bin/gcc.exe (C complier)
+- {install location}/mingw64/bin/gdb.exe (Debugger | OPTIONAL)
+7. You should now be able to find the required libraries under "{install location}/mingw64/bin" and the required header (.h) files for QT v5.x under "{install location}/mingw64/include".
+8. Download the source code, and use the information above to setup a new 64-bit ming64 kit under QT creator and follow standard QT Creator debug/release procedure.
+
+#### Ubuntu 18.04 64-bit - QT Creator + QT v5.x using GCC (64-bit)
+
+To compile from command line.
+1. Install GCC and Qt using system packages:
+
+`sudo apt-get install build-essential libgl1-mesa-dev`
+
+`sudo apt install qt5-default`
+
+2. Download source code and navigate to folder, or alternatively clone using Git:
+
+`git clone https://github.com/palaeoware/revosim.git`
+
+`cd revosim`
+
+3. Within REvoSim folder create makefile:
+
+`qmake ./revosim.pro`
+
+4. Build by running the make command:
+
+`make`
+
+5. Navigate to bin folder (e.g. revosim/revosim/bin) and launch software by double clicking on file.
+
+Using Qt creator.
+1. Install Q5.X on your system by running the installer from Qt: https://www.qt.io/download Further instructions are available here: https://wiki.qt.io/Install_Qt_5_on_Ubuntu
+2. Download source code, launch Qt Creator, and open the .pro file. Configure build and follow standard debug/release procedure.
+
 _____
 
 ## 4. Minimum Requirements
