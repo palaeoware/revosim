@@ -72,14 +72,20 @@ We recommend you install and use MSYS2 (64-bit) a Windows package manager, based
 
 To compile from command line.
 1. Install GCC and Qt using system packages:
+2.
 `sudo apt-get install build-essential libgl1-mesa-dev`
+
 `sudo apt install qt5-default`
 2. Download source code and navigate to folder, or alternatively clone using Git:
+
 `git clone https://github.com/palaeoware/revosim.git`
+
 `cd revosim`
 3. Within REvoSim folder create makefile:
+
 `qmake ./revosim.pro`
 4. Build by running the make command:
+
 `make`
 5. Navigate to bin folder (e.g. revosim/revosim/bin) and launch software by double clicking on file.
 
