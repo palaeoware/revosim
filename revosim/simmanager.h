@@ -8,7 +8,7 @@
  * All REvoSim code is released under the GNU General Public License.
  * See LICENSE.md files in the programme directory.
  *
- * All REvoSim code is Copyright 2008-2018 by Mark D. Sutton, Russell J. Garwood,
+ * All REvoSim code is Copyright 2008-2019 by Mark D. Sutton, Russell J. Garwood,
  * and Alan R.T. Spencer.
  *
  * This program is free software; you can redistribute it and/or modify

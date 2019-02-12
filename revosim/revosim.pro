@@ -11,7 +11,7 @@ DESTDIR \
 
 TEMPLATE = app
 
-# Load the SPIERS version number
+# Load the version number
 include(../version.pri)
 
 MOC_DIR += build
@@ -70,8 +70,9 @@ CONFIG += c++11
 QMAKE_LFLAGS += -no-pie
 
 DISTFILES += \
-    LICENSE.md \
+    ../LICENSE \
+    ../README.md \
     .astylerc
 
-RC_FILE = resources\revosim.rc
+RC_FILE = resources/revosim.rc
 
