@@ -76,3 +76,6 @@ DISTFILES += \
 
 RC_FILE = resources/revosim.rc
 
+#Mac icon
+ICON = revosim.icns
+

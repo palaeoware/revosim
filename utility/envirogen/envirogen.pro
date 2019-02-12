@@ -71,3 +71,6 @@ CONFIG += c++11
 QMAKE_LFLAGS += -no-pie
 
 RC_FILE = resources/envirogen.rc
+
+#Mac icon
+ICON = revosim.icns
