@@ -5,7 +5,7 @@
 
 QT  += core gui widgets concurrent
 
-TARGET = EnviroGen
+TARGET = envirogen
 
 DESTDIR \
     += \

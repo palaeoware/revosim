@@ -3,7 +3,7 @@
 # -------------------------------------------------
 QT += widgets concurrent
 
-TARGET = REvoSim
+TARGET = revosim
 
 DESTDIR \
     += \
