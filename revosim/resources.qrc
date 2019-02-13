@@ -8,7 +8,6 @@
         <file alias="builtWithQTLogo">../resources/Built_with_Qt_RGB_logo.png</file>
         <file alias="palaeoware_logo_square.png">../resources/palaeoware_logo_square.png</file>
         <file alias="license_markup.txt">../resources/license_markup.txt</file>
-	<file alias="revosim.icns">../resources/revosim.icns</file>
     </qresource>
     <qresource prefix="/darkstyle">
         <file alias="stylesheet_dark.qss">../resources/darkstyle/stylesheet_dark.qss</file>
