@@ -92,6 +92,10 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     auto *resizeCatcher = new ResizeCatcher(this);
     ui->centralWidget->installEventFilter(resizeCatcher);
 
+    //RJG - Set up scroll area height based on text size
+    int textHeight = ui->LabelBatch->height();
+    ui->scrollArea->setMaximumHeight(textHeight + 30);
+
     // Create Main Menu
     createMainMenu();
 
