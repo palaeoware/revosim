@@ -1,7 +1,11 @@
+.. _index:
+
 .. REvoSim documentation master file, created by
    sphinx-quickstart on Thu Apr  5 14:07:27 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
+   
+.. _revosimPaperDoi: https://doi.org/10.1111/pala.12420
 
 Welcome to REvoSim's User Manual
 ================================
@@ -22,7 +26,7 @@ w:https://github.com/palaeoware.
 Relevant references
 -------------------
 
-Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology.
+Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `_revosimPaperDoi`_
 
 
 Table of Contents

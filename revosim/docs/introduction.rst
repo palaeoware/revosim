@@ -1,3 +1,7 @@
+.. _introduction:
+
+.. _revosimPaperDoi: https://doi.org/10.1111/pala.12420
+
 Introduction
 ============
 
@@ -6,7 +10,7 @@ Overview
 
 REvoSim can be used to study a range of evolutionary processes. It is based on 64-bit digital organisms, within an environment defined by the RGB values of a two-dimensional image. It is highly abstracted, and is designed for computational efficiency. For versatility there are a large number of user-defined variables: an overview is provided below. This assumes the software has already been installed (instructions can be found on the page :ref:`requirements`). We recommend reading the paper below for full discussion of REvoSim's approach, potential limitations, and its strengths:
 
-Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology.
+Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `_revosimPaperDoi`_
 
 A utility program, EnviroGen, is available to generate environments for REvoSim and thus provide control of a number of the environmental controls on the simulation. This is documented separately.
 

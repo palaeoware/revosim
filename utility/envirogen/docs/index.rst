@@ -1,3 +1,7 @@
+.. _index:
+
+.. _revosimPaperDoi: https://doi.org/10.1111/pala.12420
+
 Welcome to EnviroGen's User Manual
 ==================================
 
@@ -15,7 +19,7 @@ w:https://github.com/palaeoware.
 Relevant references
 -------------------
 
-Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology.
+Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `_revosimPaperDoi`_
 
 Table of Contents
 =================
