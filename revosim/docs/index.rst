@@ -4,8 +4,6 @@
    sphinx-quickstart on Thu Apr  5 14:07:27 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
-   
-.. _revosimPaperDoi: https://doi.org/10.1111/pala.12420
 
 Welcome to REvoSim's User Manual
 ================================
@@ -19,14 +17,14 @@ REvoSim has been in development since 2008, and has been released with the inten
 .. figure:: _static/palaeoware_logo_square.png
     :align: center
 
-t:@palaeoware
+t:`@palaeoware <https://twitter.com/palaeoware>`_
 
-w:https://github.com/palaeoware.
+w:`https://github.com/palaeoware <https://github.com/palaeoware>`_
 
 Relevant references
 -------------------
 
-Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `revosimPaperDoi`_
+Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `https://doi.org/10.1111/pala.12420 <https://doi.org/10.1111/pala.12420>`_
 
 
 Table of Contents

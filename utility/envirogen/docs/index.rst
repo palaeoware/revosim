@@ -1,7 +1,5 @@
 .. _index:
 
-.. _revosimPaperDoi: https://doi.org/10.1111/pala.12420
-
 Welcome to EnviroGen's User Manual
 ==================================
 
@@ -12,14 +10,14 @@ EnviroGen is a utility package to create highly customised image stacks which ca
 .. figure:: _static/palaeoware_logo_square_Envirogen.png
     :align: center
 
-t:@palaeoware
+t:`@palaeoware <https://twitter.com/palaeoware>`_
 
-w:https://github.com/palaeoware.
+w:`https://github.com/palaeoware <https://github.com/palaeoware>`_
 
 Relevant references
 -------------------
 
-Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `revosimPaperDoi`_
+Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `https://doi.org/10.1111/pala.12420 <https://doi.org/10.1111/pala.12420>`_
 
 Table of Contents
 =================
