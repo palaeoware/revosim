@@ -10,7 +10,7 @@ Overview
 
 EnviroGen is a utility program for REvoSim: an individual-based evolutionary model, using a simplified first-principles evolutionary model to simulate large populations incorporating space, over geological time. An integral part of REvoSim is its fitness algorithm, which is linked to an environment within the software, which is in the form of an RGB raster image. We recommend reading the paper below for full description of this:
 
-Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `_revosimPaperDoi`_
+Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `revosimPaperDoi`_
 
 REvoSim is designed for versatility, and many simulations will require a changing environment throughout the course of a run. These dynamic environments are loaded in the form of image stacks. EnviroGen provides two different mechanisms for generating these dynamic environments, with a large number of options allowing the environments to be tailored to specific questions. For example, environments can have a high degree of fragmentation of colours to study endimism, be primarily defined by gradients, or have a range of complexities. There are numerous convenience functions built in to the software to ease processing image stacks.
 

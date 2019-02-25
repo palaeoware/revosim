@@ -26,7 +26,7 @@ w:https://github.com/palaeoware.
 Relevant references
 -------------------
 
-Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `_revosimPaperDoi`_
+Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. `revosimPaperDoi`_
 
 
 Table of Contents
