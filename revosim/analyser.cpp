@@ -325,7 +325,7 @@ void Analyser::groupsGenealogicalTracker()
             grouplookup[arrayMax] = arrayMax; //not merged - just itself
             arrayMax++;
         }
-        //arrayMax is not number of items in the static array
+        //arrayMax is now number of items in the static array
 
         //now do ALL the possible pairwise comparisons
         //THIS is the slow bit, when there are not many species - not really any faster with index group merging
@@ -436,8 +436,11 @@ void Analyser::groupsGenealogicalTracker()
                 quint64 samplegenome = 0;  //will have to pick a genome for 'type' - it goes here
 
                 for (int iii = 0; iii < arrayMax; iii++) //go through static arrays -
-                    //find all genome entries for this group
-                    //and fix data in critters for them
+                //find all genome entries for this group
+                //and fix data in critters for them
+                {
+                    int maxcount=-1;
+
                     if (groupcodes[iii] == groupcode)
                     {
                         QList<quint32> *updatelist = slotswithgenome.value(speciesID)->value(genomes[iii]);
@@ -451,11 +454,13 @@ void Analyser::groupsGenealogicalTracker()
                             int z = ls % 256;
                             critters[x][y][z].speciesID = nextSpeciesID;
                         }
-
-                        samplegenome = genomes[iii]; //samplegenome ends up being the last one on the list -
-                        //probably actually the most efficient way to do this
+                        if (updatelist->count()>maxcount)
+                        {
+                            maxcount=updatelist->count();
+                            samplegenome = genomes[iii]; //samplegenome should be modal genome
+                        }
                     }
-
+                }
                 speciesSizes[nextSpeciesID] = static_cast<int>(speciesSize); //can set species size now in the hash
                 speciesSizes[speciesID] = speciesSizes[speciesID] - static_cast<int>(speciesSize); //remove this number from parent
 
@@ -493,6 +498,7 @@ void Analyser::groupsGenealogicalTracker()
             {
                 //find it in the old list and copy
                 Species newsp;
+
                 for (int j = 0; j < oldSpeciesList.count(); j++)
                 {
                     if (oldSpeciesList[j].ID == speciesID)
@@ -508,14 +514,23 @@ void Analyser::groupsGenealogicalTracker()
                         }
                     }
                 }
-                //go through and find first occurrence of this group in static arrays
-                //pick the genome as our sample
+                //go through all occurrences of this group in static arrays
+                //find the one with most genome entries
+                int maxcount=-1;
+                quint64 bestgenome = 0;
                 for (int iii = 0; iii < arrayMax; iii++)
                     if (groupcodes[iii] == maxcountkey)
                     {
-                        newsp.type = genomes[iii]; // a sample genome
-                        break;
+                        quint64 thisgenome =genomes[iii];
+                        int thiscount = slotswithgenome.value(newsp.ID)->value(thisgenome)->count();
+                        if (thiscount>maxcount)
+                        {
+                            maxcount=thiscount;
+                            bestgenome=thisgenome;
+                        }
+                        //break;
                     }
+                newsp.type = bestgenome; //should be the modal genome
 
                 //and put copied species (with new type) into the new species list
                 newSpeciesList.append(newsp);

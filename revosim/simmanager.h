@@ -76,6 +76,7 @@ extern bool toroidal;
 extern bool breedSpecies;
 extern bool breedDifference;
 extern bool logging;
+extern bool csvoutput;
 extern bool gui;
 extern bool speciesLogging;
 extern bool speciesLoggingToFile;

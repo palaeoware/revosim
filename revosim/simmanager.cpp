@@ -64,6 +64,7 @@ bool recalculateFitness = false;
 bool asexual = false;
 bool sexual = true;
 bool logging = false;
+bool csvoutput=false;
 bool fitnessLoggingToFile = false;
 bool nonspatial = false;
 bool environmentInterpolate = true;
