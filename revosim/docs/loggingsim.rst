@@ -28,10 +28,15 @@ When logging is enabled, REvoSim writes a file called REvoSim_log.txt to the out
     - Species origin (iterations)
     - Species parent
     - Species current size (number of individuals)
-    - Species current genome (for speed this is the genome of a randomly sampled individual, not the modal organism)
-
+    - Species current genome (the modal genome of the species, the genome that occurs most frequently)
+    - Genomic changes since species origination (coding genome)
+    - Genomic changes since species origination (noncoding genome)
+    - Genomic changes since last logging iteration (coding genome)
+    - Genomic changes since last logging iteration (noncoding genome)
+	
 :Log data: The log then begins. Iterations are separated by new line breaks. Every iteration has a single [I] line, one [P] line, and then an [S] line for every species above the minimum species size. We note that it does not exlude species without descendents because it is written during the log, appending to the file for speed. To filter out those species without descendents would introduce the need to store and then regularly filter the log data, and thus would come with a notable computational overhead.
 
+:CSV format: If the 'Log file formatted as CSV' option is checked in output settings, the log file has a different and simpler format using the 'comma separated value' system. This may be easier to parse in some software (e.g. spreadsheets). A single header row is generated at the start of the file, providing titles for columms. Subsequent rows are generated for each [S] record described above, but these also include columns with the [I] and [P] records in each row. All fields described above are included in the output.
 
 Detailed log
 ------------
