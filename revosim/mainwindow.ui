@@ -361,7 +361,7 @@
             <x>0</x>
             <y>0</y>
             <width>1288</width>
-            <height>68</height>
+            <height>69</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -550,7 +550,7 @@
      <x>0</x>
      <y>0</y>
      <width>1292</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuCommands">
@@ -648,6 +648,9 @@
    </property>
   </action>
   <action name="actionSave">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save...</string>
    </property>
@@ -656,6 +659,9 @@
    </property>
   </action>
   <action name="actionLoad">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Load...</string>
    </property>

@@ -19,6 +19,7 @@
 #include "mainwindow.h"
 #include "simmanager.h"
 #include "globals.h"
+#include "analysistools.h"
 
 #include <QDebug>
 #include <QHash>
@@ -27,6 +28,8 @@
 #include <QSet>
 #include <QTextStream>
 #include <QTime>
+#include <QFile>
+#include <QTextStream>
 
 /*!
  * \brief Species:sSpecies
@@ -42,6 +45,7 @@ Species::Species()
     size = -1;
     originTime = -1;
     logSpeciesStructure = static_cast<LogSpecies *>(nullptr);
+    for (int i=0; i<64; i++) frequencies[i]=0;
 }
 
 /*!
@@ -177,8 +181,7 @@ void Analyser::groupsGenealogicalTracker()
     QTime t;
     t.start(); //for debug/user warning timing purposes
 
-    QHash<quint64, QSet<quint64> *>
-    genomedata; //key is speciesID, set is all unique genomes within that species
+    QHash<quint64, QSet<quint64> *> genomedata; //key is speciesID, set is all unique genomes within that species
 
     //Horrible container structure to store all locations of particular genomes, for rapid write-back of new species
     //first key is speciesID
@@ -435,11 +438,15 @@ void Analyser::groupsGenealogicalTracker()
                 quint64 speciesSize = 0; //zero its size
                 quint64 samplegenome = 0;  //will have to pick a genome for 'type' - it goes here
 
+                Species newsp;          //new species object
+                float total=0;
+                 if (genefrequencies) for (int iiii=0; iiii<64; iiii++) newsp.frequencies[iiii]=0;
+                 int maxcount=-1;
                 for (int iii = 0; iii < arrayMax; iii++) //go through static arrays -
                 //find all genome entries for this group
                 //and fix data in critters for them
                 {
-                    int maxcount=-1;
+
 
                     if (groupcodes[iii] == groupcode)
                     {
@@ -454,17 +461,30 @@ void Analyser::groupsGenealogicalTracker()
                             int z = ls % 256;
                             critters[x][y][z].speciesID = nextSpeciesID;
                         }
-                        if (updatelist->count()>maxcount)
+                        int thiscount=updatelist->count();
+                        quint64 thisgenome = genomes[iii];
+                        if (thiscount>maxcount)
                         {
-                            maxcount=updatelist->count();
-                            samplegenome = genomes[iii]; //samplegenome should be modal genome
+                            maxcount=thiscount;
+                            samplegenome = genomes[iii]; //samplegenome will be modal genome
                         }
+
+                        if (genefrequencies)
+                        {
+                          total+=static_cast<float>(thiscount);
+                          for (int jjj=0; jjj<64; jjj++)
+                          {
+                              if (tweakers64[63 - jjj] & thisgenome) newsp.frequencies[jjj]+=static_cast<float>(thiscount);
+                          }
+                        }
+
                     }
                 }
+                if (genefrequencies) for (int iii=0; iii<64; iii++) newsp.frequencies[iii]/=total;
+
                 speciesSizes[nextSpeciesID] = static_cast<int>(speciesSize); //can set species size now in the hash
                 speciesSizes[speciesID] = speciesSizes[speciesID] - static_cast<int>(speciesSize); //remove this number from parent
 
-                Species newsp;          //new species object
                 newsp.parent = speciesID; //parent is the species we are splitting from
                 newsp.originTime = static_cast<int>(iteration); //i.e. now (iteration is a global)
                 newsp.ID = nextSpeciesID;   //set the id - last use so increment
@@ -514,22 +534,38 @@ void Analyser::groupsGenealogicalTracker()
                         }
                     }
                 }
+
+
                 //go through all occurrences of this group in static arrays
                 //find the one with most genome entries
                 int maxcount=-1;
                 quint64 bestgenome = 0;
+
+                float total=0;
+                if (genefrequencies) for (int iii=0; iii<64; iii++) newsp.frequencies[iii]=0;
                 for (int iii = 0; iii < arrayMax; iii++)
-                    if (groupcodes[iii] == maxcountkey)
-                    {
-                        quint64 thisgenome =genomes[iii];
-                        int thiscount = slotswithgenome.value(newsp.ID)->value(thisgenome)->count();
-                        if (thiscount>maxcount)
+                        if (groupcodes[iii] == maxcountkey)
                         {
-                            maxcount=thiscount;
-                            bestgenome=thisgenome;
+                            quint64 thisgenome =genomes[iii];
+                            int thiscount = slotswithgenome.value(newsp.ID)->value(thisgenome)->count();
+                            if (thiscount>maxcount)
+                            {
+                                maxcount=thiscount;
+                                bestgenome=thisgenome;
+                            }
+                            if (genefrequencies)
+                            {
+                                total+=(float)thiscount;
+                                for (int jjj=0; jjj<64; jjj++)
+                                {
+                                    if (tweakers64[63 - jjj] & thisgenome) newsp.frequencies[jjj]+=(float)(thiscount);
+                                }
+                            }
                         }
-                        //break;
-                    }
+                 if (genefrequencies) for (int iii=0; iii<64; iii++) newsp.frequencies[iii]/=total;
+
+//#endif
+
                 newsp.type = bestgenome; //should be the modal genome
 
                 //and put copied species (with new type) into the new species list

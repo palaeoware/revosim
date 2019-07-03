@@ -223,9 +223,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     if (i != static_cast<qint64>(65536))
         QMessageBox::warning(this, "Oops", "Failed to read 65536 bytes from file - random numbers may be compromised - try again or restart program");
 
-    //MDS set up hashes for change logging
-    initialGenomes = new QHash<quint64, quint64>;
-    lastGenomes = new QHash<quint64, quint64>;
+    //MDS set up hashes for change logging of gene frequencies
+    initialGenomes = new QHash<quint64, genome_for_tracking>;
+    lastGenomes = new QHash<quint64, genome_for_tracking>;
 
 }
 
@@ -680,7 +680,6 @@ QDockWidget *MainWindow::createOutputSettingsDock()
 
     csvCheckbox = new QCheckBox("Log file formatted as CSV");
     csvCheckbox->setChecked(csvoutput);
-    qDebug()<<"csv output was "<<csvoutput;
     csvCheckbox->setToolTip("<font>Reformats log file into spreadsheet-friendly CSV layout.</font>");
     fileLoggingGrid->addWidget(csvCheckbox, 3, 1, 1, 2);
     csvCheckbox->setEnabled(false);
@@ -688,6 +687,17 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     {
         csvoutput = i;
     });
+
+    geneFrequencyCheckbox = new QCheckBox("Gene Frequencies in Log");
+    geneFrequencyCheckbox->setChecked(genefrequencies);
+    geneFrequencyCheckbox->setToolTip("<font>Log file will report frequencies for each gene. Increaases log file size, and memory usage - leave unticked unless required</font>");
+    fileLoggingGrid->addWidget(geneFrequencyCheckbox, 4, 1, 1, 2);
+    geneFrequencyCheckbox->setEnabled(false);
+    connect(geneFrequencyCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
+    {
+        genefrequencies = i;
+    });
+
 
     loggingCheckbox = new QCheckBox("Write Log Files");
     loggingCheckbox->setChecked(logging);
@@ -698,23 +708,28 @@ QDockWidget *MainWindow::createOutputSettingsDock()
         logging = i;
         if (logging) csvCheckbox->setEnabled(true);
         else csvCheckbox->setEnabled(false);
+
+        if (logging) geneFrequencyCheckbox->setEnabled(true);
+        else geneFrequencyCheckbox->setEnabled(false);
+
     });
+
 
 
     autowriteLogCheckbox = new QCheckBox("Automatically create detailed log on batch runs");
     autowriteLogCheckbox->setChecked(true);
     autowriteLogCheckbox->setToolTip("<font>Turn on/off this option to automatically write detailed log after batch runs</font>");
-    fileLoggingGrid->addWidget(autowriteLogCheckbox, 4, 1, 1, 2);
+    fileLoggingGrid->addWidget(autowriteLogCheckbox, 5, 1, 1, 2);
 
     QPushButton *write_nwk = new QPushButton("Write data (including tree) for current run");
     write_nwk->setToolTip("<font>Use this option to manually trigger the writing of a detailed log after a run.</font>");
-    fileLoggingGrid->addWidget(write_nwk, 5, 1, 1, 2);
+    fileLoggingGrid->addWidget(write_nwk, 6, 1, 1, 2);
     connect(write_nwk, SIGNAL (clicked()), this, SLOT(writeRunData()));
 
     excludeWithoutDescendantsCheckbox = new QCheckBox("Exclude species without descendents");
     excludeWithoutDescendantsCheckbox->setChecked(allowExcludeWithDescendants);
     excludeWithoutDescendantsCheckbox->setToolTip("<font>Use this option to exclude species without descendents.</font>");
-    fileLoggingGrid->addWidget(excludeWithoutDescendantsCheckbox, 6, 1, 1, 1);
+    fileLoggingGrid->addWidget(excludeWithoutDescendantsCheckbox, 7, 1, 1, 1);
     connect(excludeWithoutDescendantsCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
     {
         allowExcludeWithDescendants = i;
@@ -727,8 +742,8 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     minSpeciesSizeSpin->setMinimum(0);
     minSpeciesSizeSpin->setMaximum(1000000);
     minSpeciesSizeSpin->setValue(static_cast<int>(minSpeciesSize));
-    fileLoggingGrid->addWidget(minSpeciesSizeLabel, 7, 1);
-    fileLoggingGrid->addWidget(minSpeciesSizeSpin, 7, 2);
+    fileLoggingGrid->addWidget(minSpeciesSizeLabel, 8, 1);
+    fileLoggingGrid->addWidget(minSpeciesSizeSpin, 8, 2);
     connect(minSpeciesSizeSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
     {
         minSpeciesSize = static_cast<quint64>(i);
@@ -2441,7 +2456,7 @@ void MainWindow::saveSimulation()
 
     //Otherwise - serialise all my crap
     QFile outfile(filename);
-    outfile.open(QIODevice::WriteOnly | QIODevice::Text);
+    outfile.open(QIODevice::WriteOnly);
 
     QDataStream out(&outfile);
 
@@ -2456,9 +2471,16 @@ void MainWindow::saveSimulation()
     out << startAge;
     out << dispersal;
     out << food;
+/*
+    in >> breedCost;
+    in >> mutate;
+    in >> maxDifference;
+    in >> breedThreshold;
+    in >> target;
+*/
     out << breedCost;
-    out << mutate;
-    out << maxDifference;
+    out << mutate; qDebug()<<"Mutate out "<<mutate;
+    out << maxDifference; qDebug()<<"MD out "<<maxDifference;
     out << breedThreshold;
     out << target;
     out << environmentChangeRate;
@@ -2480,7 +2502,8 @@ void MainWindow::saveSimulation()
     out << sexual;
     out << asexual;
     out << logging;
-    out << gui;
+    out << csvoutput; //v2
+    out << genefrequencies; //v2
     out << environmentInterpolate;
     out << fitnessLoggingToFile;
     out << autowriteLogCheckbox->isChecked();
@@ -2522,6 +2545,8 @@ void MainWindow::saveSimulation()
                     out << critters[i][j][k].xPosition;
                     out << critters[i][j][k].yPosition;
                     out << critters[i][j][k].zPosition;
+                    out << critters[i][j][k].speciesID;
+
                 }
             }
 
@@ -2593,6 +2618,7 @@ void MainWindow::saveSimulation()
         out << oldSpeciesList[j].parent;
         out << oldSpeciesList[j].size;
         out << oldSpeciesList[j].internalID;
+        for (int i=0; i<64; i++) out << oldSpeciesList[j].frequencies[i]; //added MDS - this drives change in file version number
     }
 
     out << archivedSpeciesLists.count();
@@ -2615,6 +2641,24 @@ void MainWindow::saveSimulation()
     //now random number array
     for (unsigned char random : randoms)
         out << random;
+
+    //MDS - write out the lastGenome and initialGenome hashes
+    out<<lastGenomes->count();
+    QHash<quint64, genome_for_tracking>::iterator it;
+    for (it = lastGenomes->begin(); it != lastGenomes->end(); ++it)
+    {
+        out << it.key();
+        out << it.value().modal;
+        for (int ii=0; ii<64; ii++) out<<it.value().frequency[ii];
+    }
+
+    out<<initialGenomes->count();
+    for (it = initialGenomes->begin(); it != initialGenomes->end(); ++it)
+    {
+        out << it.key();
+        out << it.value().modal;
+        for (int ii=0; ii<64; ii++) out<<it.value().frequency[ii];
+    }
 
     outfile.close();
 }
@@ -2684,7 +2728,7 @@ void MainWindow::loadSimulation()
     in >> minSpeciesSize;
     in >> speciesMode;
 
-    //Bools
+        //Bools
     in >> recalculateFitness;
     in >> toroidal;
     in >> nonspatial;
@@ -2694,6 +2738,8 @@ void MainWindow::loadSimulation()
     in >> sexual;
     in >> asexual;
     in >> logging;
+    if (version>=2) in >> csvoutput;
+    if (version>=2) in >> genefrequencies;
     in >> gui;
     in >> environmentInterpolate;
     in >> fitnessLoggingToFile;
@@ -2785,6 +2831,7 @@ void MainWindow::loadSimulation()
                     in >> critters[i][j][k].xPosition;
                     in >> critters[i][j][k].yPosition;
                     in >> critters[i][j][k].zPosition;
+                    in >> critters[i][j][k].speciesID;
                 }
             }
 
@@ -2870,6 +2917,8 @@ void MainWindow::loadSimulation()
         in >> s.parent;
         in >> s.size;
         in >> s.internalID;
+        if (version>=2)
+            for (int i=0; i<64; i++) in >> s.frequencies[i];
         oldSpeciesList.append(s);
     }
 
@@ -2901,6 +2950,37 @@ void MainWindow::loadSimulation()
     //now random array
     for (unsigned char &random : randoms)
         in >> random;
+
+    if (version>=2)
+    {
+        int hashcount;
+
+        lastGenomes->clear();
+        //read lastgenomes
+        in>>hashcount;
+        for (int i=0; i<hashcount; i++)
+        {
+            genome_for_tracking g;
+            quint64 key;
+            in >> key;
+            in >> g.modal;
+            for (int ii=0; ii<64; ii++) in>> g.frequency[ii];
+            lastGenomes->insert(key,g);
+        }
+
+        //read initalgenomes
+        initialGenomes->clear();
+        in>>hashcount;
+        for (int i=0; i<hashcount; i++)
+        {
+            genome_for_tracking g;
+            quint64 key;
+            in >> key;
+            in >> g.modal;
+            for (int ii=0; ii<64; ii++) in>> g.frequency[ii];
+            initialGenomes->insert(key,g);
+        }
+    }
 
     infile.close();
     nextRefresh = 0;
@@ -2984,7 +3064,15 @@ void MainWindow::writeLog()
             QTextStream out(&outputfile);
             if (csvoutput)
             {
-                out<<"Iteration_Number,Living_Organism_Count,Mean_Fitness,Breed_Entries,Failed_Breeds,Species_Count,Species_ID,Species_Origin,Species_Parent,Species_Population,Species_Modal_Genome,Changes_Since_Origination_Coding,Changes_Since_Origination_NonCoding,Changes_Since_Last_Coding,Changes_Since_Last_NonCoding\n";
+                out<<"Iteration_Number,Living_Organism_Count,Mean_Fitness,Breed_Entries,Failed_Breeds,Species_Count,Species_ID,Species_Origin,Species_Parent,Species_Population,Species_Modal_Genome";
+                if (genefrequencies)
+                {
+                    out<<",Changes_Since_Origination_Coding,Changes_Since_Origination_NonCoding,Changes_Since_Last_Coding,Changes_Since_Last_NonCoding";
+                    for (int ii=0; ii<64;ii++) out<<",f"<<ii;
+                    out<<",sum_coding_initial_differences,sum_noncoding_initial_differences,sum_coding_since_last_differences,sum_noncoding_since_last_differences\n";
+                }
+                else
+                    out<<"\n";
             }
             else
             {
@@ -3009,13 +3097,20 @@ void MainWindow::writeLog()
                 out << "-- Species parent\n";
                 out << "-- Species current size (number of individuals)\n";
                 out << "-- Species current modal genome\n";
-                out << "-- Genomic changes since species origination (coding genome)\n";
-                out << "-- Genomic changes since species origination (noncoding genome)\n";
-                out << "-- Genomic changes since last logging iteration (coding genome)\n";
-                out << "-- Genomic changes since last logging iteration (noncoding genome)\n\n";
-
-
-                out << "**Note that this excludes species with less individuals than Minimum species size, but is not able to exlude species without descendants, which can only be achieved with the end-run log.**\n\n";
+                if (genefrequencies)
+                {
+                    out << "-- Genomic changes since species origination (coding genome)\n";
+                    out << "-- Genomic changes since species origination (noncoding genome)\n";
+                    out << "-- Genomic changes since last logging iteration (coding genome)\n";
+                    out << "-- Genomic changes since last logging iteration (noncoding genome)\n";
+                    out << "-- Frequencies of ones in each gene in entire population (1.0 = all ones, 0.0 = all zeroes)\n";
+                    out << "-- Sum of change in gene frequencies since species origination (coding genome)\n";
+                    out << "-- Sum of change in gene frequencies since species origination (noncoding genome)\n";
+                    out << "-- Sum of change in gene frequencies since last logging iteration (coding genome)\n";
+                    out << "-- Sum of change in gene frequencies since last logging iteration (noncoding genome\n";
+                }
+                out<<"\n";
+                out << "**Note that this excludes species with less individuals than minimum species size, but is not able to exlude species without descendants, which can only be achieved with the end-run log.**\n\n";
                 out << "===================\n\n";
             }
             outputfile.close();
@@ -3060,49 +3155,79 @@ void MainWindow::writeLog()
                     else out << "0";
 
                     //----MDS: work out changes since initial and last genome and write them out
-                    out<<",";
-
-                    if (initialGenomes->contains(oldSpeciesList[i].ID)) //if this has an entry, so should lastGenomes, so don't check
+                    if (genefrequencies)
                     {
+                        out<<",";
+                        if (initialGenomes->contains(oldSpeciesList[i].ID)) //if this has an entry, so should lastGenomes, so don't check
+                        {
+                            genome_for_tracking *point_original = &((*initialGenomes)[oldSpeciesList[i].ID]);
+                            genome_for_tracking *point_last = &((*lastGenomes)[oldSpeciesList[i].ID]);
 
-                        quint64 cg1x = oldSpeciesList[i].type ^ (*initialGenomes)[oldSpeciesList[i].ID]; //XOR the two to compare
+                            quint64 cg1x = oldSpeciesList[i].type ^ point_original->modal; //XOR the two to compare
 
-                        //Coding half
-                        auto g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
-                        auto t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
+                            //Coding half
+                            auto g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
+                            auto t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
 
-                        //non-Coding half
-                        auto g1xu = static_cast<quint32>(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
-                        auto t2 = static_cast<int>(bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)]);
-                        out << t1<<","<<t2<<",";
+                            //non-Coding half
+                            auto g1xu = static_cast<quint32>(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
+                            auto t2 = static_cast<int>(bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)]);
+                            out << t1<<","<<t2<<",";
 
-                        cg1x =  oldSpeciesList[i].type ^ (*lastGenomes)[oldSpeciesList[i].ID]; //XOR the two to compare
+                            cg1x =  oldSpeciesList[i].type ^ point_last->modal; //XOR the two to compare
 
-                        //Coding half
-                        g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
-                        t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
+                            //Coding half
+                            g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
+                            t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
 
-                        //non-Coding half
-                        g1xu = static_cast<quint32>(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
-                        t2 = static_cast<int>(bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)]);
-                        out << t1<<","<<t2;
+                            //non-Coding half
+                            g1xu = static_cast<quint32>(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
+                            t2 = static_cast<int>(bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)]);
+                            out << t1<<","<<t2;
 
-                        (*lastGenomes)[oldSpeciesList[i].ID]=oldSpeciesList[i].type;
+                            //output frequencies
+                            for (int ii=0; ii<64;ii++)
+                                out<<","<<oldSpeciesList[i].frequencies[ii];
+
+                            //work out changes for coding and non-coding halves. Most sig half is NON-coding - which is first 32 entries
+                            float t_nc_origin=0;
+                            for (int ii=0; ii<32; ii++)
+                                t_nc_origin+= qAbs(oldSpeciesList[i].frequencies[ii]-point_original->frequency[ii]);
+
+                            float t_nc_last=0;
+                            for (int ii=0; ii<32; ii++)
+                                t_nc_last+= qAbs(oldSpeciesList[i].frequencies[ii]-point_last->frequency[ii]);
+
+                            float t_c_origin=0;
+                            for (int ii=32; ii<64; ii++)
+                                t_c_origin+= qAbs(oldSpeciesList[i].frequencies[ii]-point_original->frequency[ii]);
+
+                            float t_c_last=0;
+                            for (int ii=32; ii<64; ii++)
+                                t_c_last+= qAbs(oldSpeciesList[i].frequencies[ii]-point_last->frequency[ii]);
+
+                            out<<","<<t_c_origin<<","<<t_nc_origin<<","<<t_c_last<<","<<t_nc_last;
+                            //copy to last
+                            point_last->modal=oldSpeciesList[i].type;
+                            for (int ii=0; ii<64; ii++) point_last->frequency[ii]=oldSpeciesList[i].frequencies[ii];
+                        }
+                        else
+                        {
+                           genome_for_tracking *point = &((*lastGenomes)[oldSpeciesList[i].ID]);
+                           point->modal=oldSpeciesList[i].type;
+                           for (int ii=0; ii<64; ii++) point->frequency[ii]=oldSpeciesList[i].frequencies[ii];
+
+                           point = &((*initialGenomes)[oldSpeciesList[i].ID]);
+                           point->modal=oldSpeciesList[i].type;
+                           for (int ii=0; ii<64; ii++) point->frequency[ii]=oldSpeciesList[i].frequencies[ii];
+                           out<<"-,-,-,-"; //first occurrence, so no data
+                           for (int ii=0; ii<64;ii++)
+                               out<<","<<oldSpeciesList[i].frequencies[ii];
+                        }
                     }
-                    else
-                    {
-                       (*lastGenomes)[oldSpeciesList[i].ID]=oldSpeciesList[i].type;
-                       (*initialGenomes)[oldSpeciesList[i].ID]=oldSpeciesList[i].type;
-                       out<<"-,-,-,-"; //first occurrence, so no data
-                    }
-
                     out << "\n";
-
                 }
             }
-
-
-
         }
         else
         {
@@ -3142,44 +3267,80 @@ void MainWindow::writeLog()
                     else out << "0";
 
                     //----MDS: work out changes since initial and last genome and write them out
-                    out<<",";
 
-                    if (initialGenomes->contains(oldSpeciesList[i].ID)) //if this has an entry, so should lastGenomes, so don't check
+                    if (genefrequencies)
                     {
+                        out<<",";
+                        if (initialGenomes->contains(oldSpeciesList[i].ID)) //if this has an entry, so should lastGenomes, so don't check
+                        {
+                            genome_for_tracking *point_original = &((*initialGenomes)[oldSpeciesList[i].ID]);
+                            genome_for_tracking *point_last = &((*lastGenomes)[oldSpeciesList[i].ID]);
 
-                        quint64 cg1x = oldSpeciesList[i].type ^ (*initialGenomes)[oldSpeciesList[i].ID]; //XOR the two to compare
+                            quint64 cg1x = oldSpeciesList[i].type ^ point_original->modal; //XOR the two to compare
 
-                        //Coding half
-                        auto g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
-                        auto t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
+                            //Coding half
+                            auto g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
+                            auto t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
 
-                        //non-Coding half
-                        auto g1xu = static_cast<quint32>(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
-                        auto t2 = static_cast<int>(bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)]);
-                        out << t1<<","<<t2<<",";
+                            //non-Coding half
+                            auto g1xu = static_cast<quint32>(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
+                            auto t2 = static_cast<int>(bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)]);
+                            out << t1<<","<<t2<<",";
 
-                        cg1x =  oldSpeciesList[i].type ^ (*lastGenomes)[oldSpeciesList[i].ID]; //XOR the two to compare
+                            cg1x =  oldSpeciesList[i].type ^ point_last->modal; //XOR the two to compare
 
-                        //Coding half
-                        g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
-                        t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
+                            //Coding half
+                            g1xl = static_cast<quint32>(cg1x & (static_cast<quint64>(65536) * static_cast<quint64>(65536) - static_cast<quint64>(1))); //lower 32 bits
+                            t1 = static_cast<int>(bitCounts[g1xl / static_cast<quint32>(65536)] +  bitCounts[g1xl & static_cast<quint32>(65535)]);
 
-                        //non-Coding half
-                        g1xu = static_cast<quint32>(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
-                        t2 = static_cast<int>(bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)]);
-                        out << t1<<","<<t2;
+                            //non-Coding half
+                            g1xu = static_cast<quint32>(cg1x / (static_cast<quint64>(65536) * static_cast<quint64>(65536))); //upper 32 bits
+                            t2 = static_cast<int>(bitCounts[g1xu / static_cast<quint32>(65536)] +  bitCounts[g1xu & static_cast<quint32>(65535)]);
+                            out << t1<<","<<t2;
 
-                        (*lastGenomes)[oldSpeciesList[i].ID]=oldSpeciesList[i].type;
-                    }
-                    else
-                    {
-                       (*lastGenomes)[oldSpeciesList[i].ID]=oldSpeciesList[i].type;
-                       (*initialGenomes)[oldSpeciesList[i].ID]=oldSpeciesList[i].type;
-                       out<<"-,-,-,-"; //first occurrence, so no data
+                            //output frequencies
+                            for (int ii=0; ii<64;ii++)
+                                out<<","<<oldSpeciesList[i].frequencies[ii];
+
+                            //work out changes for coding and non-coding halves. Most sig half is NON-coding - which is first 32 entries
+                            float t_nc_origin=0;
+                            for (int ii=0; ii<32; ii++)
+                                t_nc_origin+= qAbs(oldSpeciesList[i].frequencies[ii]-point_original->frequency[ii]);
+
+                            float t_nc_last=0;
+                            for (int ii=0; ii<32; ii++)
+                                t_nc_last+= qAbs(oldSpeciesList[i].frequencies[ii]-point_last->frequency[ii]);
+
+                            float t_c_origin=0;
+                            for (int ii=32; ii<64; ii++)
+                                t_c_origin+= qAbs(oldSpeciesList[i].frequencies[ii]-point_original->frequency[ii]);
+
+                            float t_c_last=0;
+                            for (int ii=32; ii<64; ii++)
+                                t_c_last+= qAbs(oldSpeciesList[i].frequencies[ii]-point_last->frequency[ii]);
+
+                            out<<","<<t_c_origin<<","<<t_nc_origin<<","<<t_c_last<<","<<t_nc_last;
+                            //copy to last
+                            point_last->modal=oldSpeciesList[i].type;
+                            for (int ii=0; ii<64; ii++) point_last->frequency[ii]=oldSpeciesList[i].frequencies[ii];
+                        }
+                        else
+                        {
+                           genome_for_tracking *point = &((*lastGenomes)[oldSpeciesList[i].ID]);
+                           point->modal=oldSpeciesList[i].type;
+                           for (int ii=0; ii<64; ii++) point->frequency[ii]=oldSpeciesList[i].frequencies[ii];
+
+                           point = &((*initialGenomes)[oldSpeciesList[i].ID]);
+                           point->modal=oldSpeciesList[i].type;
+                           for (int ii=0; ii<64; ii++) point->frequency[ii]=oldSpeciesList[i].frequencies[ii];
+                           out<<"-,-,-,-"; //first occurrence, so no data
+                           for (int ii=0; ii<64;ii++)
+                               out<<","<<oldSpeciesList[i].frequencies[ii];
+
+                        }
                     }
 
                     out << "\n";
-
                 }
             }
             out << "\n";
@@ -3457,6 +3618,8 @@ void MainWindow::loadSettings()
                 asexual = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name() == "logging")
                 logging = intToBool(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "genefrequencies")
+                genefrequencies = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name() == "csvoutput")
                 csvoutput = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name() == "gui")
@@ -3542,6 +3705,7 @@ void MainWindow::updateGUIFromVariables()
     asexualRadio->setChecked(asexual);
     loggingCheckbox->setChecked(logging);
     csvCheckbox->setChecked(csvoutput);
+    geneFrequencyCheckbox->setChecked(genefrequencies);
     guiCheckbox->setChecked(gui);
     interpolateCheckbox->setChecked(environmentInterpolate);
 }
@@ -3694,6 +3858,11 @@ void MainWindow::saveSettings()
     settingsFileOut.writeStartElement("csvoutput");
     settingsFileOut.writeCharacters(QString("%1").arg(csvoutput));
     settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("genefrequencies");
+    settingsFileOut.writeCharacters(QString("%1").arg(genefrequencies));
+    settingsFileOut.writeEndElement();
+
 
     settingsFileOut.writeStartElement("gui");
     settingsFileOut.writeCharacters(QString("%1").arg(gui));

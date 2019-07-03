@@ -138,6 +138,7 @@ private:
     QCheckBox *breedSpeciesCheckbox{};
     QCheckBox *excludeWithoutDescendantsCheckbox{};
     QCheckBox *loggingCheckbox{};
+    QCheckBox *geneFrequencyCheckbox{};
     QCheckBox *csvCheckbox{};
     QCheckBox *autowriteLogCheckbox{};
 
@@ -185,9 +186,15 @@ private:
     QGraphicsPixmapItem *populationItem;
     QGraphicsPixmapItem *environmentItem;
 
+    struct genome_for_tracking
+    {
+        quint64 modal;
+        float frequency[64];
+    };
+
     //MDS hashes used in tracking species numbers for change logging
-    QHash<quint64,quint64> *initialGenomes;
-    QHash<quint64,quint64> *lastGenomes;
+    QHash<quint64,genome_for_tracking> *initialGenomes;
+    QHash<quint64,genome_for_tracking> *lastGenomes;
 
     bool intToBool(int i);
 private slots:

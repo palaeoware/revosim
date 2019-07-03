@@ -65,6 +65,7 @@ bool asexual = false;
 bool sexual = true;
 bool logging = false;
 bool csvoutput=false;
+bool genefrequencies=false;
 bool fitnessLoggingToFile = false;
 bool nonspatial = false;
 bool environmentInterpolate = true;
@@ -608,7 +609,7 @@ void SimManager::setupRun()
     logSpeciesByID.clear();
     logSpeciesByID.insert(nextSpeciesID, rootSpecies);
 
-    //RJG - Depreciated, but clear here just in case
+    //RJG - Deprecated, but clear here just in case
     archivedSpeciesLists.clear();
 
     oldSpeciesList.clear();
@@ -619,6 +620,7 @@ void SimManager::setupRun()
     newsp.size = slotsPerSquare;
     newsp.type = iteration;
     newsp.logSpeciesStructure = rootSpecies;
+    for (int i=0; i<64; i++) if (tweakers64[63 - i] & iteration) newsp.frequencies[i]=1; else newsp.frequencies[i]=0; //set up initial gene frequencies. All individuals alike, so it's just the genome
     oldSpeciesList.append(newsp);
 
     nextSpeciesID++; //ready for first species after this

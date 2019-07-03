@@ -77,6 +77,7 @@ extern bool breedSpecies;
 extern bool breedDifference;
 extern bool logging;
 extern bool csvoutput;
+extern bool genefrequencies;
 extern bool gui;
 extern bool speciesLogging;
 extern bool speciesLoggingToFile;

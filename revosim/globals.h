@@ -19,7 +19,7 @@
 #define GLOBALS_H
 
 //Save File Version
-#define FILEVERSION 1
+#define FILEVERSION 2
 
 //Legal Stuff
 #define COPYRIGHT "Copyright © 2008-2019 Mark D. Sutton, Russell J. Garwood, Alan R.T.Spencer"

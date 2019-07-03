@@ -41,6 +41,7 @@ public:
     quint64 type;
     quint64 ID;
     quint64 parent;
+    float frequencies[64];
 };
 
 /**
