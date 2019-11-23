@@ -467,6 +467,12 @@
          </item>
          <item>
           <widget class="QLabel" name="environmentLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>&lt;b&gt;Environment:&lt;/b&gt;</string>
            </property>
@@ -477,6 +483,12 @@
          </item>
          <item>
           <widget class="QLabel" name="LabelEnvironment">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="text">
             <string>[Not defined]</string>
            </property>
@@ -525,7 +537,7 @@
      <x>0</x>
      <y>0</y>
      <width>1220</width>
-     <height>24</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuCommands">
