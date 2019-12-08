@@ -33,6 +33,7 @@
 #include <QShortcut>
 #include <QSpinBox>
 #include <QStandardPaths>
+#include <QHash>
 
 extern MainWindow *mainWindow;
 
@@ -137,6 +138,8 @@ private:
     QCheckBox *breedSpeciesCheckbox{};
     QCheckBox *excludeWithoutDescendantsCheckbox{};
     QCheckBox *loggingCheckbox{};
+    QCheckBox *geneFrequencyCheckbox{};
+    QCheckBox *csvCheckbox{};
     QCheckBox *autowriteLogCheckbox{};
 
     //RJG - radios and spins
@@ -183,6 +186,17 @@ private:
     QGraphicsPixmapItem *populationItem;
     QGraphicsPixmapItem *environmentItem;
 
+    struct genome_for_tracking
+    {
+        quint64 modal;
+        float frequency[64];
+    };
+
+    //MDS hashes used in tracking species numbers for change logging
+    QHash<quint64,genome_for_tracking> *initialGenomes;
+    QHash<quint64,genome_for_tracking> *lastGenomes;
+
+    bool intToBool(int i);
 private slots:
     void guiCheckboxStateChanged(bool);
     void saveAllCheckboxStateChanged(bool);
