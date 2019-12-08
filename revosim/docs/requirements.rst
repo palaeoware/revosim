@@ -38,17 +38,22 @@ We recommend you install and use MSYS2 (64-bit) a Windows package manager, based
 
 2. Download source code and navigate to folder, or alternatively clone using Git:
 
-.. highlight:: git clone https://github.com/palaeoware/revosim.git
+.. code-block:: console
 
-.. highlight:: cd revosim
+  git clone https://github.com/palaeoware/revosim.git
+  cd revosim
 
 3. Within REvoSim folder create makefile:
 
-.. highlight:: qmake ./revosim.pro
+.. code-block:: console
+
+  qmake ./revosim.pro
 
 4. Build by running the make command:
 
-.. highlight:: make
+.. code-block:: console
+
+  make
 
 5. Navigate to bin folder (e.g. revosim/bin) and launch software by double clicking on file.
 
@@ -66,7 +71,7 @@ The above (Linux, using qtcreator) approach should also work for MacOS builds. T
 Installation
 ------------
 
-From the TREvoSim GitHub repository pre-compiled binary releases and packaged installers can be downloaded. For Windows users we provide both a portable binary release (.zip) - which just needs extracting to a convenient location - and a self contained installer. For Mac we provide a zip containing the TREvoSim program that can be downloaded from the TREvoSim GitHub repository. To install the software, drag and drop the required .app folder(s) into the Applications folder. You may be required to the approve the software in security and privacy settings before it will launch. For Linux users, the above instructions will allow the software to be built using a limited number of lines of bash. Please contact palaeoware@gmail.com if you encounter any issues. 
+From the REvoSim GitHub repository pre-compiled binary releases and packaged installers can be downloaded. For Windows users we provide both a portable binary release (.zip) - which just needs extracting to a convenient location - and a self contained installer. For Mac we provide a zip containing the REvoSim program that can be downloaded from the REvoSim GitHub repository. To install the software, drag and drop the required .app folder(s) into the Applications folder. You may be required to the approve the software in security and privacy settings before it will launch. For Linux users, the above instructions will allow the software to be built using a limited number of lines of bash. Please contact palaeoware@gmail.com if you encounter any issues. 
 
 Requirements
 ------------
