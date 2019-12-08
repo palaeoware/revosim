@@ -31,8 +31,9 @@ We recommend you install and use MSYS2 (64-bit) a Windows package manager, based
 
 1. Install GCC and Qt using system packages:
 
-.. highlight:: sudo apt-get install build-essential libgl1-mesa-dev
-.. highlight:: sudo apt install qt5-default
+.. code-block:: console
+  sudo apt-get install build-essential libgl1-mesa-dev
+  sudo apt install qt5-default
 
 2. Download source code and navigate to folder, or alternatively clone using Git:
 
