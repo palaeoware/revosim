@@ -13,6 +13,10 @@ REvoSim has multiple output options that allow runs to be recorded and analysed 
 
 :Write Log Files: When this option is checked a log file is written during the course of every run. See :ref:`logging` for more details of REvoSim logs.
 
+:Log file formatted as CSV: When this option is checked the log file is converted to comma-separated value format, with one line per species entry. This log-format is less easily read by a human, but may be easier to import into software for analysis. If 'Write Log Files' is unchecked, this option is disabled (greyed out).
+
+:Gene Frequencies in Log: When this option is checked extra data is added to the log file, detailing the frequencies of each gene for each species, the changes in gene frequencies, and the total numbers of bit changes in the modal genome. If 'Write Log Files' is unchecked, this option is disabled (greyed out).
+
 :Automatically create detailed log on batch runs: This option outputs the detailed log at the end of each run when REvoSim is operating in batch mode. See :ref:`logging` for more details of REvoSim logs.
 
 :Write data for current run: This option outputs the detailed log for the currently running simulation at the point at which the button is pressed. See :ref:`logging` for more details of REvoSim logs.
