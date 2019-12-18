@@ -19,7 +19,10 @@ REvoSim has been in development since 2008, and has been released with the inten
 
 t:`@palaeoware <https://twitter.com/palaeoware>`_
 
+e:palaeoware@gmail.com
+
 w:`https://github.com/palaeoware <https://github.com/palaeoware>`_
+
 
 Relevant references
 -------------------
