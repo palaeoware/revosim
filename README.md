@@ -1,4 +1,4 @@
-# REVoSim and EnviroGen
+# REvoSim and EnviroGen
 ## [R]apid [EVO]lutionary [SIM]ulator and [Enviro]nment [Gen]rator
 
 
