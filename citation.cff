@@ -33,9 +33,9 @@ preferred-citation:
   doi: "10.1111/pala.12420"
   journal: "Palaeontology"
   month: 2
-  start: 339 # First page number
-  end: 355 # Last page number
-  title: "REvoSim: Organism-level simulation of macro- and microevolution."
-  issue: 62
-  volume: 3
+  start: 339
+  end: 355 
+  title: "REvoSim: Organism-level simulation of macro- and microevolution"
+  issue: 3
+  volume: 62
   year: 2019
