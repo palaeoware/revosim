@@ -1,0 +1,261 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>1. Introduction &mdash; EnviroGen 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="2. EnviroGen options" href="options.html" />
+    <link rel="prev" title="Welcome to EnviroGen’s User Manual" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> EnviroGen
+          
+
+          
+            
+            <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">1. Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">1.1. Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variables">1.2. Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">1.3. Quick start</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="options.html">2. EnviroGen options</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">EnviroGen</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>1. Introduction</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/introduction.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="introduction">
+<span id="id1"></span><h1>1. Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="overview">
+<h2>1.1. Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
+<p>EnviroGen is a utility program for REvoSim: an individual-based evolutionary model, using a simplified first-principles evolutionary model to simulate large populations incorporating space, over geological time. An integral part of REvoSim is its fitness algorithm, which is linked to an environment within the software, which is in the form of an RGB raster image. We recommend reading the paper below for full description of this:</p>
+<p>Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology. <a class="reference external" href="https://doi.org/10.1111/pala.12420">https://doi.org/10.1111/pala.12420</a></p>
+<p>REvoSim is designed for versatility, and many simulations will require a changing environment throughout the course of a run. These dynamic environments are loaded in the form of image stacks. EnviroGen provides two different mechanisms for generating these dynamic environments, with a large number of options allowing the environments to be tailored to specific questions. For example, environments can have a high degree of fragmentation of colours to study endimism, be primarily defined by gradients, or have a range of complexities. There are numerous convenience functions built in to the software to ease processing image stacks.</p>
+</div>
+<div class="section" id="variables">
+<h2>1.2. Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
+<p>Each mode of environmental generation has its own tab in the Environmental Setting dock, which by default is shown on the right of the main window.</p>
+<div class="figure align-center">
+<img alt="_images/envirogen_window.png" src="_images/envirogen_window.png" />
+</div>
+<p>This has a number of tabs on the top: Dyn 1 and Dyn 2 are EnviroGen’s dynamic environments, noise allows the user to create a stack of noise images, Comb allows stacks to be combined, Col allows the creation of solid colour stacks, and Stack allows the creation of a stack from a single image. The first tab, out, has output settings.</p>
+</div>
+<div class="section" id="quick-start">
+<h2>1.3. Quick start<a class="headerlink" href="#quick-start" title="Permalink to this headline">¶</a></h2>
+<p>An image stack can be generated by hitting run on the top toolbar. This is stored by default on the desktop for all operating systems: images are placed within a folder titled <em>EnviroGen_output</em>, and are saved as .pngs to as a compromise between file size and lossless compression.</p>
+<div class="figure align-center">
+<img alt="_images/toolbar.png" src="_images/toolbar.png" />
+</div>
+<p>The toolbar has the following options:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Run:</th><td class="field-body">Generate environemtnal images.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Stop:</th><td class="field-body">Stop generating images.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Pause:</th><td class="field-body">Temporarily stop generating images.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">About:</th><td class="field-body">Launch dialogue with information about EnviroGen.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="options.html" class="btn btn-neutral float-right" title="2. EnviroGen options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to EnviroGen’s User Manual" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Russell Garwood, Alan R.T. Spencer, Mark Sutton
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

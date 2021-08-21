@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>9.1. Count peaks &mdash; REvoSim 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="9.2. Custom Random Numbers" href="customrandomnumbers.html" />
+    <link rel="prev" title="9. Advanced Options" href="advanced.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> REvoSim
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">2. Compiling, Installation, and Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windowlayout.html">3. Window Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsorganisms.html">4. Configuring your Organisms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingssiumlation.html">5. Setting up the Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">6. Configuring your Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loggingsim.html">7. Logging the Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">8. Genome comparison dock</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="advanced.html">9. Advanced Options</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">9.1. Count peaks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="customrandomnumbers.html">9.2. Custom Random Numbers</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">REvoSim</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="advanced.html">9. Advanced Options</a> &raquo;</li>
+        
+      <li>9.1. Count peaks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/countpeaks.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="count-peaks">
+<span id="countpeaks"></span><h1>9.1. Count peaks<a class="headerlink" href="#count-peaks" title="Permalink to this headline">¶</a></h1>
+<p>A key element of REvoSim is its fitness algorithm, described in depth in the REvoSim paper. The countpeaks command in the REvoSim main menu is included to provide a simple quantification of the fitness landscape given the current masks. These change when the software is restarted, and thus in any given run there will be shifts in the fitness lanscape.</p>
+<p>To provide quantification, the count peaks command cycles through every possible 32-bit number, calculating its fitness for the current masks, selected fitness target, and user-defined RGB values (these are requested from the user on initiation of the count peaks command). When this is complete, the software outputs these in a text file written to the output folder (as defined in the Output tab of the Settings dock) that lists fitness <em>vs</em> genome count. An example is shown below.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">REvoSim</span> <span class="n">Peak</span> <span class="n">Counting</span> <span class="mi">2018</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">17</span><span class="n">T16</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">57</span>
+<span class="o">===================</span>
+
+<span class="n">Below</span> <span class="ow">is</span> <span class="n">a</span> <span class="n">histogram</span> <span class="n">showing</span> <span class="n">the</span> <span class="n">different</span> <span class="n">fitnesses</span> <span class="k">for</span> <span class="nb">all</span> <span class="n">potential</span> <span class="mi">32</span><span class="o">-</span><span class="n">bit</span> <span class="n">organisms</span> <span class="ow">in</span> <span class="n">REvoSim</span> <span class="n">under</span> <span class="n">the</span> <span class="n">user</span><span class="o">-</span><span class="n">defined</span> <span class="n">RGB</span> <span class="n">levels</span><span class="o">.</span>
+
+<span class="o">===================</span>
+
+<span class="n">Fitness</span> <span class="n">counts</span> <span class="k">for</span> <span class="n">red</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">green</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">blue</span><span class="o">=</span><span class="mi">128</span>
+
+<span class="mi">0</span><span class="p">,</span><span class="mi">3400873943</span>
+<span class="mi">1</span><span class="p">,</span><span class="mi">261711486</span>
+<span class="mi">2</span><span class="p">,</span><span class="mi">206660322</span>
+<span class="mi">3</span><span class="p">,</span><span class="mi">154146136</span>
+<span class="mi">4</span><span class="p">,</span><span class="mi">108257580</span>
+<span class="mi">5</span><span class="p">,</span><span class="mi">71295660</span>
+<span class="mi">6</span><span class="p">,</span><span class="mi">43807340</span>
+<span class="mi">7</span><span class="p">,</span><span class="mi">24949080</span>
+<span class="mi">8</span><span class="p">,</span><span class="mi">13052205</span>
+<span class="mi">9</span><span class="p">,</span><span class="mi">6196135</span>
+<span class="mi">10</span><span class="p">,</span><span class="mi">2627235</span>
+<span class="mi">11</span><span class="p">,</span><span class="mi">976050</span>
+<span class="mi">12</span><span class="p">,</span><span class="mi">310646</span>
+<span class="mi">13</span><span class="p">,</span><span class="mi">82512</span>
+<span class="mi">14</span><span class="p">,</span><span class="mi">18036</span>
+<span class="mi">15</span><span class="p">,</span><span class="mi">2930</span>
+</pre></div>
+</div>
+<p>The above result is for a typical run, which provides a distribution within those organisms capable of surviving as follows, for red=128, green=128, blue=128:</p>
+<div class="figure align-center">
+<img alt="_images/fitnessSettleTolerance15.png" src="_images/fitnessSettleTolerance15.png" />
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="customrandomnumbers.html" class="btn btn-neutral float-right" title="9.2. Custom Random Numbers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="advanced.html" class="btn btn-neutral float-left" title="9. Advanced Options" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Mark Sutton, Russell Garwood, Alan R.T. Spencer
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

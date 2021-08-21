@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html4" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2. Compiling, Installation, and Requirements &mdash; REvoSim 2.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3. Window Layout" href="windowlayout.html" />
+    <link rel="prev" title="1. Introduction" href="introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> REvoSim
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Compiling, Installation, and Requirements</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#compiling-from-source">2.1. Compiling from Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">2.2. Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">2.3. Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="windowlayout.html">3. Window Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsorganisms.html">4. Configuring your Organisms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingssiumlation.html">5. Setting up the Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">6. Configuring your Outputs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loggingsim.html">7. Logging the Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">8. Genome comparison dock</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">9. Advanced Options</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">REvoSim</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>2. Compiling, Installation, and Requirements</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/requirements.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="compiling-installation-and-requirements">
+<span id="requirements"></span><h1>2. Compiling, Installation, and Requirements<a class="headerlink" href="#compiling-installation-and-requirements" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="compiling-from-source">
+<h2>2.1. Compiling from Source<a class="headerlink" href="#compiling-from-source" title="Permalink to this headline">¶</a></h2>
+<p><strong>Windows 64-bit</strong></p>
+<p><em>QT Creator + QT v5.x using MSYS2 (64-bit) and MinGW (64-bit)</em>
+We recommend you install and use MSYS2 (64-bit) a Windows package manager, based on modern Cygwin (POSIX compatibility layer) and MinGW-w64, that allows easy installation of QT v5.x 64-bit.</p>
+<ol class="arabic simple">
+<li>Download and run the latest version of <a class="reference external" href="https://www.msys2.org/">MSYS2</a> for 64-bit Windows. This will be name “mysys2-x86_64-…” for the 64-bit installer.</li>
+<li>Follow the install instructions. We have used the default install location of “C:mysys64” and it is here that includes required in the .pro files point. If you install MSYS2 to another location the .pro files will need to be updated to your install location.</li>
+<li>Once installed open up MSYS2 shell and run the pacman update command: pacman -Syu Note that as this will almost certainly update pacman itself you may have to close down and restart the MYSYS2 shell before re-running the command to finish.</li>
+<li>Once MSYS2 and pacman are fully updated run the following command to install QT 5.x and its dependencies: pacman -S mingw-w64-x86_64-qt-creator mingw-w64-x86_64-qt5</li>
+<li>Optional - if you intend on debugging the software in QT and wish to use GDB then run the following to install the matching GBD debugger: pacman -S mingw-w64-x86_64-gdb</li>
+<li><dl class="first docutils">
+<dt>At this stage you should have the following under the MYSYS2 install location:</dt>
+<dd><ul class="first last">
+<li>{install location}/mingw64 (Main ming64 folder)</li>
+<li>{install location}/mingw64/bin/qmake.exe (QMake for QT version)</li>
+<li>{install location}/mingw64/bin/g++.exe (C++ complier)</li>
+<li>{install location}/mingw64/bin/gcc.exe (C complier)</li>
+<li>{install location}/mingw64/bin/gdb.exe (Debugger | OPTIONAL)</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li>You should now be able to find the required libraries under “{install location}/mingw64/bin” and the required header (.h) files for QT v5.x.</li>
+<li>Open the .pro file in QT Creator, and then use the information above to setup a new 64-bit ming64 kit. Follow standard QT Creator debug/release procedure.</li>
+</ol>
+<p><strong>Ubuntu 18.04 64-bit - QT Creator + QT v5.x using GCC (64-bit)</strong></p>
+<p><em>To compile from command line.</em></p>
+<ol class="arabic simple">
+<li>Install GCC and Qt using system packages:</li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get install build-essential libgl1-mesa-dev</span>
+<span class="go">sudo apt install qt5-default</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li>Download source code and navigate to folder, or alternatively clone using Git:</li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">git clone https://github.com/palaeoware/revosim.git</span>
+<span class="go">cd revosim</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li>Within REvoSim folder create makefile:</li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">qmake ./revosim.pro</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li>Build by running the make command:</li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">make</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="5">
+<li>Navigate to bin folder (e.g. revosim/bin) and launch software by double clicking on file.</li>
+</ol>
+<p><em>Using Qt creator.</em></p>
+<ol class="arabic simple">
+<li>Install Q5.X on your system by running the installer from Qt: <a class="reference external" href="https://www.qt.io/download">https://www.qt.io/download</a> Further instructions are available here: <a class="reference external" href="https://wiki.qt.io/Install_Qt_5_on_Ubuntu">https://wiki.qt.io/Install_Qt_5_on_Ubuntu</a></li>
+<li>Download source code, launch Qt Creator, and open the .pro file. Configure build and follow standard debug/release procedure.</li>
+</ol>
+<p><strong>MacOS</strong></p>
+<p><em>QT Creator + QT v5.x</em></p>
+<p>The above (Linux, using qtcreator) approach should also work for MacOS builds. This will require xcode to be installed, which you can do using the app store, followed by QtCreator, which can be achieved through the Qt online installer. To build the software, download source code, launch Qt Creator, and open the .pro file. Configure build and follow standard debug/release procedure.</p>
+</div>
+<div class="section" id="installation">
+<h2>2.2. Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>From the REvoSim GitHub repository pre-compiled binary releases and packaged installers can be downloaded. For Windows users we provide both a portable binary release (.zip) - which just needs extracting to a convenient location - and a self contained installer. For Mac we provide a zip containing the REvoSim program that can be downloaded from the REvoSim GitHub repository. To install the software, drag and drop the required .app folder(s) into the Applications folder. You may be required to the approve the software in security and privacy settings before it will launch. For Linux users, the above instructions will allow the software to be built using a limited number of lines of bash. Please contact <a class="reference external" href="mailto:palaeoware&#37;&#52;&#48;gmail&#46;com">palaeoware<span>&#64;</span>gmail<span>&#46;</span>com</a> if you encounter any issues.</p>
+</div>
+<div class="section" id="id1">
+<h2>2.3. Requirements<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<p>REvoSim has no minimum requirements as such, and will run on most standard systems (Windows/Linux/Mac); it however has not been tested on versions of Windows older than Windows 10, Ubuntu 16.04, and macOS High Sierra. Performance will benefit from high processor speed and increased number of processor cores, with large amounts (&gt;4GB) of available RAM recommended for large simulations. Graphics card performance is not relevant as GPUs are not currently used in the program’s calculation pipeline. A fast hard drive (e.g. SSD) is recommend when intensive logging is enabled; as slow I/O response time can affect the iteration cycle speed.</p>
+<p>We recommend a minimum of 1GB RAM and a 1.8 GHz or faster, ideally multicore processor. We also recommend a minimum screen resolution of 1280x720 if using the software without the genome comparison docker (and 1920x1080 if this is enabled).</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="windowlayout.html" class="btn btn-neutral float-right" title="3. Window Layout" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="introduction.html" class="btn btn-neutral float-left" title="1. Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2018, Mark Sutton, Russell Garwood, Alan R.T. Spencer
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
