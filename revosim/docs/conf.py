@@ -22,13 +22,13 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'REvoSim'
-copyright = '2018, Mark Sutton, Russell Garwood, Alan R.T. Spencer'
-author = 'Mark Sutton, Russell Garwood, Alan R.T. Spencer'
+copyright = '2022, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness'
+author = 'Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness'
 
 # The short X.Y version
-version = '2.0.0'
+version = '3.0.0'
 # The full version, including alpha/beta/rc tags
-release = '2.0.0'
+release = '3.0.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -39,8 +39,8 @@ needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
-# ones.
-extensions = []
+# ones
+extensions = ['sphinx.ext.autosectionlabel']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -125,7 +125,7 @@ html_static_path = ['_static']
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-#html_logo = None
+html_logo = '_static/REvoSim.jpg'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
@@ -199,7 +199,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
     (master_doc, 'REvoSim.tex', 'REvoSim Documentation',
-     'Mark Sutton, Russell Garwood, Alan R.T. Spencer', 'manual'),
+     'Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

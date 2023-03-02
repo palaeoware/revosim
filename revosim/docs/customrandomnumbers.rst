@@ -10,20 +10,20 @@ To load a custom file of random numbers use the ‘Commands > Load Random Number
 .. figure:: _static/randomNumberLoad.png
     :align: center
 
-    Figure 9.2.1 - Custom Random Number file open dialog.
+    Custom Random Number file open dialog.
 
 The random number file should be encoded as a random binary string, and should be a minimum of 65536 bytes. Once the desired file is selected press the ‘Open’ button to import the new random numbers. REvoSim will then ask for a byte offset to read the file from (thus allowing runs to be repeated with the same random numbers, if desired).
 
 .. figure:: _static/randomNumberByteOffset.png
     :align: center
 
-    Figure 9.2.3 - Custom Random Number byte offset form.
+    Custom Random Number byte offset form.
 
 Note that REVOSIM will always read 65536 bytes; and will throw an error message if it cannot.
 
 .. figure:: _static/randomNumberError.png
     :align: center
 
-    Figure 9.2.3 - Custom Random Number error on load message.
+    Custom Random Number error on load message.
 
 On success a pop-up message reading “New random numbers read successfully” will appear.
