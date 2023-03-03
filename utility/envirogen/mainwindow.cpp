@@ -26,7 +26,6 @@
 #include <QShortcut>
 
 MainWindow *MainWin;
-randoms *simulation_randoms;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -36,8 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle(QString(PRODUCTNAME) + " v" + QString(SOFTWARE_VERSION) + " - compiled - " + __DATE__);
     setWindowIcon(QIcon (":/icon.png"));
     showMaximized();
-
     MainWin = this;
+    simulationRandoms = new randoms;
 
     //RJG - Globals for simulation
     generations = 500;
@@ -138,19 +137,16 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(ui->change_path, SIGNAL (clicked()), this, SLOT (change_path()));
     QObject::connect(ui->settings_tab_widget, SIGNAL (currentChanged(int)), this, SLOT (tab_changed(int)));
     //RJG - these ones are pretty simple. Use lamdas.
-    connect(ui->noiseMin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i)
+    connect(ui->noiseMin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, this, [ = ](const int &i)
     {
         ui->noiseMax->setMinimum(i + 1);
     });
-    connect(ui->noiseMax, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, [ = ](const int &i)
+    connect(ui->noiseMax, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, this, [ = ](const int &i)
     {
         ui->noiseMin->setMaximum(i - 1);
     });
     ui->noiseMin->setMaximum(ui->noiseMax->value() - 1);
     ui->noiseMax->setMinimum(ui->noiseMin->value() + 1);
-
-    //RJG - Load random numbers
-    simulation_randoms = new randoms();
 
     //RJG - shortcuts
     new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, SLOT(generateEnvironment()));
@@ -336,11 +332,10 @@ void MainWindow::RefreshEnvironment()
 
     env_item->setPixmap(QPixmap::fromImage(*env_image));
 
-    ui->enviroView->resetMatrix();
+    ui->enviroView->resetTransform();
     if (ui->resize->isChecked()) ui->enviroView->fitInView(env_item, Qt::KeepAspectRatio);
     ui->enviroView->centerOn(0., 0.);
 }
-
 
 void MainWindow::reset_gui()
 {
@@ -355,7 +350,7 @@ void MainWindow::reset_gui()
     envscene = new EnvironmentScene;
     envscene->mw = this;
     envscene->addItem(env_item);
-    ui->enviroView->resetMatrix();
+    ui->enviroView->resetTransform();
     ui->enviroView->setScene(envscene);
 
     //RJG - Sort flags
@@ -375,7 +370,7 @@ void MainWindow::change_path()
     QString files_directory = QFileDialog::getExistingDirectory(this, tr("Select folder in which you would like to save image files"),
                                                                 QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), QFileDialog::ShowDirsOnly);
     if (files_directory == "") return;
-    else Directory = files_directory;
+    else Directory.setPath(files_directory);
     ui->path->setText(Directory.path());
 }
 

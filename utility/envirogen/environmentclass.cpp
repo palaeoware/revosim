@@ -65,10 +65,3 @@ void environmentclass::save(int generations)
     QString dir2 = QString(dir + "/%1.bmp").arg(generations);
     saveImage.save(dir2);
 }
-
-quint8 environmentclass::Rand8()
-{
-    //RJG - Random 8 bit number
-    return simulation_randoms->gen_Rand8();
-}
-

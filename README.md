@@ -1,5 +1,5 @@
 # REvoSim and EnviroGen
-## [R]apid [EVO]lutionary [SIM]ulator and [Enviro]nment [Gen]rator
+## [R]apid [Evo]lutionary [Sin]ulator and [Enviro]nment [Gen]rator
 
 
 Coded by:
@@ -13,8 +13,16 @@ Coded by:
 
 ______
 
-## Relevant references:
+## Software references:
 Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology 62(3),339-355. [https://doi.org/10.1111/pala.12420](https://doi.org/10.1111/pala.12420)
+
+Furness, E.N., Garwood, R.J. and Sutton, M.D., 2023. REvoSim v3.0.0: A fast evolutionary simulation tool with ecological processes. JOSS. Submitted.
+
+## Other references:
+Furness E.N., Garwood R.J., Mannion P.D. & Sutton M.D. 2021. Evolutionary simulations clarify and reconcile biodiversity-disturbance models. Proceedings of the Royal Society B 288(1949):20210240. doi: 10.1098/rspb.2021.0240
+
+Furness, E.N., Garwood, R.J., Mannion, P. D. & Sutton, M.D. 2021. Productivity, niche availability, species richness and extinction risk: Untangling relationships using individual-based simulations. Ecology and Evolution 11(13): 8923-8940. doi: 10.1002/ece3.7730
+
 _____
 
 CONTENTS:
@@ -68,14 +76,20 @@ We recommend you install and use MSYS2 (64-bit) a Windows package manager, based
 7. You should now be able to find the required libraries under "{install location}/mingw64/bin" and the required header (.h) files for QT v5.x under "{install location}/mingw64/include".
 8. Download the source code, and use the information above to setup a new 64-bit ming64 kit under QT creator and follow standard QT Creator debug/release procedure.
 
-#### Ubuntu 18.04 64-bit - QT Creator + QT v5.x using GCC (64-bit)
+#### Ubuntu 18.04/20.04/22.04 64-bit - QT Creator + QT v5.x using GCC (64-bit)
 
 To compile from command line.
 1. Install GCC and Qt using system packages:
 
 `sudo apt-get install build-essential libgl1-mesa-dev`
 
+On Ubuntu <21.04
+
 `sudo apt install qt5-default`
+
+On Ubuntu >= 21.04
+
+`sudo apt-get install qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools`
 
 2. Download source code and navigate to folder, or alternatively clone using Git:
 
@@ -107,7 +121,7 @@ _____
 
 ## 5. Documentation
 
-All documentation for REvoSim is online at [http://revosim.readthedocs.io/](http://revosim.readthedocs.io/). This is a version controlled user manual automatically parsed from the .rst found under the docs folders in our software folders. EnviroGen documentation is managed in the same way, and can be found at [http://envirogen.readthedocs.io/](http://envirogen.readthedocs.io/).
+All documentation for REvoSim is online at [http://revosim.readthedocs.io/](http://revosim.readthedocs.io/). This is a version controlled user manual automatically parsed from the .rst found under the docs folders in our software folders. EnviroGen documentation is managed in the same way, and can be found at [http://envirogen.readthedocs.io/]((http://revosim.readthedocs.io/).
 _____
 
 ## 6. Contributing to the code

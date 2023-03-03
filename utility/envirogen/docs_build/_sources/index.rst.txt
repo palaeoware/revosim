@@ -1,5 +1,3 @@
-.. _index:
-
 Welcome to EnviroGen's User Manual
 ==================================
 
@@ -10,9 +8,9 @@ EnviroGen is a utility package to create highly customised image stacks which ca
 .. figure:: _static/palaeoware_logo_square_Envirogen.png
     :align: center
 
-t:`@palaeoware <https://twitter.com/palaeoware>`_
+t:@palaeoware
 
-w:`https://github.com/palaeoware <https://github.com/palaeoware>`_
+w:https://github.com/palaeoware.
 
 Relevant references
 -------------------

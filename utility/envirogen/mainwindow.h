@@ -53,6 +53,7 @@ public:
     ~MainWindow();
     Ui::MainWindow *ui;
     int currentGeneration;
+    randoms *simulationRandoms;
 
 private slots:
     void generateEnvironment();

@@ -1,72 +1,38 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>8. Genome comparison dock &mdash; REvoSim 2.0.0 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>9. Genome comparison dock &mdash; REvoSim 3.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="9. Advanced Options" href="advanced.html" />
-    <link rel="prev" title="7. Logging the Simulation" href="loggingsim.html" /> 
+    <link rel="next" title="10. Advanced Options" href="advanced.html" />
+    <link rel="prev" title="8. Running Log" href="loggingsim.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> REvoSim
-          
-
-          
+            <a href="index.html" class="icon icon-home"> REvoSim
+            <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
-                2.0.0
+                3.0.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -74,165 +40,95 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">2. Compiling, Installation, and Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="windowlayout.html">3. Window Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settingsorganisms.html">4. Configuring your Organisms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settingssiumlation.html">5. Setting up the Simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">6. Configuring your Outputs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="loggingsim.html">7. Logging the Simulation</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">8. Genome comparison dock</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">9. Advanced Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingssimulation.html">5. Setting up the Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsinteractions.html">6. Configuring Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">7. Configuring Outputs and Run End Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loggingsim.html">8. Running Log</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">9. Genome comparison dock</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">10. Advanced Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commandline.html">11. Command Line Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">12. Tests</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">REvoSim</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>8. Genome comparison dock</li>
-    
-    
+      <li><span class="section-number">9. </span>Genome comparison dock</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/genomecomparison.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="genome-comparison-dock">
-<span id="genomecomparison"></span><h1>8. Genome comparison dock<a class="headerlink" href="#genome-comparison-dock" title="Permalink to this headline">¶</a></h1>
+             
+  <section id="genome-comparison-dock">
+<span id="genomecomparison"></span><h1><span class="section-number">9. </span>Genome comparison dock<a class="headerlink" href="#genome-comparison-dock" title="Permalink to this headline">¶</a></h1>
 <p>The Genome Comparison Dock allows genomes to be inspected and compared within RevoSim, and can be launched from the main menu or the toolbar. By default it appears landscape on the bottom of the main window. Its landscape orientation is intended to allow whole genomes to be viewed without scrolling on most operating systems, however we note that on operating systems with low resolution displays, the REvoSim GUI may struggle to accommodate the docker in its default position: the environment and population views may be forced to be small, or the genome comparison docker may not have the vertical extent to show more than one genome. If this is the case, the docker can be floated, or alternatively docked to the right or left of the main window.</p>
     <div class="figure align-center">
     <video width="695" height="485" loop autoplay controls muted>
 <source src="_static/genomeComparisonDock.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
-    <p class="caption">Video 8.1 - Genome comparison dock in use.</p>
-    </div><p>A genome can be added to the comparison dock by right clicking on the population scene. This will add the genome of the first digital organism living within that pixel to the comparison dock (i.e. that held in slot zero), rendering it as zeros and ones with coding genome on the left, as well as displaying the colour it is rendered as in genome views, and the colour of its environment. Multiple genomes can be selected and inspected in this manner, and a comparison of two can be achieved by selecting the desired genomes and selecting compare, which renders the two in a lower panel highlighting the differences between the genomes. By default, auto compare is enabled: this compares and highlights the differences between each entry on the genome list and that before it. See Video 8.1 for example of use.</p>
-<p>The genomes can be deleted individually from the table by selecting a genome and using the Delete button. Alternatively all genomes in the table can be removed from Genome Comparison Dock the using the Reset All button (this will also remove any manually compared genomes).</p>
-<p>The first ten genomes from the Genome Comparison Dock are pulled through to the reseed dialogue (Fig. 8.1): this allows one to be selected as the starting genome for a new run. This allows multiple repeats of simulations using the same genome, which is known to be capable of surviving within a given environment using the masks loaded at launch (note that these will not persist between sessions unless through loading a saved simulation).</p>
-<div class="figure align-center" id="id1">
+    <p class="caption">Genome comparison dock in use (created with v2.0.0).</p>
+    </div><p>A genome can be added to the comparison dock by right clicking on the population scene. By default, this will add the genomes of all of the digital organisms living within that pixel to the comparison dock, rendering them as zeros and ones, as well as displaying, from left to right in the row, the colour of that organism’s environment, that organism’s species ID, the colour assigned to that species ID, that organism’s environmental fitness (EF) in its environment, that organism’s current fitness (F) (after interactions), the lifetime total energy accumulated by that organism (Le), and the total energy acquired by that organism through direct energy theft in interactions (Se). A colour is also displayed for each genome word, to highlight differences between genome words among organisms. Alternatively, as shown in the video above, when Modal genome only is selected on the right of the dock, this adds just the model genome for any clicked pixel. By default, auto compare is also enabled: this compares and highlights the differences between each entry on the genome list and that before it.</p>
+<p>The genomes can be deleted individually from the table by selecting a genome and using the Delete button. Alternatively all genomes in the table can be removed from Genome Comparison Dock the using the Reset All button.</p>
+<p>The first ten genomes from the Genome Comparison Dock are pulled through to the reseed dialogue (shown in figure below): this allows one to be selected as the starting genome for a new run. This allows multiple repeats of simulations using the same genome, which is known to be capable of surviving within a given environment using the masks loaded at launch (note that these will not persist between sessions unless through loading a saved simulation).</p>
+<figure class="align-center" id="id1">
 <img alt="_images/reseedDialog.png" src="_images/reseedDialog.png" />
-<p class="caption"><span class="caption-text">Figure 8.1 - Reseed dialog showing first ten genomes as selected in the Genome Comparison Dock.</span></p>
-</div>
-</div>
+<figcaption>
+<p><span class="caption-text">Reseed dialog showing first ten genomes as selected in the Genome Comparison Dock (created with v2.0.0).</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</figcaption>
+</figure>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="advanced.html" class="btn btn-neutral float-right" title="9. Advanced Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="loggingsim.html" class="btn btn-neutral float-left" title="7. Logging the Simulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="loggingsim.html" class="btn btn-neutral float-left" title="8. Running Log" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="advanced.html" class="btn btn-neutral float-right" title="10. Advanced Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2018, Mark Sutton, Russell Garwood, Alan R.T. Spencer
-
-    </p>
+    <p>&#169; Copyright 2022, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

@@ -24,14 +24,10 @@
 
 class MainWindow;
 
-/**
- * @brief The PopulationScene class
- */
 class PopulationScene : public QGraphicsScene
 {
 public:
     PopulationScene();
-
     int selectedX;
     int selectedY;
     MainWindow *mainWindow{};
@@ -41,9 +37,8 @@ protected:
     void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
     void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     void doMouse(int x, int y, int button);
-
 private slots:
-    void screenUpdate();
 };
+
 
 #endif // POPULATIONSCENE_H

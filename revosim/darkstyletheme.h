@@ -19,14 +19,11 @@
 #define DARKSTYLETHEME_H
 
 #include <QApplication>
-#include <QFont>
 #include <QFile>
+#include <QFont>
 #include <QProxyStyle>
 #include <QStyleFactory>
 
-/**
- * @brief The DarkStyleTheme class
- */
 class DarkStyleTheme : public QProxyStyle
 {
     Q_OBJECT

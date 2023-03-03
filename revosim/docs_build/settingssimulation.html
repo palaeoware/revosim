@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5. Setting up the Simulation &mdash; REvoSim 3.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="6. Configuring Outputs and Run End Log" href="settingsoutput.html" />
+    <link rel="prev" title="4. Configuring your Organisms" href="settingsorganisms.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> REvoSim
+            <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                3.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">2. Compiling, Installation, and Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windowlayout.html">3. Window Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsorganisms.html">4. Configuring your Organisms</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. Setting up the Simulation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#environment-settings">5.1. Environment settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulation-size">5.2. Simulation size</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#simulation-settings">5.3. Simulation settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#phylogeny-settings">5.4. Phylogeny settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linkages">5.5. Linkages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-new-linkage">5.5.1. Create new linkage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#edit-linkage">5.5.2. Edit linkage</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">6. Configuring Outputs and Run End Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loggingsim.html">7. Running Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">8. Genome comparison dock</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">9. Advanced Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commandline.html">10. Command Line Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">11. Tests</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">REvoSim</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><span class="section-number">5. </span>Setting up the Simulation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/settingssimulation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="setting-up-the-simulation">
+<span id="simulations"></span><h1><span class="section-number">5. </span>Setting up the Simulation<a class="headerlink" href="#setting-up-the-simulation" title="Permalink to this headline">¶</a></h1>
+<p>REvoSim provides the user with control of many elements of the simulation. These are introduced herein, and can be modified within the the Simulation tab of the Settings dock, or from the command line.</p>
+<section id="environment-settings">
+<h2><span class="section-number">5.1. </span>Environment settings<a class="headerlink" href="#environment-settings" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Change environmental files</dt>
+<dd class="field-odd"><p>REvoSim launches with a default environment comprising three stripes in different shades of blue. This can be changed by clicking on this button, which will launch a file explorer. Using this allows a single, or multiple environment images (any standard image format) to be loaded. Environment image files are currently limited to 100 x 100 pixels in size.</p>
+</dd>
+<dt class="field-even">Environment refresh rate</dt>
+<dd class="field-even"><p>This dictates how many iterations there are between updates of the environmental images if an image stack has been loaded, and thus dictates the environmental rate of change (small numbers are faster).</p>
+</dd>
+<dt class="field-odd">Environment mode</dt>
+<dd class="field-odd"><p>This dictates, if multiple files are loaded, the mode with which these are updated. Static uses just the first of the chosen images as the environment throughout a run. Once will run from the start of an image stack to the end, leaving the last image as the environment once this has been loaded. Loop returns to the first environment image once the last has been reached (which may result in a significant environmental change in the environment if the first and last image in a stack are different). Bounce will move from the start to end of an environmental image stack and then back again, repeating this for the duration of a run.</p>
+</dd>
+<dt class="field-even">Interpolate between images</dt>
+<dd class="field-even"><p>This provides linear interpolation of the environment between refresh iterations, preventing large stepped changes in organism fitness.</p>
+</dd>
+<dt class="field-odd">Toroidal environment</dt>
+<dd class="field-odd"><p>By default, when a juvenile settles outside the limits of an environment, it dies. Such boundary effects can be avoided by selecting toroidal environment, which wraps around in both directions (e.g. juveniles settling off the left enter the simulation on the right; EnviroGen can simulate toroidal  environments).</p>
+</dd>
+</dl>
+</section>
+<section id="simulation-size">
+<h2><span class="section-number">5.2. </span>Simulation size<a class="headerlink" href="#simulation-size" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Grid X</dt>
+<dd class="field-odd"><p>This dictates the size of the simulation grid in the X direction. If this is smaller than the environmental image it selects the left side of the image.</p>
+</dd>
+<dt class="field-even">Grid Y</dt>
+<dd class="field-even"><p>This dictates the size of the simulation grid in the Y direction. If that is smaller than the environmental image it selects the top of the image.</p>
+</dd>
+<dt class="field-odd">Slots</dt>
+<dd class="field-odd"><p>Every pixel in the simulation grid can have multiple digital organisms - each lives within a slot (this is equivalent to a Z axis). This dictates the number of slots (how these are filled during reproduction is outlined in the 2019 REvoSim paper).</p>
+</dd>
+</dl>
+</section>
+<section id="simulation-settings">
+<h2><span class="section-number">5.3. </span>Simulation settings<a class="headerlink" href="#simulation-settings" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Fitness target</dt>
+<dd class="field-odd"><p>This is the target value used by the fitness algorithm as described in the REvoSim paper. In brief, it is the value that the hamming distance between the gemome words in the fitness system and the environmental masks (numbers dictated by the colour) is optimised towards. Changing it modifies the fitness landscape: a value of 48 - with one genome word - has the greatest number of genomes with peak fitness, and either side of this value, fewer genomes display peak fitness. This is shown in the graph below, where black points represent the number of genomes with peak fitness for all fitness targets. The red star is the default value for one word, 66; in this particular set of runs, there there are ~3000 genomes capable of peak fitness with the default target, but this can vary given differing masks. Note that there are some values for which no organisms will be capable of survival: if this occurs, REvoSim will provide a warning. Also note that the graph below can be created and distribution of fitnesses quantified using the count peaks option in the commands menu of REvoSim. When changing the number of genome words used by the fitness system from the organism tab, REvoSim will provide the option of updating the fitness target to a commensurate value for the new number of words. If you would like to further discuss the nature of fitness landscapes within REvoSim please contact the authors, as this is something we have thought about a lot.</p>
+</dd>
+</dl>
+<figure class="align-center">
+<img alt="_images/targetFitnessSettleTolerance15.png" src="_images/targetFitnessSettleTolerance15.png" />
+</figure>
+<dl class="field-list simple">
+<dt class="field-odd">Energy input</dt>
+<dd class="field-odd"><p>This is the amount of energy provided per pixel of the environment grid, which is then split between the digital organisms living in that pixel on the basis of their fitness. This is then used as part of the breeding system in REvoSim.</p>
+</dd>
+<dt class="field-even">Settle tolerance</dt>
+<dd class="field-even"><p>This it controls the distance from the fitness target at which organisms are no longer viable (i.e. have zero fitness and, absent energy-based interactions, die). It also provides the maximum attainable fitness within the simulation.</p>
+</dd>
+<dt class="field-odd">Recalculate fitness</dt>
+<dd class="field-odd"><p>For efficiency REvoSim only calculates organism fitness for any individual on initial settling: subsequent changes in the environment will not modify an individual’s fitness. For some settings (e.g. rapidly changing environments or long-lived organisms) this may not be desirable. When checked, this option recalculates the fitness for every organism in the simulation every iteration, overcoming this limitation but also significantly slowing the simulation.</p>
+</dd>
+<dt class="field-even">No selection</dt>
+<dd class="field-even"><p>This option turns off the fitness algorithm so energy is split equally between organisms in any cell, irrespective of their fitness.</p>
+</dd>
+</dl>
+</section>
+<section id="phylogeny-settings">
+<h2><span class="section-number">5.4. </span>Phylogeny settings<a class="headerlink" href="#phylogeny-settings" title="Permalink to this headline">¶</a></h2>
+<p>These radio buttons dictate the mode which by REvoSim tracks phylogeny.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Off</dt>
+<dd class="field-odd"><p>Does not track phylogenies and is thus the fastest mode (this could be useful for - as an example - studies focussing on changes in fitness).</p>
+</dd>
+<dt class="field-even">Basic phylogeny</dt>
+<dd class="field-even"><p>Identifies species in time slices to allow species to be coloured in the population view, and species diversity to be recorded.</p>
+</dd>
+<dt class="field-odd">Phylogeny</dt>
+<dd class="field-odd"><p>Identifies species, and then records their phylogeny, allowing a tree to be created at the end of a run.</p>
+</dd>
+<dt class="field-even">Phylogeny and metrics</dt>
+<dd class="field-even"><p>Does the same as <em>Phylogeny</em>, and also records a number of other metrics for each species, also output (when requested) at the end of a run.</p>
+</dd>
+</dl>
+<p><em>Note</em>: Moving between off and any form of tracking has a significant performance cost: there is little computational overhead moving between the different tracking options. Moving from basic to phylogeny to metrics does, however, come with an increasing memory overhead, as the trees and metrics are by necessity stored in RAM during a run, and written when the run completes. This could have implications for runs with a significant number of organisms and large numbers of iterations. See <a class="reference internal" href="loggingsim.html#logging"><span class="std std-ref">Running Log</span></a> and <a class="reference internal" href="settingsoutput.html#outputs"><span class="std std-ref">Configuring Outputs and Run End Log</span></a> for more details REvoSim outputs.</p>
+</section>
+<section id="linkages">
+<h2><span class="section-number">5.5. </span>Linkages<a class="headerlink" href="#linkages" title="Permalink to this headline">¶</a></h2>
+<p>This is a capability introduced in v3.0.0 that links REvoSim variables to image maps (or each other, a functionality that has yet to be added, but is easily implemented on request). As default, REvoSim offers limited linked variables, however the system is designed so more can be added with ease. Please contact the authors if you would like one to be added - we will happily do so.</p>
+<p>As currently coded, the image stack selected is used to spatially control a variable: specifically, for integer variables, the value of the R channel is multiplied by the value of the selected variable as defined in the settings docker. So, for example, if energy is set to 5 overall, for a pixel with an R value of 0 in the image map the energy will be set to 0 for that iteration. If the R value is set to 255, the energy level for that pixel will be 1275 (5x225). <em>Note that this means that when using a linked integer variable it is likely that the default values will need to be changed.</em> For boolean variables, an R channel value of zero is off, all other zero values (1-255) is on.</p>
+<section id="create-new-linkage">
+<h3><span class="section-number">5.5.1. </span>Create new linkage<a class="headerlink" href="#create-new-linkage" title="Permalink to this headline">¶</a></h3>
+<p>To create a new linkage, use the push button labelled “Link a variable to an image mask”. This creates a pop up window with the following options:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variable</dt>
+<dd class="field-odd"><p>This is the variable to which you would like to control using an image stack.</p>
+</dd>
+<dt class="field-even">Load Images</dt>
+<dd class="field-even"><p>Clicking this image loads a dialogue allowing you to load an image stack that controls the variable defined above, as described in the introduction to linkages.</p>
+</dd>
+<dt class="field-odd">Mode</dt>
+<dd class="field-odd"><p>This radio button defines the image mode for the stack controlling the variable. The modes are the same as used for the environment - see <a class="reference internal" href="#environment-settings"><span class="std std-ref">Environment settings</span></a>.</p>
+</dd>
+<dt class="field-even">Interpolate images</dt>
+<dd class="field-even"><p>As with the environment settings, this defines whether REvoSim interpolates between images.</p>
+</dd>
+<dt class="field-odd">Refresh rate</dt>
+<dd class="field-odd"><p>The update rate of the image stacks controlling variables does not need to be the same as e.g. the environmental refresh rate: this spin box defines how often (in iterations) the next image in the stack is loaded.</p>
+</dd>
+</dl>
+</section>
+<section id="edit-linkage">
+<h3><span class="section-number">5.5.2. </span>Edit linkage<a class="headerlink" href="#edit-linkage" title="Permalink to this headline">¶</a></h3>
+<p>Once added, a linkage appears as a list item in the <em>Current linkages</em> text box on the bottom right of the simulation docker. To edit one double click on the linkage. Doing so will load a pre-filled dialogue with the same options as the add new linkage dialogue outlined above, all of which can be changed as required. The linkage can also be deleted using this dialogue box.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="settingsorganisms.html" class="btn btn-neutral float-left" title="4. Configuring your Organisms" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="settingsoutput.html" class="btn btn-neutral float-right" title="6. Configuring Outputs and Run End Log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,72 +1,38 @@
-
-
 <!DOCTYPE html>
-<html class="writer-html4" lang="en" >
+<html class="writer-html5" lang="en" >
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>7. Logging the Simulation &mdash; REvoSim 2.0.0 documentation</title>
-  
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-
-  
-  
-  
-  
-
-  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>8. Running Log &mdash; REvoSim 3.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script type="text/javascript" src="_static/jquery.js"></script>
-        <script type="text/javascript" src="_static/underscore.js"></script>
-        <script type="text/javascript" src="_static/doctools.js"></script>
-        <script type="text/javascript" src="_static/language_data.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="8. Genome comparison dock" href="genomecomparison.html" />
-    <link rel="prev" title="6. Configuring your Outputs" href="settingsoutput.html" /> 
+    <link rel="next" title="9. Genome comparison dock" href="genomecomparison.html" />
+    <link rel="prev" title="7. Configuring Outputs and Run End Log" href="settingsoutput.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
-            <a href="index.html" class="icon icon-home" alt="Documentation Home"> REvoSim
-          
-
-          
+            <a href="index.html" class="icon icon-home"> REvoSim
+            <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
           </a>
-
-          
-            
-            
               <div class="version">
-                2.0.0
+                3.0.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -74,115 +40,219 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">2. Compiling, Installation, and Requirements</a></li>
 <li class="toctree-l1"><a class="reference internal" href="windowlayout.html">3. Window Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settingsorganisms.html">4. Configuring your Organisms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settingssiumlation.html">5. Setting up the Simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">6. Configuring your Outputs</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">7. Logging the Simulation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#running-log">7.1. Running log</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#detailed-log">7.2. Detailed log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingssimulation.html">5. Setting up the Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsinteractions.html">6. Configuring Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">7. Configuring Outputs and Run End Log</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">8. Running Log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#buttons">8.1. Buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#header-text">8.2. Header text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#iteration-text">8.3. Iteration text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#species-text">8.4. Species text</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v3-0-0-log-options">8.5. v3.0.0 log options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#iteration-keywords">8.5.1. Iteration keywords</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#species-keywords">8.5.2. Species keywords</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">8. Genome comparison dock</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">9. Advanced Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v2-0-0-log">8.6. v2.0.0 log</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">9. Genome comparison dock</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">10. Advanced Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commandline.html">11. Command Line Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">12. Tests</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">REvoSim</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>7. Logging the Simulation</li>
-    
-    
+      <li><span class="section-number">8. </span>Running Log</li>
       <li class="wy-breadcrumbs-aside">
-        
-            
             <a href="_sources/loggingsim.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <div class="section" id="logging-the-simulation">
-<span id="logging"></span><h1>7. Logging the Simulation<a class="headerlink" href="#logging-the-simulation" title="Permalink to this headline">¶</a></h1>
-<p>RevoSim provides two primary logging options (as well as the opportunity to save images showing the progress of a run: see <a class="reference internal" href="settingsoutput.html#outputs"><span class="std std-ref">Configuring your Outputs</span></a>).</p>
-<div class="section" id="running-log">
-<h2>7.1. Running log<a class="headerlink" href="#running-log" title="Permalink to this headline">¶</a></h2>
-<p>When logging is enabled, REvoSim writes a file called REvoSim_log.txt to the output folder, and updates this by appending more data every polling iteration, giving an overview of the current run. This is structured as follows:</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Timestamp:</th><td class="field-body">The first line is a time stamp highlighting when the run was written, in the following format: 2018-12-30T11:57:51</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Settings:</th><td class="field-body">A printout of all REvoSim settings for this run then follows, divided into integers and then bools. This means that at any point it is possible to revisit and check all settings for that run.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Legend:</th><td class="field-body">There is then an explanation of the structure of the log files. Every iteration, the log records data about the simulation to file in a format designed to be easy to parse into a rtange of analytical environments (e.g. R, Python). This structure is as follows for each iteration:</td>
-</tr>
-</tbody>
-</table>
+             
+  <section id="running-log">
+<span id="logging"></span><h1><span class="section-number">8. </span>Running Log<a class="headerlink" href="#running-log" title="Permalink to this headline">¶</a></h1>
+<p>In addition to the Run end log and image logging (see <a class="reference internal" href="settingsoutput.html#outputs"><span class="std std-ref">Configuring Outputs and Run End Log</span></a>), plus the custom logs (see <a class="reference internal" href="mainmenu.html#mainmenu"><span class="std std-ref">Main Menu</span></a>), REvoSim has a versatile system to write customised logs at every polling iteration during a run. When enabled, this writes a file called REvoSim_log.txt to the output folder, then updates this by appending more data every polling iteration, giving an overview of the current run. The v3.0.0 logging systems functions by outputting text that has been entered in this dock (including line breaks). When doing so, it replaces key words/phrases surrounded by *stars* with values that document the state of the simulation. The three text areas/boxes in this dock allow different kinds of text for logs to be entered, as outlined below.</p>
+<section id="buttons">
+<h2><span class="section-number">8.1. </span>Buttons<a class="headerlink" href="#buttons" title="Permalink to this headline">¶</a></h2>
+<dl class="field-list simple">
+<dt class="field-odd">Write to file</dt>
+<dd class="field-odd"><p>When this option is checked a log file is written during the course of every run. See <a class="reference internal" href="#logging"><span class="std std-ref">Running Log</span></a> for more details of REvoSim logs.</p>
+</dd>
+<dt class="field-even">Instructions</dt>
+<dd class="field-even"><p>This button creates a pop up window with simplified instructions for writing the running log.</p>
+</dd>
+<dt class="field-odd">Validate logs</dt>
+<dd class="field-odd"><p>This button will highlight, in red, any star-bounded *key words* that are not recognised by the logging system.</p>
+</dd>
+<dt class="field-even">Command line log file</dt>
+<dd class="field-even"><p>This option outputs an XML file for the current log settings that can be loaded from the command line for batch runs.</p>
+</dd>
+<dt class="field-odd">v2.0.0 log</dt>
+<dd class="field-odd"><p>This populates the text areas with the default running log text from v2.0.0.</p>
+</dd>
+<dt class="field-even">v2.0.0 CSV log</dt>
+<dd class="field-even"><p>This populates the text areas with the default running log text from v2.0.0, formatted as a CSV.</p>
+</dd>
+</dl>
+</section>
+<section id="header-text">
+<h2><span class="section-number">8.2. </span>Header text<a class="headerlink" href="#header-text" title="Permalink to this headline">¶</a></h2>
+<p>This text area can be used for text that should appear at the start of a log file, but is only written when the file is created. This could include the settings for any given run, comments relevant to the experiment, or a header for the remaining columns, for example.</p>
+</section>
+<section id="iteration-text">
+<h2><span class="section-number">8.3. </span>Iteration text<a class="headerlink" href="#iteration-text" title="Permalink to this headline">¶</a></h2>
+<p>This text is written to the log file every polling iteration. This is likely to include statistics about the grid as a whole, for example, number of living organisms, iteration number, or mean fitness. A full list of options is provided below.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Write header from iteration log</dt>
+<dd class="field-odd"><p>This writes a header in the header text area based on the iteration text. Unrecognised keywords will be coloured in red.</p>
+</dd>
+</dl>
+</section>
+<section id="species-text">
+<h2><span class="section-number">8.4. </span>Species text<a class="headerlink" href="#species-text" title="Permalink to this headline">¶</a></h2>
+<p>This text is written to the log file for each species, for every polling iteration. This data might include species ID, its origin time, the ID of its parents, and the number of organisms in that species.  A full list of options is provided below.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Write header from species log</dt>
+<dd class="field-odd"><p>This writes a header in the header text area based on the species text. Unrecognised keywords will be coloured in red.</p>
+</dd>
+</dl>
+</section>
+<section id="v3-0-0-log-options">
+<h2><span class="section-number">8.5. </span>v3.0.0 log options<a class="headerlink" href="#v3-0-0-log-options" title="Permalink to this headline">¶</a></h2>
+<p>In the v3.0.0 custom logs can be created by entering outputs in the text areas as described above, including *keywords*. These keywords are replaced with outputs for further analysis when the log is written (e.g. *iteration* is replaced with the current iteration number).</p>
+<p>Keywords are show below, first per iteration keywords, then per species keywords (although some can be used in either context). The escape sequence for a star (*) is two stars (**).</p>
+<section id="iteration-keywords">
+<h3><span class="section-number">8.5.1. </span>Iteration keywords<a class="headerlink" href="#iteration-keywords" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">*dumpGenomes*</dt>
+<dd class="field-odd"><p>This writes the genomes of every living digital organism, and the X then Y coordinate in which they are found, separated by commas.</p>
+</dd>
+<dt class="field-even">*gridBreedEntries*</dt>
+<dd class="field-even"><p>The number of organisms in the grid which are attempting to breed at the polling iteration.</p>
+</dd>
+<dt class="field-odd">*gridBreedFails*</dt>
+<dd class="field-odd"><p>The number of failed breeding attempts in the polling iteration for all organisms in the grid.</p>
+</dd>
+<dt class="field-even">*gridMeanFitness*</dt>
+<dd class="field-even"><p>The mean fitness of all the organisms in the grid at polling iteration.</p>
+</dd>
+<dt class="field-odd">*gridNumberAlive*</dt>
+<dd class="field-odd"><p>The number of organisms alive at polling iteration.</p>
+</dd>
+<dt class="field-even">*gridTrophicHistograms*</dt>
+<dd class="field-even"><p>This outputs a histogram of the trophic levels of all the organisms in the grid, at 0.1 intervals between 0 and 3.</p>
+</dd>
+<dt class="field-odd">*iteration*</dt>
+<dd class="field-odd"><p>The current iteration.</p>
+</dd>
+<dt class="field-even">*printSettings*</dt>
+<dd class="field-even"><p>This prints a string of all REvoSim settings at the polling iteration, or start of the run if placed in the header.</p>
+</dd>
+<dt class="field-odd">*printTime*</dt>
+<dd class="field-odd"><p>A string showing the time.</p>
+</dd>
+<dt class="field-even">*speciesCount*</dt>
+<dd class="field-even"><p>The number of species alive at polling iteration.</p>
+</dd>
+</dl>
+</section>
+<section id="species-keywords">
+<h3><span class="section-number">8.5.2. </span>Species keywords<a class="headerlink" href="#species-keywords" title="Permalink to this headline">¶</a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">*Ca*</dt>
+<dd class="field-odd"><p>This is the sum of the gene frequency differences from the origin of a species for the word(s) included in the fitness algorithm.</p>
+</dd>
+<dt class="field-even">*completeSpeciesData*</dt>
+<dd class="field-even"><p>This writes the complete species data for any given species, of the form described for the end run log (see <a class="reference internal" href="settingsoutput.html#outputs"><span class="std std-ref">Configuring Outputs and Run End Log</span></a>).</p>
+</dd>
+<dt class="field-odd">*Cr*</dt>
+<dd class="field-odd"><p>This is the sum of the gene frequency differences from the last polling iteration for the word(s) included in the fitness algorithm.</p>
+</dd>
+<dt class="field-even">*currentGeneFrequencies*</dt>
+<dd class="field-even"><p>This writes the mean number of on bits for every position of the genome across a species.</p>
+</dd>
+<dt class="field-odd">*originTime*</dt>
+<dd class="field-odd"><p>This is the polling iteration at which the species was first identified as reproductively isolated (see 2019 paper for a description of the species algorithm).</p>
+</dd>
+<dt class="field-even">*originalGeneFrequencies*</dt>
+<dd class="field-even"><p>This writes the mean number of on bits for every position of the genome across a species at its origination.</p>
+</dd>
+<dt class="field-odd">*NCa*</dt>
+<dd class="field-odd"><p>This is the sum of the gene frequency differences from the origin of a species for the word(s) <em>not</em> included in the fitness algorithm.</p>
+</dd>
+<dt class="field-even">*NCr*</dt>
+<dd class="field-even"><p>This is the sum of the gene frequency differences from the last polling iteration for the word(s) <em>not</em> included in the fitness algorithm.</p>
+</dd>
+<dt class="field-odd">*speciesGenomeDiversity*</dt>
+<dd class="field-odd"><p>This is the number of distinct genomes included within a species.</p>
+</dd>
+<dt class="field-even">*speciesID*</dt>
+<dd class="field-even"><p>REvoSim’s ID for a species, which is useful for correlating statistics with the tree output by the software.</p>
+</dd>
+<dt class="field-odd">*speciesMeanEnvironmentalFitness*</dt>
+<dd class="field-odd"><p>The mean fitness of the species from the environmental fitness algorithm.</p>
+</dd>
+<dt class="field-even">*speciesMeanFitness*</dt>
+<dd class="field-even"><p>The mean fitness of the species from the environmental fitness allgorithm plus any interactions that impact on fitness.</p>
+</dd>
+<dt class="field-odd">*speciesMeanRunningEnergy*</dt>
+<dd class="field-odd"><p>This is the mean total lifetime energy of the organisms within a species (see <a class="reference internal" href="populationscene.html#interactions"><span class="std std-ref">Interactions</span></a>).</p>
+</dd>
+<dt class="field-even">*speciesMeanRunningStolenEnergy*</dt>
+<dd class="field-even"><p>This is the mean total lifetime stolen energy of the organisms within a species (see <a class="reference internal" href="populationscene.html#interactions"><span class="std std-ref">Interactions</span></a>).</p>
+</dd>
+<dt class="field-odd">*speciesModalGenome*</dt>
+<dd class="field-odd"><p>This outputs the modal genome of the species.</p>
+</dd>
+<dt class="field-even">*speciesParent*</dt>
+<dd class="field-even"><p>This outputs the REvoSim species ID for the parent species.</p>
+</dd>
+<dt class="field-odd">*speciesSize*</dt>
+<dd class="field-odd"><p>The number of individuals within the species.</p>
+</dd>
+<dt class="field-even">*speciesTrophicLevel*</dt>
+<dd class="field-even"><p>The mean trophic level of the organisms in a species.</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="v2-0-0-log">
+<h2><span class="section-number">8.6. </span>v2.0.0 log<a class="headerlink" href="#v2-0-0-log" title="Permalink to this headline">¶</a></h2>
+<p>The v2.0.0 log is structured as follows:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Timestamp</dt>
+<dd class="field-odd"><p>The first line is a time stamp highlighting when the run was written, in the following format: 2018-12-30T11:57:51</p>
+</dd>
+<dt class="field-even">Settings</dt>
+<dd class="field-even"><p>A printout of all REvoSim settings for this run then follows, divided into integers and then bools. This means that at any point it is possible to revisit and check all settings for that run.</p>
+</dd>
+<dt class="field-odd">Legend</dt>
+<dd class="field-odd"><p>There is then an explanation of the structure of the log files. Every iteration, the log records data about the simulation to file in a format designed to be easy to parse into a range of analytical environments (e.g. R, Python). This structure is as follows for each iteration:</p>
+</dd>
+</dl>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="p">[</span><span class="n">I</span><span class="p">]</span> <span class="n">Iteration</span> <span class="n">Number</span>
 <span class="o">-</span> <span class="p">[</span><span class="n">P</span><span class="p">]</span> <span class="n">Population</span> <span class="n">Grid</span> <span class="n">Data</span><span class="p">:</span>
   <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">living</span> <span class="n">digital</span> <span class="n">organisms</span>
@@ -190,148 +260,59 @@
   <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">entries</span> <span class="n">on</span> <span class="n">the</span> <span class="n">breed</span> <span class="nb">list</span>
   <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">failed</span> <span class="n">breed</span> <span class="n">attempts</span>
   <span class="o">-</span> <span class="n">Number</span> <span class="n">of</span> <span class="n">species</span>
+  <span class="o">-</span> <span class="n">Trophic</span> <span class="n">histograms</span>
 <span class="o">-</span> <span class="p">[</span><span class="n">S</span><span class="p">]</span> <span class="n">Species</span> <span class="n">Data</span><span class="p">:</span>
   <span class="o">-</span> <span class="n">Species</span> <span class="n">ID</span>
   <span class="o">-</span> <span class="n">Species</span> <span class="n">origin</span> <span class="p">(</span><span class="n">iterations</span><span class="p">)</span>
   <span class="o">-</span> <span class="n">Species</span> <span class="n">parent</span>
   <span class="o">-</span> <span class="n">Species</span> <span class="n">current</span> <span class="n">size</span> <span class="p">(</span><span class="n">number</span> <span class="n">of</span> <span class="n">individuals</span><span class="p">)</span>
+  <span class="o">-</span> <span class="n">Species</span> <span class="n">mean</span> <span class="n">Environmental</span> <span class="n">Fitness</span>
   <span class="o">-</span> <span class="n">Species</span> <span class="n">current</span> <span class="n">genome</span> <span class="p">(</span><span class="n">the</span> <span class="n">modal</span> <span class="n">genome</span> <span class="n">of</span> <span class="n">the</span> <span class="n">species</span><span class="p">,</span> <span class="n">the</span> <span class="n">genome</span> <span class="n">that</span> <span class="n">occurs</span> <span class="n">most</span> <span class="n">frequently</span><span class="p">)</span>
-  <span class="o">-</span> <span class="n">Genomic</span> <span class="n">changes</span> <span class="n">since</span> <span class="n">species</span> <span class="n">origination</span> <span class="p">(</span><span class="n">coding</span> <span class="n">genome</span><span class="p">)</span>
-  <span class="o">-</span> <span class="n">Genomic</span> <span class="n">changes</span> <span class="n">since</span> <span class="n">species</span> <span class="n">origination</span> <span class="p">(</span><span class="n">noncoding</span> <span class="n">genome</span><span class="p">)</span>
-  <span class="o">-</span> <span class="n">Genomic</span> <span class="n">changes</span> <span class="n">since</span> <span class="n">last</span> <span class="n">logging</span> <span class="n">iteration</span> <span class="p">(</span><span class="n">coding</span> <span class="n">genome</span><span class="p">)</span>
-  <span class="o">-</span> <span class="n">Genomic</span> <span class="n">changes</span> <span class="n">since</span> <span class="n">last</span> <span class="n">logging</span> <span class="n">iteration</span> <span class="p">(</span><span class="n">noncoding</span> <span class="n">genome</span><span class="p">)</span>
+  <span class="o">-</span> <span class="n">Species</span> <span class="n">trophic</span> <span class="n">level</span> <span class="p">(</span><span class="n">the</span> <span class="n">mean</span> <span class="n">trophic</span> <span class="n">level</span> <span class="n">of</span> <span class="n">individuals</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">species</span><span class="p">)</span>
+  <span class="o">-</span> <span class="n">Species</span> <span class="n">genome</span> <span class="n">diversity</span>
 </pre></div>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Log data:</th><td class="field-body">The log then begins. Iterations are separated by new line breaks. Every iteration has a single [I] line, one [P] line, and then an [S] line for every species above the minimum species size. We note that it does not exlude species without descendents because it is written during the log, appending to the file for speed. To filter out those species without descendents would introduce the need to store and then regularly filter the log data, and thus would come with a notable computational overhead.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">CSV format:</th><td class="field-body">If the ‘Log file formatted as CSV’ option is checked in output settings, the log file has a different and simpler format using the ‘comma separated value’ system. This may be easier to parse in some software (e.g. spreadsheets). A single header row is generated at the start of the file, providing titles for columms. Subsequent rows are generated for each [S] record described above, but these also include columns with the [I] and [P] records in each row. All fields described above are included in the output.</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="detailed-log">
-<h2>7.2. Detailed log<a class="headerlink" href="#detailed-log" title="Permalink to this headline">¶</a></h2>
-<p>REvoSim provides an alternative, more detailed log for anaylsis of runs. This can be automatically output at the end of every run in batch mode (see <a class="reference internal" href="settingsoutput.html#outputs"><span class="std std-ref">Configuring your Outputs</span></a>), or dumped whenever required using the button in the Output tab of the Settings dock. This too is written to the current output folder, and is placed in a file called REvoSim_end_run_log.txt.  This is structured as follows:</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Timestamp:</th><td class="field-body">The first line is a time stamp highlighting when the run was written, in the following format: 2018-12-30T11:57:51</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Settings:</th><td class="field-body">A printout of all REvoSim settings for this run then follows, divided into integers and then bools. This means that at any point it is possible to revisit and check all settings for that run.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Legend:</th><td class="field-body">There is then an explanation of the contents of this log file: “This log features the tree from a finished run, in Newick format, and then data for all the species that have existed with more individuals than minimum species size. The exact data provided depends on the phylogeny tracking mode selected in the GUI.”</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Tree:</th><td class="field-body">There then follows a tree in Newick format for the run to the point at which the log is written, excluding species below minimum species as requested, and also excluding species without descendents if requested. This can then be loaded into, e.g. FigTree to be rendered, or into e.g. R, for analysis. An example tree is shown below - note species labels are prefaced with id for clarity, and also include the maximum size of that species as part of their species name, after a hyphen:</td>
-</tr>
-</tbody>
-</table>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(((((((((((((((((((((((((((</span><span class="n">id27</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id28</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id29</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id30</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id31</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id32</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id33</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id34</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id35</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">)</span><span class="n">id26</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id36</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id37</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id38</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id39</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id40</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id41</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="n">id42</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="n">id43</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="mi">100</span><span class="p">)</span><span class="n">id25</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id44</span><span class="o">-</span><span class="mi">17</span><span class="p">:</span><span class="mi">150</span><span class="p">,</span><span class="n">id45</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="mi">100</span><span class="p">,(</span><span class="n">id47</span><span class="o">-</span><span class="mi">23311</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="n">id48</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">)</span><span class="n">id46</span><span class="o">-</span><span class="mi">23311</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id49</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id50</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">100</span><span class="p">)</span><span class="n">id24</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id51</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id52</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id53</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="n">id54</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id55</span><span class="o">-</span><span class="mi">10</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="n">id56</span><span class="o">-</span><span class="mi">11</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id57</span><span class="o">-</span><span class="mi">61</span><span class="p">:</span><span class="mi">200</span><span class="p">,</span><span class="n">id58</span><span class="o">-</span><span class="mi">49</span><span class="p">:</span><span class="mi">200</span><span class="p">)</span><span class="n">id23</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id59</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span><span class="n">id60</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id61</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id62</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="mi">50</span><span class="p">)</span><span class="n">id22</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id63</span><span class="o">-</span><span class="mi">13</span><span class="p">:</span><span class="mi">250</span><span class="p">,</span><span class="n">id64</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id65</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id66</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id67</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id68</span><span class="o">-</span><span class="mi">4</span><span class="p">:</span><span class="mi">50</span><span class="p">,((</span><span class="n">id71</span><span class="o">-</span><span class="mi">24648</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id72</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">)</span><span class="n">id70</span><span class="o">-</span><span class="mi">24648</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id73</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id74</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="mi">100</span><span class="p">)</span><span class="n">id69</span><span class="o">-</span><span class="mi">24648</span><span class="p">:</span><span class="mi">200</span><span class="p">)</span><span class="n">id21</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id75</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id76</span><span class="o">-</span><span class="mi">14</span><span class="p">:</span><span class="mi">150</span><span class="p">,</span><span class="n">id77</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="mi">50</span><span class="p">)</span><span class="n">id20</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id78</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">150</span><span class="p">,</span><span class="n">id79</span><span class="o">-</span><span class="mi">8</span><span class="p">:</span><span class="mi">50</span><span class="p">)</span><span class="n">id19</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id80</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">)</span><span class="n">id18</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id81</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id82</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id83</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">)</span><span class="n">id17</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id84</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id85</span><span class="o">-</span><span class="mi">7</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id86</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span><span class="n">id87</span><span class="o">-</span><span class="mi">9</span><span class="p">:</span><span class="mi">150</span><span class="p">)</span><span class="n">id16</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">51</span><span class="p">,</span><span class="n">id88</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">1</span><span class="p">)</span><span class="n">id15</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">18</span><span class="p">,</span><span class="n">id89</span><span class="o">-</span><span class="mi">18</span><span class="p">:</span><span class="mi">69</span><span class="p">)</span><span class="n">id14</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">16</span><span class="p">,</span><span class="n">id90</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="mi">35</span><span class="p">)</span><span class="n">id13</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">13</span><span class="p">,</span><span class="n">id91</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">6</span><span class="p">)</span><span class="n">id12</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span><span class="n">id92</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">42</span><span class="p">)</span><span class="n">id11</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span><span class="n">id93</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">16</span><span class="p">)</span><span class="n">id10</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span><span class="n">id94</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">13</span><span class="p">)</span><span class="n">id9</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span><span class="n">id95</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">11</span><span class="p">)</span><span class="n">id8</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span><span class="n">id96</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">9</span><span class="p">)</span><span class="n">id7</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span><span class="n">id97</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">12</span><span class="p">)</span><span class="n">id6</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">22</span><span class="p">,</span><span class="n">id98</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">12</span><span class="p">)</span><span class="n">id5</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">87</span><span class="p">,</span><span class="n">id99</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">73</span><span class="p">)</span><span class="n">id4</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">2</span><span class="p">,</span><span class="n">id100</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">12</span><span class="p">)</span><span class="n">id3</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">4</span><span class="p">,</span><span class="n">id101</span><span class="o">-</span><span class="mi">2</span><span class="p">:</span><span class="mi">141</span><span class="p">)</span><span class="n">id2</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">64</span><span class="p">,</span><span class="n">id102</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="mi">10</span><span class="p">)</span><span class="n">id1</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">11</span><span class="p">,</span><span class="n">id103</span><span class="o">-</span><span class="mi">3</span><span class="p">:</span><span class="mi">82</span><span class="p">)</span><span class="n">id0</span><span class="o">-</span><span class="mi">81050</span><span class="p">:</span><span class="mi">237</span>
-</pre></div>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name" colspan="2">Log - detailed species data:</th></tr>
-<tr class="field-odd field"><td>&#160;</td><td class="field-body">The rest of the log file comprises detailed data for each species, in the same order they appear in the tree. For each species, for every polling iteration, REvoSim provides the following data:</td>
-</tr>
-</tbody>
-</table>
-<ul class="simple">
-<li>Species ID</li>
-<li>Species ID of Parent</li>
-<li>Iteration number (i.e. the polling iteration for which this was recorded)</li>
-<li>Number of individuals at polling iteration (size)</li>
-<li>A sample genome for the species, selected as for running log (i.e. randomly), presented as a 32-bit number</li>
-<li>The above genome as a binary string</li>
-<li>Genomic diversity - i.e. the number of different genomes in the species</li>
-<li>The number of pixels occupied by this species, subtracted 1 (i.e. real range is 1-65536, but -1 allows C++ style numbering: 0-65535)</li>
-<li>The geographic range in the form of the maximum distance between outliers</li>
-<li>The centroid of range in X - the mean of all X positions</li>
-<li>The centroid of range in Y - the mean of all Y positions</li>
-<li>Mean fitness of all members of species, stored multiplied by 1000 to allow small changes to be easily identified</li>
-<li>Minimum R, G, then B - the log then reports the minimum R, G and B values the species is found in</li>
-<li>Maximum R, G, then B - as above, buyt maximum values</li>
-<li>Mean R, G, then B - the final three numbers are the mean R, G, and B values the species inhabits</li>
-</ul>
-<p>An example log thus appears:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">id</span><span class="p">,</span><span class="n">ParentID</span><span class="p">,</span><span class="n">iteration</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">sampleGenome</span><span class="p">,</span><span class="n">sampleGenome_binary</span><span class="p">,</span><span class="n">diversity</span><span class="p">,</span><span class="n">cellsOccupied</span><span class="p">,</span><span class="n">geog_range</span><span class="p">,</span><span class="n">centroid_x</span><span class="p">,</span><span class="n">centroid_y</span><span class="p">,</span><span class="n">mean_fit</span><span class="p">,</span><span class="n">min_env_red</span><span class="p">,</span><span class="n">min_env_green</span><span class="p">,</span><span class="n">min_env_blue</span><span class="p">,</span><span class="n">max_env_red</span><span class="p">,</span><span class="n">max_env_green</span><span class="p">,</span><span class="n">max_env_blue</span><span class="p">,</span><span class="n">mean_env_red</span><span class="p">,</span><span class="n">mean_env_green</span><span class="p">,</span><span class="n">mean_env_blue</span>
-<span class="mi">27</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">1073</span><span class="p">,</span><span class="mi">34539</span><span class="p">,</span><span class="mi">17476623570733825285</span><span class="p">,</span><span class="mi">1111001010001001011100001000101011011110110011101111110100000101</span><span class="p">,</span><span class="mi">6780</span><span class="p">,</span><span class="mi">4199</span><span class="p">,</span><span class="mi">41</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">49</span><span class="p">,</span><span class="mi">9566</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">41</span><span class="p">,</span><span class="mi">88</span><span class="p">,</span><span class="mi">35</span><span class="p">,</span><span class="mi">54</span><span class="p">,</span><span class="mi">112</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span>
-<span class="mi">28</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">1073</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">18017055526017752864</span><span class="p">,</span><span class="mi">1111101000001001011100001000101011011110110001101101111100100000</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">29</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">10000</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span>
-<span class="mi">29</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">1073</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">17441298461089501447</span><span class="p">,</span><span class="mi">1111001000001011111100001000101011011010110011101001000100000111</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">31</span><span class="p">,</span><span class="mi">79</span><span class="p">,</span><span class="mi">10000</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span>
-<span class="mi">30</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">1073</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">17312242184062138796</span><span class="p">,</span><span class="mi">1111000001000001011100001000101011001110100011100111100110101100</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">8000</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span>
-<span class="mi">31</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">1073</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">17726573350043672487</span><span class="p">,</span><span class="mi">1111011000000001011100001000101011011110010000100101111110100111</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">41</span><span class="p">,</span><span class="mi">22</span><span class="p">,</span><span class="mi">9000</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span>
-<span class="mi">32</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">1073</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">18021559125636701700</span><span class="p">,</span><span class="mi">1111101000011001011100001000101011011110010001100101111000000100</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">83</span><span class="p">,</span><span class="mi">9000</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span>
-<span class="mi">33</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">1073</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">17439188498342378892</span><span class="p">,</span><span class="mi">1111001000000100011100011000101011011110110001100111110110001100</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">9000</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span>
-<span class="mi">34</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">1073</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">17440594842165369120</span><span class="p">,</span><span class="mi">1111001000001001011100001001101011001110110001101101100100100000</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">36</span><span class="p">,</span><span class="mi">49</span><span class="p">,</span><span class="mi">9000</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span>
-<span class="mi">35</span><span class="p">,</span><span class="mi">26</span><span class="p">,</span><span class="mi">1073</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">16358041978649091335</span><span class="p">,</span><span class="mi">1110001100000011011100001000001011001110010011101001110100000111</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">36</span><span class="p">,</span><span class="mi">97</span><span class="p">,</span><span class="mi">9000</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span>
-<span class="mi">26</span><span class="p">,</span><span class="mi">25</span><span class="p">,</span><span class="mi">1023</span><span class="p">,</span><span class="mi">34348</span><span class="p">,</span><span class="mi">17476623570733825285</span><span class="p">,</span><span class="mi">1111001010001001011100001000101011011110110011101111110100000101</span><span class="p">,</span><span class="mi">6582</span><span class="p">,</span><span class="mi">4201</span><span class="p">,</span><span class="mi">51</span><span class="p">,</span><span class="mi">20</span><span class="p">,</span><span class="mi">49</span><span class="p">,</span><span class="mi">9357</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">41</span><span class="p">,</span><span class="mi">88</span><span class="p">,</span><span class="mi">70</span><span class="p">,</span><span class="mi">105</span><span class="p">,</span><span class="mi">209</span><span class="p">,</span><span class="mi">30</span><span class="p">,</span><span class="mi">44</span><span class="p">,</span><span class="mi">90</span>
-<span class="o">...</span>
-</pre></div>
-</div>
-<p>The two logs are designed to allow as many potential elements of a RevoSim run to be quantified as possible. Should any further measures or statistics be required, please file a <a class="reference external" href="https://github.com/palaeoware/revosim/issues">feature request</a>.</p>
-</div>
-</div>
+<dl class="field-list simple">
+<dt class="field-odd">Log data</dt>
+<dd class="field-odd"><p>The log then begins. Iterations are separated by new line breaks. Every iteration has a single [I] line, one [P] line, and then an [S] line for every species above the minimum species size. We note that it does not exlude species without descendents because it is written during the simulation, appending to the file for speed. To filter out those species without descendents would introduce the need to store and then regularly filter the log data, and thus would come with a notable computational overhead.</p>
+</dd>
+<dt class="field-even">CSV format</dt>
+<dd class="field-even"><p>If the ‘Log file formatted as CSV’ option is checked in output settings, the log file has a different and simpler format using the ‘comma separated value’ system. This may be easier to parse in some software (e.g. spreadsheets). A single header row is generated at the start of the file, providing titles for columms. Subsequent rows are generated for each [S] record described above, but these also include columns with the [I] and [P] records in each row. All fields described above are included in the output.</p>
+</dd>
+</dl>
+<p>This logging system is designed to allow as many potential elements of a RevoSim run to be quantified as possible. Should any further measures or statistics be required, please file a <a class="reference external" href="https://github.com/palaeoware/revosim/issues">feature request</a>.</p>
+</section>
+</section>
 
 
            </div>
-           
           </div>
-          <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="genomecomparison.html" class="btn btn-neutral float-right" title="8. Genome comparison dock" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="settingsoutput.html" class="btn btn-neutral float-left" title="6. Configuring your Outputs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="settingsoutput.html" class="btn btn-neutral float-left" title="7. Configuring Outputs and Run End Log" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="genomecomparison.html" class="btn btn-neutral float-right" title="9. Genome comparison dock" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        
-        &copy; Copyright 2018, Mark Sutton, Russell Garwood, Alan R.T. Spencer
-
-    </p>
+    <p>&#169; Copyright 2022, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness.</p>
   </div>
-    
-    
-    
-    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
-    
-    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

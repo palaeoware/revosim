@@ -51,7 +51,6 @@ public:
 protected:
     QString dir;
     bool saveMe;
-    quint8 Rand8();
 
 private:
 

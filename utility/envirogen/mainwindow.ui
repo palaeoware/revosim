@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>719</width>
+    <width>723</width>
     <height>861</height>
    </rect>
   </property>
@@ -35,8 +35,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>719</width>
-     <height>22</height>
+     <width>723</width>
+     <height>26</height>
     </rect>
    </property>
   </widget>
@@ -120,12 +120,15 @@
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>
          <widget class="QTabWidget" name="settings_tab_widget">
+          <property name="tabPosition">
+           <enum>QTabWidget::West</enum>
+          </property>
           <property name="currentIndex">
-           <number>2</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="output_tab">
            <attribute name="title">
-            <string>Out</string>
+            <string>Output</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_4">
             <item>
@@ -177,8 +180,8 @@
                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Ubuntu'; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
              </widget>
             </item>
@@ -273,7 +276,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QWidget" name="russell_tab">
            <attribute name="title">
-            <string>Dyn 1</string>
+            <string>Dynamic 1</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_4">
             <item row="8" column="1">
@@ -482,7 +485,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QWidget" name="mark_tab">
            <attribute name="title">
-            <string>Dyn 2</string>
+            <string>Dynamic 2</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout">
             <item row="13" column="1">
@@ -882,7 +885,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QWidget" name="combine_tab">
            <attribute name="title">
-            <string>Comb</string>
+            <string>Combine stacks</string>
            </attribute>
            <layout class="QVBoxLayout" name="verticalLayout_3">
             <item>
@@ -1017,7 +1020,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QWidget" name="colour_tab">
            <attribute name="title">
-            <string>Col</string>
+            <string>Colour</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_7">
             <item row="6" column="0" colspan="2">
@@ -1127,7 +1130,7 @@ p, li { white-space: pre-wrap; }
           </widget>
           <widget class="QWidget" name="stack_tab">
            <attribute name="title">
-            <string>Stack</string>
+            <string>Stack from image</string>
            </attribute>
            <layout class="QGridLayout" name="gridLayout_8">
             <item row="3" column="0">

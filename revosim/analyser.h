@@ -18,17 +18,23 @@
 #ifndef ANALYSER_H
 #define ANALYSER_H
 
-#include "sortablegenome.h"
 #include "logspecies.h"
-
+#include "sortablegenome.h"
+#include "globals.h"
+#include "hashablegenome.h"
+#include "genomehashtable.h"
+#include "groupdata.h"
 #include <QColor>
 #include <QHash>
 #include <QList>
 #include <QString>
-
+#include <QGraphicsPixmapItem>
+#include <QFuture>
+#include <QQueue>
 /**
  * @brief The Species class
  */
+
 class Species
 {
 public:
@@ -36,12 +42,21 @@ public:
 
     int internalID;
     int size;
+    int genomeDiversity;
+    float fitness;
+    float envFitness;
+    float totalEnergy;
+    float totalStolenEnergy;
     int originTime;
-    LogSpecies *logSpeciesStructure;
-    quint64 type;
+    float trophicLevel;
+    float Ca, NCa, Cr, NCr;
+    LogSpecies *logSpeciesStructure; //which log species it's equivalent to
+    quint32 type[MAX_GENOME_WORDS];
     quint64 ID;
     quint64 parent;
-    float frequencies[64];
+    float frequenciesAtOrigination[MAX_GENOME_WORDS][32]; //for gene frequency tracking
+    float frequenciesLastIteration[MAX_GENOME_WORDS][32];
+    LogSpeciesDataItem complexLogData; //for on-the-fly logging of complex stuff - the logspecies does it per iteration - this keeps one copy, of the most recent version
 };
 
 /**
@@ -51,20 +66,39 @@ class Analyser
 {
 public:
     Analyser();
+    ~Analyser();
 
-    void addGenomeFast(quint64 genome);
-    void groupsWithHistoryModal();
     void groupsGenealogicalTracker();
-    int speciesIndex(quint64 genome);
+    void groupsGenealogicalTracker_v3();
 
-    QList<quint64> genomeList;
-    QList<int> genomeCount;
-    QList<int> speciesID;
-    QList<int> lookupPersistentSpeciesID;
+
+    bool speciationLogging;
+
+    //All this no longer needed or should be in logging stuff?
+    QString speciationLogText;
 
 private:
+
+    QHash<quint64, GenomeHashTable *> allTables;
+
     int genomesTotalCount;
-    QList<SortableGenome> genomes;
+
+    QList<QFuture<void>*> FuturesList;
+    QQueue<Species *> speciesQueue;
+    int perSpeciesAnalyis(Species *s);
+    void gatherGenomesParallel(int firstx, int lastx);
+    int generateGroupsFor(GenomeHashTable *thisSpecies);
+    void recordFrequencies(Species *sp, GenomeHashTable *spTable, int group, bool firstFind);
+    void addSpeciesToList(Species s);
+    int getNextSpeciesID();
+    void addLogSpecies(quint64 speciesID, LogSpecies *logSpecies);
+    QMutex addSpeciesToListMutex, getNextSpeciesIDMutex, addLogSpeciesMutex, speciesQueueMutex, speciationLogTextMutex;
+    QList<Species> *newSpeciesList;
+    Species *getNextSpeciesToWorkOn();
+    void speciesAnalysisWorker(int threadID);
+    void doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSpecies);
+    void reportGroups(QHash<int, GroupData *> *groups);
+    int generateGroupsForHeuristic(GenomeHashTable *thisSpecies, int comparisons);
 };
 
 #endif // ANALYSER_H

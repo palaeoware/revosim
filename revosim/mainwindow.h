@@ -22,18 +22,25 @@
 #include "environmentscene.h"
 #include "genomecomparison.h"
 #include "populationscene.h"
-#include "simmanager.h"
+#include "linkagesdialog.h"
+#include <math.h>
+#include <bitset>
 
-#include <QAction>
 #include <QActionGroup>
+#include <QAction>
 #include <QCheckBox>
 #include <QMainWindow>
-#include <QProgressBar>
 #include <QRadioButton>
 #include <QShortcut>
 #include <QSpinBox>
 #include <QStandardPaths>
+#include <QProgressBar>
+#include <QQueue>
 #include <QHash>
+#include <QTextBrowser>
+#include <QListWidget>
+#include <QScrollArea>
+#include <QTimer>
 
 extern MainWindow *mainWindow;
 
@@ -41,8 +48,8 @@ namespace Ui {
 class MainWindow;
 }
 
-/**
- * @brief The MainWindow class
+/*!
+ * \brief The MainWindow class
  */
 class MainWindow : public QMainWindow
 {
@@ -51,6 +58,7 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    friend class test; //RJG make friend a test class so it can access private functions to test them
 
     Ui::MainWindow *ui;
 
@@ -63,20 +71,36 @@ public:
     void updateGUIFromVariables();
     void processAppEvents();
     bool genomeComparisonAdd();
+    float timePerFrame();
+
     QDockWidget *createSimulationSettingsDock();
     QDockWidget *createOutputSettingsDock();
     QDockWidget *createOrganismSettingsDock();
+    QDockWidget *createInteractionSettingsDock();
+    QDockWidget *createLogSettingsDock();
+    QScrollArea *createWordsScrollArea();
 
     int refreshRate{};
     GenomeComparison *genoneComparison;
+
+    void setOptionsFromParser(QHash<QString, QString> *options);
+
+    //RJG - different main window statuses
+    bool batchRunning;
+    bool autoFromCommand;
+
+    QString getSavePath();
+    quint64 getBatchRuns();
+
+    QString handleAnalysisTool(int code);
+    //RJG - to do - moving this here so can access from logger, but ultimately will want better solution
+    Analyser *analyser;
 
 protected:
     void changeEvent(QEvent *e);
     void resizeEvent(QResizeEvent *e);
 
 private:
-    Analyser *analyser;
-
     void closeEvent(QCloseEvent *e);
     void report();
     void runSetUp();
@@ -89,14 +113,15 @@ private:
     void simulationDead();
     void calculateSpecies();
     void restartTimer();
+    void doSavePath();
     int scaleFails(int fails, float generations);
     int waitUntilPauseSignalIsEmitted();
-    QString handleAnalysisTool(int code);
-    QString printSettings();
 
     bool stopFlag{};
     bool pauseFlag;
     int nextRefresh;
+    int lastReport;
+    QHash<QString, QString> wordsInUse;
 
     //RJG - GUI stuff
     EnvironmentScene *environmentScene;
@@ -104,6 +129,9 @@ private:
     QDockWidget *simulationSettingsDock;
     QDockWidget *organismSettingsDock;
     QDockWidget *outputSettingsDock;
+    QDockWidget *interactionSettingsDock;
+    QDockWidget *logSettingsDock;
+    QListWidget *linkagesList;
 
     //RJG - GUI buttons and settings docker options which need to be accessible via slots; especially for load settings function
     QAction *startButton{};
@@ -115,16 +143,17 @@ private:
     QAction *runForBatchButton{};
     QAction *genomeComparisonButton{};
     QAction *settingsButton{};
+    QAction *logButton{};
+    QAction *testButton{};
     QAction *aboutButton{};
 
     //RJG - Save images checkboxes
     QCheckBox *guiCheckbox{};
     QCheckBox *savePopulationCount{};
     QCheckBox *saveMeanFitness{};
-    QCheckBox *saveCodingGenomeAsColour{};
+    QCheckBox *saveVisSysOneAsColour{};
     QCheckBox *saveSpecies{};
-    QCheckBox *saveNonCodingGenomeAsColour{};
-    QCheckBox *saveGeneFrequencies{};
+    QCheckBox *saveVisSysTwoAsColour{};
     QCheckBox *saveSettles{};
     QCheckBox *saveFailsSettles{};
     QCheckBox *saveEnvironment{};
@@ -132,28 +161,45 @@ private:
 
     //RJG - other checkboxes
     QCheckBox *recalculateFitnessCheckbox{};
+    QCheckBox *noSelectionFitnessCheckbox{};
     QCheckBox *toroidalCheckbox{};
     QCheckBox *nonspatialCheckbox{};
     QCheckBox *breedDifferenceCheckbox{};
     QCheckBox *breedSpeciesCheckbox{};
+    QCheckBox *interactRestrictCheckbox{};
+    QCheckBox *pathogensCheckbox{};
+    QCheckBox *MultiBreedListCheckbox{};
+    QCheckBox *variableMutationCheckbox{};
     QCheckBox *excludeWithoutDescendantsCheckbox{};
     QCheckBox *loggingCheckbox{};
-    QCheckBox *geneFrequencyCheckbox{};
-    QCheckBox *csvCheckbox{};
-    QCheckBox *autowriteLogCheckbox{};
+    QCheckBox *autoWriteLogCheckbox{};
 
     //RJG - radios and spins
     QRadioButton *phylogenyOffButton{};
     QRadioButton *basicPhylogenyButton{};
     QRadioButton *phylogenyButton{};
     QRadioButton *phylogenyAndMetricsButton{};
-    QRadioButton *sexualRadio{};
+    QRadioButton *obligateSexualRadio{};
+    QRadioButton *obligateAsexualRadio{};
+    QRadioButton *facultativeSexualRadio{};
     QRadioButton *asexualRadio{};
+    QRadioButton *variableBreedRadio{};
     QRadioButton *environmentModeBounceButton{};
     QRadioButton *environmentModeLoopButton{};
     QRadioButton *environmentModeOnceButton{};
     QRadioButton *environmentModeStaticButton{};
+    QRadioButton *BlockInteractionsRadio{};
+    QRadioButton *XORRadio{};
+    QRadioButton *FitnessChangeRadio{};
+    QRadioButton *EnergyChangeRadio{};
+    QRadioButton *NoInteractionTypeRadio{};
+    QRadioButton *pathogenDriftRadio{};
+    QRadioButton *pathogenEvolveRadio{};
+    QRadioButton *seedingDefaultRadio{};
+    QRadioButton *seeding3TierRadio{};
+    QRadioButton *seeding5TierRadio{};
 
+    QSpinBox *minSpeciesSizeSpin{};
     QSpinBox *mutateSpin{};
     QSpinBox *refreshRateSpin{};
     QSpinBox *maxDifferenceSpin{};
@@ -163,73 +209,106 @@ private:
     QSpinBox *gridXSpin{};
     QSpinBox *gridYSpin{};
     QSpinBox *settleToleranceSpin{};
+    QSpinBox *genomeSizeSpin{};
     QSpinBox *slotsSpin{};
     QSpinBox *startAgeSpin{};
     QSpinBox *dispersalSpin{};
     QSpinBox *energySpin{};
     QSpinBox *breedCostSpin{};
+    // Only in development branch (as is variable breed above)
+    QSpinBox *pathogenMutateSpin{};
+    QSpinBox *pathogenFrequencySpin{};
+
+    //RJG - text edits for logs
+    QTextEdit *headerTextEdit;
+    QTextEdit *iterationTextEdit;
+    QTextEdit *logTextEdit;
+
+    //RJG - line edits for systems
+    QLineEdit *fitness_word_edit;
+    QLineEdit *breed_word_edit;
+    QLineEdit *mutate_word_edit;
+    QLineEdit *variable_mutate_word_edit;
+    QLineEdit *variable_breed_word_edit;
+    QLineEdit *pathogen_word_edit;
+    QLineEdit *species_ID_word_edit;
+    QLineEdit *interactions_word_edit;
+    QLineEdit *visualisations_word_edit;
+    QLineEdit *visualisations_word_edit_2;
+
+
+    // Interactions
+    QSpinBox *interactionsSpin{};
+    QSpinBox *predationDeltaSpin{};
+    QSpinBox *predationEfficiencySpin{};
 
     //RJG - global save globalSavePath for all outputs
     QLineEdit *globalSavePath{};
 
     //RJG - options for batching
-    bool batchRunning;
     quint64 batchRuns;
     quint64 batchIterations;
     quint64 batchTargetRuns;
 
     //Now some things settable by the ui
-    QTime timer;
+    QElapsedTimer timer;
+    QQueue<int> timingqueue;  //records times for last few refreshes - used to calculate a moving-average iterations/second value
+
     QImage *populationImage;
     QImage *environmentImage;
     QImage *populationImageColour;
     QGraphicsPixmapItem *populationItem;
     QGraphicsPixmapItem *environmentItem;
 
-    struct genome_for_tracking
-    {
-        quint64 modal;
-        float frequency[64];
-    };
-
-    //MDS hashes used in tracking species numbers for change logging
-    QHash<quint64,genome_for_tracking> *initialGenomes;
-    QHash<quint64,genome_for_tracking> *lastGenomes;
+    QTimer fitnessMessageTimer;
 
     bool intToBool(int i);
+    bool boolStringToBool(QString s);
+
 private slots:
     void guiCheckboxStateChanged(bool);
     void saveAllCheckboxStateChanged(bool);
     void writeRunData();
-    void updateSettingsDockVisability();
-    void updateGenomeComparisonDockVisability(bool checked);
+    void writeIndividualsData();
+    void updateSettingsDockVisibility();
+    void updateOutputDockVisibility();
     void redoImages(int oldRows, int oldColumns);
     void speciesModeChanged(int changeSpeciesMode, bool updateGUI);
     void environmentModeChanged(int changeEnvironmentMode, bool updateGUI);
-    void loadSettings();
-    void saveSettings();
-    void updateGlobalPath();
-    bool loadEnvironmentFiles();
+    void loadSettings(QString fileName = "", bool calledFromCommandLine = false);
+    void saveSettings(QString fileName = "");
+    bool loadEnvironmentFiles(QString folder = "");
+    void addLinkage();
+    void linkagesGUI();
+    void udpateGlobalPath();
     void writePeakCounts();
     void startSimulation();
-    void runForNSimulation();
+    void runForNSimulation(int iterations = 0);
     void resetSimulation();
     void launchReseedDialog();
     void startBatchSimulation();
     void pauseSimulation();
     void stopSimulation();
-    void saveSimulation();
-    void loadSimulation();
+    void updateGenomeComparisonDockVisibility(bool checked);
+    void saveSimulation(QString filename = "");
+    void loadSimulation(QString filename = "");
     void exitProgram();
+    void doTests();
+    void editInteractionsGrid();
+    void linkagesListClicked();
+    void toggleTestUI();
 
     // Note: on_actionXXX function are autoconnected by QT
-    void on_actionLoad_Random_Numbers_triggered(); // auto
-    void on_populationWindowComboBox_currentIndexChanged(int index); // auto
-    void on_actionCode_on_GitHub_triggered(); // auto
-    void on_actionAbout_triggered(); //auto
-    void on_actionOnline_User_Manual_triggered(); // auto
-    void on_actionSettings_Dock_triggered(); // auto
-    void on_actionBugIssueFeatureRequest_triggered();
+    void on_actionFitness_logging_to_File_triggered();
+    void on_actionLoad_Random_Numbers_triggered();
+    void on_populationWindowComboBox_currentIndexChanged(int index);
+    void on_actionCode_on_GitHub_triggered();
+    void on_actionReportBugIssueFeatureRequest_triggered();
+    void on_actionOnline_User_Manual_triggered();
+    void on_actionSettings_Dock_triggered();
+    void on_actionAbout_triggered();
+    void on_actionGenomeComparison_triggered();
+    void on_actionOutput_Dock_triggered();
 };
 
 #endif // MAINWINDOW_H

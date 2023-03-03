@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="randoms.dat">../resources/randoms.dat</file>
         <file alias="REvoSim_default_env.png">resources/REvoSim_default_env.png</file>
         <file alias="img.png">../resources/img.png</file>
         <file alias="gplV3Logo">../resources/gplv3-127x51.png</file>
@@ -53,5 +52,6 @@
         <file alias="icon_stop_button_red.png">../resources/darkstyle/icon_stop_button_red.png</file>
         <file alias="icon_pause_button.png">../resources/darkstyle/icon_pause_button.png</file>
         <file alias="icon_pause_button_orange.png">../resources/darkstyle/icon_pause_button_orange.png</file>
+        <file alias="icon_test_button.png">../resources/darkstyle/icon_test_button.png</file>
     </qresource>
 </RCC>

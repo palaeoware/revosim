@@ -19,21 +19,19 @@
 #define SORTABLEGENOME_H
 
 #include "QtGlobal"
+#include "hashablegenome.h"
 
-/**
- * @brief The SortableGenome class
- */
 class SortableGenome
 {
 public:
-    SortableGenome(quint64 genome, int f, int c);
-
+    SortableGenome(quint32 *genome, int length, int f, int c);
     bool operator<(const SortableGenome &rhs) const;
     bool operator==(const SortableGenome &rhs) const;
     int fit;
+    int genomeLength;
+    quint32 *genome;
     int group;
     int count;
-    quint64 genome;
 };
 
 #endif // SORTABLEGENOME_H

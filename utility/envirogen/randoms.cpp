@@ -19,63 +19,70 @@
 
 randoms::randoms()
 {
-    load_randoms();
-    nextrandom = 0;
+    newRandoms8();
+    newRandoms16();
+    newRandoms32();
+    newRandoms64();
+
+    //Note that all are quint16 - so will just cycle from 0 to 65536 with a ++
+    nextRandom8 = 0;
+    nextRandom16 = 0;
+    nextRandom32 = 0;
+    nextRandom64 = 0;
 }
 
-quint16 randoms::gen_Rand16()
+quint8 randoms::rand8()
 {
-    if (nextrandom == 65535)
-    {
-        nextrandom = 0;
-        load_randoms();
-    }
-    return random_array[nextrandom++];
+    if (nextRandom8 == 0) newRandoms8();
+    return randoms8[nextRandom8++];
 }
 
-quint8 randoms::gen_Rand8()
+double randoms::randDouble()
 {
-    if (nextrandom == 65535)
-    {
-        nextrandom = 0;
-        load_randoms();
-    }
-    return (quint8)(random_array[nextrandom++] & 255);
-
+    return QRandomGenerator::global()->generateDouble();
 }
 
-double randoms::gen_float()
+void randoms::newRandoms8()
 {
-    return (double)gen_Rand16() / (double)65535;
+    quint32 randomsToWrite[65536];
+    QRandomGenerator::global()->fillRange(randomsToWrite);
+    for (int i = 0; i < 65536; i++) randoms8[i] =  randomsToWrite[i] & mask8;
 }
 
-randoms::~randoms()
+quint16 randoms::rand16()
+{
+    if (nextRandom16 == 0) newRandoms16();
+    return randoms16[nextRandom16++];
+}
+
+void randoms::newRandoms16()
 {
 
-
+    quint32 randomsToWrite[65536];
+    QRandomGenerator::global()->fillRange(randomsToWrite);
+    for (int i = 0; i < 65536; i++)randoms16[i] = randomsToWrite[i] & mask16;
 }
 
-//Load random numbers
-void randoms::load_randoms()
+quint32 randoms::rand32()
 {
-    //Seed pseudorandom numbers
-    qsrand(QTime::currentTime().msec());
-
-    //Load randoms into program - get random
-    int seed_random = qrand();
-
-    //Make sure 16 bit random so not too large for the randoms file
-    float seedoffset = ((float)seed_random / (float)RAND_MAX) * (65536.);
-    int intseedoffset = (int)seedoffset;
-
-    QFile rfile(":/randoms.dat");
-    if (!rfile.exists())QMessageBox::warning(0, "Damn", "Error loading randoms. Contact RJG in the hope he can sort this out.");
-    rfile.open(QIODevice::ReadOnly);
-    rfile.seek(intseedoffset);
-
-    // multiply by two here as char * is 8bit, and randoms are 16 - no error if array is unfilled, randoms are just zero...
-    int i = rfile.read((char *)random_array, (65536 * 2));
-    if (i != (65536 * 2)) QMessageBox::warning(0, "Oops", "Failed to read 131072 bytes from randoms file - random numbers may be compromised - Contact RJG");
-    rfile.close();
+    if (nextRandom32 == 0) newRandoms32();
+    return randoms32[nextRandom32++];
 }
+
+void randoms::newRandoms32()
+{
+    QRandomGenerator::global()->fillRange(randoms32);
+}
+
+quint64 randoms::rand64()
+{
+    if (nextRandom64 == 0) newRandoms64();
+    return randoms64[nextRandom64++];
+}
+
+void randoms::newRandoms64()
+{
+    QRandomGenerator::global()->fillRange(randoms64);
+}
+
 

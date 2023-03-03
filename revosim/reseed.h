@@ -27,26 +27,30 @@ namespace Ui {
 class Reseed;
 }
 
-/**
- * @brief The Reseed class
- */
 class Reseed : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit Reseed(QWidget *parent = nullptr);
+    explicit Reseed(QWidget *parent = 0);
     ~Reseed();
 
     QList<QRadioButton *> radios;
+    //RJG - make test a friend class to test private functions
+    friend class test;
 
 private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void radio_toggled();
+    void hexToggled();
 
 private:
     Ui::Reseed *ui;
+    QString convertStringToHex(QString genomeString, bool &OK);
+    QString convertStringToBinary(QString genomeString, bool &OK);
+    quint32 convertWordStringToNumber(QString genomeString, bool &OK, int base);
+    bool validateString(QString genomeString, bool hex);
+    QButtonGroup *genomeGroup;
 };
 
 #endif // RESEED_H

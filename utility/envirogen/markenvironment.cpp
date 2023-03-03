@@ -31,20 +31,20 @@ markenvironment::markenvironment()
 
     for (int i = 0; i < objectcount; i++)
     {
-        objxpos[i] = RandFloat() * MainWin->ui->spinSize->value();
-        objypos[i] = RandFloat() * MainWin->ui->spinSize->value();
-        objxvel[i] = RandFloat() * maxvel * 2 - maxvel;
-        objyvel[i] = RandFloat() * maxvel * 2 - maxvel;
-        objsize[i] = RandFloat() * (maxsize - minsize) + minsize;
-        objsizevel[i] = RandFloat() * maxsizevel * 2 - maxsizevel;
+        objxpos[i] = MainWin->simulationRandoms->randDouble() * MainWin->ui->spinSize->value();
+        objypos[i] = MainWin->simulationRandoms->randDouble() * MainWin->ui->spinSize->value();
+        objxvel[i] = MainWin->simulationRandoms->randDouble() * maxvel * 2 - maxvel;
+        objyvel[i] = MainWin->simulationRandoms->randDouble() * maxvel * 2 - maxvel;
+        objsize[i] = MainWin->simulationRandoms->randDouble() * (maxsize - minsize) + minsize;
+        objsizevel[i] = MainWin->simulationRandoms->randDouble() * maxsizevel * 2 - maxsizevel;
         for (int o = 0; o < 3; o++)
-            objcolours[i][o] = (double)((int)Rand8() - 127);
+            objcolours[i][o] = (double)((int)MainWin->simulationRandoms->rand8() - 127);
 
         for (int o = 0; o < 3; o++)
-            objcolvel[i][o] = RandFloat() * maxcolvel * 2 - maxcolvel;
+            objcolvel[i][o] = MainWin->simulationRandoms->randDouble() * maxcolvel * 2 - maxcolvel;
 
-        objtightness[i] = RandFloat() * (maxtight - mintight) + mintight;
-        objtightvel[i] = RandFloat() * maxtightvel * 2 - maxtightvel;
+        objtightness[i] = MainWin->simulationRandoms->randDouble() * (maxtight - mintight) + mintight;
+        objtightvel[i] = MainWin->simulationRandoms->randDouble() * maxtightvel * 2 - maxtightvel;
     }
 
     iter_to_accel = iter_reset;
@@ -160,11 +160,11 @@ void markenvironment::regenerate()
         iter_to_accel--;
         if (iter_to_accel <= 0)
         {
-            objxvel[i] += (RandFloat() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
-            objyvel[i] += (RandFloat() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
-            objsizevel[i] += (RandFloat() * sizetweak * 2 - sizetweak) * speedfactor / (double)iter_reset;
-            objtightvel[i] += (RandFloat() * tighttweak * 2 - tighttweak) * speedfactor / (double)iter_reset;
-            for (int o = 0; o < 3; o++) objcolvel[i][o] += (RandFloat() * 2 * coltweak - coltweak) * speedfactor / (double)iter_reset;
+            objxvel[i] += (MainWin->simulationRandoms->randDouble() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
+            objyvel[i] += (MainWin->simulationRandoms->randDouble() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
+            objsizevel[i] += (MainWin->simulationRandoms->randDouble() * sizetweak * 2 - sizetweak) * speedfactor / (double)iter_reset;
+            objtightvel[i] += (MainWin->simulationRandoms->randDouble() * tighttweak * 2 - tighttweak) * speedfactor / (double)iter_reset;
+            for (int o = 0; o < 3; o++) objcolvel[i][o] += (MainWin->simulationRandoms->randDouble() * 2 * coltweak - coltweak) * speedfactor / (double)iter_reset;
             iter_to_accel = iter_reset;
         }
 
@@ -207,9 +207,4 @@ quint8 markenvironment::add_and_limit(int oldvalue, int color, double dist, doub
     if (retval < 0) retval = 0;
     if (retval > 255) return 255;
     else return (quint8)retval;
-}
-
-double markenvironment::RandFloat()
-{
-    return simulation_randoms->gen_float();
 }

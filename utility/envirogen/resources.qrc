@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file alias="randoms.dat">../../resources/randoms.dat</file>
         <file alias="img.png">../../resources/img.png</file>
         <file alias="gplV3Logo">../../resources/gplv3-127x51.png</file>
         <file alias="icon.png">../../resources/icon.png</file>

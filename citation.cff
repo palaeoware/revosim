@@ -14,9 +14,9 @@ authors:
   given-names: "Euan N."
   orcid: "https://orcid.org/0000-0001-7917-2304"
 title: "REvoSim and EnviroGen"
-version: 2.0.1
+version: 3.0.0
 doi: 10.5281/zenodo.2564192
-date-released: 2019-02-13
+date-released: 2023-02-22
 url: "https://github.com/palaeoware/revosim"
 preferred-citation:
   type: article

@@ -23,11 +23,7 @@
 #include <QList>
 #include <QString>
 
-/**
- * @brief The LogSpecies class
- *
- * Used to log all species that appear. species class is for internal simulation purposes. This is for output.
- */
+//used to log all species that appear. species class is for internal simulation purposes. This is for output.
 class LogSpecies
 {
 
@@ -37,17 +33,17 @@ public:
 
     bool isFluff();
     quint32 maxSizeIncludingChildren();
-    QString writeNewickString(int childIndex, quint64 lastTimeBase, bool killfFuff);
-    QString writeData(int childIndex, quint64 lastTimeBase, bool killfFuff, quint64 parentID = 0);
+    QString writeNewickString(int childIndex, quint64 lastTimeBase, bool killFluff);
+    QString writeData(int childIndex, quint64 lastTimeBase, bool killFluff, quint64 parentID = 0);
     QString writeDataLine(quint64 start, quint64 end, quint64 speciesID, quint64 parentID);
 
-    LogSpecies *parent{};
-    QList<LogSpeciesDataItem *> dataItems;
-    QList<LogSpecies *> children;
     quint32 maxSize{};
-    quint64 id{};
+    quint64 ID{};
     quint64 timeOfFirstAppearance{};
     quint64 timeOfLastAppearance{};
+    LogSpecies *parent{};
+    QList<LogSpeciesDataItem *>dataItems;
+    QList<LogSpecies *>children;
 };
 
 #endif // LOGSPECIES_H

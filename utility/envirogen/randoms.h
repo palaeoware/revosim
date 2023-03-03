@@ -21,23 +21,30 @@
 #include <QTime>
 #include <QFile>
 #include <QMessageBox>
+#include <QRandomGenerator>
 
 class randoms
 {
 public:
     randoms();
-    ~randoms();
-    quint16 gen_Rand16();
-    quint8 gen_Rand8();
-    double gen_float();
+    quint8 rand8();
+    quint16 rand16();
+    quint32 rand32();
+    quint64 rand64();
+    double randDouble();
 
 private:
-    quint16 random_array[65536];
-    quint16 nextrandom;
-    void load_randoms();
+    quint8 randoms8[65536];
+    quint16 randoms16[65536];
+    quint32 randoms32[65536];
+    quint64 randoms64[65536];
+    const quint8 mask8 = ~0;
+    const quint16 mask16 = ~0;
+    void newRandoms8();
+    void newRandoms16();
+    void newRandoms32();
+    void newRandoms64();
+    quint16 nextRandom8, nextRandom16, nextRandom32, nextRandom64;
 };
-
-// This is key to making simulation randoms accessible from mainwindow.cpp
-extern randoms *simulation_randoms;
 
 #endif // RANDOMS_H

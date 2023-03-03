@@ -19,10 +19,8 @@
 #define LOGSPECIESDATAITEM_H
 
 #include <QtGlobal>
+#include "globals.h"
 
-/**
- * @brief The LogSpeciesDataItem class
- */
 class LogSpeciesDataItem
 {
 public:
@@ -30,6 +28,7 @@ public:
 
     quint64 iteration{};
     quint64 sampleGenome{};
+    quint32 sampleMultiWordGenome[MAX_GENOME_WORDS]; //This is used to store (and is populated with) the *modal* genome of the species
     quint32 size{}; //number of critters
     quint32 genomicDiversity{}; //number of genomes
     quint16 cellsOccupied{}; //number of cells found in - 1 (as real range is 1-65536, to fit in 0-65535)
@@ -40,6 +39,8 @@ public:
     quint8 minEnvironment[3] {}; //min red, green, blue found in
     quint8 maxEnvironment[3] {}; //max red, green, blue found in
     quint8 meanEnvironment[3] {}; //mean environmental colour found in
+    const QString sharedCSVoutput();
+    static QString headersForSharedOutput();
 };
 
 #endif // LOGSPECIESDATAITEM_H

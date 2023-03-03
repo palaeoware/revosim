@@ -19,11 +19,29 @@ MOC_DIR += build
 OBJECTS_DIR += build
 
 SOURCES += main.cpp \
+    bitcountsystem.cpp \
+    breedsystem.cpp \
+    cellsettings.cpp \
+    custommemorymanager.cpp \
+    environmentfitnesssystem.cpp \
+    genomecomparisonsystem.cpp \
+    genomehashtable.cpp \
+    groupdata.cpp \
+    hashablegenome.cpp \
+    imagesequence.cpp \
+    interactionsystem.cpp \
+    linkageclass.cpp \
+    linkagesdialog.cpp \
+    logsimulation.cpp \
     mainwindow.cpp \
+    mutationsystem.cpp \
+    pathogenssystem.cpp \
+    randoms.cpp \
     simmanager.cpp \
     critter.cpp \
     populationscene.cpp \
     environmentscene.cpp \
+    simsettings.cpp \
     sortablegenome.cpp \
     analyser.cpp \
     genomecomparison.cpp \
@@ -33,13 +51,38 @@ SOURCES += main.cpp \
     logspecies.cpp \
     logspeciesdataitem.cpp \
     about.cpp \
-    darkstyletheme.cpp
+    darkstyletheme.cpp \
+    speciesbinentry.cpp \
+    speciesidsystem.cpp \
+    system.cpp \
+    test.cpp \
+    variablebreedsystem.cpp \
+    variablemutatesystem.cpp \
+    visualisationsystem.cpp
 
 HEADERS += mainwindow.h \
+    bitcountsystem.h \
+    breedsystem.h \
+    cellsettings.h \
+    custommemorymanager.h \
+    environmentfitnesssystem.h \
+    genomecomparisonsystem.h \
+    genomehashtable.h \
+    groupdata.h \
+    hashablegenome.h \
+    imagesequence.h \
+    interactionsystem.h \
+    linkageclass.h \
+    linkagesdialog.h \
+    logsimulation.h \
+    mutationsystem.h \
+    pathogenssystem.h \
+    randoms.h \
     simmanager.h \
     critter.h \
     populationscene.h \
     environmentscene.h \
+    simsettings.h \
     sortablegenome.h \
     analyser.h \
     genomecomparison.h \
@@ -50,10 +93,18 @@ HEADERS += mainwindow.h \
     logspeciesdataitem.h \
     about.h \
     darkstyletheme.h \
-    globals.h
+    globals.h \
+    speciesbinentry.h \
+    speciesidsystem.h \
+    system.h \
+    test.h \
+    variablebreedsystem.h \
+    variablemutatesystem.h \
+    visualisationsystem.h
 
 FORMS += mainwindow.ui \
     genomecomparison.ui \
+    linkagesdialog.ui \
     reseed.ui \
     about.ui
 
@@ -65,9 +116,6 @@ RESOURCES += \
 
 #Needed to use C++ lamda functions
 CONFIG += c++11
-
-#Needed to make binaries launchable from file in Ubuntu - GCC default link flag -pie on newer Ubuntu versions this so otherwise recognised as shared library
-QMAKE_LFLAGS += -no-pie
 
 DISTFILES += \
     ../LICENSE \

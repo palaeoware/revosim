@@ -264,10 +264,20 @@
             <item>
              <widget class="QLabel" name="label_2">
               <property name="text">
-               <string>&lt;b&gt;Environment:&lt;/b&gt;</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Environment/Linkage:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="environmentWindowComboBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
               </property>
              </widget>
             </item>
@@ -315,6 +325,19 @@
      </widget>
     </item>
     <item>
+     <widget class="QTextEdit" name="testLog">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="textInteractionFlags">
+       <set>Qt::TextSelectableByMouse</set>
+      </property>
+     </widget>
+    </item>
+    <item>
      <widget class="QFrame" name="frame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Maximum">
@@ -344,7 +367,8 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item>        <widget class="QScrollArea" name="scrollArea">
+       <item>
+        <widget class="QScrollArea" name="scrollArea">
          <property name="verticalScrollBarPolicy">
           <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
@@ -360,14 +384,23 @@
             <x>0</x>
             <y>0</y>
             <width>1288</width>
-            <height>69</height>
+            <height>68</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_5">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <property name="sizeConstraint">
+              <enum>QLayout::SetMinAndMaxSize</enum>
+             </property>
              <item>
               <widget class="QLabel" name="batchLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>&lt;b&gt;Batch:&lt;/b&gt;</string>
                </property>
@@ -375,13 +408,38 @@
              </item>
              <item>
               <widget class="QLabel" name="LabelBatch">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>1/1</string>
                </property>
               </widget>
              </item>
              <item>
+              <spacer name="horizontalSpacer_5">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QLabel" name="iterationLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>&lt;b&gt;Iteration:&lt;/b&gt;</string>
                </property>
@@ -395,13 +453,38 @@
              </item>
              <item>
               <widget class="QLabel" name="LabelIteration">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>0</string>
                </property>
               </widget>
              </item>
              <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QLabel" name="iterationsperhourLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>&lt;b&gt;iterations/h:&lt;/b&gt;</string>
                </property>
@@ -412,13 +495,38 @@
              </item>
              <item>
               <widget class="QLabel" name="LabelIterationsPerHour">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>0</string>
                </property>
               </widget>
              </item>
              <item>
+              <spacer name="horizontalSpacer_7">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QLabel" name="crittersLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>&lt;b&gt;Organisms:&lt;/b&gt;</string>
                </property>
@@ -429,13 +537,38 @@
              </item>
              <item>
               <widget class="QLabel" name="LabelCritters">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>1</string>
                </property>
               </widget>
              </item>
              <item>
+              <spacer name="horizontalSpacer_8">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QLabel" name="msPerIterationLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>&lt;b&gt;ms/iteration:&lt;/b&gt;</string>
                </property>
@@ -446,13 +579,38 @@
              </item>
              <item>
               <widget class="QLabel" name="LabelSpeed">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>-</string>
                </property>
               </widget>
              </item>
              <item>
+              <spacer name="horizontalSpacer_9">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QLabel" name="meanFitLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>&lt;b&gt;Mean Fit:&lt;/b&gt;</string>
                </property>
@@ -463,13 +621,38 @@
              </item>
              <item>
               <widget class="QLabel" name="LabelFitness">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>-</string>
                </property>
               </widget>
              </item>
              <item>
+              <spacer name="horizontalSpacer_10">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QLabel" name="speciesLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>&lt;b&gt;Species:&lt;/b&gt;</string>
                </property>
@@ -480,13 +663,38 @@
              </item>
              <item>
               <widget class="QLabel" name="LabelSpecies">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>-</string>
                </property>
               </widget>
              </item>
              <item>
+              <spacer name="horizontalSpacer_11">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QLabel" name="environmentLabel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>&lt;b&gt;Environment:&lt;/b&gt;</string>
                </property>
@@ -497,8 +705,17 @@
              </item>
              <item>
               <widget class="QLabel" name="LabelEnvironment">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>[Not defined]</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -549,7 +766,7 @@
      <x>0</x>
      <y>0</y>
      <width>1292</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuCommands">
@@ -574,8 +791,8 @@
     <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionLoad"/>
-    <addaction name="actionSaveSettings"/>
-    <addaction name="actionLoadSettings"/>
+    <addaction name="actionSave_settings"/>
+    <addaction name="actionLoad_settings"/>
     <addaction name="separator"/>
     <addaction name="actionCount_peaks"/>
     <addaction name="separator"/>
@@ -585,15 +802,27 @@
     <property name="title">
      <string>Tools</string>
     </property>
+    <widget class="QMenu" name="menuCustom_Logging">
+     <property name="title">
+      <string>Custom Logging</string>
+     </property>
+     <addaction name="actionFitness_logging_to_File"/>
+     <addaction name="actionRecombination_logging"/>
+     <addaction name="actionVariable_mutation_logging"/>
+     <addaction name="actionSpeciation_logging"/>
+     <addaction name="actionDisparity_logging"/>
+    </widget>
     <addaction name="actionGenomeComparison"/>
     <addaction name="actionSettings_Dock"/>
+    <addaction name="actionOutput_Dock"/>
+    <addaction name="menuCustom_Logging"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
      <string>Help</string>
     </property>
+    <addaction name="actionReportBugIssueFeatureRequest"/>
     <addaction name="actionCode_on_GitHub"/>
-    <addaction name="actionBugIssueFeatureRequest"/>
     <addaction name="actionOnline_User_Manual"/>
     <addaction name="separator"/>
     <addaction name="actionAbout"/>
@@ -732,7 +961,7 @@
     <string>Ctrl+Shift+P</string>
    </property>
   </action>
-  <action name="actionSaveSettings">
+  <action name="actionSave_settings">
    <property name="text">
     <string>Save settings...</string>
    </property>
@@ -740,7 +969,7 @@
     <string>Ctrl+Shift+S</string>
    </property>
   </action>
-  <action name="actionLoadSettings">
+  <action name="actionLoad_settings">
    <property name="text">
     <string>Load settings...</string>
    </property>
@@ -784,9 +1013,63 @@
     <string>Settings Dock</string>
    </property>
   </action>
-  <action name="actionBugIssueFeatureRequest">
+  <action name="actionReportBugIssueFeatureRequest">
    <property name="text">
     <string>Report Bug/Issue/Feature Request</string>
+   </property>
+  </action>
+  <action name="actionVariable_mutation_logging">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Variable mutation logging</string>
+   </property>
+  </action>
+  <action name="actionSpeciation_logging">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Speciation logging</string>
+   </property>
+  </action>
+  <action name="actionDisparity_logging">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Disparity logging</string>
+   </property>
+  </action>
+  <action name="actionOutput_Dock">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Output Dock</string>
+   </property>
+  </action>
+  <action name="actionUseNewSpeciesID">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>UseNewSpeciesID</string>
+   </property>
+  </action>
+  <action name="actionGatherBySpecies">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>GatherBySpecies</string>
    </property>
   </action>
  </widget>

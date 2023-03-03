@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>11. Command Line Options &mdash; REvoSim 3.0.0 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="12. Tests" href="tests.html" />
+    <link rel="prev" title="10.2. Custom Random Numbers" href="customrandomnumbers.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> REvoSim
+            <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
+          </a>
+              <div class="version">
+                3.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">2. Compiling, Installation, and Requirements</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windowlayout.html">3. Window Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsorganisms.html">4. Configuring your Organisms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingssimulation.html">5. Setting up the Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsinteractions.html">6. Configuring Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">7. Configuring Outputs and Run End Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loggingsim.html">8. Running Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">9. Genome comparison dock</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">10. Advanced Options</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">11. Command Line Options</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#running-via-ssh">11.1. Running via SSH</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#single-letter-switches">11.2. Single-letter switches</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#long-option-only-switches">11.3. Long option only switches</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">12. Tests</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">REvoSim</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><span class="section-number">11. </span>Command Line Options</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/commandline.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="command-line-options">
+<span id="commandline"></span><h1><span class="section-number">11. </span>Command Line Options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h1>
+<p>REvoSim provides command line options to enable full control of simulations from command line or batch file environments. Every parameter configurable in the GUI can be set from the command line, and the program can be instructed to execute a simulation and then exit.</p>
+<p>This document does not provide instructions on how to write a batch file, or determine correct paths (which will differ between operating systems).</p>
+<p>Command line switches are documented below, and examples are given of their usage. Any combination of switches in any order is allowed. Note that on some systems, path names with spaces may cause problems; these are best avoided, but alternatively paths can be encased in double quotes if they contain a space.</p>
+<p>Note in particular the –auto command, which automatically starts a simulation, and exits the program at its end. This will be required in most batch scenarios, as will the -k switch to turn on one or both types of logging.</p>
+<p>e.g. a command line to run a similation on the environment files in “c:\revosim\data\env1” for 50000 iterations, using normal (running) logs, and with settings at defaults except for ‘toroidal’ (on):</p>
+<p>c:\revosim\revosim.exe -e c:\revosim\data\env1 -t=On -k=Normal –auto=50000</p>
+<p>On Linux this command (assuming you are in the same folder as the REvoSim binary):</p>
+<p>./revosim -e /home/user/environment/ -t=On -k=Normal –auto=50000</p>
+<section id="running-via-ssh">
+<h2><span class="section-number">11.1. </span>Running via SSH<a class="headerlink" href="#running-via-ssh" title="Permalink to this headline">¶</a></h2>
+<p>In many instances it may be beneficial to run REvoSim on a remote machine. With remote desktopping solutions that provide a GUI, this can be achieved very easily following the normal operating procedures. However, due to the development of REvoSim, launching the software via the command linelaunches the GUI. This means that it is not possible to launch the command line version via SSH unless X-forwarding or another such solution is implemented. However, if no interaction with the GUI is required, there are a number of solutions that can bypass this requirement. The simplest, that will work on the mjaority of systems with Qt installed, is to include the flag -platform offscreen:</p>
+<p>./revosim –auto 1000 -platform offscreen</p>
+<p>This co-opts a Qt platform plugin to simply render to an offscreen buffer. Another option is to install XVFB - this is an “X server that can run on machines with no display hardware and no physical input device” (<a class="reference external" href="https://www.x.org/releases/X11R7.6/doc/man/man1/Xvfb.1.xhtml">More information</a>). Once installed, you can launch revosim as follows:</p>
+<p>xvfb-run -a  ./revosim –auto 1000</p>
+<p>You can then use e.g. SFTP to collect output files as required.</p>
+</section>
+<section id="single-letter-switches">
+<h2><span class="section-number">11.2. </span>Single-letter switches<a class="headerlink" href="#single-letter-switches" title="Permalink to this headline">¶</a></h2>
+<p>These can be used as either in single letter form (-a) or long form (--startage - note the double -). All require a value, which can be separated from the switch using a space or an equals - or in single character mode, without a separator at all (this doesn’t work in – long form, where a separator IS required). Where no parameter is noted in square brackets this is a boolean option, which is either On or Off (you can also use 1/0, true/false, yes/no, y/n - which are not case sensitive). e.g.</p>
+<ul class="simple">
+<li><p>-a30</p></li>
+<li><p>-a=30</p></li>
+<li><p>-a 30</p></li>
+<li><p>--startage=30</p></li>
+<li><p>--startage 30</p></li>
+</ul>
+<p>For a boolean:</p>
+<ul class="simple">
+<li><p>-q On</p></li>
+<li><p>-q 1</p></li>
+<li><p>-q=truE</p></li>
+<li><p>-q Y</p></li>
+<li><p>--recalcfitness False</p></li>
+<li><p>--recalcfitness = Y</p></li>
+</ul>
+<p>Full list of single-letter switches (also available using switch -h, help):</p>
+<ul>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-a</span>, <span class="option">--startage <var>&lt;age (integer)&gt;</var></span></kbd></dt>
+<dd><p>Starting age for organisms.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-b</span>, <span class="option">--breedthreshold <var>&lt;threshold (integer)&gt;</var></span></kbd></dt>
+<dd><p>Breed threshold.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-c</span>, <span class="option">--breedcost <var>&lt;cost (integer)&gt;</var></span></kbd></dt>
+<dd><p>Breed cost.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-d</span>, <span class="option">--maxdifftobreed <var>&lt;maxdifftobreed (integer)&gt;</var></span></kbd></dt>
+<dd><p>Maximum difference to breed.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-e</span>, <span class="option">--environment <var>&lt;directory&gt;</var></span></kbd></dt>
+<dd><p>Directory containing environment images.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-f</span>, <span class="option">--usemaxdifftobreed <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Use maximum difference to breed criterion</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-g</span>, <span class="option">--breedwithinspecies <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Only allow breeding within a species</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-i</span>, <span class="option">--disperal <var>&lt;distance (integer)&gt;</var></span></kbd></dt>
+<dd><p>maximum dispersal distance.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-j</span>, <span class="option">--outputpath <var>&lt;path&gt;</var></span></kbd></dt>
+<dd><p>path for output logs.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-k</span>, <span class="option">--logtype <var>&lt;Phylogeny/Normal/Both&gt;</var></span></kbd></dt>
+<dd><p>logs to generate (phylogeny is end run log, normal is running log).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-l</span>, <span class="option">--excludenodescendents <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Exclude species without descendents from phylogeny logs</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-m</span>, <span class="option">--environmentmode <var>&lt;mode (Static|Once|Loop|Bounce)&gt;</var></span></kbd></dt>
+<dd><p>Environment file cycling mode.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-n</span>, <span class="option">--energy <var>&lt;energy (integer)&gt;</var></span></kbd></dt>
+<dd><p>Energy input.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-o</span>, <span class="option">--tolerance <var>&lt;tolerance (integer)&gt;</var></span></kbd></dt>
+<dd><p>tolerance.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-p</span>, <span class="option">--phylogeny <var>&lt;Off|Basic|Phylogeny|Metrics&gt;</var></span></kbd></dt>
+<dd><p>Phylogeny logging mode.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-q</span>, <span class="option">--recalcfitness <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>recalculate fitness each iteration.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-r</span>, <span class="option">--refreshrate <var>&lt;rate (integer)&gt;</var></span></kbd></dt>
+<dd><p>environment refresh rate.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-s</span>, <span class="option">--slots <var>&lt;slots (integer)&gt;</var></span></kbd></dt>
+<dd><p>Slots per pixel.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-t</span>, <span class="option">--toroidal <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Toroidal environment</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-u</span>, <span class="option">--mutation <var>&lt;chance (integer)&gt;</var></span></kbd></dt>
+<dd><p>Chance of mutation (0-255).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-v</span>, <span class="option">--csv <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Use CSV format for normal log.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-w</span>, <span class="option">--interpolate <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Interpolate environmental images</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-x</span>, <span class="option">--gridx <var>&lt;size (integer)&gt;</var></span></kbd></dt>
+<dd><p>Grid (image) size, x.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-y</span>, <span class="option">--gridy <var>&lt;size (integer)&gt;</var></span></kbd></dt>
+<dd><p>Grid (image) size, y.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">-z</span>, <span class="option">--genomesize <var>&lt;size (integer)&gt;</var></span></kbd></dt>
+<dd><p>Number of words in genome.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+<section id="long-option-only-switches">
+<h2><span class="section-number">11.3. </span>Long option only switches<a class="headerlink" href="#long-option-only-switches" title="Permalink to this headline">¶</a></h2>
+<p>We ran out of letters! These require the long format, with --. Otherwise they work as above.</p>
+<ul>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--polling <var>&lt;rate [integer]&gt;</var></span></kbd></dt>
+<dd><p>Set polling rate for logging and screen refresh.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--auto <var>&lt;iterations [integer]&gt;</var></span></kbd></dt>
+<dd><p>Automatically start simulation and exit program after completion of specified number of iterations</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--nonspatial <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Use non-spatial simulation mode.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--minspeciessize <var>&lt;size [integer]&gt;</var></span></kbd></dt>
+<dd><p>Minimum species size to appear in logs</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--fitnesstarget <var>&lt;target [integer]&gt;</var></span></kbd></dt>
+<dd><p>Fitness Target</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--breed <var>&lt;Obligate/Facultative/Variable/Asexual&gt;</var></span></kbd></dt>
+<dd><p>Breeding mode</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--variablemutate <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Variable mutation rates</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--nogui <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Don’t update GUI</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--pathogens <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Turn pathogens on or off</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--pathogenmutate <var>&lt;chance (integer)&gt;</var></span></kbd></dt>
+<dd><p>Chance of mutation (0-255).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--pathogenfrequency <var>&lt;frequency (integer)&gt;</var></span></kbd></dt>
+<dd><p>Frequency pathogens are applied.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--customlogging <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Record all custom logs.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--disparityLogging <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Record disparity log.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--interactblocks <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Turn block interactions on/off.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--multibreedlist <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Turn multiple breed lists on/off.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--interactrate <var>&lt;frequency (integer)&gt;</var></span></kbd></dt>
+<dd><p>Frequency at which interactions occur.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--minpredatorscore <var>&lt;threshold (integer)&gt;</var></span></kbd></dt>
+<dd><p>Minimum predator score required for direct energy theft.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--predationefficiency <var>&lt;integer&gt;</var></span></kbd></dt>
+<dd><p>Trophic efficiency of direct energy theft predation.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--interactXOR <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Turns XOR interactions mechanism on/off.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--log</span>, <span class="option">--logFile <var>&lt;file&gt;</var></span></kbd></dt>
+<dd><p>XML File containing the log outputs.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--v2log <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Initiates v2.0.0 logging style.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--interactfitness <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Interactions modify fitness.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--interactenergy <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Interactions modify energy.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--li_population <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Log images for population</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--li_fitness <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Log images for mean fitness</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--li_sys_visualisation <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Log images for visualisation system 1</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--li_sys_visualisation2 <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Log images for visualisation system 2</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--li_species <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Log images for species</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--li_settles <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Log images for settles</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--li_fails <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Log images for breed/settle fails</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--li_environment <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Log images for environenment</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--sys_fitness <var>&lt;Word string&gt;</var></span></kbd></dt>
+<dd><p>Fitness system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--sys_breed <var>&lt;Word string&gt;</var></span></kbd></dt>
+<dd><p>Breed system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--sys_mutate <var>&lt;Word string&gt;</var></span></kbd></dt>
+<dd><p>Mutate system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--sys_var_mutate <var>&lt;Word string&gt;</var></span></kbd></dt>
+<dd><p>Variable mutate system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--sys_var_breed <var>&lt;Word string&gt;</var></span></kbd></dt>
+<dd><p>Variable breed system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--sys_pathogens <var>&lt;Word string&gt;</var></span></kbd></dt>
+<dd><p>Pathogens system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--sys_species_ID <var>&lt;Word string&gt;</var></span></kbd></dt>
+<dd><p>Species ID system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--sys_interactions <var>&lt;Word string&gt;</var></span></kbd></dt>
+<dd><p>Interactions system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--sys_visualisation <var>&lt;Word string&gt;</var></span></kbd></dt>
+<dd><p>Visualisation system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--sys_visualisation2 <var>&lt;Word string&gt;</var></span></kbd></dt>
+<dd><p>visualisation2 system</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--settings <var>&lt;file&gt;</var></span></kbd></dt>
+<dd><p>Load a REvoSim settings file.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--L1_variable <var>&lt;Energy/No_selection/Mutation_rate&gt;</var></span></kbd></dt>
+<dd><p>Variable to be linked (required).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--L1_imageSequence <var>&lt;directory&gt;</var></span></kbd></dt>
+<dd><p>Directory containing linkage mask images (required).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--L1_mode <var>&lt;mode (Static|Once|Loop|Bounce)&gt;</var></span></kbd></dt>
+<dd><p>Image file cycling mode (defaults to static).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--L1_interpolate <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Image interpolation (defaults to true).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--L1_change_rate <var>&lt;rate (integer)&gt;</var></span></kbd></dt>
+<dd><p>Image refresh rate (defaults to 100).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--L2_variable <var>&lt;Energy/No_selection/Mutation_rate&gt;</var></span></kbd></dt>
+<dd><p>Second variable to be linked (required).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--L2_imageSequence <var>&lt;directory&gt;</var></span></kbd></dt>
+<dd><p>Directory containing second linkage mask images (required).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--L2_mode <var>&lt;mode (Static|Once|Loop|Bounce)&gt;</var></span></kbd></dt>
+<dd><p>Image file cycling mode (defaults to static).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--L2_interpolate <var>&lt;On/Off&gt;</var></span></kbd></dt>
+<dd><p>Image interpolation (defaults to true).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="option-list">
+<dt><kbd><span class="option">--L2_change_rate <var>&lt;rate (integer)&gt;</var></span></kbd></dt>
+<dd><p>Image refresh rate</p>
+</dd>
+</dl>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="customrandomnumbers.html" class="btn btn-neutral float-left" title="10.2. Custom Random Numbers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tests.html" class="btn btn-neutral float-right" title="12. Tests" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

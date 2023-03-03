@@ -21,6 +21,7 @@
 #include <QString>
 #include <QStyle>
 #include <QDesktopWidget>
+#include <QTimer>
 
 #include "mainwindow.h"
 #include "globals.h"
@@ -35,10 +36,11 @@ int main(int argc, char *argv[])
 
     //Splash image
     QPixmap splashPixmap(":/palaeoware_logo_square_Envirogen.png");
-    QSplashScreen splash(splashPixmap, Qt::WindowStaysOnTopHint);
-    splash.show();
-    splash.showMessage("<font><b>" + QString(PRODUCTNAME) + " - " + QString(PRODUCTTAG) + "</b></font>", Qt::AlignHCenter, Qt::white);
-    a.processEvents();
+    QSplashScreen *splash = new QSplashScreen(splashPixmap, Qt::WindowStaysOnTopHint);
+    splash->show();
+    splash->showMessage("<font><b>" + QString(PRODUCTNAME) + " - " + QString(PRODUCTTAG) + "</b></font>", Qt::AlignHCenter, Qt::white);
+    QApplication::processEvents();
+    QTimer::singleShot(5000, splash, SLOT(close()));
 
     MainWindow w;
     w.show();

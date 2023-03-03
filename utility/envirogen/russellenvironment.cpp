@@ -20,6 +20,7 @@
 #include <QString>
 #include <QFile>
 #include <QApplication>
+#include <QVarLengthArray>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -36,12 +37,12 @@ russellenvironment::russellenvironment()
     for (int i = 0; i < nseed; i++)
     {
         //Initialise here for seeds at start
-        for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)Rand8();
-        seeds[i].n = ((double)Rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
-        seeds[i].m = ((double)Rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
+        for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)MainWin->simulationRandoms->rand8();
+        seeds[i].n = ((double)MainWin->simulationRandoms->rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
+        seeds[i].m = ((double)MainWin->simulationRandoms->rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
         seeds[i].nv = 0.;
         seeds[i].mv = 0.;
-        int r = Rand8();
+        int r = MainWin->simulationRandoms->rand8();
         seeds[i].size = ((double)r * (double)maxsize) / 256.;
         seeds[i].initialised = true;
     }
@@ -77,23 +78,23 @@ void russellenvironment::regenerate()
         //Check initialised - do this so can add more seeds during run if needed
         if (!seeds[i].initialised)
         {
-            for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)Rand8();
-            seeds[i].n = ((double)Rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
-            seeds[i].m = ((double)Rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
+            for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)MainWin->simulationRandoms->rand8();
+            seeds[i].n = ((double)MainWin->simulationRandoms->rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
+            seeds[i].m = ((double)MainWin->simulationRandoms->rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
             seeds[i].nv = 0.;
             seeds[i].mv = 0.;
-            int r = Rand8();
+            int r = MainWin->simulationRandoms->rand8();
             seeds[i].size = ((double)r * (double)maxsize) / 256.;
         }
 
         //na to be added to velocity n - first come up with this iteration's value
         //+/-RAND    //limit it to max acceleration //apply factor
-        na = ((double)Rand8() - 128.) * ((double)maxacc / 128.) * factor;
+        na = ((double)MainWin->simulationRandoms->rand8() - 128.) * ((double)maxacc / 128.) * factor;
         //Apply soft limit if velocity is above/below max and acc is in wrong direction//
         if (fabs(seeds[i].nv) > maxvel && (seeds[i].nv * na) > 0)na *= (1. / ((fabs(seeds[i].nv) - maxvel + 1) * 5.));
         // 5 == 'strength' of soft limit
 
-        ma = ((double)Rand8() - 128.) * ((double)maxacc / 128.) * factor;
+        ma = ((double)MainWin->simulationRandoms->rand8() - 128.) * ((double)maxacc / 128.) * factor;
         if (fabs(seeds[i].mv) > maxvel && (seeds[i].mv * ma) > 0)ma *= (1. / ((fabs(seeds[i].mv) - maxvel + 1) * 5.));
 
         //Accelerations to apply to nv/mv are now sorted.... Apply next
@@ -102,10 +103,10 @@ void russellenvironment::regenerate()
 
         seeds[i].n += (seeds[i].nv * factor);
         seeds[i].m += (seeds[i].mv * factor);
-        for (int j = 0; j < 3; j++)seeds[i].colour[j] += factor * ((double)((Rand8() - 128.) * ((double)maxcvel / 128.)));
+        for (int j = 0; j < 3; j++)seeds[i].colour[j] += factor * ((double)((MainWin->simulationRandoms->rand8() - 128.) * ((double)maxcvel / 128.)));
         for (int j = 0; j < 3; j++)if ((int)seeds[i].colour[j] > 255)seeds[i].colour[j] = 255.;
         for (int j = 0; j < 3; j++)if ((int)seeds[i].colour[j] <= 0)seeds[i].colour[j] = 0.;
-        seeds[i].size += factor * ((Rand8() - 128) * ((double)sizevel / 128.));
+        seeds[i].size += factor * ((MainWin->simulationRandoms->rand8() - 128) * ((double)sizevel / 128.));
 
 
         if (periodic)
@@ -141,9 +142,14 @@ void russellenvironment::regenerate()
 void russellenvironment::laplace()
 {
 
-
     //Interpolate
     //First fill colours
+
+    //TODO - fix all multidimensional arrays to what we see in
+    //https://stackoverflow.com/questions/1946830/multidimensional-variable-size-array-in-c
+
+
+
     double colourMap[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()][3];
     //Do it all in double colourMap so don't get errors from using environment (integers)
     int laplace[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()];

@@ -17,27 +17,27 @@
 
 #include "darkstyletheme.h"
 
-/**
- * @brief DarkStyleTheme::DarkStyleTheme
+/*!
+ * \brief DarkStyleTheme::DarkStyleTheme
  */
 DarkStyleTheme::DarkStyleTheme(): DarkStyleTheme(styleBase())
 {
 
 }
 
-/**
- * @brief DarkStyleTheme::DarkStyleTheme
- * @param style
+/*!
+ * \brief DarkStyleTheme::DarkStyleTheme
+ * \param style
  */
 DarkStyleTheme::DarkStyleTheme(QStyle *style): QProxyStyle(style)
 {
 
 }
 
-/**
- * @brief DarkStyleTheme::styleBase
- * @param style
- * @return
+/*!
+ * \brief DarkStyleTheme::styleBase
+ * \param style
+ * \return
  */
 QStyle *DarkStyleTheme::styleBase(QStyle *style) const
 {
@@ -45,18 +45,18 @@ QStyle *DarkStyleTheme::styleBase(QStyle *style) const
     return base;
 }
 
-/**
- * @brief DarkStyleTheme::baseStyle
- * @return
+/*!
+ * \brief DarkStyleTheme::baseStyle
+ * \return
  */
 QStyle *DarkStyleTheme::baseStyle() const
 {
     return styleBase();
 }
 
-/**
- * @brief DarkStyleTheme::polish
- * @param palette
+/*!
+ * \brief DarkStyleTheme::polish
+ * \param palette
  */
 void DarkStyleTheme::polish(QPalette &palette)
 {
@@ -83,9 +83,9 @@ void DarkStyleTheme::polish(QPalette &palette)
     palette.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(127, 127, 127));
 }
 
-/**
- * @brief DarkStyleTheme::polish
- * @param app
+/*!
+ * \brief DarkStyleTheme::polish
+ * \param app
  */
 void DarkStyleTheme::polish(QApplication *app)
 {
@@ -97,11 +97,11 @@ void DarkStyleTheme::polish(QApplication *app)
     QApplication::setFont(defaultFont);
 
     // Load CSS Stylesheet from resources
-    QFile darkstyleQSS(QStringLiteral(":/darkstyle/stylesheet_dark.qss"));
-    if (darkstyleQSS.open(QIODevice::ReadOnly | QIODevice::Text)) {
+    QFile darkstyle_qss(QStringLiteral(":/darkstyle/stylesheet_dark.qss"));
+    if (darkstyle_qss.open(QIODevice::ReadOnly | QIODevice::Text)) {
         // Set stylesheet
-        QString stylesheet_qss = QString::fromLatin1(darkstyleQSS.readAll());
+        QString stylesheet_qss = QString::fromLatin1(darkstyle_qss.readAll());
         app->setStyleSheet(stylesheet_qss);
-        darkstyleQSS.close();
+        darkstyle_qss.close();
     }
 }

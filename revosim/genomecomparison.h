@@ -28,9 +28,6 @@ namespace Ui {
 class GenomeComparison;
 }
 
-/**
- * @brief The GenomeComparison class
- */
 class GenomeComparison : public QWidget
 {
     Q_OBJECT
@@ -38,7 +35,6 @@ class GenomeComparison : public QWidget
 public:
     explicit GenomeComparison(QWidget *parent = nullptr);
     ~GenomeComparison();
-
     Ui::GenomeComparison *ui;
 
     bool addGenomeCritter(Critter critter, quint8 *environment);
@@ -46,6 +42,7 @@ public:
     int accessGenomeListLength();
     QByteArray saveComparison();
     QString accessGenome(int row);
+    bool returnAll();
 
 private slots:
     //---- Actions
@@ -61,22 +58,22 @@ private:
 
     //---- Tables
     bool renderGenomesTable();
-    void insertRow(
-        int row,
-        const QString &genomeName,
-        const QString &genomeStr,
-        int environmentR,
-        int environmentG,
-        int environmentB,
-        int genomeR,
-        int genomeG,
-        int genomeB,
-        int nonCodeR,
-        int nonCodeG,
-        int nonCodeB,
-        int fitness,
-        QTableWidget *table,
-        const QString &comparisonMask = QString(""));
+    void insertRow(int row,
+                   const QString &genomeName,
+                   int environmentR,
+                   int environmentG,
+                   int environmentB,
+                   int speciesID,
+                   int speciesR,
+                   int speciesG,
+                   int speciesB,
+                   int environmentalFitness,
+                   int fitness,
+                   int lifetimeEnergy,
+                   int stolenEnergy,
+                   const QString &genomeStr,
+                   QTableWidget *table,
+                   const QString &comparisonMask = QString(""));
     bool renderCompareTable();
 
     //---- Buttons
@@ -85,6 +82,7 @@ private:
 
     //---- Table Functions
     QList<int> isGenomeChecked();
+    int calculateColumnCount();
 
     //---- Vars
     QList< QMap<QString, QString> > genomeList;

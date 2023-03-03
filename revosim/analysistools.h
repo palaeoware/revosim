@@ -20,8 +20,8 @@
 
 #include "logspecies.h"
 
-#include <QMap>
 #include <QList>
+#include <QMap>
 #include <QString>
 
 #define ANALYSIS_TOOL_CODE_GENERATE_TREE 0
@@ -31,12 +31,10 @@
 #define ANALYSIS_TOOL_CODE_COUNT_PEAKS 4
 #define ANALYSIS_TOOL_CODE_MAKE_NEWICK 5
 #define ANALYSIS_TOOL_CODE_WRITE_DATA 6
+#define ANALYSIS_TOOL_SPECIATION_LOG 6
 
 #define SCALE 100
 
-/**
- * @brief The LoggedSpecies class
- */
 class LoggedSpecies
 {
 public:
@@ -47,7 +45,6 @@ public:
     int sizes[SCALE] {};
     QList<float> averageSizes;
     QList<float> averageChanges;
-
     quint64 start{};
     quint64 end{};
     quint64 parent{};
@@ -56,15 +53,12 @@ public:
     quint64 genomes[SCALE] {};
 };
 
-/**
- * @brief The StasisSpecies class
- */
 class StasisSpecies
 {
 public:
     StasisSpecies();
 
-    quint64 id{};
+    quint64 ID{};
     qint64 start;
     qint64 end;
     QList<quint64> genomes;
@@ -72,16 +66,12 @@ public:
     QList<float> resampledAverageGenomeChanges;
 };
 
-/**
- * @brief The AnalysisTools class
- */
 class AnalysisTools
 {
 public:
     AnalysisTools();
 
     static QString returnBinary(quint64 genome);
-
     bool dataFileNeededCheck(int code);
     int findClosestIndex(QList <quint64>timeList, float lookFor, float slotWidth);
     QString generateTree(const QString &filename);
@@ -89,12 +79,13 @@ public:
     QString speciesRatesOfChange(const QString &filename);
     QString stasis(const QString &filename, int slotCount, float percentileCut, int qualifyingSlotCount);
     QString countPeaks(int r, int g, int b);
-    QString makeNewick(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude);
-    QString writeData(LogSpecies *root, quint64 minSpeciesSize, bool allowExclude);
+    QString makeNewick(LogSpecies *root);
+    QString writeData(LogSpecies *root);
+
 
 private:
     void makeListRecursive(QList<quint64> *magicList, QMap <quint64, LoggedSpecies> *speciesList,
-                           quint64 id, int insertPosition);
+                           quint64 ID, int insertPosition);
 };
 
 #endif // ANALYSISTOOLS_H
