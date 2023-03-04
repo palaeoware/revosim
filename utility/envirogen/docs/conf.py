@@ -22,13 +22,13 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'EnviroGen'
-copyright = '2018, Russell Garwood, Alan R.T. Spencer, Mark Sutton'
-author = 'Russell Garwood, Alan R.T. Spencer, Mark Sutton'
+copyright = '2023, Russell J. Garwood, Alan R.T. Spencer, Mark D. Sutton'
+author = 'Russell J. Garwood, Alan R.T. Spencer, Mark D. Sutton'
 
 # The short X.Y version
-version = '2.0.0'
+version = '3.0.0'
 # The full version, including alpha/beta/rc tags
-release = '2.0.0'
+release = '3.0.0'
 
 
 # -- General configuration ---------------------------------------------------

@@ -8,10 +8,11 @@ EnviroGen is a utility package to create highly customised image stacks which ca
 .. figure:: _static/palaeoware_logo_square_Envirogen.png
     :align: center
 
-t:@palaeoware
+t:`@palaeoware <https://twitter.com/palaeoware>`_
 
-w:https://github.com/palaeoware.
+e:palaeoware@gmail.com
 
+w:`https://github.com/palaeoware <https://github.com/palaeoware>`_
 
 Relevant references
 -------------------
