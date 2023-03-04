@@ -3,9 +3,10 @@
 
 
 Coded by:
- - Mark Sutton (m.sutton@imperial.ac.uk)
+ - Mark D. Sutton (m.sutton@imperial.ac.uk)
  - Russell J. Garwood (russell.garwood@gmail.com)
  - Alan R.T. Spencer (alan.spencer@imperial.ac.uk)
+ - Euan N. Furness (e.furness19@imperial.ac.uk)
 
 <p align="center">
   <img width="250" height="250" src="./resources/palaeoware_logo_square.png">
