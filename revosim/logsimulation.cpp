@@ -758,7 +758,6 @@ QString LogSimulation::writeCustomLog()
     QString out = "";
     if (logIterationText.length() > 2)out.append(processLogTextGeneral(logIterationText));
     if (logSpeciesText.length() > 2)out.append(processLogTextSpecies(logSpeciesText));
-    if (logSpeciesText.length() > 2)out.append(processLogTextSpecies(logSpeciesText));
     return out;
 };
 

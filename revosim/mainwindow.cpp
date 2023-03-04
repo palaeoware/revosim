@@ -1743,6 +1743,7 @@ QDockWidget *MainWindow::createLogSettingsDock()
 
     headerTextEdit = new QTextEdit(logSettingsDock);
     headerTextEdit->setMaximumHeight(150);
+    headerTextEdit->setWordWrapMode(QTextOption::WrapAnywhere);
     logSettingsGrid->addWidget(headerTextEdit, 5, 1, 1, 2);
 
     QLabel *itSettingsLabel = new QLabel("Iteration text");
@@ -1754,6 +1755,7 @@ QDockWidget *MainWindow::createLogSettingsDock()
 
     iterationTextEdit = new QTextEdit(logSettingsDock);
     iterationTextEdit->setMaximumHeight(200);
+    iterationTextEdit->setWordWrapMode(QTextOption::WrapAnywhere);
     logSettingsGrid->addWidget(iterationTextEdit, 9, 1, 1, 2);
 
     QPushButton *headerFromILogButton = new QPushButton("Write header from iteration log");
@@ -1773,6 +1775,7 @@ QDockWidget *MainWindow::createLogSettingsDock()
     logSettingsGrid->addWidget(logSpeciesInstructionsLabel, 11, 1, 1, 2);
 
     logTextEdit = new QTextEdit(logSettingsDock);
+    logTextEdit->setWordWrapMode(QTextOption::WrapAnywhere);
     logSettingsGrid->addWidget(logTextEdit, 13, 1, 1, 2);
 
     QPushButton *headerFromSLogButton = new QPushButton("Write header from species log");
