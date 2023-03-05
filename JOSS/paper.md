@@ -24,9 +24,9 @@ affiliations:
     index: 2
   - name: Department of Earth and Environmental Sciences, University of Manchester, UK
     index: 3
-  - name: Science Group, Natural History Museum, UK
+  - name: Natural History Museum, London, UK
     index: 4
-date: 13 February 2023
+date: 5 March 2023
 bibliography: paper.bib
 ---
 
@@ -36,7 +36,7 @@ Simulations are an important tool for understanding ecology and evolution becaus
 
 # Background
 
-REvoSim v2 [@garwood:2019] simulates the ecology of hundreds of thousands of sessile organisms on a spatially explicit environment grid. Each organism is a 64-bit binary genome. The first 32 genome bits determine the organism’s ability to collect energy from the environment by interacting with three independent environmental variables, each represented by one colour channel of an RGB image of the same size as the environment grid. The simulation proceeds in timesteps, during which organisms collect energy from their environment, breed, if they have sufficient energy and, after a fixed number of timesteps, die. Mutations may arise during breeding, and organisms are grouped into species based on a strict biological species concept [@mayr:1942], with breeding compatibility based on genetic similarity.
+REvoSim v2 [@garwood:2019] simulates the ecology of hundreds of thousands of sessile organisms on a spatially explicit environment grid. Each organism is a 64-bit binary genome. The first 32 genome bits determine the organism’s ability to collect energy from the environment by interacting with three independent environmental variables, each represented by one colour channel of an RGB image of the same size as the environment grid. The simulation proceeds in timesteps during which organisms collect energy from their environment, breed, if they have sufficient energy and, after a fixed number of timesteps, die. Mutations may arise during breeding, and organisms are grouped into species based on a strict biological species concept [@mayr:1942], with breeding compatibility based on genetic similarity.
 
 # New Features
 
@@ -52,7 +52,7 @@ REvoSim v3 incorporates an optional “pathogen layer” — a grid with identic
 Pathogens evolve over time, and may do so through drift or selection for virulence. When pathogens evolve through drift, each position on the grid contains a single pathogen which changes through mutation at a configurable rate. When pathogens evolve through selection, each position on the grid contains five pathogen genomes. In each timestep, the most virulent pathogen in each position in the pathogen grid, or positions adjacent to it, is applied, duplicated, and then returned, overwriting an existing pathogen.
 
 ## Variable masks
-REvoSim v3 adds a “masks” system that allows for the productivity and/or mutation rates of organisms to vary spatially and temporally within the simulation. Masks are image files with the same dimensions as the simulated environment, and the magnitude of a masked variable at any given position in the environment is equal to that variable’s global value, multiplied by the brightness (0-255) of the red channel of the pixel in the mask image at that position.
+REvoSim v3 adds mechanism that allows for the productivity and/or mutation rates of organisms to vary spatially and temporally within the simulation. This is achieved via variable masks - image files with the same dimensions as the simulated environment, where the magnitude of a masked variable at any given position in the environment is equal to that variable’s global value, multiplied by the brightness (0-255) of the red channel of the pixel in the mask image at that position.
 
 ## Interactions
 Inter-organism interactions can be simulated in REvoSim v3 using one of two approaches, referred to as the ‘genome blocks’ and ‘XOR’ mechanisms. Both interaction mechanisms are designed such that small genome changes result in small changes to interaction scores. In both cases, the number of attempted interactions per-timestep per-individual is configurable. Individuals attempt to interact by searching for another individual at the same position as them in the environment. The probability of success of this search increases as organism-count in the cell increases. If another individual is found, an interaction occurs. Under ‘genome blocks’, an ‘interaction score’ is derived from a configurable table that describes how every possible combination of two-bit organism genome components interact \autoref{fig:figure1}. Under ‘XOR’, one of the genomes is rotationally shifted by one bit both to the left and to the right \autoref{fig:figure2}, and each shifted genome is combined with an exclusive-or function with the unshifted genome. The number of 1s in the right-shifted, XORed binary sequence subtracted from the number of 1s in the left-shifted, XORed binary sequence, creates an interaction score \autoref{fig:figure2}. 
@@ -73,7 +73,7 @@ To accompany the interactions system, REvoSim v3 includes the option to seed eit
 To track the effects of energy-transfer interactions, REvoSim v3 records a ‘trophic level’ for each organism over the course of its lifetime [@anderson:2009]. Trophic level is initially inherited from the parent, but subsequently becomes one greater than an average of the trophic levels of all of the sources from which the organism has gained energy during its life, weighted by the amount gained from each source. This results in calculated trophic levels that mirror those in real world ecosystems (i.e. zero for producers, one for herbivores, two for primary carnivores, etc.).
 
 ## Logging
-The logging system within the software has been redesigned to improve flexibility. The user can now define a header, a string output every generation with grid-level statistics, and an output for every species every iteration. These allow any combination of outputs required for an experiment. 
+The logging system within the software has been redesigned to improve flexibility. The user can now define a header, a string output for every polling iteration with grid-level statistics, and an output for every species every polling iteration. These allow any combination of outputs required for an experiment. 
 
 ## Species identification
 The species identification algorithm has been recoded to improve performance. 
@@ -89,7 +89,9 @@ REvoSim v3’s mask tool allows it to simulate geographical areas of varying siz
 # Current associated projects
 
 RJG - Pathogens and environmental disturbance as drivers of reproductive mode.
+
 ENF and MDS - Effects of evolutionary processes on trophic level abundance equilibria.
+
 ENF, MDS and RJG - Rates of evolution during speciation.
 
 # Availability
