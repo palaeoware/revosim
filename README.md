@@ -77,7 +77,7 @@ We recommend you install and use MSYS2 (64-bit) a Windows package manager, based
 7. You should now be able to find the required libraries under "{install location}/mingw64/bin" and the required header (.h) files for QT v5.x under "{install location}/mingw64/include".
 8. Download the source code, and use the information above to setup a new 64-bit ming64 kit under QT creator and follow standard QT Creator debug/release procedure.
 
-#### Ubuntu 18.04/20.04/22.04 64-bit - QT Creator + QT v5.x using GCC (64-bit)
+#### Ubuntu 18.04/20.04/22.04 64-bit - QT v5.x using GCC (64-bit)
 
 To compile from command line.
 1. Install GCC and Qt using system packages:
@@ -111,6 +111,16 @@ On Ubuntu >= 21.04
 Using Qt creator.
 1. Install Q5.X on your system by running the installer from Qt: https://www.qt.io/download Further instructions are available here: https://wiki.qt.io/Install_Qt_5_on_Ubuntu
 2. Download source code, launch Qt Creator, and open the .pro file. Configure build and follow standard debug/release procedure.
+
+#### MacOS 13 Ventura - QT Creator + QT v5.x using CLANG
+
+These instructions are likely to vary between architectures and different OS versions. Procedure for M1 Apple Silicon Macbook running MacOS 13 Ventura as follows. 
+1. Ensure at least ~40Gb of free space for XCode and Qt. 
+2. Install XCode, either via Apple Store or direct from Apple developer webpage. This should be done before installing Qt.
+3. Install QT using the online installer tool, choosing version 5.15.2.
+4. Download source code and navigate to folder, or alternatively clone using Git.
+5. Open project in Qt Creator, and ensure Qbuild kit is using Apple Clang x86_64 compiler for C++.
+6. Build using Qt Creator
 
 _____
 
