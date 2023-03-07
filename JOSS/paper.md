@@ -96,7 +96,7 @@ ENF, MDS and RJG - Rates of evolution during speciation.
 
 # Availability
 
-REvoSim v3.0.0 is freely available from Zenodo. Newer releases of the REvoSim software are available on GitHub.
+REvoSim v3.0.0 is freely available from Zenodo (https://doi.org/10.5281/zenodo.7699771) and GitHub (https://github.com/palaeoware/revosim/releases/tag/v3.0.0). Newer releases of the REvoSim software will be available on GitHub (https://github.com/palaeoware/revosim).
 
 # Acknowledgements
 
