@@ -108,6 +108,8 @@ On Ubuntu >= 21.04
 
 5. Navigate to bin folder (e.g. revosim/revosim/bin) and launch software by double clicking on file.
 
+Note: If you experience a make error that includes e.g. -I../../../anaconda3/include/qt see issue #9
+
 Using Qt creator.
 1. Install Q5.X on your system by running the installer from Qt: https://www.qt.io/download Further instructions are available here: https://wiki.qt.io/Install_Qt_5_on_Ubuntu
 2. Download source code, launch Qt Creator, and open the .pro file. Configure build and follow standard debug/release procedure.
