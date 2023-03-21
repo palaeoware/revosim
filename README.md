@@ -1,5 +1,5 @@
 # REvoSim and EnviroGen
-## [R]apid [Evo]lutionary [Sin]ulator and [Enviro]nment [Gen]rator
+## [R]apid [Evo]lutionary [Sim]ulator and [Enviro]nment [Gen]rator
 
 
 Coded by:
