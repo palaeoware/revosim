@@ -79,7 +79,12 @@ We recommend you install and use MSYS2 (64-bit) a Windows package manager, based
 
 #### Ubuntu 18.04/20.04/22.04 64-bit - QT v5.x using GCC (64-bit)
 
-To compile from command line.
+To compile from command line. If required, update package lists:
+
+`sudo apt-get update`
+
+Then:
+
 1. Install GCC and Qt using system packages:
 
 `sudo apt-get install build-essential libgl1-mesa-dev`
