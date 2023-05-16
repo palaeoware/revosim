@@ -624,11 +624,70 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
     int breedlist[67][SLOTS_PER_GRID_SQUARE]; // ENF 67 breed lists, one per possible bitcount value for a two-word genome, plus two to account for the bins added by +1 and -1 shifts in the bitcount system.
     int maxalive;
     int deathcount;
+    bool RandomCellAccess = false; // Bool controls whether cells are accessed in a random order (new) or in order from top to bottom of the environment (old). Random access order is not compatible with non-square environments.
+
+    if ((simulationSettings->gridX != simulationSettings->gridY) and (RandomCellAccess))
+        qDebug() << "Warning. Random cell access order (currently enabled) is not compatible with rectangular environments.";
+
+    // Create two lists of numbers denoting all possible environment coordinates
+    int celllist1[simulationSettings->gridX];
+    int celllist2[simulationSettings->gridY];
+
+    for (int n = 0; n < simulationSettings->gridX; n++)
+    {
+        celllist1[n] = n;
+    }
+    for (int m = 0; m < simulationSettings->gridY; m++)
+    {
+        celllist2[m] = m;
+    }
+
+    // Create two more lists, containing the same elements, in a random order
+    int Randcelllist1[simulationSettings->gridX];
+    int Randcelllist2[simulationSettings->gridY];
+
+    int transferredNumbers1 = 0;
+    while (transferredNumbers1 < simulationSettings->gridX)
+    {
+        int randomIndex = simulationRandoms->rand16() % simulationSettings->gridX;
+        if (celllist1[randomIndex] != -1)
+        {
+            celllist1[randomIndex] = -1;
+            Randcelllist1[transferredNumbers1] = randomIndex;
+            transferredNumbers1++;
+        }
+    }
+    int transferredNumbers2 = 0;
+    while (transferredNumbers2 < simulationSettings->gridY)
+    {
+        int randomIndex = simulationRandoms->rand16() % simulationSettings->gridY;
+        if (celllist2[randomIndex] != -1)
+        {
+            celllist2[randomIndex] = -1;
+            Randcelllist2[transferredNumbers2] = randomIndex;
+            transferredNumbers2++;
+        }
+    }
+
+    int StartingIndex = 0;
+    int IndexOffset = 0;
+    int n;
+    int m;
 
     // For every cell...
-    for (int n = firstx; n <= lastx; n++)
-        for (int m = 0; m < simulationSettings->gridY; m++)
+    for (int nOld = firstx; nOld <= lastx; nOld++)
+        for (int mOld = 0; mOld < simulationSettings->gridY; mOld++)
         {
+            if (RandomCellAccess) // Random cell access uses the randomly ordered lists of cell index halves and access cells in a semi-random order
+            {
+                n = Randcelllist1[firstx + (StartingIndex % (lastx - firstx))];
+                m = Randcelllist2[(StartingIndex + IndexOffset) % simulationSettings->gridY];
+            }
+            else
+            {
+                n = nOld;
+                m = mOld;
+            }
             CellSettings *settings = &cellSettings[n][m];
             int maxv = maxUsed[n][m];
 
@@ -902,6 +961,12 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                         }
                         //if (crit[c].energy < 1) crit[c].age = 1; // It'll die next iteration.
                     }
+            StartingIndex++; // Iterate through the randomly ordered cell indicies...
+            if (StartingIndex >= simulationSettings->gridX)
+            {
+                StartingIndex = 0; // ...wrapping around where necessary.
+                IndexOffset++;
+            }
         }
     return newGenomeCountLocal;
 }
