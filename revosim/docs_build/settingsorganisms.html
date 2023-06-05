@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4. Configuring your Organisms &mdash; REvoSim 3.0.0 documentation</title>
+  <title>5. Configuring your Organisms &mdash; REvoSim 3.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="5. Setting up the Simulation" href="settingssimulation.html" />
-    <link rel="prev" title="3.5. Information Bar" href="informationbar.html" /> 
+    <link rel="next" title="6. Setting up the Simulation" href="settingssimulation.html" />
+    <link rel="prev" title="4.5. Information Bar" href="informationbar.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,21 +44,23 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">2. Compiling, Installation, and Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="windowlayout.html">3. Window Layout</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Configuring your Organisms</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#organism-settings">4.1. Organism settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#breed-settings">4.2. Breed settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#settle-settings">4.3. Settle settings</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#genome-words-and-systems">4.4. Genome Words and Systems</a></li>
+<li class="toctree-l1"><a class="reference internal" href="revosimconcepts.html">3. Concepts and Example Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windowlayout.html">4. Window Layout</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">5. Configuring your Organisms</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#organism-settings">5.1. Organism settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#breed-settings">5.2. Breed settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#settle-settings">5.3. Settle settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#genome-words-and-systems">5.4. Genome Words and Systems</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="settingssimulation.html">5. Setting up the Simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">6. Configuring Outputs and Run End Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="loggingsim.html">7. Running Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">8. Genome comparison dock</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">9. Advanced Options</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commandline.html">10. Command Line Options</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">11. Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingssimulation.html">6. Setting up the Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsinteractions.html">7. Configuring Interactions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">8. Configuring Outputs and Run End Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loggingsim.html">9. Running Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">10. Genome comparison dock</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">11. Advanced Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commandline.html">12. Command Line Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">13. Tests</a></li>
 </ul>
 
         </div>
@@ -75,7 +77,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li><span class="section-number">4. </span>Configuring your Organisms</li>
+      <li><span class="section-number">5. </span>Configuring your Organisms</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/settingsorganisms.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -86,10 +88,10 @@
            <div itemprop="articleBody">
              
   <section id="configuring-your-organisms">
-<span id="organisms"></span><h1><span class="section-number">4. </span>Configuring your Organisms<a class="headerlink" href="#configuring-your-organisms" title="Permalink to this headline">¶</a></h1>
+<span id="organisms"></span><h1><span class="section-number">5. </span>Configuring your Organisms<a class="headerlink" href="#configuring-your-organisms" title="Permalink to this headline">¶</a></h1>
 <p>At the core of the REvoSim simulation are the digital organisms. A number of properties of these organisms can be defined in the suimulation, in the Organism tab of the Settings dock. These settings are as follows:</p>
 <section id="organism-settings">
-<h2><span class="section-number">4.1. </span>Organism settings<a class="headerlink" href="#organism-settings" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.1. </span>Organism settings<a class="headerlink" href="#organism-settings" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Chance of mutation</dt>
 <dd class="field-odd"><p>This dictates the chance of a mutation when an organism breeds (if it is set to <em>n</em>, there is a <em>n</em>/256 chance of mutation). The default is 10, which thus equates to a 10/256 chance that a randomly selected bit in the words of the genome to which this is applied (see below) is flipped (from 0 to 1 or 1 to 0).</p>
@@ -103,7 +105,7 @@
 </dl>
 </section>
 <section id="breed-settings">
-<h2><span class="section-number">4.2. </span>Breed settings<a class="headerlink" href="#breed-settings" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.2. </span>Breed settings<a class="headerlink" href="#breed-settings" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Breed threshold</dt>
 <dd class="field-odd"><p>Within a pixel, the energy provided each iteration is split between the digital organisms living within the pixel based on their fitness. A full description of how this is achieved can be found in the REvoSim paper. When a digital organism has stored enough energy to pay the breed cost and still exceed the breed threshold, it attempts to breed.</p>
@@ -143,7 +145,7 @@
 </dl>
 </section>
 <section id="settle-settings">
-<h2><span class="section-number">4.3. </span>Settle settings<a class="headerlink" href="#settle-settings" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.3. </span>Settle settings<a class="headerlink" href="#settle-settings" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Dispersal</dt>
 <dd class="field-odd"><p>This figure dictates the extent to which juveniles disperse on settling. Small numbers equate to significant dispersal, larger numbers increase the likelihood that juveniles settle in the same pixel as their parent. How this is achieved is described in full in the REvoSim paper.</p>
@@ -154,7 +156,7 @@
 </dl>
 </section>
 <section id="genome-words-and-systems">
-<h2><span class="section-number">4.4. </span>Genome Words and Systems<a class="headerlink" href="#genome-words-and-systems" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.4. </span>Genome Words and Systems<a class="headerlink" href="#genome-words-and-systems" title="Permalink to this headline">¶</a></h2>
 <p>From REvoSim 3.0.0, genomes are no longer limited to 64-bits in length - rather the user can set the genome length of organisms to be between 1 and 32 words, each of which is 32-bits. All options (and associated functions) that can be applied to bits in a genome are called systems, and these systems can be applied to different words of the genome to achieve the desired outcome. Thus, for instance, to match the behaviour of REvoSim v2.0.0, organisms can be set to include a 2 word genome, the fitness system can be applied to word 0, and the breed and species ID systems can be applied to words 0 and 1. Where there is an on/off toggle in the settings for an option, systems are only applied if enabled in that toggle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Genome Size</dt>
@@ -198,14 +200,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="informationbar.html" class="btn btn-neutral float-left" title="3.5. Information Bar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="settingssimulation.html" class="btn btn-neutral float-right" title="5. Setting up the Simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="informationbar.html" class="btn btn-neutral float-left" title="4.5. Information Bar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="settingssimulation.html" class="btn btn-neutral float-right" title="6. Setting up the Simulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness.</p>
+    <p>&#169; Copyright 2023, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

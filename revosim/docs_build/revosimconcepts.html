@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>10. Genome comparison dock &mdash; REvoSim 3.0.0 documentation</title>
+  <title>3. Concepts and Example Usage &mdash; REvoSim 3.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="11. Advanced Options" href="advanced.html" />
-    <link rel="prev" title="9. Running Log" href="loggingsim.html" /> 
+    <link rel="next" title="4. Window Layout" href="windowlayout.html" />
+    <link rel="prev" title="2. Compiling, Installation, and Requirements" href="requirements.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,14 +44,18 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">2. Compiling, Installation, and Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="revosimconcepts.html">3. Concepts and Example Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">3. Concepts and Example Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#concepts">3.1. Concepts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-usage">3.2. Example Usage</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="windowlayout.html">4. Window Layout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settingsorganisms.html">5. Configuring your Organisms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settingssimulation.html">6. Setting up the Simulation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settingsinteractions.html">7. Configuring Interactions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settingsoutput.html">8. Configuring Outputs and Run End Log</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loggingsim.html">9. Running Log</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">10. Genome comparison dock</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">10. Genome comparison dock</a></li>
 <li class="toctree-l1"><a class="reference internal" href="advanced.html">11. Advanced Options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="commandline.html">12. Command Line Options</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tests.html">13. Tests</a></li>
@@ -71,9 +75,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li><span class="section-number">10. </span>Genome comparison dock</li>
+      <li><span class="section-number">3. </span>Concepts and Example Usage</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="_sources/genomecomparison.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/revosimconcepts.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -81,32 +85,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="genome-comparison-dock">
-<span id="genomecomparison"></span><h1><span class="section-number">10. </span>Genome comparison dock<a class="headerlink" href="#genome-comparison-dock" title="Permalink to this headline">¶</a></h1>
-<p>The Genome Comparison Dock allows genomes to be inspected and compared within RevoSim, and can be launched from the main menu or the toolbar. By default it appears landscape on the bottom of the main window. Its landscape orientation is intended to allow whole genomes to be viewed without scrolling on most operating systems, however we note that on operating systems with low resolution displays, the REvoSim GUI may struggle to accommodate the docker in its default position: the environment and population views may be forced to be small, or the genome comparison docker may not have the vertical extent to show more than one genome. If this is the case, the docker can be floated, or alternatively docked to the right or left of the main window.</p>
-    <div class="figure align-center">
-    <video width="695" height="485" loop autoplay controls muted>
-<source src="_static/genomeComparisonDock.mp4" type="video/mp4">
-Your browser does not support the video tag.
-</video>
-    <p class="caption">Genome comparison dock in use (created with v2.0.0).</p>
-    </div><p>A genome can be added to the comparison dock by right clicking on the population scene. By default, this will add the genomes of all of the digital organisms living within that pixel to the comparison dock, rendering them as zeros and ones, as well as displaying, from left to right in the row, the colour of that organism’s environment, that organism’s species ID, the colour assigned to that species ID, that organism’s environmental fitness (EF) in its environment, that organism’s current fitness (F) (after interactions), the lifetime total energy accumulated by that organism (Le), and the total energy acquired by that organism through direct energy theft in interactions (Se). A colour is also displayed for each genome word, to highlight differences between genome words among organisms. Alternatively, as shown in the video above, when Modal genome only is selected on the right of the dock, this adds just the model genome for any clicked pixel. By default, auto compare is also enabled: this compares and highlights the differences between each entry on the genome list and that before it.</p>
-<p>The genomes can be deleted individually from the table by selecting a genome and using the Delete button. Alternatively all genomes in the table can be removed from Genome Comparison Dock the using the Reset All button.</p>
-<p>The first ten genomes from the Genome Comparison Dock are pulled through to the reseed dialogue (shown in figure below): this allows one to be selected as the starting genome for a new run. This allows multiple repeats of simulations using the same genome, which is known to be capable of surviving within a given environment using the masks loaded at launch (note that these will not persist between sessions unless through loading a saved simulation).</p>
-<figure class="align-center" id="id1">
-<img alt="_images/reseedDialog.png" src="_images/reseedDialog.png" />
-<figcaption>
-<p><span class="caption-text">Reseed dialog showing first ten genomes as selected in the Genome Comparison Dock (created with v2.0.0).</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</figcaption>
-</figure>
+  <section id="concepts-and-example-usage">
+<span id="revosimconcepts"></span><h1><span class="section-number">3. </span>Concepts and Example Usage<a class="headerlink" href="#concepts-and-example-usage" title="Permalink to this headline">¶</a></h1>
+<section id="concepts">
+<h2><span class="section-number">3.1. </span>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline">¶</a></h2>
+<p>To do.</p>
+</section>
+<section id="example-usage">
+<h2><span class="section-number">3.2. </span>Example Usage<a class="headerlink" href="#example-usage" title="Permalink to this headline">¶</a></h2>
+<p>To do.</p>
+</section>
 </section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="loggingsim.html" class="btn btn-neutral float-left" title="9. Running Log" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="advanced.html" class="btn btn-neutral float-right" title="11. Advanced Options" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="requirements.html" class="btn btn-neutral float-left" title="2. Compiling, Installation, and Requirements" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="windowlayout.html" class="btn btn-neutral float-right" title="4. Window Layout" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -48,6 +48,7 @@ Table of Contents
 
    introduction
    requirements
+   revosimconcepts
    windowlayout
    settingsorganisms
    settingssimulation
