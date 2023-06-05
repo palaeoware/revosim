@@ -386,7 +386,6 @@ void MainWindow::createMainToolbar()
     QObject::connect(testButton, SIGNAL(triggered()), this, SLOT(doTests()));
     QObject::connect(aboutButton, SIGNAL (triggered()), this, SLOT (on_actionAbout_triggered()));
 
-
     connect(ui->actionSpeciation_logging, &QAction::toggled, mainWindow, [ = ](const bool & i)
     {
         if (simulationManager->iteration == 0 && i) speciesModeChanged(SPECIES_MODE_PHYLOGENY_AND_METRICS, true);

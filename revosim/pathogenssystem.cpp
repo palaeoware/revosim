@@ -3,6 +3,11 @@
 
 PathogensSystem::PathogensSystem() : System("Pathogen System")
 {
+    reset();
+}
+
+void PathogensSystem::reset()
+{
     //RJG - define new pathogens here for now
     for (int i = 0; i < GRID_X; i++)
         for (int j = 0; j < GRID_Y; j++)

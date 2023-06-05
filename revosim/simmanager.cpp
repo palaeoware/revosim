@@ -292,6 +292,8 @@ void SimManager::setupRun()
 
     //RJG - Reset environmental fitness system
     environmentalFitnessSytem->reset();
+    //RJG - Reset pathogens
+    pathogensSystem->reset();
 
     makeLookups();
     populateCellSettings();

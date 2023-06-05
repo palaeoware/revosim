@@ -13,6 +13,7 @@ public:
     bool setGenomeWordsFromString(QString s, int maxsize);
     void replicate(int nlocal, int mlocal, int n, int m, int c);
     void mutate();
+    void reset();
     QColor returnRGB(int n, int m, int word);
 
 private:
