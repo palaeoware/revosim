@@ -4,6 +4,11 @@
 
 EnvironmentFitnessSystem::EnvironmentFitnessSystem() : System("Environment Fitnesss System")
 {
+    reset();
+}
+
+void EnvironmentFitnessSystem::reset()
+{
     //RJG - set up xor masks for 3 variables
     //Used for each of R G and B to work out fitness
     //Start with random bit pattern for each
@@ -18,9 +23,8 @@ EnvironmentFitnessSystem::EnvironmentFitnessSystem() : System("Environment Fitne
         xorMasks[n][1] = xorMasks[n - 1][1] ^ tweakers[QRandomGenerator::global()->bounded(32)];
         xorMasks[n][2] = xorMasks[n - 1][2] ^ tweakers[QRandomGenerator::global()->bounded(32)];
     }
-
-
 }
+
 
 quint32 EnvironmentFitnessSystem::xorAndCount(quint32 genomeWord, const quint8 env, const int colour)
 {

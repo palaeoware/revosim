@@ -263,8 +263,8 @@ void SimManager::populateCellSettings()
 /*!
  * \brief SimManager::setupRun
  *
- *  RJG - Find middle square, try creatures till something lives, duplicate it [slots] times
- *  RJG - called on initial program load and reseed, but also when run/run for are hit
+ * RJG - Find middle square, try creatures till something lives, duplicate it [slots] times
+ * RJG - called on initial program load and reseed, but also when run/run for are hit
  * RJG - with modification for dual seed if selected
  */
 void SimManager::setupRun()
@@ -289,6 +289,9 @@ void SimManager::setupRun()
 
     aliveCount = 0;
     nextSpeciesID = 1; //reset ID counter
+
+    //RJG - Reset environmental fitness system
+    environmentalFitnessSytem->reset();
 
     makeLookups();
     populateCellSettings();

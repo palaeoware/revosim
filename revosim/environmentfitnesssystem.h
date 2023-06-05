@@ -13,6 +13,7 @@ public:
     bool findDualViableGenome(quint32 *genome, const quint8 *environment, const quint8 *environment2, int target, int settleTolerance);
     void setXOR(int n, int m, quint32 number);
     quint32 returnXOR(int n, int m);
+    void reset();
 
 private:
     quint32 xorAndCount(const quint32 genomeWord, const quint8 env, const int colour);
