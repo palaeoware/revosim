@@ -4752,6 +4752,14 @@ void MainWindow::saveSettings(QString fileName)
         return;
     }
 
+    QString saveMessage;
+
+    //RJG - assume if file list is one it's default, otherwise custom - add warning this is not saved
+    int count = 0;
+    for (auto &l : simulationManager->linkages) if (l.set) count++;
+    if (count > 0) saveMessage.append("Note that save settings will not save your linkages. ");
+    if (simulationManager->env->returnFileListCount() > 1) saveMessage.append("Note that save settings will not save your environmental images. ");
+
     QXmlStreamWriter settingsFileOut(&settingsFile);
     settingsFileOut.setAutoFormatting(true);
     settingsFileOut.setAutoFormattingIndent(-2);
@@ -4984,7 +4992,8 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFile.close();
 
-    setStatusBarText("File saved");
+    saveMessage.append("File saved");
+    setStatusBarText(saveMessage);
 }
 
 /*!
