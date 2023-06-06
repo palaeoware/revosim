@@ -3,7 +3,7 @@
 CellSettings::CellSettings()
 {
     /***** CELL VARIABLES *****/
-    //These can be defined per cell - move to object
+    //These can be defined per cell
     slotsPerSquare = 100;
     startAge = 15;
     settleTolerance = 15;

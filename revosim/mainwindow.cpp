@@ -4553,6 +4553,12 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
                 environmentModeChanged(settingsFileIn.readElementText().toInt(), true);
             if (settingsFileIn.name() == "pathogenMode")
                 simulationManager->simulationSettings->pathogenMode = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "interactions")
+                simulationManager->cellSettingsMaster->interactions = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "predationEfficiency")
+                simulationManager->cellSettingsMaster->predationEfficiency = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "minDeltaPredatorness")
+                simulationManager->cellSettingsMaster->minDeltaPredatorness = settingsFileIn.readElementText().toInt();
 
             //No Gui options for the remaining settings as yet.
             if (settingsFileIn.name() == "speciesSamples")
@@ -4581,8 +4587,6 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
                 simulationManager->cellSettingsMaster->breedDifference = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name() == "breedSpecies")
                 simulationManager->cellSettingsMaster->breedSpecies = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "multiBreedList")
-                simulationManager->cellSettingsMaster->multiBreedList = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "pathOn")
                 simulationManager->cellSettingsMaster->pathOn = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "variableMutate")
@@ -4605,14 +4609,18 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
                 simulationManager->simulationSettings->gui = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name() == "environmentInterpolate")
                 simulationManager->simulationSettings->environmentInterpolate = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "interactblocks")
+            if (settingsFileIn.name() == "interactBlocks")
                 simulationManager->cellSettingsMaster->interactBlocks = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "multibreedlist")
+            if (settingsFileIn.name() == "multiBreedList")
                 simulationManager->cellSettingsMaster->multiBreedList = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "interactfitness")
+            if (settingsFileIn.name() == "interactFitness")
                 simulationManager->cellSettingsMaster->interactFitness = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "interactenergy")
+            if (settingsFileIn.name() == "interactEnergy")
                 simulationManager->cellSettingsMaster->interactEnergy = intToBool(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "interactWithinSpecies")
+                simulationManager->cellSettingsMaster->interactWithinSpecies = intToBool(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "predationRestriction")
+                simulationManager->simulationSettings->predationRestriction = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name() == "v2log")
             {
                 logTextEdit->setText(simulationManager->simulationLog->printDefaultLogSpeciesText());
@@ -4768,10 +4776,9 @@ void MainWindow::saveSettings(QString fileName)
     QString saveMessage;
 
     //RJG - assume if file list is one it's default, otherwise custom - add warning this is not saved
-    int count = 0;
-    for (auto &l : simulationManager->linkages) if (l.set) count++;
-    if (count > 0) saveMessage.append("Note that save settings will not save your linkages. ");
+    if (simulationManager->simulationSettings->linkagesOn) saveMessage.append("Note that save settings will not save your linkages. ");
     if (simulationManager->env->returnFileListCount() > 1) saveMessage.append("Note that save settings will not save your environmental images. ");
+    if (simulationManager->cellSettingsMaster->interactBlocks)saveMessage.append("Save settings will not save a customised a priori interactions grid. ");
 
     QXmlStreamWriter settingsFileOut(&settingsFile);
     settingsFileOut.setAutoFormatting(true);
@@ -4876,6 +4883,18 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("pathogenMode");
     settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->simulationSettings->pathogenMode));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("predationEfficiency");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->predationEfficiency));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("minDeltaPredatorness");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->minDeltaPredatorness));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("interactions");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->interactions));
     settingsFileOut.writeEndElement();
 
     //Bools
@@ -4993,6 +5012,26 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("randomReseedBeforeGenetic");
     settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->simulationSettings->randomReseedBeforeGenetic));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("interactBlocks");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->interactBlocks));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("interactFitness");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->interactFitness));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("interactEnergy");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->interactEnergy));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("interactWithinSpecies");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->interactWithinSpecies));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("predationRestriction");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->simulationSettings->predationRestriction));
     settingsFileOut.writeEndElement();
 
     //Strings
