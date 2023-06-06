@@ -33,7 +33,6 @@ SimSettings::SimSettings()
     environmentInterpolate = true;
     toroidal = false;
     gui = false;
-    logging = false;
     recalculateFitness = false;
     environmentInterpolate = true;
     linkagesOn = false;
