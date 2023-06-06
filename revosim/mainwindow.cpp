@@ -4578,6 +4578,8 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
                 simulationManager->cellSettingsMaster->breedDifference = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name() == "breedSpecies")
                 simulationManager->cellSettingsMaster->breedSpecies = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "multiBreedList")
+                simulationManager->cellSettingsMaster->multiBreedList = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "pathOn")
                 simulationManager->cellSettingsMaster->pathOn = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "variableMutate")
@@ -4884,6 +4886,10 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("breedSpecies");
     settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->breedSpecies));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("multiBreedList");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->multiBreedList));
     settingsFileOut.writeEndElement();
 
     settingsFileOut.writeStartElement("pathOn");
