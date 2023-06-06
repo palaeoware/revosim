@@ -4648,6 +4648,12 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
             //Strings
             if (settingsFileIn.name() == "globalSavePath")
                 globalSavePath->setText(settingsFileIn.readElementText());
+            if (settingsFileIn.name() == "headerTextEdit")
+                simulationManager->simulationLog->setHeaderTextFromGUI(settingsFileIn.readElementText());
+            if (settingsFileIn.name() == "iterationTextEdit")
+                simulationManager->simulationLog->setIterationTextFromGUI(settingsFileIn.readElementText());
+            if (settingsFileIn.name() == "logTextEdit")
+                simulationManager->simulationLog->setSpeciestTextFromGUI(settingsFileIn.readElementText());
 
             for (auto &s : simulationManager->systemsList)
                 if (settingsFileIn.name() == s->returnName().replace(" ", "_"))
@@ -4992,6 +4998,18 @@ void MainWindow::saveSettings(QString fileName)
     //Strings
     settingsFileOut.writeStartElement("globalSavePath");
     settingsFileOut.writeCharacters(getSavePath());
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("headerTextEdit");
+    settingsFileOut.writeCharacters(mainWindow->headerTextEdit->toHtml());
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("iterationTextEdit");
+    settingsFileOut.writeCharacters(mainWindow->iterationTextEdit->toHtml());
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("logTextEdit");
+    settingsFileOut.writeCharacters(mainWindow->logTextEdit->toHtml());
     settingsFileOut.writeEndElement();
 
     for (auto &s : simulationManager->systemsList)
