@@ -4619,6 +4619,8 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
                 simulationManager->cellSettingsMaster->interactEnergy = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name() == "interactWithinSpecies")
                 simulationManager->cellSettingsMaster->interactWithinSpecies = intToBool(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "predationRestriction")
+                simulationManager->simulationSettings->predationRestriction = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name() == "v2log")
             {
                 logTextEdit->setText(simulationManager->simulationLog->printDefaultLogSpeciesText());
@@ -5021,6 +5023,10 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("interactWithinSpecies");
     settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->interactWithinSpecies));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("predationRestriction");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->simulationSettings->predationRestriction));
     settingsFileOut.writeEndElement();
 
     //Strings

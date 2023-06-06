@@ -30,7 +30,6 @@ SimSettings::SimSettings()
     logging = false;
     fitnessLoggingToFile = false;
     nonspatial = false;
-    environmentInterpolate = true;
     toroidal = false;
     gui = false;
     recalculateFitness = false;
