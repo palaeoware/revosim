@@ -4770,10 +4770,9 @@ void MainWindow::saveSettings(QString fileName)
     QString saveMessage;
 
     //RJG - assume if file list is one it's default, otherwise custom - add warning this is not saved
-    int count = 0;
-    for (auto &l : simulationManager->linkages) if (l.set) count++;
-    if (count > 0) saveMessage.append("Note that save settings will not save your linkages. ");
+    if (simulationManager->simulationSettings->linkagesOn) saveMessage.append("Note that save settings will not save your linkages. ");
     if (simulationManager->env->returnFileListCount() > 1) saveMessage.append("Note that save settings will not save your environmental images. ");
+    if (simulationManager->cellSettingsMaster->interactBlocks)saveMessage.append("Save settings will not save a customised a priori interactions grid. ");
 
     QXmlStreamWriter settingsFileOut(&settingsFile);
     settingsFileOut.setAutoFormatting(true);
