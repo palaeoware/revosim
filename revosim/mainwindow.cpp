@@ -4551,6 +4551,9 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
                 refreshRate = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "environmentMode")
                 environmentModeChanged(settingsFileIn.readElementText().toInt(), true);
+            if (settingsFileIn.name() == "pathogenMode")
+                simulationManager->simulationSettings->pathogenMode = settingsFileIn.readElementText().toInt();
+
             //No Gui options for the remaining settings as yet.
             if (settingsFileIn.name() == "speciesSamples")
                 simulationManager->simulationSettings->speciesSamples = settingsFileIn.readElementText().toInt();
@@ -4688,9 +4691,11 @@ void MainWindow::updateGUIFromVariables()
     interactionsSpin->setValue(simulationManager->cellSettingsMaster->interactions);
     predationDeltaSpin->setValue(simulationManager->cellSettingsMaster->minDeltaPredatorness);
     predationEfficiencySpin->setValue(simulationManager->cellSettingsMaster->predationEfficiency);
-    //Development only variables
     pathogenMutateSpin->setValue(simulationManager->cellSettingsMaster->pathogenMutate);
     pathogenFrequencySpin->setValue(simulationManager->cellSettingsMaster->pathogenFrequency);
+    if (simulationManager->simulationSettings->pathogenMode == PATH_MODE_DRIFT)pathogenDriftRadio->setChecked(true);
+    else pathogenEvolveRadio->setChecked(true);
+
     // Add speciesMode
     speciesModeChanged(speciesMode, true);
     // Add simulationManager->simulationSettings->environmentMode
@@ -4861,6 +4866,10 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("genomeSize");
     settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->simulationSettings->genomeSize));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("pathogenMode");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->simulationSettings->pathogenMode));
     settingsFileOut.writeEndElement();
 
     //Bools
