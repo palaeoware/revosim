@@ -17,8 +17,7 @@ Within this framework, runs in REvoSim - that typically start with a single geno
 
 **Time**
 
-Time in the simulations
-
+Time in a REvoSim simulation is measured in iterations. Every iteration, the algorithms that compise the model are completed once. In order to link this to real world time units, it is useful to consider the average time per generation.
 
 Example Usage
 -------------
