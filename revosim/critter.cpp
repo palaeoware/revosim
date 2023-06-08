@@ -282,8 +282,7 @@ int Critter::breedWithParallel(int xPosition, int yPosition, Critter *partner, i
                 local_mutate = true;
         }
 
-        if (local_mutate)
-            simulationManager->mutationSystem->doMutation(newgenomes[*newGenomeCountLocal]);
+        if (local_mutate) simulationManager->mutationSystem->doMutation(newgenomes[*newGenomeCountLocal]);
 
         //store it all
 

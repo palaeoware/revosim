@@ -531,9 +531,10 @@ QString LogSimulation::processLogTextGeneral(QString text)
     text.replace("*dumpGenomes*", writeDisparityLog());
 
     //RJG - grid level stats
-    if (text.contains("*gridNumberAlive*") || text.contains("*gridBreedEntries*") || text.contains("*gridBreedFails*") || text.contains("*gridMeanFitness*") || text.contains("*gridTrophicHistograms*"))
+    if (text.contains("*gridNumberAlive*") || text.contains("*gridBreedEntries*") || text.contains("*gridBreedFails*") || text.contains("*gridMeanFitness*") || text.contains("*gridTrophicHistograms*")
+            || text.contains("*gridBreedSuccess*"))
     {
-        int gridNumberAlive = 0, gridTotalFitness = 0, gridBreedEntries = 0, gridBreedFails = 0;
+        int gridNumberAlive = 0, gridTotalFitness = 0, gridBreedEntries = 0, gridBreedFails = 0, gridBreedSuccess = 0;
         int trophicL01 = 0, trophic0102 = 0, trophic0203 = 0, trophic0304 = 0, trophic0405 = 0, trophic0506 = 0, trophic0607 = 0, trophic0708 = 0, trophic0809 = 0, trophic0910 = 0, trophic1011 = 0,
             trophic1112 = 0, trophic1213 = 0, trophic1314 = 0, trophic1415 = 0, trophic1516 = 0, trophic1617 = 0, trophic1718 = 0, trophic1819 = 0, trophic1920 = 0, trophic2021 = 0, trophic2122 = 0,
             trophic2223 = 0, trophic2324 = 0, trophic2425 = 0, trophic2526 = 0, trophic2627 = 0, trophic2728 = 0, trophic2829 = 0, trophic2930 = 0, trophicG30 = 0;
@@ -543,6 +544,7 @@ QString LogSimulation::processLogTextGeneral(QString text)
                 gridTotalFitness += totalFitness[i][j];
                 //----RJG: Manually count breed stuff for grid
                 gridBreedEntries += breedAttempts[i][j];
+                gridBreedSuccess += breedSuccess[i][j];
                 gridBreedFails += breedFails[i][j];
                 //----RJG: Manually count number alive thanks to maxUsed descendants
                 for  (int k = 0; k < simulationManager->cellSettingsMaster->slotsPerSquare; k++)
@@ -585,6 +587,7 @@ QString LogSimulation::processLogTextGeneral(QString text)
         double gridMeanFitness = static_cast<double>(gridTotalFitness) / static_cast<double>(gridNumberAlive);
         text.replace("*gridNumberAlive*", QString::number(gridNumberAlive));
         text.replace("*gridBreedEntries*", QString::number(gridBreedEntries));
+        text.replace("*gridBreedSuccess*", QString::number(gridBreedSuccess));
         text.replace("*gridBreedFails*", QString::number(gridBreedFails));
         text.replace("*gridMeanFitness*", QString::number(gridMeanFitness));
         text.replace("*gridTrophicHistograms*", (QString::number(trophicL01) + "," + QString::number(trophic0102) + "," + QString::number(trophic0203) + "," + QString::number(
@@ -596,6 +599,7 @@ QString LogSimulation::processLogTextGeneral(QString text)
                                                      trophic2829) + "," + QString::number(trophic2930) + "," + QString::number(trophicG30)));
     }
     return text;
+
 }
 
 void LogSimulation::writeLog(QString globalSavePath, int batchRuns, int logType)
@@ -842,7 +846,6 @@ QString LogSimulation::writeRecombinationLog()
                 }
             totalBreedAttempts += breedAttempts[i][j];
             totalBreedFails += breedFails[i][j];
-
         }
 
     double percent = -1.;

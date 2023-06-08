@@ -55,6 +55,7 @@ qint16 interaction[256][256]; //Lookup for ecological interactions
 
 //Analysis and record keeping
 int breedAttempts[GRID_X][GRID_Y]; //for analysis purposes
+int breedSuccess[GRID_X][GRID_Y]; //for analysis purposes
 int breedFails[GRID_X][GRID_Y]; //for analysis purposes
 int settles[GRID_X][GRID_Y]; //for analysis purposes
 int settlefails[GRID_X][GRID_Y]; //for analysis purposes
@@ -282,6 +283,7 @@ void SimManager::setupRun()
             totalFitness[n][m] = 0;
             maxUsed[n][m] = -1;
             breedAttempts[n][m] = 0;
+            breedSuccess[n][m] = 0;
             breedFails[n][m] = 0;
             settles[n][m] = 0;
             settlefails[n][m] = 0;
@@ -749,7 +751,11 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
             }
 
             // RJG - reset counters for fitness logging to file
-            if (simulationSettings->fitnessLoggingToFile || simulationSettings->logging)breedAttempts[n][m] = 0;
+            if (simulationSettings->fitnessLoggingToFile || simulationSettings->logging)
+            {
+                breedAttempts[n][m] = 0;
+                breedSuccess[n][m] = 0;
+            }
 
             // Determine the food to be given to organisms per point of fitness that they have.
             float addFood;
@@ -804,12 +810,19 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                                     //----RJG - note if breed fails below, this is refunded in the breedWithParallel function, not so here
                                 }
                                 // ----RJG: Otherwise, you're good to go, facultative, or asexual (self partnered above)
-                                else if (crit[breedlist[p][c]].breedWithParallel(n, m, &(crit[breedlist[p][partner]]), &newGenomeCountLocal))
-                                    breedFails[n][m]++; //for analysis purposes
-                                //----RJG - Keeping track of how bred for recombination log - may want to change down line
-                                else if (localAsexual && cellSettingsMaster->variableBreed)crit[breedlist[p][c]].variableBreedAsex = -1;
-                                else if (!localAsexual && cellSettingsMaster->variableBreed)crit[breedlist[p][c]].variableBreedAsex = 1;
-                                //----RJG - ultimately this needs to be updated to report if sexual, whether it was self paired.
+                                else
+                                {
+                                    // ----RJG: this returns one (or potentially more) if breeding has failed
+                                    if (crit[breedlist[p][c]].breedWithParallel(n, m, &(crit[breedlist[p][partner]]), &newGenomeCountLocal)) breedFails[n][m]++; //for analysis purposes
+                                    else  //----RJG: or zero if breeding was a success
+                                    {
+                                        breedSuccess[n][m]++;
+                                        //----RJG - Keeping track of how bred for recombination log - may want to change down line
+                                        if (localAsexual && cellSettingsMaster->variableBreed)crit[breedlist[p][c]].variableBreedAsex = -1;
+                                        if (!localAsexual && cellSettingsMaster->variableBreed)crit[breedlist[p][c]].variableBreedAsex = 1;
+                                        //----RJG - ultimately this needs to be updated to report if sexual, whether it was self paired.
+                                    }
+                                }
                             }
                             else   //didn't find a partner, refund breed cost
                                 crit[breedlist[p][c]].energy += settings->breedCost;
@@ -865,14 +878,20 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                                 crit[breedlist[0][c]].energy += settings->breedCost;
                                 //----RJG - note if breed fails below, this is refunded in the breedWithParallel function, not so here
                             }
-
                             // ----RJG: Otherwise, you're good to go, facultative, or asexual (self partnered above)
-                            else if (crit[breedlist[0][c]].breedWithParallel(n, m, &(crit[breedlist[0][partner]]), &newGenomeCountLocal))
-                                breedFails[n][m]++; //for analysis purposes
-                            //----RJG - Keeping track of how bred for recombination log - may want to change down line
-                            else if (temp_asexual && settings->variableBreed)crit[breedlist[0][c]].variableBreedAsex = -1;
-                            else if (!temp_asexual && settings->variableBreed)crit[breedlist[0][c]].variableBreedAsex = 1;
-                            //----RJG - ultimately this needs to be updated to report if sexual, whether it was self paired.
+                            else
+                            {
+                                // ----RJG: this returns one (or potentially more) if breeding has failed
+                                if (crit[breedlist[0][c]].breedWithParallel(n, m, &(crit[breedlist[0][partner]]), &newGenomeCountLocal)) breedFails[n][m]++; //for analysis purposes
+                                else //----RJG: or zero if breeding was a success
+                                {
+                                    breedSuccess[n][m]++;
+                                    //----RJG - Keeping track of how bred for recombination log - may want to change down line
+                                    if (temp_asexual && settings->variableBreed) crit[breedlist[0][c]].variableBreedAsex = -1;
+                                    if (!temp_asexual && settings->variableBreed) crit[breedlist[0][c]].variableBreedAsex = 1;
+                                    //----RJG - ultimately this needs to be updated to report if sexual, whether it was self paired.
+                                }
+                            }
                         }
                         else   //didn't find a partner, refund breed cost
                             crit[breedlist[0][c]].energy += settings->breedCost;

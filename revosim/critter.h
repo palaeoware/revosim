@@ -48,6 +48,7 @@ public:
     int variableBreedAsex{};//Track breeding
     int genomeBitCountWithJitter;
     int codingGenomeBitCount;
+
     float trophicLevel;
     quint32 *genomeWords; //new genome data
     quint64 speciesID; //this is inherited from parents

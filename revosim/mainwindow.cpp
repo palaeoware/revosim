@@ -3210,6 +3210,7 @@ void MainWindow::resetSquare(int n, int m)
     totalFitness[n][m] = 0;
 
     breedAttempts[n][m] = 0;
+    breedSuccess[n][m] = 0;
     breedFails[n][m] = 0;
     settles[n][m] = 0;
     settlefails[n][m] = 0;
