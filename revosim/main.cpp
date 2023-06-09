@@ -325,6 +325,11 @@ QHash<QString, QString> *parse(QCoreApplication *app)
                                              QCoreApplication::translate("main", "frequency (integer)"));
     parser->addOption(opt_pathogenFrequency);
 
+    QCommandLineOption opt_pathogenEvolve(QStringList() << "pathogenevolve",
+                                          QCoreApplication::translate("main", "Set pathogens to evolve (on or off) - default is drift"),
+                                          QCoreApplication::translate("main", "On/Off"));
+    parser->addOption(opt_pathogenEvolve);
+
     QCommandLineOption opt_customLogging(QStringList() << "customlogging",
                                          QCoreApplication::translate("main", "Record all custom logs."),
                                          QCoreApplication::translate("main", "On/Off"));
@@ -613,6 +618,7 @@ QHash<QString, QString> *parse(QCoreApplication *app)
     if (parser->isSet(opt_noGUI)) hashResults->insert("nogui", boolValue(parser->value(opt_noGUI)));
     if (parser->isSet(opt_pathogens)) hashResults->insert("pathogens", boolValue(parser->value(opt_pathogens)));
     if (parser->isSet(opt_pathogenMutate)) hashResults->insert("pathogenmutate", parser->value(opt_pathogenMutate));
+    if (parser->isSet(opt_pathogenEvolve)) hashResults->insert("pathogenevolve", boolValue(parser->value(opt_pathogenEvolve)));
     if (parser->isSet(opt_pathogenFrequency)) hashResults->insert("pathogenfrequency", parser->value(opt_pathogenFrequency));
     if (parser->isSet(opt_customLogging)) hashResults->insert("customlogging", boolValue(parser->value(opt_customLogging)));
     if (parser->isSet(opt_disparityLogging)) hashResults->insert("disparityLogging", boolValue(parser->value(opt_disparityLogging)));

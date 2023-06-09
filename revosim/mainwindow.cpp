@@ -5423,7 +5423,11 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
         ui->actionVariable_mutation_logging->setChecked(simulationManager->cellSettingsMaster->variableMutate);
     }
 
-    if (options->contains("pathogens")) simulationManager->cellSettingsMaster->pathOn = boolStringToBool(options->value("fileList->"));
+    if (options->contains("pathogens"))
+    {
+        qInfo() << "Setting pathogens to "  <<  boolStringToBool(options->value("pathogens"));
+        simulationManager->cellSettingsMaster->pathOn = boolStringToBool(options->value("pathogens"));
+    }
 
     if (options->contains("pathogenmutate"))
     {
@@ -5436,6 +5440,15 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
         qInfo() << "Setting pathogen frequency to " << options->value("pathogenfrequency").toInt();
         simulationManager->cellSettingsMaster->pathogenFrequency = options->value("pathogenfrequency").toInt();
     }
+
+    if (options->contains("pathogenevolve"))
+    {
+        qInfo() << "Setting pathogen evolve to " << boolStringToBool(options->value("pathogenevolve"));
+        //  PATH_MODE_EVOLVE is 1 - so if this is 1, we are good boolStringToBool(options->value("pathogenevolve"));
+        simulationManager->simulationSettings->pathogenMode =  boolStringToBool(options->value("pathogenevolve"));
+    }
+
+
 
     if (options->contains("customlogging"))
     {
