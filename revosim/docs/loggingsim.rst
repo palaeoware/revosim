@@ -52,8 +52,10 @@ Iteration keywords
 :\*dumpGenomes\*: This writes the genomes of every living digital organism, and the X then Y coordinate in which they are found, separated by commas.
 :\*gridBreedEntries\*: The number of organisms in the grid which are attempting to breed at the polling iteration.
 :\*gridBreedFails\*: The number of failed breeding attempts in the polling iteration for all organisms in the grid.
+:\*gridBreedSuccess\*: The number of successful breeds in the polling iteration for all organisms in the grid.
 :\*gridMeanFitness\*: The mean fitness of all the organisms in the grid at polling iteration.
 :\*gridNumberAlive\*: The number of organisms alive at polling iteration.
+:\*gridGeneration\*: This calculates the average age (thus generation time) of all successful parents in the polling iteration. Note that it calculates this based on the assumption, which is true for the majority of settings, that organisms will only successfully breed once in their lifetime. This assumption can be checked using the gridNumberAlive and gridBreedSuccess outputs to calculate the mean number of breeding individuals at any generation.
 :\*gridTrophicHistograms\*: This outputs a histogram of the trophic levels of all the organisms in the grid, at 0.1 intervals between 0 and 3.
 :\*iteration\*: The current iteration.
 :\*printSettings\*: This prints a string of all REvoSim settings at the polling iteration, or start of the run if placed in the header.
