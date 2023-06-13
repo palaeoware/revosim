@@ -5443,12 +5443,10 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
 
     if (options->contains("pathogenevolve"))
     {
+        //  PATH_MODE_EVOLVE is 1 - so if this is 1, we are good
         qInfo() << "Setting pathogen evolve to " << boolStringToBool(options->value("pathogenevolve"));
-        //  PATH_MODE_EVOLVE is 1 - so if this is 1, we are good boolStringToBool(options->value("pathogenevolve"));
         simulationManager->simulationSettings->pathogenMode =  boolStringToBool(options->value("pathogenevolve"));
     }
-
-
 
     if (options->contains("customlogging"))
     {

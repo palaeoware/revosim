@@ -85,6 +85,7 @@ extern quint64 newgenometrophic[GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2];
 /****** Analysis data lookups ******/
 extern int breedAttempts[GRID_X][GRID_Y]; //for analysis purposes
 extern int breedSuccess[GRID_X][GRID_Y]; //for analysis purposes
+extern int breedGeneration[GRID_X][GRID_Y]; //for analysis purposes
 extern int breedFails[GRID_X][GRID_Y]; //for analysis purposes
 extern int settles[GRID_X][GRID_Y]; //for analysis purposes
 extern int settlefails[GRID_X][GRID_Y]; //for analysis purposes

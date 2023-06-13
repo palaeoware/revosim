@@ -56,6 +56,7 @@ qint16 interaction[256][256]; //Lookup for ecological interactions
 //Analysis and record keeping
 int breedAttempts[GRID_X][GRID_Y]; //for analysis purposes
 int breedSuccess[GRID_X][GRID_Y]; //for analysis purposes
+int breedGeneration[GRID_X][GRID_Y]; //for analysis purposes
 int breedFails[GRID_X][GRID_Y]; //for analysis purposes
 int settles[GRID_X][GRID_Y]; //for analysis purposes
 int settlefails[GRID_X][GRID_Y]; //for analysis purposes
@@ -755,6 +756,7 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
             {
                 breedAttempts[n][m] = 0;
                 breedSuccess[n][m] = 0;
+                breedGeneration[n][m] = 0;
             }
 
             // Determine the food to be given to organisms per point of fitness that they have.
@@ -817,6 +819,10 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                                     else  //----RJG: or zero if breeding was a success
                                     {
                                         breedSuccess[n][m]++;
+                                        //RJG - to keep a track of generation time, let's total here the age of each critter at breeding success
+                                        //Under most settings organisms will breed once per lifetime - this can be checked by doing breed success / gridNumberAlive in the log
+                                        breedGeneration[n][m] += (15 - crit[breedlist[p][c]].age);
+
                                         //----RJG - Keeping track of how bred for recombination log - may want to change down line
                                         if (localAsexual && cellSettingsMaster->variableBreed)crit[breedlist[p][c]].variableBreedAsex = -1;
                                         if (!localAsexual && cellSettingsMaster->variableBreed)crit[breedlist[p][c]].variableBreedAsex = 1;
@@ -885,11 +891,15 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                                 if (crit[breedlist[0][c]].breedWithParallel(n, m, &(crit[breedlist[0][partner]]), &newGenomeCountLocal)) breedFails[n][m]++; //for analysis purposes
                                 else //----RJG: or zero if breeding was a success
                                 {
-                                    breedSuccess[n][m]++;
+                                    breedSuccess[n][m]++; //RJG - This keeps track of how many successes there are at breeding, obviously
                                     //----RJG - Keeping track of how bred for recombination log - may want to change down line
                                     if (temp_asexual && settings->variableBreed) crit[breedlist[0][c]].variableBreedAsex = -1;
                                     if (!temp_asexual && settings->variableBreed) crit[breedlist[0][c]].variableBreedAsex = 1;
                                     //----RJG - ultimately this needs to be updated to report if sexual, whether it was self paired.
+
+                                    //RJG - to keep a track of generation time, let's total here the age of each critter at breeding success
+                                    //Under most settings organisms will breed once per lifetime - this can be checked by doing breed success / gridNumberAlive in the log
+                                    breedGeneration[n][m] += (15 - crit[breedlist[0][c]].age);
                                 }
                             }
                         }
