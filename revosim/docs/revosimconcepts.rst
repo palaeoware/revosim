@@ -17,7 +17,9 @@ Within this framework, runs in REvoSim - that typically start with a single geno
 
 **Time**
 
-Time in a REvoSim simulation is measured in iterations. Every iteration, the algorithms that compise the model are completed once. In order to link this to real world time units, it is useful to consider the average time per generation.
+Time in a REvoSim simulation is measured in iterations. Every iteration, the algorithms that comprise the model are completed once. In order to link this to real world time units, it is useful to consider the average time per generation. Exactly how iterations map to real time, however, depends on the settings you use for any given run. You can investigate this using REvoSim's :ref:`Logging` system: the \*gridGeneration\* tag can be used for any settings to calculate and output the average age of all organisms successfully breeding in a polling iteration. This works on the assumption -- which is true for the majority of settings -- that organisms will breed once in their lifetime. This assumption can be tested (and a correction factor calculated and applied if so desired) by using the \*gridNumberAlive\* and \*gridBreedSuccess\* log outputs to calculate the proportion of breeds for the grid per unit population.
+
+Using this approach demonstrates, for example, that the average generation time for default REvoSim settings is between 11 and 12 iterations. 
 
 Example Usage
 -------------
