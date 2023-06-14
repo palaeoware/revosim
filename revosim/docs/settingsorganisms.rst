@@ -34,7 +34,7 @@ Breed settings
 
 :Breed mode: REvoSim offers multiple breed modes, given the above caveats (e.g. breed within species):
 
-    :Obligate sexual: Organisms can only breed with other individuals (this is the case in most animals, for example
+    :Obligate sexual: Organisms can only breed with other individuals (this is the case in most animals, for example).
 
     :Facultative sexual: Organisms can reproduce with other individuals, or themselves (see e.g. plants).  Asexual reproduction is more common in this mode when populations are small.
 

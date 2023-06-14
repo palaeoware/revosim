@@ -22,7 +22,7 @@ import sphinx_rtd_theme
 # -- Project information -----------------------------------------------------
 
 project = 'REvoSim'
-copyright = '2022, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness'
+copyright = '2023, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness'
 author = 'Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness'
 
 # The short X.Y version

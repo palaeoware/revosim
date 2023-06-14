@@ -208,8 +208,8 @@ QHash<QString, QString> *parse(QCoreApplication *app)
 
 
     QCommandLineOption opt_o(QStringList() << "o" << "tolerance",
-                             QCoreApplication::translate("main", "tolerance."),
-                             QCoreApplication::translate("main", "tolerance (integer)"));
+                             QCoreApplication::translate("main", "Settle tolerance."),
+                             QCoreApplication::translate("main", "Settle tolerance (integer)"));
     parser->addOption(opt_o);
 
     QCommandLineOption opt_p(QStringList() << "p" << "phylogeny",

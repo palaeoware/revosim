@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7. Configuring Outputs and Run End Log &mdash; REvoSim 3.0.0 documentation</title>
+  <title>8. Configuring Outputs and Run End Log &mdash; REvoSim 3.0.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="8. Running Log" href="loggingsim.html" />
-    <link rel="prev" title="6. Configuring Interactions" href="settingsinteractions.html" /> 
+    <link rel="next" title="9. Running Log" href="loggingsim.html" />
+    <link rel="prev" title="7. Configuring Interactions" href="settingsinteractions.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,23 +44,24 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="introduction.html">1. Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">2. Compiling, Installation, and Requirements</a></li>
-<li class="toctree-l1"><a class="reference internal" href="windowlayout.html">3. Window Layout</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settingsorganisms.html">4. Configuring your Organisms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settingssimulation.html">5. Setting up the Simulation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settingsinteractions.html">6. Configuring Interactions</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">7. Configuring Outputs and Run End Log</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#output-options">7.1. Output options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-end-log">7.2. Run end log</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#run-end-log-options">7.3. Run end log options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#other-options">7.4. Other options</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#custom-logs">7.5. Custom logs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="revosimconcepts.html">3. Concepts and Example Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="windowlayout.html">4. Window Layout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsorganisms.html">5. Configuring your Organisms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingssimulation.html">6. Setting up the Simulation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settingsinteractions.html">7. Configuring Interactions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">8. Configuring Outputs and Run End Log</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#output-options">8.1. Output options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-end-log">8.2. Run end log</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#run-end-log-options">8.3. Run end log options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#other-options">8.4. Other options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#custom-logs">8.5. Custom logs</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="loggingsim.html">8. Running Log</a></li>
-<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">9. Genome comparison dock</a></li>
-<li class="toctree-l1"><a class="reference internal" href="advanced.html">10. Advanced Options</a></li>
-<li class="toctree-l1"><a class="reference internal" href="commandline.html">11. Command Line Options</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tests.html">12. Tests</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loggingsim.html">9. Running Log</a></li>
+<li class="toctree-l1"><a class="reference internal" href="genomecomparison.html">10. Genome comparison dock</a></li>
+<li class="toctree-l1"><a class="reference internal" href="advanced.html">11. Advanced Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="commandline.html">12. Command Line Options</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">13. Tests</a></li>
 </ul>
 
         </div>
@@ -77,7 +78,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-      <li><span class="section-number">7. </span>Configuring Outputs and Run End Log</li>
+      <li><span class="section-number">8. </span>Configuring Outputs and Run End Log</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/settingsoutput.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -88,10 +89,10 @@
            <div itemprop="articleBody">
              
   <section id="configuring-outputs-and-run-end-log">
-<span id="outputs"></span><h1><span class="section-number">7. </span>Configuring Outputs and Run End Log<a class="headerlink" href="#configuring-outputs-and-run-end-log" title="Permalink to this headline">¶</a></h1>
+<span id="outputs"></span><h1><span class="section-number">8. </span>Configuring Outputs and Run End Log<a class="headerlink" href="#configuring-outputs-and-run-end-log" title="Permalink to this headline">¶</a></h1>
 <p>From v3.0.0, REvoSim has a versatile logging system, that can be accessed by clicking the logging button on the main toolbar. This launches an Output Dock, which appears in the left dock area and has two tabs, placed at the bottom. The Output settings tab has a number of options that dictate the behaviour of the REvoSim logging system, and buttons to output two predefined logs at any point in a run. In addition to these, the Running log tab provides a flexible system for writing logs as a simulation run progresses.</p>
 <section id="output-options">
-<h2><span class="section-number">7.1. </span>Output options<a class="headerlink" href="#output-options" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">8.1. </span>Output options<a class="headerlink" href="#output-options" title="Permalink to this headline">¶</a></h2>
 <p>Options in the Output settings tab are as follows:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Output save path</dt>
@@ -106,7 +107,7 @@
 </dl>
 </section>
 <section id="run-end-log">
-<h2><span class="section-number">7.2. </span>Run end log<a class="headerlink" href="#run-end-log" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">8.2. </span>Run end log<a class="headerlink" href="#run-end-log" title="Permalink to this headline">¶</a></h2>
 <p>REvoSim provides a detailed log file at the end of runs - or on request during a run - that features the information below. This can be automatically output at the end of every run in batch mode (see option <em>Automatically create detailed log on batch runs</em> below), or dumped as required using the <em>Write data for current run</em> button highlighted below. The log is written to the current output folder, and is placed in a file called REvoSim_end_run_log.txt. This file is structured as follows:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Timestamp</dt>
@@ -164,7 +165,7 @@
 </div>
 </section>
 <section id="run-end-log-options">
-<h2><span class="section-number">7.3. </span>Run end log options<a class="headerlink" href="#run-end-log-options" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">8.3. </span>Run end log options<a class="headerlink" href="#run-end-log-options" title="Permalink to this headline">¶</a></h2>
 <p>REvoSim provides the following options for the run end log:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Automatically create detailed log on batch runs</dt>
@@ -182,7 +183,7 @@
 </dl>
 </section>
 <section id="other-options">
-<h2><span class="section-number">7.4. </span>Other options<a class="headerlink" href="#other-options" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">8.4. </span>Other options<a class="headerlink" href="#other-options" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Don’t update GUI</dt>
 <dd class="field-odd"><p>This option allows runs to proceed without updating the GUI (although note that this prevents images being saved during a run). Checking this allow REvoSim to run marginally faster, and may be of utility for very long runs.</p>
@@ -190,7 +191,7 @@
 </dl>
 </section>
 <section id="custom-logs">
-<h2><span class="section-number">7.5. </span>Custom logs<a class="headerlink" href="#custom-logs" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">8.5. </span>Custom logs<a class="headerlink" href="#custom-logs" title="Permalink to this headline">¶</a></h2>
 <p>In addition to the Run end log, and running log (see <a class="reference internal" href="loggingsim.html#logging"><span class="std std-ref">Running Log</span></a>), there are a series of custom logs that can be selected in the tools option of the main menu (see <a class="reference internal" href="mainmenu.html#mainmenu"><span class="std std-ref">Main Menu</span></a>).</p>
 </section>
 </section>
@@ -199,14 +200,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="settingsinteractions.html" class="btn btn-neutral float-left" title="6. Configuring Interactions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="loggingsim.html" class="btn btn-neutral float-right" title="8. Running Log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="settingsinteractions.html" class="btn btn-neutral float-left" title="7. Configuring Interactions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="loggingsim.html" class="btn btn-neutral float-right" title="9. Running Log" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness.</p>
+    <p>&#169; Copyright 2023, Mark D. Sutton, Russell J. Garwood, Alan R.T. Spencer, Euan Furness.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
