@@ -26,4 +26,4 @@ Using this approach demonstrates, for example, that the average generation time 
 Example Usage
 -------------
 
-To do.
+Setting up REvoSim simulations to test particular eco-evolutionary hypotheses involves several steps. This page will guide you through setting up simulations to test the "more-individuals" hypothesis of species richness: the hypothesis that the species richness of ecosystems is controlled by the number of individuals that they contain. REvoSim is used to test this hypothesis in `Furness et al. (2021) <https://onlinelibrary.wiley.com/doi/10.1002/ece3.7730>`_.
