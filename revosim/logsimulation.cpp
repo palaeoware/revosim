@@ -23,9 +23,11 @@ void LogSimulation::CreateReplacementText()
     replacementText.insert("*gridMeanFitness*", "Grid_mean_fitness");
     replacementText.insert("*gridBreedEntries*", "Grid_breed_list_entries");
     replacementText.insert("*gridBreedFails*", "Grid_bred_fails");
+    replacementText.insert("*gridBreedSuccess*", "Grid_bred_success");
     replacementText.insert("*speciesCount*", "Species_count");
     replacementText.insert("*gridTrophicHistograms*", "Trophic_histograms");
-    //RJG - Species tags
+    replacementText.insert("*gridGeneration*", "Grid_generatrion_time");
+    // RJG - Species tags
     replacementText.insert("*speciesID*", "Species_ID");
     replacementText.insert("*originTime*", "Origin_time_of_species");
     replacementText.insert("*speciesParent*", "Species_parent");
