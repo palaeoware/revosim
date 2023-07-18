@@ -71,10 +71,7 @@ public:
     void groupsGenealogicalTracker();
     void groupsGenealogicalTracker_v3();
 
-
     bool speciationLogging;
-
-    //All this no longer needed or should be in logging stuff?
     QString speciationLogText;
 
 private:
@@ -93,7 +90,8 @@ private:
     int getNextSpeciesID();
     void addLogSpecies(quint64 speciesID, LogSpecies *logSpecies);
     QMutex addSpeciesToListMutex, getNextSpeciesIDMutex, addLogSpeciesMutex, speciesQueueMutex, speciationLogTextMutex;
-    QList<Species> *newSpeciesList;
+    //RJG2023 - remove, defined elsewhere
+    //QList<Species> *newSpeciesList;
     Species *getNextSpeciesToWorkOn();
     void speciesAnalysisWorker(int threadID);
     void doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSpecies);

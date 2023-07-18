@@ -83,7 +83,7 @@ Analyser::Analyser()
 /*!
  * \brief Analyser::groupsGenealogicalTracker
  *
- * This is latest code that uses the genealogical tracking of species since last analysis.
+ * MDS - This is latest code that uses the genealogical tracking of species since last analysis.
  *
  * Algorithm is:
  *
@@ -100,7 +100,16 @@ Analyser::Analyser()
  * groups - create new species from those with fewer unique genomes.
  * 2c - Go through and write back new species IDs into cells.
  *
+ * RJG - Regarding getting the data out of here, it worth noting:
+ * -- In perSpeciesAnalysis, we were creating a load of data and then saving that with the species to the newSpeciesList
+ * -- This then overwrites oldSpeciesList after the parallelised per species analysis code
+ * -- We populate much of the per species data here, but do not populate the species complexLogData within the per species analysis function
+ * -- (this is a LogSpeciesDataItem structure for the on the fly log, that is part of a species)
+ * -- Note that these structures are also used in the end run log where a list of them are placed in LogSpecies data structure - one for each iteration the species is alive).
+ * -- Per species calls doRunningLogs, which calculates the stuff for the LogSpeciesDataItem, so this then writes the relevant species within the newSpeciesList
+ *
  */
+
 void Analyser::groupsGenealogicalTracker_v3()
 {
 
@@ -489,6 +498,7 @@ int Analyser::perSpeciesAnalyis(Species *s)
                 newlogspecies->dataItems.append(newdata);
                 addLogSpecies(newspID, newlogspecies);
                 newsp.logSpeciesStructure = newlogspecies;
+
                 g->logSpecies = newlogspecies;
 
             }
@@ -524,12 +534,12 @@ int Analyser::perSpeciesAnalyis(Species *s)
             if (speciesMode == SPECIES_MODE_PHYLOGENY_AND_METRICS)
                 recordFrequencies(&newsp, thisSpecies, g->groupID, false);
 
-
             //copy the modal genome into species
             std::memcpy(&newsp.type, g->modalGenome->genome, 4 * simulationManager->simulationSettings->genomeSize);
 
             newsp.size = g->occurrenceCount;
             newsp.genomeDiversity = g->genomeCount;
+
             //and put copied species (with new type) into the new species list
             addSpeciesToList(newsp);
         }
@@ -605,7 +615,6 @@ void Analyser::doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSp
             int speciesIDForLog = g->speciesID;
 
             //RJG - here we do local counts of where members of each group (now a new species) are - this seems to work get decent numbers for individuals
-            //RJG - if this is actually a loop through the different new species, then this could be where things are going wrong
             //for all occupied cells - using list of positions from bin entries pointed to by group
             foreach (SpeciesBinEntry *sbe, g->allGenomes)
                 foreach (quint32 v, sbe->positions)
@@ -655,7 +664,6 @@ void Analyser::doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSp
 
                 }
 
-
             //RJG - if this group is present in n,m, append it to the species log structure
             //RJG - Speciation logging - if count >0 in local array this species is in that cell, so record that ID in our data structure
             if (speciationLogging)
@@ -693,6 +701,11 @@ void Analyser::doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSp
             thisdataitem->centroidRangeX = static_cast<quint8>(sumxpos / speciesSize);
             thisdataitem->centroidRangeY = static_cast<quint8>(sumypos / speciesSize);
             thisdataitem->geographicalRange = static_cast<quint8>(qMax(maxx - minx, maxy - miny));
+
+            //RJG 2023 - copy over new species data to newSpeciesList
+            for (auto &s : *newSpeciesList)
+                if (s.ID == static_cast<quint64>(g->speciesID))
+                    s.complexLogData = *thisdataitem;
         }
 
         //RJG - Speciation logging - write counts from  non local array to file here if length of species size is more than 1 (i.e. there has been speciation)
@@ -789,9 +802,9 @@ void Analyser::doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSp
 
     }
 }
+
 //returns max group code used. If negative - error
 //This is the core pairwise-comparison algorithm
-
 int Analyser::generateGroupsFor(GenomeHashTable *thisSpecies)
 {
     QVarLengthArray<qint32> grouplookupVLA;  //lookups are translation of groups into parent group codes
