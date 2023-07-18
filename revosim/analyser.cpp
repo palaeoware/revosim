@@ -394,10 +394,9 @@ int Analyser::perSpeciesAnalyis(Species *s)
     //one group will be old species, others will become new species
 
     //first - gather some per group data, in an inline class
-
-
     int maxcountkey = -1;   //will be group ID for most diverse group
     int maxcount = -1;
+
     QHash<qint32, GroupData *> groups; //key is group code
     for (int i = 0; i < thisSpecies->bins; i++)
         for (int j = 0; j < thisSpecies->binData.at(i).genomeEntries; j++)
@@ -421,7 +420,6 @@ int Analyser::perSpeciesAnalyis(Species *s)
         }
 
     //groups hash now complete
-
     //We now go through these groups and sort out species data, also writing back new species IDs to
     //critters cells for any new species
 
@@ -494,11 +492,7 @@ int Analyser::perSpeciesAnalyis(Species *s)
                 g->logSpecies = newlogspecies;
 
             }
-
-
-
             addSpeciesToList(newsp);
-
         }
         else //this is the continuing species
         {
@@ -570,7 +564,7 @@ void Analyser::doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSp
             for (int j = 0; j < simulationManager->simulationSettings->gridY; j++)speciationLogDataStructure[i].append(QVector <int> ());
         }
 
-//RJG - assuming that this represents the groups within one species - is this the case? - MDS yes!
+        //RJG - assuming that this represents the groups within one species - is this the case? - MDS yes!
         foreach (GroupData *g, *groups)
         {
             listpos++;
@@ -631,7 +625,6 @@ void Analyser::doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSp
                     //RJG - Speciation logging - add one to count in *LOCAL* array at X,Y
                     if (speciationLogging)
                         speciationLogArrayLocal[x][y]++;
-
 
                     sumfit += static_cast<quint64>(critters[x][y][z].fitness);
                     cellsoc.insert(static_cast<quint16>(x) * static_cast<quint16>(256) + static_cast<quint16>(y));
@@ -700,7 +693,6 @@ void Analyser::doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSp
             thisdataitem->centroidRangeX = static_cast<quint8>(sumxpos / speciesSize);
             thisdataitem->centroidRangeY = static_cast<quint8>(sumypos / speciesSize);
             thisdataitem->geographicalRange = static_cast<quint8>(qMax(maxx - minx, maxy - miny));
-
         }
 
         //RJG - Speciation logging - write counts from  non local array to file here if length of species size is more than 1 (i.e. there has been speciation)
@@ -796,7 +788,6 @@ void Analyser::doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSp
         }
 
     }
-
 }
 //returns max group code used. If negative - error
 //This is the core pairwise-comparison algorithm
