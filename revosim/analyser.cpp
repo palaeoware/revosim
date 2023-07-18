@@ -101,12 +101,12 @@ Analyser::Analyser()
  * 2c - Go through and write back new species IDs into cells.
  *
  * RJG - Regarding getting the data out of here, it worth noting:
- * -- In perSpeciesAnalysis, we were creating a load of data and then saving that with the species to the newSpeciesList
- * -- This then overwrites oldSpeciesList after the parallelised per species analysis code
- * -- We populate much of the per species data here, but do not populate the species complexLogData within the per species analysis function
- * -- (this is a LogSpeciesDataItem structure for the on the fly log, that is part of a species)
- * -- Note that these structures are also used in the end run log where a list of them are placed in LogSpecies data structure - one for each iteration the species is alive).
- * -- Per species calls doRunningLogs, which calculates the stuff for the LogSpeciesDataItem, so this then writes the relevant species within the newSpeciesList
+ * -- groupsGenealogicalTracker_v3 includes the decleration of newSpeciesList which overwrites oldSpeciesList after the parallelised per species analysis code (which populated is) returns to the tracker
+ * -- In perSpeciesAnalysis, we create some of the required tracking data, and then save that as part of the species data to the newSpeciesList
+ * -- Whilst much of the per species data is populated iun this perSpeciesAnalysis function, we do not populate the species data complexLogData within this function
+ * -- Rather, perSpeciesAnalysis calls doRunningLogs, which calculates the stuff for the complexLogData, and then this is written to the relevant species within the newSpeciesList
+ * -- Note that complexLogData is an instance of structure LogSpeciesDataItem - in this case, it is part of the species class and is recorded here for the on the fly log
+ * -- However, this structure is also used in the end run log - a list of these is stored in a LogSpecies data structure - one for each iteration the species is alive, also part of the species class.
  *
  */
 
