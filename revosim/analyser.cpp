@@ -107,7 +107,6 @@ Analyser::Analyser()
  * -- Rather, perSpeciesAnalysis calls doRunningLogs, which calculates the stuff for the complexLogData, and then this is written to the relevant species within the newSpeciesList
  * -- Note that complexLogData is an instance of structure LogSpeciesDataItem - in this case, it is part of the species class and is recorded here for the on the fly log
  * -- However, this structure is also used in the end run log - a list of these is stored in a LogSpecies data structure - one for each iteration the species is alive, also part of the species class.
- *
  */
 
 void Analyser::groupsGenealogicalTracker_v3()
