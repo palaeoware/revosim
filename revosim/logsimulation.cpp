@@ -8,8 +8,6 @@ LogSimulation::LogSimulation(SimSettings *settings)
 {
     simSettings = settings;
     csvOutput = false;
-
-
     CreateReplacementText();
 }
 
@@ -939,8 +937,8 @@ QString LogSimulation::writeMutationLog()
 void LogSimulation::writeLogXML(QString globalSavePath)
 {
     QString xmlFileString(globalSavePath);
-    if (!xmlFileString.endsWith(QDir::separator()))xmlFileString.append(QDir::separator());
-    xmlFileString.append("REvoSim_output/" + QString(PRODUCTNAME) + "_log_template.xml");
+    if (!xmlFileString.endsWith("REvoSim_output/"))xmlFileString.append("REvoSim_output/");
+    xmlFileString.append(QString(PRODUCTNAME) + "_log_template.xml");
     QFile xmlFile(xmlFileString);
     if (!xmlFile.open(QIODevice::WriteOnly | QIODevice::Text))
     {

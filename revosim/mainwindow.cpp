@@ -1729,6 +1729,7 @@ QDockWidget *MainWindow::createLogSettingsDock()
         simulationManager->simulationLog->setHeaderTextFromGUI(mainWindow->headerTextEdit->toHtml());
         simulationManager->simulationLog->setIterationTextFromGUI(mainWindow->iterationTextEdit->toHtml());
         simulationManager->simulationLog->setSpeciestTextFromGUI(mainWindow->logTextEdit->toHtml());
+        doSavePath();
         simulationManager->simulationLog->writeLogXML(getSavePath());
     });
 
