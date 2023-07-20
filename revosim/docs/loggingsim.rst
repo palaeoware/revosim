@@ -57,6 +57,7 @@ Iteration keywords
 :\*gridNumberAlive\*: The number of organisms alive at polling iteration.
 :\*gridGeneration\*: This calculates the average age (thus generation time) of all successful parents in the polling iteration. Note that it calculates this based on the assumption (which is true for the majority of settings), that organisms will only successfully breed once in their lifetime. This assumption can be checked using the \*gridNumberAlive\* and \*gridBreedSuccess\* outputs to calculate the mean number of breeding individuals at any generation.
 :\*gridTrophicHistograms\*: This outputs a histogram of the trophic levels of all the organisms in the grid, at 0.1 intervals between 0 and 3.
+:\*gridSpeciesRange\*: This reports the average range of the species alive at the polling iteration: it is a mean of the number of pixels each species is found in, across all species.
 :\*iteration\*: The current iteration.
 :\*printSettings\*: This prints a string of all REvoSim settings at the polling iteration, or start of the run if placed in the header.
 :\*printTime\*: A string showing the time.

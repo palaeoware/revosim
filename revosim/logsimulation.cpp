@@ -41,6 +41,7 @@ void LogSimulation::CreateReplacementText()
     replacementText.insert("*printSettings*", "*printSettings*");
     replacementText.insert("*printTime*", "*printTime*");
     replacementText.insert("*dumpGenomes*", "Genome_dump");
+    replacementText.insert("*gridSpeciesRange*", "Grid_species_range");
     QStringList frequenciesHeaders;
     for (int ii = 0; ii < simSettings->genomeSize; ii++)
         for (int jj = 0; jj < 32; jj++)
@@ -529,6 +530,33 @@ QString LogSimulation::processLogTextGeneral(QString text)
     QDateTime t(QDateTime::currentDateTime());
     text.replace("*printTime*", t.toString(Qt::ISODate));
     text.replace("*dumpGenomes*", writeDisparityLog());
+
+    if (text.contains("*gridSpeciesRange*"))
+    {
+        QList <int> ranges;
+        for (auto s : *oldSpeciesList)
+        {
+            int cells = 0;
+            for (int i = 0; i < simulationManager->simulationSettings->gridX; i++)
+                for (int j = 0; j < simulationManager->simulationSettings->gridY; j++)
+                {
+                    bool present = false;
+                    for  (int k = 0; k < simulationManager->cellSettingsMaster->slotsPerSquare; k++)
+                        if (critters[i][j][k].age > 0)
+                            if (critters[i][j][k].speciesID == s.ID)
+                            {
+                                present = true;
+                                break;
+                            }
+                    if (present) cells++;
+                }
+            ranges.append(cells);
+        }
+        int total = 0;
+        for (int i : ranges) total += i;
+        double mean = static_cast<double>(total) / static_cast<double>(ranges.count());
+        text.replace("*gridSpeciesRange*", QString::number(mean));
+    }
 
     //RJG - grid level stats
     if (text.contains("*gridNumberAlive*") || text.contains("*gridBreedEntries*") || text.contains("*gridBreedFails*") || text.contains("*gridMeanFitness*") || text.contains("*gridTrophicHistograms*")
