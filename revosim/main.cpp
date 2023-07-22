@@ -100,6 +100,7 @@ QHash<QString, QString> *parse(QCoreApplication *app)
     --v2log
     --log
     --settings
+    --maxthreads
 
     log image options
     --li_population
@@ -506,6 +507,12 @@ QHash<QString, QString> *parse(QCoreApplication *app)
                                     QCoreApplication::translate("main", "file"));
     parser->addOption(opt_settings);
 
+    QCommandLineOption opt_maxthreads(QStringList() << "maxthreads",
+                                    QCoreApplication::translate("main", "Specify maximum threads to use"),
+                                    QCoreApplication::translate("main", "thread count (integer)"));
+    parser->addOption(opt_maxthreads);
+
+
     //Then the linkages - currently limit to two from command line
     /*
      -- L1_variable
@@ -631,7 +638,9 @@ QHash<QString, QString> *parse(QCoreApplication *app)
     if (parser->isSet(opt_log))hashResults->insert("opt_log", parser->value(opt_log));
     if (parser->isSet(opt_predationefficiency)) hashResults->insert("predationefficiency", parser->value(opt_predationefficiency));
     if (parser->isSet(opt_minpredatorscore)) hashResults->insert("minpredatorscore", parser->value(opt_minpredatorscore));
-    if (parser->isSet(opt_settings))hashResults->insert("settings", parser->value(opt_settings));
+    if (parser->isSet(opt_settings)) hashResults->insert("settings", parser->value(opt_settings));
+    if (parser->isSet(opt_maxthreads)) hashResults->insert("maxthreads", parser->value(opt_maxthreads));
+
     //RJG - Logging images
     if (parser->isSet(opt_li_population)) hashResults->insert("li_population", boolValue(parser->value(opt_li_population)));
     if (parser->isSet(opt_li_fitness)) hashResults->insert("li_fitness", boolValue(parser->value(opt_li_fitness)));

@@ -89,15 +89,10 @@ SimManager::SimManager()
     makeLookups();
 
     aliveCount = 0;
-    ProcessorCount = QThread::idealThreadCount();
-    if (ProcessorCount == -1) ProcessorCount = 1;
-    if (ProcessorCount > 256) ProcessorCount = 256; //a sanity check
-    //ProcessorCount=1;
+
     for (auto &mutexe : mutexes)
         for (int j = 0; j < GRID_X; j++)
             mutexe[j] = new QMutex();
-
-    for (int i = 0; i < ProcessorCount; i++) FuturesList.append(new QFuture<int>);
 
     env = nullptr;
 
@@ -165,6 +160,23 @@ SimManager::SimManager()
     systemsList.append(genomeComparisonSystem);
 
     simulationLog = new LogSimulation(simulationSettings);
+}
+
+//MDS gets called from command line parser - whether or not there is a command line
+//pass -1 for 'use QT's idea of what thread count should be' (the default)
+void SimManager::SetProcessorCount(int count)
+{
+    if (count==-1)
+        ProcessorCount = QThread::idealThreadCount();
+    else
+        ProcessorCount = count;
+
+
+    //some sanity checking
+    if (ProcessorCount < 1) ProcessorCount = 1;
+    if (ProcessorCount > 256) ProcessorCount = 256; //a sanity check
+
+    for (int i = 0; i < ProcessorCount; i++) FuturesList.append(new QFuture<int>);
 }
 
 /*!

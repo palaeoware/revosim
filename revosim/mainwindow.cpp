@@ -5165,6 +5165,13 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
 {
     if (!options->empty()) qInfo() << "Launching software, setting options from command line";
 
+    //MDS - maxthreads
+    if (options->contains("maxthreads"))
+        simulationManager->SetProcessorCount(options->value("maxthreads").toInt());
+    else
+        simulationManager->SetProcessorCount(-1); //use system-determined thread count
+
+
     //do this first as it resets stuff
     if (options->contains("settings"))
     {

@@ -702,9 +702,11 @@ void Analyser::doRunningLogs(QHash<qint32, GroupData *> *groups, Species *thisSp
             thisdataitem->geographicalRange = static_cast<quint8>(qMax(maxx - minx, maxy - miny));
 
             //RJG 2023 - copy over new species data to newSpeciesList
+            addSpeciesToListMutex.lock(); //MDS - added mutex locker for list access
             for (auto &s : *newSpeciesList)
                 if (s.ID == static_cast<quint64>(g->speciesID))
                     s.complexLogData = *thisdataitem;
+            addSpeciesToListMutex.unlock();  //Look, look, I remembered to unlock it!!
         }
 
         //RJG - Speciation logging - write counts from  non local array to file here if length of species size is more than 1 (i.e. there has been speciation)
