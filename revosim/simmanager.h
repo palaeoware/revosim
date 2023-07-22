@@ -116,6 +116,7 @@ public:
     friend class test; //RJG - make friend a test class so it can access private functions to test them
 
     int ProcessorCount;
+    void SetProcessorCount(int count);
     void setupRun();
     bool iterate(int eMode, bool interpolate);
 
@@ -147,6 +148,7 @@ public:
     VisualisationSystem *visualisationSystem2;
     LogSimulation *simulationLog;
     GenomeComparisonSystem *genomeComparisonSystem;
+
 
 
 
