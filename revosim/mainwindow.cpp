@@ -4359,7 +4359,7 @@ quint64 MainWindow::getBatchRuns()
 void MainWindow::setStatusBarText(const QString &text)
 {
     if (!autoFromCommand) ui->statusBar->showMessage(text);
-    else qInfo() << text;
+    else if (text.length() > 0) qInfo() << text;
 }
 
 /**

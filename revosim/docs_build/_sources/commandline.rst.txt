@@ -11,7 +11,7 @@ Command line switches are documented below, and examples are given of their usag
 
 Note in particular the --auto command, which automatically starts a simulation, and exits the program at its end. This will be required in most batch scenarios, as will the -k switch to turn on one or both types of logging.
 
-e.g. a command line to run a similation on the environment files in "c:\\revosim\\data\\env1" for 50000 iterations, using normal (running) logs, and with settings at defaults except for 'toroidal' (on):
+e.g. a command line to run a simulation on the environment files in "c:\\revosim\\data\\env1" for 50000 iterations, using normal (running) logs, and with settings at defaults except for 'toroidal' (on):
 
 .. code-block:: console
     
@@ -69,12 +69,12 @@ Full list of single-letter switches (also available using switch -h, help):
 - -c, --breedcost <cost (integer)>                        Breed cost.
 - -d, --maxdifftobreed <maxdifftobreed (integer)>         Maximum difference to breed.
 - -e, --environment <directory>                           Directory containing environment images.
-- -f, --usemaxdifftobreed <On/Off>                        Use maximum difference to breed criterion
-- -g, --breedwithinspecies <On/Off>                       Only allow breeding within a species
+- -f, --usemaxdifftobreed <On/Off>                        Use maximum difference to breed criterion.
+- -g, --breedwithinspecies <On/Off>                       Only allow breeding within a species.
 - -i, --disperal <distance (integer)>                     maximum dispersal distance.
 - -j, --outputpath <path>                                 path for output logs.
 - -k, --logtype <Phylogeny/Normal/Both>                   logs to generate (phylogeny is end run log, normal is running log).
-- -l, --excludenodescendents <On/Off>                     Exclude species without descendents from phylogeny logs
+- -l, --excludenodescendents <On/Off>                     Exclude species without descendents from phylogeny logs.
 - -m, --environmentmode <mode (Static|Once|Loop|Bounce)>  Environment file cycling mode.
 - -n, --energy <energy (integer)>                         Energy input.
 - -o, --tolerance <tolerance (integer)>                   Settle tolerance.
@@ -82,7 +82,7 @@ Full list of single-letter switches (also available using switch -h, help):
 - -q, --recalcfitness <On/Off>                            recalculate fitness each iteration.
 - -r, --refreshrate <rate (integer)>                      environment refresh rate.
 - -s, --slots <slots (integer)>                           Slots per pixel.
-- -t, --toroidal <On/Off>                                 Toroidal environment
+- -t, --toroidal <On/Off>                                 Toroidal environment.
 - -u, --mutation <chance (integer)>                       Chance of mutation (0-255).
 - -v, --csv <On/Off>                                      Use CSV format for normal log.
 - -w, --interpolate <On/Off>                              Interpolate environmental images
@@ -95,14 +95,14 @@ Long option only switches
 We ran out of letters! These require the long format, with \--. Otherwise they work as above.
 
 - --polling <rate [integer]>                              Set polling rate for logging and screen refresh.
-- --auto <iterations [integer]>                           Automatically start simulation and exit program after completion of specified number of iterations
+- --auto <iterations [integer]>                           Automatically start simulation and exit program after completion of specified number of iterations.
 - --nonspatial <On/Off>                                   Use non-spatial simulation mode.
-- --minspeciessize <size [integer]>                       Minimum species size to appear in logs
-- --fitnesstarget <target [integer]>                      Fitness Target
-- --breed <Obligate/Facultative/Variable/Asexual>         Breeding mode
-- --variablemutate <On/Off>                               Variable mutation rates
-- --nogui <On/Off>                                        Don't update GUI
-- --pathogens <On/Off>                                    Turn pathogens on or off
+- --minspeciessize <size [integer]>                       Minimum species size to appear in logs.
+- --fitnesstarget <target [integer]>                      Fitness target.
+- --breed <Obligate/Facultative/Variable/Asexual>         Breeding mode.
+- --variablemutate <On/Off>                               Variable mutation rates.
+- --nogui <On/Off>                                        Don't update GUI.
+- --pathogens <On/Off>                                    Turn pathogens on or off.
 - --pathogenmutate <chance (integer)>                     Chance of mutation (0-255).
 - --pathogenfrequency <frequency (integer)>               Frequency pathogens are applied.
 - --customlogging <On/Off>                                Record all custom logs.
@@ -118,25 +118,26 @@ We ran out of letters! These require the long format, with \--. Otherwise they w
 - --v2log <On/Off>                                        Initiates v2.0.0 logging style.
 - --interactfitness <On/Off>                              Interactions modify fitness.
 - --interactenergy <On/Off>                               Interactions modify energy.
-- --li_population <On/Off>                                Log images for population
-- --li_fitness <On/Off>                                   Log images for mean fitness
-- --li_sys_visualisation <On/Off>                         Log images for visualisation system 1
-- --li_sys_visualisation2 <On/Off>                        Log images for visualisation system 2
-- --li_species <On/Off>                                   Log images for species
-- --li_settles <On/Off>                                   Log images for settles
-- --li_fails <On/Off>                                     Log images for breed/settle fails
-- --li_environment <On/Off>                               Log images for environenment
-- --sys_fitness <Word string>                             Fitness system
-- --sys_breed <Word string>                               Breed system
-- --sys_mutate <Word string>                              Mutate system
-- --sys_var_mutate <Word string>                          Variable mutate system
-- --sys_var_breed <Word string>                           Variable breed system
-- --sys_pathogens <Word string>                           Pathogens system
-- --sys_species_ID <Word string>                          Species ID system
-- --sys_interactions <Word string>                        Interactions system
-- --sys_visualisation <Word string>                       Visualisation system
-- --sys_visualisation2 <Word string>                      visualisation2 system
+- --li_population <On/Off>                                Log images for population.
+- --li_fitness <On/Off>                                   Log images for mean fitness.
+- --li_sys_visualisation <On/Off>                         Log images for visualisation system 1.
+- --li_sys_visualisation2 <On/Off>                        Log images for visualisation system 2.
+- --li_species <On/Off>                                   Log images for species.
+- --li_settles <On/Off>                                   Log images for settles.
+- --li_fails <On/Off>                                     Log images for breed/settle fails.
+- --li_environment <On/Off>                               Log images for environment.
+- --sys_fitness <Word string>                             Fitness system.
+- --sys_breed <Word string>                               Breed system.
+- --sys_mutate <Word string>                              Mutate system.
+- --sys_var_mutate <Word string>                          Variable mutate system.
+- --sys_var_breed <Word string>                           Variable breed system.
+- --sys_pathogens <Word string>                           Pathogens system.
+- --sys_species_ID <Word string>                          Species ID system.
+- --sys_interactions <Word string>                        Interactions system.
+- --sys_visualisation <Word string>                       Visualisation system.
+- --sys_visualisation2 <Word string>                      visualisation2 system.
 - --settings <file>                                       Load a REvoSim settings file.
+- --maxthreads <thread count (integer)>                   Specify maximum threads to use.
 - --L1_variable <Energy/No_selection/Mutation_rate>       Variable to be linked (required).
 - --L1_imageSequence <directory>                          Directory containing linkage mask images (required).
 - --L1_mode <mode (Static|Once|Loop|Bounce)>              Image file cycling mode (defaults to static).
@@ -146,4 +147,4 @@ We ran out of letters! These require the long format, with \--. Otherwise they w
 - --L2_imageSequence <directory>                          Directory containing second linkage mask images (required).
 - --L2_mode <mode (Static|Once|Loop|Bounce)>              Image file cycling mode (defaults to static).
 - --L2_interpolate <On/Off>                               Image interpolation (defaults to true).
-- --L2_change_rate <rate (integer)>                       Image refresh rate
+- --L2_change_rate <rate (integer)>                       Image refresh rate.
