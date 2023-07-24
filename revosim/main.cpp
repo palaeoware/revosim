@@ -508,8 +508,8 @@ QHash<QString, QString> *parse(QCoreApplication *app)
     parser->addOption(opt_settings);
 
     QCommandLineOption opt_maxthreads(QStringList() << "maxthreads",
-                                    QCoreApplication::translate("main", "Specify maximum threads to use"),
-                                    QCoreApplication::translate("main", "thread count (integer)"));
+                                      QCoreApplication::translate("main", "Specify maximum threads to use"),
+                                      QCoreApplication::translate("main", "thread count (integer)"));
     parser->addOption(opt_maxthreads);
 
 
@@ -702,17 +702,22 @@ int main(int argc, char *argv[])
     //Style program with our dark style
     QApplication::setStyle(new DarkStyleTheme);
 
-    QPixmap splashPixmap(":/palaeoware_logo_square.png");
-    QSplashScreen *splash = new QSplashScreen(splashPixmap, Qt::WindowStaysOnTopHint);
-    splash->setAttribute(Qt::WA_DeleteOnClose, true);
-    splash->show();
-    splash->showMessage("<font><b>" + QString(PRODUCTNAME) + " - " + QString(PRODUCTTAG) + "</b></font>", Qt::AlignHCenter, Qt::white);
-    QApplication::processEvents();
-    QTimer::singleShot(5000, splash, SLOT(close()));
+    QHash<QString, QString> *parsedHash = parse(&application);
+
+    if (!parsedHash->contains("auto"))
+    {
+        QPixmap splashPixmap(":/palaeoware_logo_square.png");
+        QSplashScreen *splash = new QSplashScreen(splashPixmap, Qt::WindowStaysOnTopHint);
+        splash->setAttribute(Qt::WA_DeleteOnClose, true);
+        splash->show();
+        splash->showMessage("<font><b>" + QString(PRODUCTNAME) + " - " + QString(PRODUCTTAG) + "</b></font>", Qt::AlignHCenter, Qt::white);
+        QApplication::processEvents();
+        QTimer::singleShot(5000, splash, SLOT(close()));
+    }
 
     MainWindow window;
 
-    window.setOptionsFromParser(parse(&application));
+    window.setOptionsFromParser(parsedHash);
 
     window.show();
 
