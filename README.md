@@ -1,7 +1,6 @@
 # REvoSim and EnviroGen
 ## [R]apid [Evo]lutionary [Sim]ulator and [Enviro]nment [Gen]erator
 
-
 Coded by:
  - Mark D. Sutton (m.sutton@imperial.ac.uk)
  - Russell J. Garwood (russell.garwood@gmail.com)
@@ -17,7 +16,7 @@ ______
 ## Software references:
 Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology 62(3),339-355. [https://doi.org/10.1111/pala.12420](https://doi.org/10.1111/pala.12420)
 
-Furness, E.N., Garwood, R.J. and Sutton, M.D., 2023. REvoSim v3.0.0: A fast evolutionary simulation tool with ecological processes. JOSS. Submitted.
+Furness, E.N., Garwood, R.J. and Sutton, M.D., 2023. REvoSim v3.0.0: A fast evolutionary simulation tool with ecological processes. JOSS. Accepted.
 
 ## Other references:
 Furness E.N., Garwood R.J., Mannion P.D. & Sutton M.D. 2021. Evolutionary simulations clarify and reconcile biodiversity-disturbance models. Proceedings of the Royal Society B 288(1949):20210240. doi: 10.1098/rspb.2021.0240
