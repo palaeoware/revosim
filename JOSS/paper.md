@@ -1,5 +1,5 @@
 ---
-title: 'REvoSim v3.0.0: A fast evolutionary simulation tool with ecological processes'
+title: 'REvoSim v3.0.1: A fast evolutionary simulation tool with ecological processes'
 tags:
   - C++
   - evolution
@@ -32,7 +32,7 @@ bibliography: paper.bib
 
 # Summary
 
-Simulations are an important tool for understanding ecology and evolution because they allow greater precision and customisation than traditional experiments or observation [@zurrell:2010; @cabral:2017; @barido-sottani:2020]. Additionally, they can model phenomena that occur over timescales too long to be easily empirically observed, but too short to be studied using the fossil record [@garwood:2019]. REvoSim v3.0.0 is a flexible, spatially explicit, individual-based eco-evolutionary simulation tool written in C++. It is an update of REvoSim v2 [@garwood:2019] that increases the flexibility of genetic architecture within the simulation while also incorporating ecological processes such as inter-organism interactions.
+Simulations are an important tool for understanding ecology and evolution because they allow greater precision and customisation than traditional experiments or observation [@zurrell:2010; @cabral:2017; @barido-sottani:2020]. Additionally, they can model phenomena that occur over timescales too long to be easily empirically observed, but too short to be studied using the fossil record [@garwood:2019]. REvoSim v3.0.1 is a flexible, spatially explicit, individual-based eco-evolutionary simulation tool written in C++. It is an update of REvoSim v2 [@garwood:2019] that increases the flexibility of genetic architecture within the simulation while also incorporating ecological processes such as inter-organism interactions.
 
 # Background
 
@@ -96,7 +96,7 @@ ENF, MDS and RJG - Rates of evolution during speciation.
 
 # Availability
 
-REvoSim v3.0.0 is freely available from [Zenodo](https://doi.org/10.5281/zenodo.7699771) and [GitHub](https://github.com/palaeoware/revosim/releases/tag/v3.0.0). Newer releases of the REvoSim software will be available on [GitHub](https://github.com/palaeoware/revosim).
+REvoSim v3.0.1 is freely available from [Zenodo](https://doi.org/10.5281/zenodo.8228938) and [GitHub](https://github.com/palaeoware/revosim/releases/tag/v3.0.1). Newer releases of the REvoSim software will be available on [GitHub](https://github.com/palaeoware/revosim).
 
 # Acknowledgements
 
