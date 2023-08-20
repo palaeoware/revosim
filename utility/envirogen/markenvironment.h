@@ -22,7 +22,7 @@
 #include <QColor>
 #define MAXOBJ 1000
 
-class markenvironment : public environmentclass
+class markenvironment : public EnvironmentClass
 {
 public:
     markenvironment();

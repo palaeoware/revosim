@@ -21,7 +21,7 @@
 
 
 //RJG - This is Russell's environmental class which inherets environment class (above).
-class russellenvironment : public environmentclass
+class russellenvironment : public EnvironmentClass
 {
 public:
     russellenvironment();

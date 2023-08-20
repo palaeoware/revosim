@@ -30,12 +30,12 @@
 //#define GRID_Y 100
 
 //RJG This is the base class that a bunch of the environmental generators inheret, which includes save and random number functions
-class environmentclass
+class EnvironmentClass
 {
 
 public:
-    environmentclass();
-    virtual ~environmentclass();
+    EnvironmentClass();
+    virtual ~EnvironmentClass();
 
     virtual void regenerate();
 

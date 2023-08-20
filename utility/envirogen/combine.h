@@ -19,7 +19,7 @@
 #ifndef COMBINE_H
 #define COMBINE_H
 
-class combine : public environmentclass
+class combine : public EnvironmentClass
 {
 public:
     combine();

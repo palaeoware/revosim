@@ -19,7 +19,7 @@
 #ifndef MAKESTACK_H
 #define MAKESTACK_H
 
-class makestack : public environmentclass
+class makestack : public EnvironmentClass
 {
 public:
     makestack();

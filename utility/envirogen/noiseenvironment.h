@@ -19,7 +19,7 @@
 #ifndef NOISEENVIRONMENT_H
 #define NOISEENVIRONMENT_H
 
-class noiseenvironment :  public environmentclass
+class noiseenvironment :  public EnvironmentClass
 {
 public:
     noiseenvironment();

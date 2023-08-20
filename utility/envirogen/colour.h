@@ -20,7 +20,7 @@
 
 #include <QColor>
 
-class colour : public environmentclass
+class colour : public EnvironmentClass
 {
 public:
     colour();

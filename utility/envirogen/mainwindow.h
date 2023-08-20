@@ -44,12 +44,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     Ui::MainWindow *ui;
-    int currentGeneration;
+    int iterations, runs;
     randoms *simulationRandoms;
 
 private slots:
-    void generateEnvironment();
-    void generateEnvironmentBatch();
+    void runPressed();
+    void runBatchPressed();
     void on_pushButtonStackOne_clicked();
     void on_pushButtonStackTwo_clicked();
     void on_selectColour_clicked();
@@ -58,22 +58,23 @@ private slots:
     void stop();
     void pause();
     void settings();
-    void change_path();
+    void changePath();
     void tab_changed(int index);
 
 private:
 
-    QDockWidget *envOptions;
-    environmentclass *environmentobject;
-    EnvironmentScene *envscene;
-    QDir Directory;
+    QDockWidget *environmanetOptions;
+    EnvironmentClass *environmentObject;
+    EnvironmentScene *environmentScene;
     QGraphicsPixmapItem *env_item;
     QImage *env_image;
     int generations, stackOneSize, stackTwoSize;
     QAction *startButton, *stopButton, *aboutButton, *pauseButton, *settingsButton, *runForBatchButton;
     bool stop_flag, pause_flag;
 
-    void RefreshEnvironment();
+    void refreshEnvironment();
+    void generateEnvironment(int environmentType, QString path);
+    QString setupSaveDirectory();
     void newEnvironmentImage();
     void reset_gui();
 };

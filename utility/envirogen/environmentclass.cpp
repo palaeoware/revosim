@@ -19,7 +19,7 @@
 #include "environmentclass.h"
 #include "ui_mainwindow.h"
 
-environmentclass::environmentclass()
+EnvironmentClass::EnvironmentClass()
 {
 
     for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
@@ -34,24 +34,24 @@ environmentclass::environmentclass()
     saveMe = false;
 }
 
-environmentclass::~environmentclass()
+EnvironmentClass::~EnvironmentClass()
 {
 
 }
 
 
-void environmentclass::regenerate()
+void EnvironmentClass::regenerate()
 {
 
 }
 
-void environmentclass::path(QString files_directory, bool doSave)
+void EnvironmentClass::path(QString files_directory, bool doSave)
 {
     dir = files_directory;
     saveMe = doSave;
 }
 
-void environmentclass::save(int generations)
+void EnvironmentClass::save(int generations)
 {
     if (dir == "")
     {

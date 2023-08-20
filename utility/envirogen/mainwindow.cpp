@@ -34,6 +34,7 @@
 #include <QStandardPaths>
 #include <QShortcut>
 #include <QDebug>
+#include <QInputDialog>
 
 MainWindow *MainWin;
 
@@ -50,24 +51,23 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //RJG - Globals for simulation
     generations = 500;
-    currentGeneration = 0;
+    iterations = 0;
+    runs = 0;
     stackOneSize = 0;
     stackTwoSize = 0;
     stop_flag = false;
     pause_flag = false;
-    Directory.setPath(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
-    ui->path->setText(Directory.path());
+    ui->path->setText(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
 
     //RJG - set up graphics
     env_image = new QImage(100, 100, QImage::Format_RGB32);
     env_image->fill(QColor(42, 42, 42));
     env_item = new QGraphicsPixmapItem(QPixmap::fromImage(*env_image));
 
-    envscene = new EnvironmentScene;
-    envscene->mw = this;
-    envscene->addItem(env_item);
-
-    ui->enviroView->setScene(envscene);
+    environmentScene = new EnvironmentScene;
+    environmentScene->mw = this;
+    environmentScene->addItem(env_item);
+    ui->enviroView->setScene(environmentScene);
 
     //RJG - Populate labels in GUI as required
     ui->envSettings->setWindowTitle("Environmental Settings");
@@ -115,12 +115,12 @@ MainWindow::MainWindow(QWidget *parent) :
     startButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_play_button_green.png")), QString("Run"), this);
     startButton->setToolTip(tr("<font>Use this button to generate an environment.</font>"));
     ui->toolBar->addAction(startButton);
-    QObject::connect(startButton, SIGNAL(triggered()), this, SLOT(generateEnvironment()));
+    QObject::connect(startButton, SIGNAL(triggered()), this, SLOT(runPressed()));
 
     runForBatchButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_play_batch_button_green.png")), QString("Run batch"), this);
     runForBatchButton->setToolTip(tr("<font>Use this button to generate multiple replicates of an environment.</font>"));
     ui->toolBar->addAction(runForBatchButton);
-    QObject::connect(runForBatchButton, SIGNAL (triggered()), this, SLOT (generateEnvironmentBatch()));
+    QObject::connect(runForBatchButton, SIGNAL (triggered()), this, SLOT (runBatchPressed()));
 
     stopButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_stop_button_red.png")), QString("Stop"), this);
     stopButton->setToolTip(tr("<font>Use this button stop the environmental generation.</font>"));
@@ -149,7 +149,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(aboutButton, SIGNAL (triggered()), this, SLOT (about()));
 
     //RJG - Other signal/slot connections
-    QObject::connect(ui->change_path, SIGNAL (clicked()), this, SLOT (change_path()));
+    QObject::connect(ui->change_path, SIGNAL (clicked()), this, SLOT (changePath()));
     QObject::connect(ui->settings_tab_widget, SIGNAL (currentChanged(int)), this, SLOT (tab_changed(int)));
     //RJG - these ones are pretty simple. Use lamdas.
     connect(ui->noiseMin, (void(QSpinBox::*)(int))&QSpinBox::valueChanged, this, [ = ](const int &i)
@@ -182,31 +182,68 @@ void MainWindow::tab_changed(int index)
     if (index)ui->environment_comboBox->setCurrentIndex(index - 1);
 }
 
-void MainWindow::generateEnvironmentBatch()
+void MainWindow::runPressed()
 {
-    qDebug() << "Here";
+    QString path = setupSaveDirectory();
+    if (path.length() < 2) return;
+    generateEnvironment(ui->environment_comboBox->currentIndex(), path);
+    runs++;
+}
+
+void MainWindow::runBatchPressed()
+{
+    bool ok;
+    int runBatchFor = QInputDialog::getInt(this, "Batch...", "How many runs?", 25, 1, 999, 1, &ok);
+    if (!ok)return;
+
+    for (runs = 0; runs < runBatchFor; runs++)
+    {
+        QString path = setupSaveDirectory();
+        if (path.length() < 2) return;
+        generateEnvironment(ui->environment_comboBox->currentIndex(), path);
+    }
+}
+
+QString MainWindow::setupSaveDirectory()
+{
+
+    QDir saveDirectory(ui->path->toPlainText());
+    if (!saveDirectory.exists() && ui->save_images_checkbox->isChecked())
+    {
+        QMessageBox::warning(this, "Error!", "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is.");
+        QString programPath(QCoreApplication::applicationDirPath());
+        programPath.append(QDir::separator());
+        ui->path->setText(programPath);
+        saveDirectory.setPath(programPath);
+    }
+
+    //RJG - Set up save directory
+
+    QString folderString(QString(PRODUCTNAME) + "_output_" + QString("%1").arg(runs, 3, 10, QChar('0')) + QDir::separator());
+    if (!saveDirectory.mkpath(folderString))
+    {
+        QMessageBox::warning(this, "Error", "Cant save images. Permissions issue?");
+        return "";
+    }
+    else saveDirectory.cd(folderString);
+
+    return saveDirectory.path();
 }
 
 //RJG - Generates environment based on which tab is selected in the tab dock widget.
-void MainWindow::generateEnvironment()
+void MainWindow::generateEnvironment(int environmentType, QString path)
 {
 
-    if (!Directory.exists() && ui->save_images_checkbox->isChecked())
-    {
-        QMessageBox::warning(nullptr, "Error", "No such directory.", QMessageBox::Ok);
-        return;
-    }
-
     //RJG - Select which kind of environment object to create - all inheret environmentclass, which has the random number and save functions in it
-    if (ui->environment_comboBox->currentIndex() == 0) // Russell environment
-        environmentobject = new russellenvironment;
+    if (environmentType == 0) // Russell environment
+        environmentObject = new russellenvironment;
 
-    if (ui->environment_comboBox->currentIndex() == 1) //Mark environment
-        environmentobject = new markenvironment;
+    if (environmentType == 1) //Mark environment
+        environmentObject = new markenvironment;
 
-    if (ui->environment_comboBox->currentIndex() == 2)   //Noise stack
+    if (environmentType == 2)   //Noise stack
     {
-        environmentobject = new noiseenvironment;
+        environmentObject = new noiseenvironment;
         if (MainWin->ui->noiseMin->value() >= MainWin->ui->noiseMax->value())
         {
             QMessageBox::warning(nullptr, "Error", "Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
@@ -215,10 +252,10 @@ void MainWindow::generateEnvironment()
         }
     }
 
-    if (ui->environment_comboBox->currentIndex() == 3)   //Combine stacks
+    if (environmentType == 3)   //Combine stacks
     {
-        environmentobject = new combine;
-        if (environmentobject->error)
+        environmentObject = new combine;
+        if (environmentObject->error)
         {
             reset_gui();
             return;
@@ -226,20 +263,18 @@ void MainWindow::generateEnvironment()
         generations = MainWin->ui->combineStart->value() + stackTwoSize;
     }
 
-    if (ui->environment_comboBox->currentIndex() == 4) //Colour stacks
-        environmentobject = new colour;
+    if (environmentType == 4) //Colour stacks
+        environmentObject = new colour;
 
-    if (ui->environment_comboBox->currentIndex() == 5)   //Create stack from image
+    if (environmentType == 5)   //Create stack from image
     {
-        environmentobject = new makestack;
-        if (environmentobject->error)
+        environmentObject = new makestack;
+        if (environmentObject->error)
         {
             reset_gui();
             return;
         }
     }
-
-
 
     //RJG - Set up new environment image
     newEnvironmentImage();
@@ -261,32 +296,15 @@ void MainWindow::generateEnvironment()
     prBar.setAlignment(Qt::AlignCenter);
     ui->statusBar->addPermanentWidget(&prBar);
 
-    //RJG - Set up save directory
-    Directory.setPath(ui->path->toPlainText());
-    if (!Directory.exists())
-    {
-        QMessageBox::warning(nullptr, "Error!", "The program doesn't think the save directory exists, so is going to default back to the direcctory in which the executable is.");
-        QString programPath(QCoreApplication::applicationDirPath());
-        programPath.append(QDir::separator());
-        ui->path->setText(programPath);
-        Directory.setPath(programPath);
-    }
-    if (!Directory.mkpath(QString(PRODUCTNAME) + "_output"))
-    {
-        QMessageBox::warning(this, "Error", "Cant save images. Permissions issue?");
-        return;
-    }
-    else Directory.cd(QString(PRODUCTNAME) + "_output");
-
     //RJG - Generate the environment
     for (int i = 0; i < generations; i++)
     {
 
-        currentGeneration = i;
-        environmentobject->regenerate();
+        iterations = i;
+        environmentObject->regenerate();
 
         prBar.setValue(i);
-        RefreshEnvironment();
+        refreshEnvironment();
 
         qApp->processEvents();
 
@@ -295,9 +313,9 @@ void MainWindow::generateEnvironment()
             QImage saveImage(MainWin->ui->spinSize->value(), MainWin->ui->spinSize->value(), QImage::Format_RGB32);
             for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
                 for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
-                    saveImage.setPixel(n, m, qRgb(environmentobject->environment[n][m][0], environmentobject->environment[n][m][1], environmentobject->environment[n][m][2]));
-            QString save_directory = QString(Directory.path() + QDir::separator() + "%1.png").arg(i, 4, 10, QChar('0'));
-            saveImage.save(save_directory);
+                    saveImage.setPixel(n, m, qRgb(environmentObject->environment[n][m][0], environmentObject->environment[n][m][1], environmentObject->environment[n][m][2]));
+            QString savePath = QString(path + QDir::separator() + "%1.png").arg(i, 4, 10, QChar('0'));
+            saveImage.save(savePath);
         }
 
         //RJG - Deal with pause
@@ -314,7 +332,7 @@ void MainWindow::generateEnvironment()
 
     }
 
-    //RJG - Reet GUI and inform user.
+    //RJG - Reset GUI and inform user.
     ui->statusBar->removeWidget(&prBar);
     if (generations < 0)ui->statusBar->showMessage("Generation cancelled.");
     else if (ui->save_images_checkbox->isChecked())ui->statusBar->showMessage(QString("Generation complete: %1 images were saved.").arg(generations));
@@ -324,7 +342,7 @@ void MainWindow::generateEnvironment()
     generations = store_generations;
 
     //RJG - Free memory
-    delete environmentobject;
+    delete environmentObject;
 }
 
 void MainWindow::newEnvironmentImage()
@@ -336,19 +354,19 @@ void MainWindow::newEnvironmentImage()
     env_item->setPixmap(QPixmap::fromImage(*env_image));
     //RJG - flag secene for deletion later, and then create a new one
     //If you don't do this the scene is too large, and doesn't center correctly.
-    envscene->deleteLater();
-    envscene = new EnvironmentScene;
-    envscene->addItem(env_item);
-    ui->enviroView->setScene(envscene);
+    environmentScene->deleteLater();
+    environmentScene = new EnvironmentScene;
+    environmentScene->addItem(env_item);
+    ui->enviroView->setScene(environmentScene);
 }
 
 
-void MainWindow::RefreshEnvironment()
+void MainWindow::refreshEnvironment()
 {
     //RJG - Update the environment display (which is then used to save image)
     for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
         for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
-            env_image->setPixel(n, m, qRgb(environmentobject->environment[n][m][0], environmentobject->environment[n][m][1], environmentobject->environment[n][m][2]));
+            env_image->setPixel(n, m, qRgb(environmentObject->environment[n][m][0], environmentObject->environment[n][m][1], environmentObject->environment[n][m][2]));
 
     env_item->setPixmap(QPixmap::fromImage(*env_image));
 
@@ -365,13 +383,13 @@ void MainWindow::reset_gui()
     env_image = new QImage(":/palaeoware_logo_square.png");
     env_item->setPixmap(QPixmap::fromImage(*env_image));
 
-    envscene->deleteLater();
+    environmentScene->deleteLater();
 
-    envscene = new EnvironmentScene;
-    envscene->mw = this;
-    envscene->addItem(env_item);
+    environmentScene = new EnvironmentScene;
+    environmentScene->mw = this;
+    environmentScene->addItem(env_item);
     ui->enviroView->resetTransform();
-    ui->enviroView->setScene(envscene);
+    ui->enviroView->setScene(environmentScene);
 
     //RJG - Sort flags
     pause_flag = false;
@@ -382,16 +400,6 @@ void MainWindow::reset_gui()
     pauseButton->setEnabled(false);
     stopButton->setEnabled(false);
     ui->output_tab->setEnabled(true);
-}
-
-//RJG -Change save path
-void MainWindow::change_path()
-{
-    QString files_directory = QFileDialog::getExistingDirectory(this, tr("Select folder in which you would like to save image files"),
-                                                                QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), QFileDialog::ShowDirsOnly);
-    if (files_directory == "") return;
-    else Directory.setPath(files_directory);
-    ui->path->setText(Directory.path());
 }
 
 //RJG - Load stack one
@@ -497,4 +505,12 @@ void MainWindow::settings()
         ui->envSettings->show();
         settingsButton->setChecked(true);
     }
+}
+
+//RJG -Change save path
+void MainWindow::changePath()
+{
+    QString filesDirectory = QFileDialog::getExistingDirectory(this, tr("Select folder in which you would like to save image files"),
+                                                               QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), QFileDialog::ShowDirsOnly);
+    ui->path->setText(filesDirectory);
 }

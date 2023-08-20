@@ -58,7 +58,7 @@ void combine::ReadSettings()
     stackOne.setPath(MainWin->ui->stackOneText->toPlainText());
     stackTwo.setPath(MainWin->ui->stackTwoText->toPlainText());
     start = MainWin->ui->combineStart->value();
-    currentGen = MainWin->currentGeneration;
+    currentGen = MainWin->iterations;
     percentStart = MainWin->ui->percentStartSpin->value();
     percentEnd = MainWin->ui->percentEndSpin->value();
 }
