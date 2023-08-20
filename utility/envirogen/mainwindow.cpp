@@ -18,12 +18,22 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "markenvironment.h"
+#include "noiseenvironment.h"
+#include "combine.h"
+#include "colour.h"
+#include "makestack.h"
+#include "russellenvironment.h"
+#include "about.h"
+#include "globals.h"
+
 #include <QDockWidget>
 #include <QProgressDialog>
 #include <QProgressBar>
 #include <QColorDialog>
 #include <QStandardPaths>
 #include <QShortcut>
+#include <QDebug>
 
 MainWindow *MainWin;
 
@@ -107,6 +117,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->toolBar->addAction(startButton);
     QObject::connect(startButton, SIGNAL(triggered()), this, SLOT(generateEnvironment()));
 
+    runForBatchButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_play_batch_button_green.png")), QString("Run batch"), this);
+    runForBatchButton->setToolTip(tr("<font>Use this button to generate multiple replicates of an environment.</font>"));
+    ui->toolBar->addAction(runForBatchButton);
+    QObject::connect(runForBatchButton, SIGNAL (triggered()), this, SLOT (generateEnvironmentBatch()));
+
     stopButton = new QAction(QIcon(QPixmap(":/darkstyle/icon_stop_button_red.png")), QString("Stop"), this);
     stopButton->setToolTip(tr("<font>Use this button stop the environmental generation.</font>"));
     ui->toolBar->addAction(stopButton);
@@ -165,6 +180,11 @@ MainWindow::~MainWindow()
 void MainWindow::tab_changed(int index)
 {
     if (index)ui->environment_comboBox->setCurrentIndex(index - 1);
+}
+
+void MainWindow::generateEnvironmentBatch()
+{
+    qDebug() << "Here";
 }
 
 //RJG - Generates environment based on which tab is selected in the tab dock widget.

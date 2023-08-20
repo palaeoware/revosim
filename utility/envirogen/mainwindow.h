@@ -30,14 +30,6 @@
 
 #include "environmentclass.h"
 #include "environmentscene.h"
-#include "markenvironment.h"
-#include "noiseenvironment.h"
-#include "combine.h"
-#include "colour.h"
-#include "makestack.h"
-#include "russellenvironment.h"
-#include "about.h"
-#include "globals.h"
 #include "randoms.h"
 
 namespace Ui {
@@ -57,6 +49,7 @@ public:
 
 private slots:
     void generateEnvironment();
+    void generateEnvironmentBatch();
     void on_pushButtonStackOne_clicked();
     void on_pushButtonStackTwo_clicked();
     void on_selectColour_clicked();
@@ -77,7 +70,7 @@ private:
     QGraphicsPixmapItem *env_item;
     QImage *env_image;
     int generations, stackOneSize, stackTwoSize;
-    QAction *startButton, *stopButton, *aboutButton, *pauseButton, *settingsButton;
+    QAction *startButton, *stopButton, *aboutButton, *pauseButton, *settingsButton, *runForBatchButton;
     bool stop_flag, pause_flag;
 
     void RefreshEnvironment();

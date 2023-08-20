@@ -21,6 +21,7 @@
 #include <QStringList>
 #include "environmentclass.h"
 #include "mainwindow.h"
+#include "globals.h"
 #include "ui_mainwindow.h"
 #include "combine.h"
 
