@@ -71,12 +71,13 @@ private:
     bool stopFlag, pauseFlag;
 
     void refreshEnvironment(EnvironmentClass *environmentObject);
-    void generateEnvironment(int environmentType, QString path, bool batch = false);
+    bool generateEnvironment(int environmentType, QString path, int x, int y, bool batch = false);
     QString setupSaveDirectory(int runsLocal);
     void newEnvironmentImage();
     void reset(EnvironmentClass *environmentObject);
     void resetGUIButtons();
     void setGUIButtons();
+    bool saveImages;
 };
 
 extern MainWindow *MainWin;

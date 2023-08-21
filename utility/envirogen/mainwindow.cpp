@@ -35,6 +35,7 @@
 #include <QShortcut>
 #include <QDebug>
 #include <QInputDialog>
+#include <QtConcurrent>
 
 MainWindow *MainWin;
 
@@ -163,8 +164,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->noiseMin->setMaximum(ui->noiseMax->value() - 1);
     ui->noiseMax->setMinimum(ui->noiseMin->value() + 1);
 
+    saveImages = true;
+    ui->save_images_checkbox->setChecked(saveImages);
+    connect(ui->save_images_checkbox, &QAbstractButton::toggled, this, [ = ](const bool & i)
+    {
+        saveImages = i;
+    });
+
     //RJG - shortcuts
-    new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, SLOT(generateEnvironment()));
+    new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, SLOT(runPressed()));
     new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_P), this, SLOT(pause()));
     new QShortcut(QKeySequence(Qt::Key_Escape), this, SLOT(stop()));
 }
@@ -186,22 +194,65 @@ void MainWindow::runPressed()
 {
     QString path = setupSaveDirectory(runs);
     if (path.length() < 2) return;
-    generateEnvironment(ui->environment_comboBox->currentIndex(), path);
+    generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value());
     runs++;
 }
 
 void MainWindow::runBatchPressed()
 {
+
+    if (ui->environment_comboBox->currentIndex() > 2)
+    {
+        QMessageBox::warning(this, "Sorry!", "Batch runs are not currently available for your chosen environment type. Please request the developers add it.");
+        return;
+    }
+
     bool ok;
     int runBatchFor = QInputDialog::getInt(this, "Batch...", "How many runs?", 25, 1, 999, 1, &ok);
     if (!ok) return;
 
-    for (runs = 0; runs < runBatchFor; runs++)
+    QVector<int> runsList(runBatchFor);
+    std::iota(runsList.begin(), runsList.end(), 0);
+
+    auto count = 0;
+    bool batchRunning = true;
+    do
     {
-        QString path = setupSaveDirectory(runs);
-        if (path.length() < 2) return;
-        generateEnvironment(ui->environment_comboBox->currentIndex(), path);
+        //In a previous version RJG had used the progress bar in the status bar, but connecting the future watcher signals and slots provide very challenging
+        //Hence now do this with a dialogue - first create a dialogue, then QFutureWatcher and connect signals and slots.
+        QProgressDialog dialog;
+        dialog.setLabelText(QString("Starting a batch run of %1 simulations on %2 cores.").arg(runsList.length()).arg(QThread::idealThreadCount()));
+        QFutureWatcher<void> futureWatcher;
+        QObject::connect(&futureWatcher, &QFutureWatcher<void>::finished, &dialog, &QProgressDialog::reset);
+        QObject::connect(&dialog, &QProgressDialog::canceled, &futureWatcher, &QFutureWatcher<void>::cancel);
+        QObject::connect(&futureWatcher, &QFutureWatcher<void>::progressRangeChanged, &dialog, &QProgressDialog::setRange);
+        QObject::connect(&futureWatcher, &QFutureWatcher<void>::progressValueChanged,  &dialog, &QProgressDialog::setValue);
+
+        //Do the runs using QtConcurrent::filter which modified the sequence in place
+        futureWatcher.setFuture(QtConcurrent::filter(runsList, [this](const int &run)
+        {
+            QString path = setupSaveDirectory(run);
+            if (path.length() < 2) return false;
+            return generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value(), true);
+        }));
+
+        // Display the dialog and start the event loop.
+        dialog.exec();
+
+        if (futureWatcher.isCanceled()) batchRunning = false;
+        count ++;
     }
+    //Run up to 1 times so this cannot get caught in an infinite loop
+    while (runsList.count() > 0 && count < 1 && batchRunning);
+
+
+    /*  for (runs = 0; runs < runBatchFor; runs++)
+      {
+          QString path = setupSaveDirectory(runs);
+          if (path.length() < 2) return;
+          generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value(), true);
+      }
+      */
 }
 
 QString MainWindow::setupSaveDirectory(int runsLocal)
@@ -231,7 +282,7 @@ QString MainWindow::setupSaveDirectory(int runsLocal)
 }
 
 //RJG - Generates environment based on which tab is selected in the tab dock widget.
-void MainWindow::generateEnvironment(int environmentType, QString path, bool batch)
+bool MainWindow::generateEnvironment(int environmentType, QString path, int x, int y, bool batch)
 {
     //RJG - new environment object
     EnvironmentClass *environmentObject = nullptr;
@@ -251,7 +302,7 @@ void MainWindow::generateEnvironment(int environmentType, QString path, bool bat
         {
             QMessageBox::warning(this, "Error", "Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
             reset(environmentObject);
-            return;
+            return false;
         }
         break;
     case 3: //Combine stacks
@@ -259,7 +310,7 @@ void MainWindow::generateEnvironment(int environmentType, QString path, bool bat
         if (environmentObject->error)
         {
             reset(environmentObject);
-            return;
+            return false;
         }
         generations = MainWin->ui->combineStart->value() + stackTwoSize;
         break;
@@ -271,19 +322,13 @@ void MainWindow::generateEnvironment(int environmentType, QString path, bool bat
         if (environmentObject->error)
         {
             reset(environmentObject);
-            return;
+            return false;
         }
         break;
     default:
         QMessageBox::warning(this, "Error", "Environment number not recognised.", QMessageBox::Ok);
-        return;
+        return false;
     }
-
-    //RJG - Set up new environment image
-    newEnvironmentImage();
-
-    //RJG - set up GUI
-    if (!batch) setGUIButtons();
 
     //RJG - Sort generations (required for combine)
     generations = MainWin->ui->numGenerations->value();
@@ -291,9 +336,21 @@ void MainWindow::generateEnvironment(int environmentType, QString path, bool bat
 
     //RJG - Add a progress bar
     QProgressBar prBar;
-    prBar.setRange(0, generations);
-    prBar.setAlignment(Qt::AlignCenter);
-    ui->statusBar->addPermanentWidget(&prBar);
+
+    //RJG - Need to sort GUI if we are not doing a batch
+    if (!batch)
+    {
+        //RJG - Set up new environment image
+        if (!batch)newEnvironmentImage();
+
+        //RJG - set up GUI
+        if (!batch) setGUIButtons();
+
+        //RJG - sort progress bar
+        prBar.setRange(0, generations);
+        prBar.setAlignment(Qt::AlignCenter);
+        ui->statusBar->addPermanentWidget(&prBar);
+    }
 
     //RJG - Generate the environment
     for (int i = 0; i < generations; i++)
@@ -301,16 +358,19 @@ void MainWindow::generateEnvironment(int environmentType, QString path, bool bat
         iterations = i;
         environmentObject->regenerate();
 
-        prBar.setValue(i);
-        refreshEnvironment(environmentObject);
-
-        qApp->processEvents();
-
-        if (ui->save_images_checkbox->isChecked())
+        //RJG - Update GUI
+        if (!batch)
         {
-            QImage saveImage(MainWin->ui->spinSize->value(), MainWin->ui->spinSize->value(), QImage::Format_RGB32);
-            for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-                for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+            prBar.setValue(i);
+            refreshEnvironment(environmentObject);
+            qApp->processEvents();
+        }
+
+        if (saveImages)
+        {
+            QImage saveImage(x, y, QImage::Format_RGB32);
+            for (int n = 0; n < x; n++)
+                for (int m = 0; m < y; m++)
                     saveImage.setPixel(n, m, qRgb(environmentObject->environment[n][m][0], environmentObject->environment[n][m][1], environmentObject->environment[n][m][2]));
             QString savePath = QString(path + QDir::separator() + "%1.png").arg(i, 4, 10, QChar('0'));
             saveImage.save(savePath);
@@ -331,13 +391,18 @@ void MainWindow::generateEnvironment(int environmentType, QString path, bool bat
     }
 
     //RJG - Reset GUI and inform user.
-    ui->statusBar->removeWidget(&prBar);
-    if (generations < 0)ui->statusBar->showMessage("Generation cancelled.");
-    else if (ui->save_images_checkbox->isChecked())ui->statusBar->showMessage(QString("Generation complete: %1 images were saved.").arg(generations));
-    else ui->statusBar->showMessage("Generation complete; no images saved as save is not selected in the out tab.");
+    if (!batch)
+    {
+        ui->statusBar->removeWidget(&prBar);
+        if (generations < 0)ui->statusBar->showMessage("Generation cancelled.");
+        else if (ui->save_images_checkbox->isChecked())ui->statusBar->showMessage(QString("Generation complete: %1 images were saved.").arg(generations));
+        else ui->statusBar->showMessage("Generation complete; no images saved as save is not selected in the out tab.");
+        reset(environmentObject);
+    }
 
-    reset(environmentObject);
     generations = store_generations;
+
+    return true;
 }
 
 void MainWindow::newEnvironmentImage()
@@ -372,7 +437,7 @@ void MainWindow::refreshEnvironment(EnvironmentClass *environmentObject)
 
 void MainWindow::setGUIButtons()
 {
-//RJG - Sort out GUI and pause/stop
+    //RJG - Sort out GUI and pause/stop
     stopFlag = false;
     startButton->setEnabled(false);
     pauseButton->setEnabled(true);
