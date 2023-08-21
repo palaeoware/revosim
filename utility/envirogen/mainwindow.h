@@ -62,21 +62,21 @@ private slots:
     void tab_changed(int index);
 
 private:
-
     QDockWidget *environmanetOptions;
-    EnvironmentClass *environmentObject;
     EnvironmentScene *environmentScene;
     QGraphicsPixmapItem *env_item;
     QImage *env_image;
     int generations, stackOneSize, stackTwoSize;
     QAction *startButton, *stopButton, *aboutButton, *pauseButton, *settingsButton, *runForBatchButton;
-    bool stop_flag, pause_flag;
+    bool stopFlag, pauseFlag;
 
-    void refreshEnvironment();
-    void generateEnvironment(int environmentType, QString path);
-    QString setupSaveDirectory();
+    void refreshEnvironment(EnvironmentClass *environmentObject);
+    void generateEnvironment(int environmentType, QString path, bool batch = false);
+    QString setupSaveDirectory(int runsLocal);
     void newEnvironmentImage();
-    void reset_gui();
+    void reset(EnvironmentClass *environmentObject);
+    void resetGUIButtons();
+    void setGUIButtons();
 };
 
 extern MainWindow *MainWin;

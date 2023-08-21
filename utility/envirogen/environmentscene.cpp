@@ -16,9 +16,9 @@
  */
 
 #include "environmentscene.h"
+
 #include <QGraphicsView>
 #include <QPointF>
-#include "mainwindow.h"
 
 /**
  * @brief EnvironmentScene::EnvironmentScene

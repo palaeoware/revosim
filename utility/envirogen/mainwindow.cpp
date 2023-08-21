@@ -55,8 +55,8 @@ MainWindow::MainWindow(QWidget *parent) :
     runs = 0;
     stackOneSize = 0;
     stackTwoSize = 0;
-    stop_flag = false;
-    pause_flag = false;
+    stopFlag = false;
+    pauseFlag = false;
     ui->path->setText(QStandardPaths::writableLocation(QStandardPaths::DesktopLocation));
 
     //RJG - set up graphics
@@ -184,7 +184,7 @@ void MainWindow::tab_changed(int index)
 
 void MainWindow::runPressed()
 {
-    QString path = setupSaveDirectory();
+    QString path = setupSaveDirectory(runs);
     if (path.length() < 2) return;
     generateEnvironment(ui->environment_comboBox->currentIndex(), path);
     runs++;
@@ -194,17 +194,17 @@ void MainWindow::runBatchPressed()
 {
     bool ok;
     int runBatchFor = QInputDialog::getInt(this, "Batch...", "How many runs?", 25, 1, 999, 1, &ok);
-    if (!ok)return;
+    if (!ok) return;
 
     for (runs = 0; runs < runBatchFor; runs++)
     {
-        QString path = setupSaveDirectory();
+        QString path = setupSaveDirectory(runs);
         if (path.length() < 2) return;
         generateEnvironment(ui->environment_comboBox->currentIndex(), path);
     }
 }
 
-QString MainWindow::setupSaveDirectory()
+QString MainWindow::setupSaveDirectory(int runsLocal)
 {
 
     QDir saveDirectory(ui->path->toPlainText());
@@ -219,7 +219,7 @@ QString MainWindow::setupSaveDirectory()
 
     //RJG - Set up save directory
 
-    QString folderString(QString(PRODUCTNAME) + "_output_" + QString("%1").arg(runs, 3, 10, QChar('0')) + QDir::separator());
+    QString folderString(QString(PRODUCTNAME) + "_output_" + QString("%1").arg(runsLocal, 3, 10, QChar('0')) + QDir::separator());
     if (!saveDirectory.mkpath(folderString))
     {
         QMessageBox::warning(this, "Error", "Cant save images. Permissions issue?");
@@ -231,60 +231,59 @@ QString MainWindow::setupSaveDirectory()
 }
 
 //RJG - Generates environment based on which tab is selected in the tab dock widget.
-void MainWindow::generateEnvironment(int environmentType, QString path)
+void MainWindow::generateEnvironment(int environmentType, QString path, bool batch)
 {
+    //RJG - new environment object
+    EnvironmentClass *environmentObject = nullptr;
 
     //RJG - Select which kind of environment object to create - all inheret environmentclass, which has the random number and save functions in it
-    if (environmentType == 0) // Russell environment
-        environmentObject = new russellenvironment;
-
-    if (environmentType == 1) //Mark environment
-        environmentObject = new markenvironment;
-
-    if (environmentType == 2)   //Noise stack
+    switch (environmentType)
     {
+    case 0:
+        environmentObject = new russellenvironment; // Russell environment
+        break;
+    case 1:
+        environmentObject = new markenvironment; //Mark environment
+        break;
+    case 2: //Noise stack
         environmentObject = new noiseenvironment;
         if (MainWin->ui->noiseMin->value() >= MainWin->ui->noiseMax->value())
         {
-            QMessageBox::warning(nullptr, "Error", "Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
-            reset_gui();
+            QMessageBox::warning(this, "Error", "Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
+            reset(environmentObject);
             return;
         }
-    }
-
-    if (environmentType == 3)   //Combine stacks
-    {
+        break;
+    case 3: //Combine stacks
         environmentObject = new combine;
         if (environmentObject->error)
         {
-            reset_gui();
+            reset(environmentObject);
             return;
         }
         generations = MainWin->ui->combineStart->value() + stackTwoSize;
-    }
-
-    if (environmentType == 4) //Colour stacks
-        environmentObject = new colour;
-
-    if (environmentType == 5)   //Create stack from image
-    {
+        break;
+    case 4:
+        environmentObject = new colour; //Colour stacks
+        break;
+    case 5:   //Create stack from image
         environmentObject = new makestack;
         if (environmentObject->error)
         {
-            reset_gui();
+            reset(environmentObject);
             return;
         }
+        break;
+    default:
+        QMessageBox::warning(this, "Error", "Environment number not recognised.", QMessageBox::Ok);
+        return;
     }
 
     //RJG - Set up new environment image
     newEnvironmentImage();
 
-    //RJG - Sort out GUI and pause/stop
-    stop_flag = false;
-    startButton->setEnabled(false);
-    pauseButton->setEnabled(true);
-    stopButton->setEnabled(true);
-    ui->output_tab->setEnabled(false);
+    //RJG - set up GUI
+    if (!batch) setGUIButtons();
 
     //RJG - Sort generations (required for combine)
     generations = MainWin->ui->numGenerations->value();
@@ -299,12 +298,11 @@ void MainWindow::generateEnvironment(int environmentType, QString path)
     //RJG - Generate the environment
     for (int i = 0; i < generations; i++)
     {
-
         iterations = i;
         environmentObject->regenerate();
 
         prBar.setValue(i);
-        refreshEnvironment();
+        refreshEnvironment(environmentObject);
 
         qApp->processEvents();
 
@@ -319,13 +317,13 @@ void MainWindow::generateEnvironment(int environmentType, QString path)
         }
 
         //RJG - Deal with pause
-        if (pause_flag)
-            while (pause_flag && !stop_flag)
+        if (pauseFlag)
+            while (pauseFlag && !stopFlag)
                 qApp->processEvents();
         //RJG - and stop.
-        if (stop_flag)
+        if (stopFlag)
         {
-            stop_flag = false;
+            stopFlag = false;
             generations = -1;
             break;
         }
@@ -338,11 +336,8 @@ void MainWindow::generateEnvironment(int environmentType, QString path)
     else if (ui->save_images_checkbox->isChecked())ui->statusBar->showMessage(QString("Generation complete: %1 images were saved.").arg(generations));
     else ui->statusBar->showMessage("Generation complete; no images saved as save is not selected in the out tab.");
 
-    reset_gui();
+    reset(environmentObject);
     generations = store_generations;
-
-    //RJG - Free memory
-    delete environmentObject;
 }
 
 void MainWindow::newEnvironmentImage()
@@ -361,7 +356,7 @@ void MainWindow::newEnvironmentImage()
 }
 
 
-void MainWindow::refreshEnvironment()
+void MainWindow::refreshEnvironment(EnvironmentClass *environmentObject)
 {
     //RJG - Update the environment display (which is then used to save image)
     for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
@@ -375,9 +370,27 @@ void MainWindow::refreshEnvironment()
     ui->enviroView->centerOn(0., 0.);
 }
 
-void MainWindow::reset_gui()
+void MainWindow::setGUIButtons()
 {
+//RJG - Sort out GUI and pause/stop
+    stopFlag = false;
+    startButton->setEnabled(false);
+    pauseButton->setEnabled(true);
+    stopButton->setEnabled(true);
+    ui->output_tab->setEnabled(false);
+}
 
+void MainWindow::resetGUIButtons()
+{
+    //RJG - Sort buttons and GUI
+    startButton->setEnabled(true);
+    pauseButton->setEnabled(false);
+    stopButton->setEnabled(false);
+    ui->output_tab->setEnabled(true);
+}
+
+void MainWindow::reset(EnvironmentClass *environmentObject)
+{
     //RJG - Add logo to the scene
     if (!env_image->isNull())delete env_image;
     env_image = new QImage(":/palaeoware_logo_square.png");
@@ -392,14 +405,15 @@ void MainWindow::reset_gui()
     ui->enviroView->setScene(environmentScene);
 
     //RJG - Sort flags
-    pause_flag = false;
-    stop_flag = false;
+    pauseFlag = false;
+    stopFlag = false;
 
-    //RJG - Sort buttons and GUI
-    startButton->setEnabled(true);
-    pauseButton->setEnabled(false);
-    stopButton->setEnabled(false);
-    ui->output_tab->setEnabled(true);
+    //RJG - sort memory and sort GUI
+    if (environmentObject != nullptr)
+    {
+        delete environmentObject;
+        resetGUIButtons();
+    }
 }
 
 //RJG - Load stack one
@@ -484,12 +498,12 @@ void MainWindow::about()
 //RJG - Stop and pause rely on flags, which are toggled here
 void MainWindow::stop()
 {
-    stop_flag = true;
+    stopFlag = true;
 }
 
 void MainWindow::pause()
 {
-    pause_flag = !pause_flag;
+    pauseFlag = !pauseFlag;
 }
 
 //RJG - Show and hide settings docker
