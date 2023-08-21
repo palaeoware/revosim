@@ -144,12 +144,6 @@ void russellenvironment::laplace()
 
     //Interpolate
     //First fill colours
-
-    //TODO - fix all multidimensional arrays to what we see in
-    //https://stackoverflow.com/questions/1946830/multidimensional-variable-size-array-in-c
-
-
-
     double colourMap[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()][3];
     //Do it all in double colourMap so don't get errors from using environment (integers)
     int laplace[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()];
