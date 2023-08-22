@@ -38,14 +38,14 @@ private:
     double objxvel[MAXOBJ];
     double objyvel[MAXOBJ];
     double objsize[MAXOBJ];
-    double objsizevel[MAXOBJ];
+    double objsizeVelocity[MAXOBJ];
     double objcolours[MAXOBJ][3];
     double objcolvel[MAXOBJ][3];
     double objtightness[MAXOBJ];
     double objtightvel[MAXOBJ];
     int objectcount;
-    double maxsize, minsize;
-    double maxvel, maxsizevel, maxcolvel, maxtightvel, maxtight, mintight, speedfactor;
+    double maxSize, minsize;
+    double maximumVelocity, maxsizeVelocity, maxcolvel, maxtightvel, maxtight, mintight, speedfactor;
     double veltweak, sizetweak, coltweak, tighttweak;
     int iter_to_accel;
     int iter_reset;

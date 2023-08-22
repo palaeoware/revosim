@@ -33,10 +33,10 @@ markenvironment::markenvironment()
     {
         objxpos[i] = MainWin->simulationRandoms->randDouble() * MainWin->ui->spinSize->value();
         objypos[i] = MainWin->simulationRandoms->randDouble() * MainWin->ui->spinSize->value();
-        objxvel[i] = MainWin->simulationRandoms->randDouble() * maxvel * 2 - maxvel;
-        objyvel[i] = MainWin->simulationRandoms->randDouble() * maxvel * 2 - maxvel;
-        objsize[i] = MainWin->simulationRandoms->randDouble() * (maxsize - minsize) + minsize;
-        objsizevel[i] = MainWin->simulationRandoms->randDouble() * maxsizevel * 2 - maxsizevel;
+        objxvel[i] = MainWin->simulationRandoms->randDouble() * maximumVelocity * 2 - maximumVelocity;
+        objyvel[i] = MainWin->simulationRandoms->randDouble() * maximumVelocity * 2 - maximumVelocity;
+        objsize[i] = MainWin->simulationRandoms->randDouble() * (maxSize - minsize) + minsize;
+        objsizeVelocity[i] = MainWin->simulationRandoms->randDouble() * maxsizeVelocity * 2 - maxsizeVelocity;
         for (int o = 0; o < 3; o++)
             objcolours[i][o] = (double)((int)MainWin->simulationRandoms->rand8() - 127);
 
@@ -54,10 +54,10 @@ markenvironment::markenvironment()
 void markenvironment::ReadSettings()
 {
     objectcount = MainWin->ui->ME_Objects->value();
-    maxsize = (double)(MainWin->ui->ME_MaxSize->value());
+    maxSize = (double)(MainWin->ui->ME_maxSize->value());
     minsize = (double)(MainWin->ui->ME_MinSize->value());
-    maxvel = MainWin->ui->ME_MaxVel->value();
-    maxsizevel = MainWin->ui->ME_MaxSizeVel->value();
+    maximumVelocity = MainWin->ui->ME_MaxVel->value();
+    maxsizeVelocity = MainWin->ui->ME_maxSizeVel->value();
     maxcolvel = MainWin->ui->ME_MaxColVel->value();
     maxtightvel = MainWin->ui->ME_MaxTightVel->value();
     maxtight = MainWin->ui->ME_MaxTight->value();
@@ -66,7 +66,7 @@ void markenvironment::ReadSettings()
     tighttweak = MainWin->ui->ME_MaxTightAccel->value();
     coltweak = MainWin->ui->ME_MaxColAccel->value();
     veltweak = MainWin->ui->ME_MaxAccel->value();
-    sizetweak = MainWin->ui->ME_MaxSizeAccel->value();
+    sizetweak = MainWin->ui->ME_maxSizeAccel->value();
     iter_reset = MainWin->ui->ME_Iterations->value();
 
 }
@@ -115,16 +115,16 @@ void markenvironment::regenerate()
         }
 
         //add size change, apply limits
-        objsize[i] += (objsizevel[i] * speedfactor);
-        if (objsize[i] > maxsize)
+        objsize[i] += (objsizeVelocity[i] * speedfactor);
+        if (objsize[i] > maxSize)
         {
-            objsize[i] = maxsize;
-            objsizevel[i] = 0;
+            objsize[i] = maxSize;
+            objsizeVelocity[i] = 0;
         }
         if (objsize[i] < minsize)
         {
             objsize[i] = minsize;
-            objsizevel[i] = 0;
+            objsizeVelocity[i] = 0;
         }
 
         //do colour
@@ -162,7 +162,7 @@ void markenvironment::regenerate()
         {
             objxvel[i] += (MainWin->simulationRandoms->randDouble() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
             objyvel[i] += (MainWin->simulationRandoms->randDouble() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
-            objsizevel[i] += (MainWin->simulationRandoms->randDouble() * sizetweak * 2 - sizetweak) * speedfactor / (double)iter_reset;
+            objsizeVelocity[i] += (MainWin->simulationRandoms->randDouble() * sizetweak * 2 - sizetweak) * speedfactor / (double)iter_reset;
             objtightvel[i] += (MainWin->simulationRandoms->randDouble() * tighttweak * 2 - tighttweak) * speedfactor / (double)iter_reset;
             for (int o = 0; o < 3; o++) objcolvel[i][o] += (MainWin->simulationRandoms->randDouble() * 2 * coltweak - coltweak) * speedfactor / (double)iter_reset;
             iter_to_accel = iter_reset;
@@ -170,12 +170,12 @@ void markenvironment::regenerate()
 
 
         //limit velocities
-        if (objxvel[i] > maxvel) objxvel[i] = maxvel;
-        if (objxvel[i] < (0 - maxvel)) objxvel[i] = (0 - maxvel);
-        if (objyvel[i] > maxvel) objyvel[i] = maxvel;
-        if (objyvel[i] < (0 - maxvel)) objyvel[i] = (0 - maxvel);
-        if (objsizevel[i] > maxsizevel) objsizevel[i] = maxsizevel;
-        if (objsizevel[i] < (0 - maxsizevel)) objsizevel[i] = (0 - maxsizevel);
+        if (objxvel[i] > maximumVelocity) objxvel[i] = maximumVelocity;
+        if (objxvel[i] < (0 - maximumVelocity)) objxvel[i] = (0 - maximumVelocity);
+        if (objyvel[i] > maximumVelocity) objyvel[i] = maximumVelocity;
+        if (objyvel[i] < (0 - maximumVelocity)) objyvel[i] = (0 - maximumVelocity);
+        if (objsizeVelocity[i] > maxsizeVelocity) objsizeVelocity[i] = maxsizeVelocity;
+        if (objsizeVelocity[i] < (0 - maxsizeVelocity)) objsizeVelocity[i] = (0 - maxsizeVelocity);
         for (int o = 0; o < 3; o++) if (objcolvel[i][o] < (0 - maxcolvel)) objcolvel[i][o] = (0 - maxcolvel);
         for (int o = 0; o < 3; o++) if (objcolvel[i][o] > maxcolvel) objcolvel[i][o] = maxcolvel;
 

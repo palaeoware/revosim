@@ -21,6 +21,7 @@ MOC_DIR += build
 OBJECTS_DIR += build
 
 SOURCES += \
+    environmentsettings.cpp \
     russellenvironment.cpp \
     mainwindow.cpp \
     main.cpp \
@@ -36,6 +37,7 @@ SOURCES += \
     about.cpp
 
 HEADERS  += \
+    environmentsettings.h \
     ui_mainwindow.h \
     ui_dialog.h \
     mainwindow.h \

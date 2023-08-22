@@ -95,7 +95,7 @@ public:
     QLabel *label_44;
     QLabel *label_45;
     QLabel *label_46;
-    QDoubleSpinBox *ME_MaxSizeAccel;
+    QDoubleSpinBox *ME_maxSizeAccel;
     QLabel *label_47;
     QDoubleSpinBox *ME_MaxTightAccel;
     QLabel *label_48;
@@ -116,12 +116,12 @@ public:
     QLabel *label_15;
     QSpinBox *ME_Objects;
     QLabel *label_16;
-    QSpinBox *ME_MaxSize;
+    QSpinBox *ME_maxSize;
     QDoubleSpinBox *ME_MaxVel;
     QLabel *label_18;
     QSpinBox *ME_MinSize;
     QLabel *label_19;
-    QDoubleSpinBox *ME_MaxSizeVel;
+    QDoubleSpinBox *ME_maxSizeVel;
     QLabel *m_environment_label;
     QWidget *noise_tab;
     QGridLayout *gridLayout_5;
@@ -493,13 +493,13 @@ public:
 
         gridLayout->addWidget(label_46, 14, 0, 1, 1);
 
-        ME_MaxSizeAccel = new QDoubleSpinBox(mark_tab);
-        ME_MaxSizeAccel->setObjectName(QString::fromUtf8("ME_MaxSizeAccel"));
-        ME_MaxSizeAccel->setMaximum(50.000000000000000);
-        ME_MaxSizeAccel->setSingleStep(0.100000000000000);
-        ME_MaxSizeAccel->setValue(2.000000000000000);
+        ME_maxSizeAccel = new QDoubleSpinBox(mark_tab);
+        ME_maxSizeAccel->setObjectName(QString::fromUtf8("ME_maxSizeAccel"));
+        ME_maxSizeAccel->setMaximum(50.000000000000000);
+        ME_maxSizeAccel->setSingleStep(0.100000000000000);
+        ME_maxSizeAccel->setValue(2.000000000000000);
 
-        gridLayout->addWidget(ME_MaxSizeAccel, 14, 1, 1, 1);
+        gridLayout->addWidget(ME_maxSizeAccel, 14, 1, 1, 1);
 
         label_47 = new QLabel(mark_tab);
         label_47->setObjectName(QString::fromUtf8("label_47"));
@@ -629,13 +629,13 @@ public:
 
         gridLayout->addWidget(label_16, 2, 0, 1, 1);
 
-        ME_MaxSize = new QSpinBox(mark_tab);
-        ME_MaxSize->setObjectName(QString::fromUtf8("ME_MaxSize"));
-        ME_MaxSize->setMinimum(1);
-        ME_MaxSize->setMaximum(500);
-        ME_MaxSize->setValue(100);
+        ME_maxSize = new QSpinBox(mark_tab);
+        ME_maxSize->setObjectName(QString::fromUtf8("ME_maxSize"));
+        ME_maxSize->setMinimum(1);
+        ME_maxSize->setMaximum(500);
+        ME_maxSize->setValue(100);
 
-        gridLayout->addWidget(ME_MaxSize, 2, 1, 1, 1);
+        gridLayout->addWidget(ME_maxSize, 2, 1, 1, 1);
 
         ME_MaxVel = new QDoubleSpinBox(mark_tab);
         ME_MaxVel->setObjectName(QString::fromUtf8("ME_MaxVel"));
@@ -663,13 +663,13 @@ public:
 
         gridLayout->addWidget(label_19, 9, 0, 1, 1);
 
-        ME_MaxSizeVel = new QDoubleSpinBox(mark_tab);
-        ME_MaxSizeVel->setObjectName(QString::fromUtf8("ME_MaxSizeVel"));
-        ME_MaxSizeVel->setMaximum(50.000000000000000);
-        ME_MaxSizeVel->setSingleStep(0.100000000000000);
-        ME_MaxSizeVel->setValue(3.000000000000000);
+        ME_maxSizeVel = new QDoubleSpinBox(mark_tab);
+        ME_maxSizeVel->setObjectName(QString::fromUtf8("ME_maxSizeVel"));
+        ME_maxSizeVel->setMaximum(50.000000000000000);
+        ME_maxSizeVel->setSingleStep(0.100000000000000);
+        ME_maxSizeVel->setValue(3.000000000000000);
 
-        gridLayout->addWidget(ME_MaxSizeVel, 9, 1, 1, 1);
+        gridLayout->addWidget(ME_maxSizeVel, 9, 1, 1, 1);
 
         m_environment_label = new QLabel(mark_tab);
         m_environment_label->setObjectName(QString::fromUtf8("m_environment_label"));

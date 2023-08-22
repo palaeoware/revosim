@@ -194,7 +194,7 @@ void MainWindow::runPressed()
 {
     QString path = setupSaveDirectory(runs);
     if (path.length() < 2) return;
-    generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value());
+    //generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value());
     runs++;
 }
 
@@ -216,6 +216,8 @@ void MainWindow::runBatchPressed()
 
     auto count = 0;
     bool batchRunning = true;
+
+    currentEnvironmentSettings = new EnvironmentSettings(this);
     do
     {
         //In a previous version RJG had used the progress bar in the status bar, but connecting the future watcher signals and slots provide very challenging
@@ -233,7 +235,8 @@ void MainWindow::runBatchPressed()
         {
             QString path = setupSaveDirectory(run);
             if (path.length() < 2) return false;
-            return generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value(), true);
+            EnvironmentSettings localEnvironmentSettings = *currentEnvironmentSettings;
+            return generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value(), localEnvironmentSettings, true);
         }));
 
         // Display the dialog and start the event loop.
@@ -282,7 +285,7 @@ QString MainWindow::setupSaveDirectory(int runsLocal)
 }
 
 //RJG - Generates environment based on which tab is selected in the tab dock widget.
-bool MainWindow::generateEnvironment(int environmentType, QString path, int x, int y, bool batch)
+bool MainWindow::generateEnvironment(int environmentType, QString path, int x, int y, EnvironmentSettings localEnvironmentSettings, bool batch)
 {
     //RJG - new environment object
     EnvironmentClass *environmentObject = nullptr;
@@ -291,7 +294,7 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
     switch (environmentType)
     {
     case 0:
-        environmentObject = new russellenvironment; // Russell environment
+        environmentObject = new russellenvironment(localEnvironmentSettings); // Russell environment
         break;
     case 1:
         environmentObject = new markenvironment; //Mark environment

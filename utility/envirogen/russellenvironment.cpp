@@ -26,15 +26,25 @@
 #include "ui_mainwindow.h"
 #include "russellenvironment.h"
 
-russellenvironment::russellenvironment()
+russellenvironment::russellenvironment(EnvironmentSettings constructorSettings)
 {
 
     //Setup
     saveMe = false;
 
-    readSettings();
+    nSeed = constructorSettings.russellEnvironmentSettings.nSeed;
+    buffer = constructorSettings.russellEnvironmentSettings.buffer;
+    maxSize = constructorSettings.russellEnvironmentSettings.maxSize;
+    sizeVelocity = constructorSettings.russellEnvironmentSettings.sizeVelocity;
+    maximumVelocity = constructorSettings.russellEnvironmentSettings.maximumVelocity;
+    periodic = constructorSettings.russellEnvironmentSettings.periodic;
+    blur = constructorSettings.russellEnvironmentSettings.blur;
+    converge = constructorSettings.russellEnvironmentSettings.converge;
+    numbGenerations = constructorSettings.russellEnvironmentSettings.numbGenerations;
+    factor = constructorSettings.russellEnvironmentSettings.factor;
+    maxAcceleration = 1;
 
-    for (int i = 0; i < nseed; i++)
+    for (int i = 0; i < nSeed; i++)
     {
         //Initialise here for seeds at start
         for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)MainWin->simulationRandoms->rand8();
@@ -43,36 +53,16 @@ russellenvironment::russellenvironment()
         seeds[i].nv = 0.;
         seeds[i].mv = 0.;
         int r = MainWin->simulationRandoms->rand8();
-        seeds[i].size = ((double)r * (double)maxsize) / 256.;
+        seeds[i].size = ((double)r * (double)maxSize) / 256.;
         seeds[i].initialised = true;
     }
 }
 
 
-void russellenvironment::readSettings()
-{
-
-    nseed = MainWin->ui->numSeed->value();
-    buffer = MainWin->ui->buffSpin->value();
-    maxsize = MainWin->ui->sMax->value();
-    sizevel = MainWin->ui->sMin->value();
-    maxvel = MainWin->ui->velMax2->value();
-    periodic = MainWin->ui->periodic->isChecked();
-    blur = MainWin->ui->blurChk->isChecked();
-    converge = MainWin->ui->convergeAt->value();
-    numbGenerations = MainWin->ui->numGenerations->value();
-    factor = MainWin->ui->factorSpin->value();
-    maxacc = 1;
-}
-
-
-
 void russellenvironment::regenerate()
 {
-    readSettings();
-
     //This code iterates the environment - for each it adds the required factors for an iteration
-    for (int i = 0; i < nseed; i++)
+    for (int i = 0; i < nSeed; i++)
     {
 
         //Check initialised - do this so can add more seeds during run if needed
@@ -84,18 +74,18 @@ void russellenvironment::regenerate()
             seeds[i].nv = 0.;
             seeds[i].mv = 0.;
             int r = MainWin->simulationRandoms->rand8();
-            seeds[i].size = ((double)r * (double)maxsize) / 256.;
+            seeds[i].size = ((double)r * (double)maxSize) / 256.;
         }
 
         //na to be added to velocity n - first come up with this iteration's value
         //+/-RAND    //limit it to max acceleration //apply factor
-        na = ((double)MainWin->simulationRandoms->rand8() - 128.) * ((double)maxacc / 128.) * factor;
+        na = ((double)MainWin->simulationRandoms->rand8() - 128.) * ((double)maxAcceleration / 128.) * factor;
         //Apply soft limit if velocity is above/below max and acc is in wrong direction//
-        if (fabs(seeds[i].nv) > maxvel && (seeds[i].nv * na) > 0)na *= (1. / ((fabs(seeds[i].nv) - maxvel + 1) * 5.));
+        if (fabs(seeds[i].nv) > maximumVelocity && (seeds[i].nv * na) > 0)na *= (1. / ((fabs(seeds[i].nv) - maximumVelocity + 1) * 5.));
         // 5 == 'strength' of soft limit
 
-        ma = ((double)MainWin->simulationRandoms->rand8() - 128.) * ((double)maxacc / 128.) * factor;
-        if (fabs(seeds[i].mv) > maxvel && (seeds[i].mv * ma) > 0)ma *= (1. / ((fabs(seeds[i].mv) - maxvel + 1) * 5.));
+        ma = ((double)MainWin->simulationRandoms->rand8() - 128.) * ((double)maxAcceleration / 128.) * factor;
+        if (fabs(seeds[i].mv) > maximumVelocity && (seeds[i].mv * ma) > 0)ma *= (1. / ((fabs(seeds[i].mv) - maximumVelocity + 1) * 5.));
 
         //Accelerations to apply to nv/mv are now sorted.... Apply next
         seeds[i].nv += na;
@@ -103,10 +93,10 @@ void russellenvironment::regenerate()
 
         seeds[i].n += (seeds[i].nv * factor);
         seeds[i].m += (seeds[i].mv * factor);
-        for (int j = 0; j < 3; j++)seeds[i].colour[j] += factor * ((double)((MainWin->simulationRandoms->rand8() - 128.) * ((double)maxcvel / 128.)));
+        for (int j = 0; j < 3; j++)seeds[i].colour[j] += factor * ((double)((MainWin->simulationRandoms->rand8() - 128.) * ((double)maxColourVelocity / 128.)));
         for (int j = 0; j < 3; j++)if ((int)seeds[i].colour[j] > 255)seeds[i].colour[j] = 255.;
         for (int j = 0; j < 3; j++)if ((int)seeds[i].colour[j] <= 0)seeds[i].colour[j] = 0.;
-        seeds[i].size += factor * ((MainWin->simulationRandoms->rand8() - 128) * ((double)sizevel / 128.));
+        seeds[i].size += factor * ((MainWin->simulationRandoms->rand8() - 128) * ((double)sizeVelocity / 128.));
 
 
         if (periodic)
@@ -131,7 +121,7 @@ void russellenvironment::regenerate()
             if (seeds[i].m < 0)seeds[i].m = 0.;
         }
 
-        if (seeds[i].size > maxsize)seeds[i].size = (double)maxsize;
+        if (seeds[i].size > maxSize)seeds[i].size = (double)maxSize;
         if (seeds[i].size < 1)seeds[i].size = 1.;
     }
 
@@ -165,7 +155,7 @@ void russellenvironment::laplace()
         }
 
     double x, y;
-    for (int l = 0; l < nseed; l++)
+    for (int l = 0; l < nSeed; l++)
     {
         bool templaplace[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()];
         for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
