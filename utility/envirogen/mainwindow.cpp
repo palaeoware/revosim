@@ -194,7 +194,9 @@ void MainWindow::runPressed()
 {
     QString path = setupSaveDirectory(runs);
     if (path.length() < 2) return;
-    //generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value());
+    currentEnvironmentSettings = new EnvironmentSettings(this);
+    generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value(), *currentEnvironmentSettings);
+    delete currentEnvironmentSettings;
     runs++;
 }
 
@@ -247,7 +249,7 @@ void MainWindow::runBatchPressed()
     }
     //Run up to 1 times so this cannot get caught in an infinite loop
     while (runsList.count() > 0 && count < 1 && batchRunning);
-
+    delete currentEnvironmentSettings;
 
     /*  for (runs = 0; runs < runBatchFor; runs++)
       {

@@ -5,6 +5,7 @@
 
 EnvironmentSettings::EnvironmentSettings(MainWindow *mainWin)
 {
+    russellEnvironmentSettings.nSeed = mainWin->ui->numSeed->value();
     russellEnvironmentSettings.buffer = mainWin->ui->buffSpin->value();
     russellEnvironmentSettings.maxSize = mainWin->ui->sMax->value();
     russellEnvironmentSettings.sizeVelocity = mainWin->ui->sMin->value();
