@@ -22,7 +22,7 @@
 #include "ui_mainwindow.h"
 #include "makestack.h"
 
-makestack::makestack()
+makestack::makestack(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)
 {
     readSettings();
     if (filename.length() < 5)

@@ -21,7 +21,7 @@
 #include "ui_mainwindow.h"
 #include <time.h>
 
-noiseenvironment::noiseenvironment()
+noiseenvironment::noiseenvironment(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)
 {
     ReadSettings();
 }

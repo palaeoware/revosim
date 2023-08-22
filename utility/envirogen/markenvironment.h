@@ -22,10 +22,13 @@
 #include <QColor>
 #define MAXOBJ 1000
 
+#include "environmentclass.h"
+#include "environmentsettings.h"
+
 class markenvironment : public EnvironmentClass
 {
 public:
-    markenvironment();
+    markenvironment(EnvironmentSettings constructorSettings);
     void regenerate();
 
 

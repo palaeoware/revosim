@@ -23,7 +23,7 @@
 #include "ui_mainwindow.h"
 #include "colour.h"
 
-colour::colour()
+colour::colour(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)
 {
     readSettings();
 }

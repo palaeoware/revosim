@@ -15,7 +15,6 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY.
  */
 
-#include "environmentclass.h"
 #include <QTextStream>
 #include <QString>
 #include <QFile>
@@ -25,8 +24,9 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "russellenvironment.h"
+#include "environmentclass.h"
 
-russellenvironment::russellenvironment(EnvironmentSettings constructorSettings)
+russellenvironment::russellenvironment(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)
 {
 
     //Setup

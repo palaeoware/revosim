@@ -19,17 +19,15 @@
 #include "environmentclass.h"
 #include "ui_mainwindow.h"
 
-EnvironmentClass::EnvironmentClass()
+EnvironmentClass::EnvironmentClass(EnvironmentSettings constructorSettings)
 {
 
     for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
         for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
         {
-
             environment[n][m][2] = (quint8)200;
             environment[n][m][1] = (quint8)110;
             environment[n][m][0] = (quint8)0;
-
         }
 }
 

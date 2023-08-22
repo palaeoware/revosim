@@ -19,10 +19,13 @@
 #ifndef COMBINE_H
 #define COMBINE_H
 
+#include "environmentclass.h"
+#include <QDir>
+
 class combine : public EnvironmentClass
 {
 public:
-    combine();
+    combine(EnvironmentSettings constructorSettings);
     void regenerate();
 
 private:

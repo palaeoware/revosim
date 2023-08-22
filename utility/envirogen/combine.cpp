@@ -25,7 +25,7 @@
 #include "ui_mainwindow.h"
 #include "combine.h"
 
-combine::combine()
+combine::combine(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)
 {
     ReadSettings();
     if (!stackOne.exists() || !stackTwo.exists())

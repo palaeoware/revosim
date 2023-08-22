@@ -19,10 +19,12 @@
 #ifndef NOISEENVIRONMENT_H
 #define NOISEENVIRONMENT_H
 
+#include "environmentclass.h"
+
 class noiseenvironment :  public EnvironmentClass
 {
 public:
-    noiseenvironment();
+    noiseenvironment(EnvironmentSettings constructorSettings);
     void regenerate();
 
 private:

@@ -25,7 +25,7 @@
 #include "ui_mainwindow.h"
 #include "markenvironment.h"
 
-markenvironment::markenvironment()
+markenvironment::markenvironment(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)
 {
     ReadSettings();
 

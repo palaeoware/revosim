@@ -20,7 +20,6 @@
 #define RUSSELLENVIRONMENT_H
 
 #include "environmentclass.h"
-#include "environmentsettings.h"
 
 //RJG - This is Russell's environmental class which inherets environment class.
 class russellenvironment : public EnvironmentClass

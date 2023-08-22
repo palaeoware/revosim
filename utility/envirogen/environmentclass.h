@@ -25,16 +25,14 @@
 #include <QString>
 #include "math.h"
 
-//Definitions of images size
-//#define GRID_X 100
-//#define GRID_Y 100
+#include "environmentsettings.h"
 
 //RJG This is the base class that a bunch of the environmental generators inheret, which includes save and random number functions
 class EnvironmentClass
 {
 
 public:
-    EnvironmentClass();
+    EnvironmentClass(EnvironmentSettings constructorSettings);
     virtual ~EnvironmentClass();
 
     virtual void regenerate();

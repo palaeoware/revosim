@@ -299,10 +299,10 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
         environmentObject = new russellenvironment(localEnvironmentSettings); // Russell environment
         break;
     case 1:
-        environmentObject = new markenvironment; //Mark environment
+        environmentObject = new markenvironment(localEnvironmentSettings); //Mark environment
         break;
     case 2: //Noise stack
-        environmentObject = new noiseenvironment;
+        environmentObject = new noiseenvironment(localEnvironmentSettings);
         if (MainWin->ui->noiseMin->value() >= MainWin->ui->noiseMax->value())
         {
             QMessageBox::warning(this, "Error", "Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
@@ -311,7 +311,7 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
         }
         break;
     case 3: //Combine stacks
-        environmentObject = new combine;
+        environmentObject = new combine(localEnvironmentSettings);
         if (environmentObject->error)
         {
             reset(environmentObject);
@@ -320,10 +320,10 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
         generations = MainWin->ui->combineStart->value() + stackTwoSize;
         break;
     case 4:
-        environmentObject = new colour; //Colour stacks
+        environmentObject = new colour(localEnvironmentSettings); //Colour stacks
         break;
     case 5:   //Create stack from image
-        environmentObject = new makestack;
+        environmentObject = new makestack (localEnvironmentSettings);
         if (environmentObject->error)
         {
             reset(environmentObject);
