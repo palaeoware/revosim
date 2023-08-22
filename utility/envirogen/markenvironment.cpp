@@ -192,9 +192,6 @@ void markenvironment::regenerate()
                 }
             }
     }
-
-
-    saveMe = false;
 }
 
 quint8 markenvironment::add_and_limit(int oldvalue, int color, double dist, double maxdist, double tightness)

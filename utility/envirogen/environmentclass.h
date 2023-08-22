@@ -41,16 +41,12 @@ public:
 
     void save(int generations);
 
-    void path(QString files_directory,  bool doSave);
-
     //Hard limits of 1000 - right now.
     quint8 environment[1000][1000][3];
 
     bool error = false;
 
 protected:
-    QString dir;
-    bool saveMe;
 
 private:
 

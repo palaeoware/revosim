@@ -30,8 +30,6 @@ russellenvironment::russellenvironment(EnvironmentSettings constructorSettings)
 {
 
     //Setup
-    saveMe = false;
-
     nSeed = constructorSettings.russellEnvironmentSettings.nSeed;
     buffer = constructorSettings.russellEnvironmentSettings.buffer;
     maxSize = constructorSettings.russellEnvironmentSettings.maxSize;
