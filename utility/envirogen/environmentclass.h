@@ -45,6 +45,8 @@ public:
     bool error = false;
 
 protected:
+    int x, y;
+    QString savePath;
 
 private:
 

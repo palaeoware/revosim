@@ -10,6 +10,10 @@ class EnvironmentSettings
 public:
     EnvironmentSettings(MainWindow *mainWin);
 
+    int x, y;
+
+    QString savePath;
+
     struct settingsRussell
     {
         int buffer;

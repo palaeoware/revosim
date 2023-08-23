@@ -22,8 +22,13 @@
 EnvironmentClass::EnvironmentClass(EnvironmentSettings constructorSettings)
 {
 
-    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+    x = constructorSettings.x;
+    y = constructorSettings.y;
+
+    savePath = constructorSettings.savePath;
+
+    for (int n = 0; n < x; n++)
+        for (int m = 0; m < y; m++)
         {
             environment[n][m][2] = (quint8)200;
             environment[n][m][1] = (quint8)110;

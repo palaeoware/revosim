@@ -5,6 +5,10 @@
 
 EnvironmentSettings::EnvironmentSettings(MainWindow *mainWin)
 {
+
+    x = mainWin->ui->spinSize->value();
+    y = mainWin->ui->spinSize->value();
+    savePath = mainWin->ui->path->toPlainText(); //Note this will need to be overwritten in many instances by the output of set up save directory
     russellEnvironmentSettings.nSeed = mainWin->ui->numSeed->value();
     russellEnvironmentSettings.buffer = mainWin->ui->buffSpin->value();
     russellEnvironmentSettings.maxSize = mainWin->ui->sMax->value();

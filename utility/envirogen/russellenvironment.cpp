@@ -46,8 +46,8 @@ russellenvironment::russellenvironment(EnvironmentSettings constructorSettings) 
     {
         //Initialise here for seeds at start
         for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)MainWin->simulationRandoms->rand8();
-        seeds[i].n = ((double)MainWin->simulationRandoms->rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
-        seeds[i].m = ((double)MainWin->simulationRandoms->rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
+        seeds[i].n = ((double)MainWin->simulationRandoms->rand8() * ((double)x / 256.));
+        seeds[i].m = ((double)MainWin->simulationRandoms->rand8() * ((double)x / 256.));
         seeds[i].nv = 0.;
         seeds[i].mv = 0.;
         int r = MainWin->simulationRandoms->rand8();
@@ -62,13 +62,12 @@ void russellenvironment::regenerate()
     //This code iterates the environment - for each it adds the required factors for an iteration
     for (int i = 0; i < nSeed; i++)
     {
-
         //Check initialised - do this so can add more seeds during run if needed
         if (!seeds[i].initialised)
         {
             for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)MainWin->simulationRandoms->rand8();
-            seeds[i].n = ((double)MainWin->simulationRandoms->rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
-            seeds[i].m = ((double)MainWin->simulationRandoms->rand8() * ((double)MainWin->ui->spinSize->value() / 256.));
+            seeds[i].n = ((double)MainWin->simulationRandoms->rand8() * ((double)x / 256.));
+            seeds[i].m = ((double)MainWin->simulationRandoms->rand8() * ((double)y / 256.));
             seeds[i].nv = 0.;
             seeds[i].mv = 0.;
             int r = MainWin->simulationRandoms->rand8();
@@ -99,23 +98,23 @@ void russellenvironment::regenerate()
 
         if (periodic)
         {
-            if (seeds[i].n > (MainWin->ui->spinSize->value() - .1))seeds[i].n = 0.;
-            if (seeds[i].n < 0)seeds[i].n = (MainWin->ui->spinSize->value() - .1);
+            if (seeds[i].n > (x - .1))seeds[i].n = 0.;
+            if (seeds[i].n < 0)seeds[i].n = (x - .1);
         }
         else
         {
-            if (seeds[i].n > (MainWin->ui->spinSize->value() - .1))seeds[i].n = (MainWin->ui->spinSize->value() - .1);
+            if (seeds[i].n > (x - .1))seeds[i].n = (x - .1);
             if (seeds[i].n < 0)seeds[i].n = 0.;
         }
 
         if (periodic)
         {
-            if (seeds[i].m > (MainWin->ui->spinSize->value() - .1))seeds[i].m = 0.;
-            if (seeds[i].m < 0)seeds[i].m = (MainWin->ui->spinSize->value() - .1);
+            if (seeds[i].m > (y - .1))seeds[i].m = 0.;
+            if (seeds[i].m < 0)seeds[i].m = (y - .1);
         }
         else
         {
-            if (seeds[i].m > (MainWin->ui->spinSize->value() - .1))seeds[i].m = (MainWin->ui->spinSize->value() - .1);
+            if (seeds[i].m > (y - .1))seeds[i].m = (y - .1);
             if (seeds[i].m < 0)seeds[i].m = 0.;
         }
 
