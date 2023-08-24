@@ -31,11 +31,8 @@ public:
     markenvironment(EnvironmentSettings constructorSettings);
     void regenerate();
 
-
 private:
-    double RandFloat();
     quint8 add_and_limit(int oldvalue, int color, double dist, double maxdist, double tightness);
-    void ReadSettings();
     double objxpos[MAXOBJ];
     double objypos[MAXOBJ];
     double objxvel[MAXOBJ];

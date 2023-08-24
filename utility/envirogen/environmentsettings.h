@@ -38,7 +38,12 @@ public:
 
     struct settingsMark
     {
-
+        int objectcount;
+        double maxSize, minsize;
+        double maximumVelocity, maxsizeVelocity, maxcolvel, maxtightvel, maxtight, mintight, speedfactor;
+        double veltweak, sizetweak, coltweak, tighttweak;
+        int iter_to_accel;
+        int iter_reset;
     };
     settingsMark markEnvironmentSettings;
 

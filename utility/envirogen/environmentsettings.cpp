@@ -24,8 +24,25 @@ EnvironmentSettings::EnvironmentSettings(MainWindow *mainWin)
     russellEnvironmentSettings.factor = mainWin->ui->factorSpin->value();
     russellEnvironmentSettings.maxAcceleration = 1;
 
-    //Noise environment
+    //Mark environment
+    markEnvironmentSettings.objectcount = mainWin->ui->ME_Objects->value();
+    markEnvironmentSettings.maxSize = (double)(mainWin->ui->ME_maxSize->value());
+    markEnvironmentSettings.minsize = (double)(mainWin->ui->ME_MinSize->value());
+    markEnvironmentSettings.maximumVelocity = mainWin->ui->ME_MaxVel->value();
+    markEnvironmentSettings.maxsizeVelocity = mainWin->ui->ME_maxSizeVel->value();
+    markEnvironmentSettings.maxcolvel = mainWin->ui->ME_MaxColVel->value();
+    markEnvironmentSettings.maxtightvel = mainWin->ui->ME_MaxTightVel->value();
+    markEnvironmentSettings.maxtight = mainWin->ui->ME_MaxTight->value();
+    markEnvironmentSettings.mintight = mainWin->ui->ME_MinTight->value();
+    markEnvironmentSettings.speedfactor = mainWin->ui->ME_SpeedFactor->value();
+    markEnvironmentSettings.tighttweak = mainWin->ui->ME_MaxTightAccel->value();
+    markEnvironmentSettings.coltweak = mainWin->ui->ME_MaxColAccel->value();
+    markEnvironmentSettings.veltweak = mainWin->ui->ME_MaxAccel->value();
+    markEnvironmentSettings.sizetweak = mainWin->ui->ME_maxSizeAccel->value();
+    markEnvironmentSettings.iter_reset = mainWin->ui->ME_Iterations->value();
 
+
+    //Noise environment
     noiseEnvironmentSettings.nMin = mainWin->ui->noiseMin->value();
     noiseEnvironmentSettings.nMax = mainWin->ui->noiseMax->value();
 }
