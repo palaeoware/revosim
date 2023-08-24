@@ -17,26 +17,17 @@
 
 #include "environmentclass.h"
 #include "noiseenvironment.h"
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include <time.h>
 
 noiseenvironment::noiseenvironment(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)
 {
-    ReadSettings();
-}
-
-
-void noiseenvironment::ReadSettings()
-{
-    nMin = MainWin->ui->noiseMin->value();
-    nMax = MainWin->ui->noiseMax->value();
+    nMin = constructorSettings.noiseEnvironmentSettings.nMin;
+    nMax = constructorSettings.noiseEnvironmentSettings.nMax;
 }
 
 void noiseenvironment::regenerate()
 {
-    ReadSettings();
-    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+    for (int n = 0; n < x; n++)
+        for (int m = 0; m < y; m++)
             for (int i = 0; i < 3; i++) environment[n][m][i] = QRandomGenerator::global()->bounded(nMin, nMax);
 }

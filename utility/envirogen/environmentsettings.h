@@ -40,6 +40,15 @@ public:
     {
 
     };
+    settingsMark markEnvironmentSettings;
+
+    struct settingsNoise
+    {
+        int nMin;
+        int nMax;
+    };
+    settingsNoise noiseEnvironmentSettings;
+
 };
 
 #endif // ENVIRONMENTSETTINGS_H

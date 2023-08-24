@@ -6,9 +6,12 @@
 EnvironmentSettings::EnvironmentSettings(MainWindow *mainWin)
 {
 
+    //All environments
     x = mainWin->ui->spinSize->value();
     y = mainWin->ui->spinSize->value();
     savePath = mainWin->ui->path->toPlainText(); //Note this will need to be overwritten in many instances by the output of set up save directory
+
+    //Russell environment
     russellEnvironmentSettings.nSeed = mainWin->ui->numSeed->value();
     russellEnvironmentSettings.buffer = mainWin->ui->buffSpin->value();
     russellEnvironmentSettings.maxSize = mainWin->ui->sMax->value();
@@ -20,4 +23,9 @@ EnvironmentSettings::EnvironmentSettings(MainWindow *mainWin)
     russellEnvironmentSettings.numbGenerations = mainWin->ui->numGenerations->value();
     russellEnvironmentSettings.factor = mainWin->ui->factorSpin->value();
     russellEnvironmentSettings.maxAcceleration = 1;
+
+    //Noise environment
+
+    noiseEnvironmentSettings.nMin = mainWin->ui->noiseMin->value();
+    noiseEnvironmentSettings.nMax = mainWin->ui->noiseMax->value();
 }

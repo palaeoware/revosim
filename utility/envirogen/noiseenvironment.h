@@ -28,7 +28,6 @@ public:
     void regenerate();
 
 private:
-    void ReadSettings();
     int nMin, nMax;
 };
 
