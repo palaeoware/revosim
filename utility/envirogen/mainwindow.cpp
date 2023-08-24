@@ -48,7 +48,6 @@ MainWindow::MainWindow(QWidget *parent) :
     setWindowIcon(QIcon (":/icon.png"));
     showMaximized();
     MainWin = this;
-    simulationRandoms = new randoms;
 
     //RJG - Globals for simulation
     generations = 500;

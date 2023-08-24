@@ -15,13 +15,10 @@
  * hope that it will be useful, but WITHOUT ANY WARRANTY.
  */
 
-#include "mainwindow.h"
 #include "environmentclass.h"
-#include "ui_mainwindow.h"
 
 EnvironmentClass::EnvironmentClass(EnvironmentSettings constructorSettings)
 {
-
     x = constructorSettings.x;
     y = constructorSettings.y;
 

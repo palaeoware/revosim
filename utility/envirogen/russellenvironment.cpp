@@ -45,12 +45,12 @@ russellenvironment::russellenvironment(EnvironmentSettings constructorSettings) 
     for (int i = 0; i < nSeed; i++)
     {
         //Initialise here for seeds at start
-        for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)MainWin->simulationRandoms->rand8();
-        seeds[i].n = ((double)MainWin->simulationRandoms->rand8() * ((double)x / 256.));
-        seeds[i].m = ((double)MainWin->simulationRandoms->rand8() * ((double)x / 256.));
+        for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)simulationRandoms.rand8();
+        seeds[i].n = ((double)simulationRandoms.rand8() * ((double)x / 256.));
+        seeds[i].m = ((double)simulationRandoms.rand8() * ((double)x / 256.));
         seeds[i].nv = 0.;
         seeds[i].mv = 0.;
-        int r = MainWin->simulationRandoms->rand8();
+        int r = simulationRandoms.rand8();
         seeds[i].size = ((double)r * (double)maxSize) / 256.;
         seeds[i].initialised = true;
     }
@@ -65,23 +65,23 @@ void russellenvironment::regenerate()
         //Check initialised - do this so can add more seeds during run if needed
         if (!seeds[i].initialised)
         {
-            for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)MainWin->simulationRandoms->rand8();
-            seeds[i].n = ((double)MainWin->simulationRandoms->rand8() * ((double)x / 256.));
-            seeds[i].m = ((double)MainWin->simulationRandoms->rand8() * ((double)y / 256.));
+            for (int j = 0; j < 3; j++)seeds[i].colour[j] = (double)simulationRandoms.rand8();
+            seeds[i].n = ((double)simulationRandoms.rand8() * ((double)x / 256.));
+            seeds[i].m = ((double)simulationRandoms.rand8() * ((double)y / 256.));
             seeds[i].nv = 0.;
             seeds[i].mv = 0.;
-            int r = MainWin->simulationRandoms->rand8();
+            int r = simulationRandoms.rand8();
             seeds[i].size = ((double)r * (double)maxSize) / 256.;
         }
 
         //na to be added to velocity n - first come up with this iteration's value
         //+/-RAND    //limit it to max acceleration //apply factor
-        na = ((double)MainWin->simulationRandoms->rand8() - 128.) * ((double)maxAcceleration / 128.) * factor;
+        na = ((double)simulationRandoms.rand8() - 128.) * ((double)maxAcceleration / 128.) * factor;
         //Apply soft limit if velocity is above/below max and acc is in wrong direction//
         if (fabs(seeds[i].nv) > maximumVelocity && (seeds[i].nv * na) > 0)na *= (1. / ((fabs(seeds[i].nv) - maximumVelocity + 1) * 5.));
         // 5 == 'strength' of soft limit
 
-        ma = ((double)MainWin->simulationRandoms->rand8() - 128.) * ((double)maxAcceleration / 128.) * factor;
+        ma = ((double)simulationRandoms.rand8() - 128.) * ((double)maxAcceleration / 128.) * factor;
         if (fabs(seeds[i].mv) > maximumVelocity && (seeds[i].mv * ma) > 0)ma *= (1. / ((fabs(seeds[i].mv) - maximumVelocity + 1) * 5.));
 
         //Accelerations to apply to nv/mv are now sorted.... Apply next
@@ -90,10 +90,10 @@ void russellenvironment::regenerate()
 
         seeds[i].n += (seeds[i].nv * factor);
         seeds[i].m += (seeds[i].mv * factor);
-        for (int j = 0; j < 3; j++)seeds[i].colour[j] += factor * ((double)((MainWin->simulationRandoms->rand8() - 128.) * ((double)maxColourVelocity / 128.)));
+        for (int j = 0; j < 3; j++)seeds[i].colour[j] += factor * ((double)((simulationRandoms.rand8() - 128.) * ((double)maxColourVelocity / 128.)));
         for (int j = 0; j < 3; j++)if ((int)seeds[i].colour[j] > 255)seeds[i].colour[j] = 255.;
         for (int j = 0; j < 3; j++)if ((int)seeds[i].colour[j] <= 0)seeds[i].colour[j] = 0.;
-        seeds[i].size += factor * ((MainWin->simulationRandoms->rand8() - 128) * ((double)sizeVelocity / 128.));
+        seeds[i].size += factor * ((simulationRandoms.rand8() - 128) * ((double)sizeVelocity / 128.));
 
 
         if (periodic)

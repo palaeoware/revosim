@@ -31,20 +31,20 @@ markenvironment::markenvironment(EnvironmentSettings constructorSettings) : Envi
 
     for (int i = 0; i < objectcount; i++)
     {
-        objxpos[i] = MainWin->simulationRandoms->randDouble() * MainWin->ui->spinSize->value();
-        objypos[i] = MainWin->simulationRandoms->randDouble() * MainWin->ui->spinSize->value();
-        objxvel[i] = MainWin->simulationRandoms->randDouble() * maximumVelocity * 2 - maximumVelocity;
-        objyvel[i] = MainWin->simulationRandoms->randDouble() * maximumVelocity * 2 - maximumVelocity;
-        objsize[i] = MainWin->simulationRandoms->randDouble() * (maxSize - minsize) + minsize;
-        objsizeVelocity[i] = MainWin->simulationRandoms->randDouble() * maxsizeVelocity * 2 - maxsizeVelocity;
+        objxpos[i] = simulationRandoms.randDouble() * MainWin->ui->spinSize->value();
+        objypos[i] = simulationRandoms.randDouble() * MainWin->ui->spinSize->value();
+        objxvel[i] = simulationRandoms.randDouble() * maximumVelocity * 2 - maximumVelocity;
+        objyvel[i] = simulationRandoms.randDouble() * maximumVelocity * 2 - maximumVelocity;
+        objsize[i] = simulationRandoms.randDouble() * (maxSize - minsize) + minsize;
+        objsizeVelocity[i] = simulationRandoms.randDouble() * maxsizeVelocity * 2 - maxsizeVelocity;
         for (int o = 0; o < 3; o++)
-            objcolours[i][o] = (double)((int)MainWin->simulationRandoms->rand8() - 127);
+            objcolours[i][o] = (double)((int)simulationRandoms.rand8() - 127);
 
         for (int o = 0; o < 3; o++)
-            objcolvel[i][o] = MainWin->simulationRandoms->randDouble() * maxcolvel * 2 - maxcolvel;
+            objcolvel[i][o] = simulationRandoms.randDouble() * maxcolvel * 2 - maxcolvel;
 
-        objtightness[i] = MainWin->simulationRandoms->randDouble() * (maxtight - mintight) + mintight;
-        objtightvel[i] = MainWin->simulationRandoms->randDouble() * maxtightvel * 2 - maxtightvel;
+        objtightness[i] = simulationRandoms.randDouble() * (maxtight - mintight) + mintight;
+        objtightvel[i] = simulationRandoms.randDouble() * maxtightvel * 2 - maxtightvel;
     }
 
     iter_to_accel = iter_reset;
@@ -160,11 +160,11 @@ void markenvironment::regenerate()
         iter_to_accel--;
         if (iter_to_accel <= 0)
         {
-            objxvel[i] += (MainWin->simulationRandoms->randDouble() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
-            objyvel[i] += (MainWin->simulationRandoms->randDouble() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
-            objsizeVelocity[i] += (MainWin->simulationRandoms->randDouble() * sizetweak * 2 - sizetweak) * speedfactor / (double)iter_reset;
-            objtightvel[i] += (MainWin->simulationRandoms->randDouble() * tighttweak * 2 - tighttweak) * speedfactor / (double)iter_reset;
-            for (int o = 0; o < 3; o++) objcolvel[i][o] += (MainWin->simulationRandoms->randDouble() * 2 * coltweak - coltweak) * speedfactor / (double)iter_reset;
+            objxvel[i] += (simulationRandoms.randDouble() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
+            objyvel[i] += (simulationRandoms.randDouble() * veltweak * 2 - veltweak) * speedfactor / (double)iter_reset;
+            objsizeVelocity[i] += (simulationRandoms.randDouble() * sizetweak * 2 - sizetweak) * speedfactor / (double)iter_reset;
+            objtightvel[i] += (simulationRandoms.randDouble() * tighttweak * 2 - tighttweak) * speedfactor / (double)iter_reset;
+            for (int o = 0; o < 3; o++) objcolvel[i][o] += (simulationRandoms.randDouble() * 2 * coltweak - coltweak) * speedfactor / (double)iter_reset;
             iter_to_accel = iter_reset;
         }
 

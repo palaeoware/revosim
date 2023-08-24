@@ -31,8 +31,6 @@
 #include "environmentclass.h"
 #include "environmentscene.h"
 #include "environmentsettings.h"
-#include "randoms.h"
-
 
 namespace Ui {
 class MainWindow;
@@ -47,7 +45,6 @@ public:
     ~MainWindow();
     Ui::MainWindow *ui;
     int iterations, runs;
-    randoms *simulationRandoms;
 
 private slots:
     void runPressed();

@@ -26,6 +26,7 @@
 #include "math.h"
 
 #include "environmentsettings.h"
+#include "randoms.h"
 
 //RJG This is the base class that a bunch of the environmental generators inheret, which includes save and random number functions
 class EnvironmentClass
@@ -47,6 +48,7 @@ public:
 protected:
     int x, y;
     QString savePath;
+    randoms simulationRandoms;
 
 private:
 
