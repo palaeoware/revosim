@@ -47,7 +47,7 @@ The development version of the software also has a series of custom logs, genera
 :Fitness logging: This is largely obsolete from v3.0.0 as the same functionality is possible with the custom log. It is kept here for backward compatibility.
 :Recombination logging: This log outputs the proportion of asexual v.s. sexual breeds when variable breeding is enabled, for each iteration for the grid as a whole. It also outputs the total breed attempts and fails, and also number of living organisms.
 :Variable mutation logging: This outputs the iteration number, and the number of ones in the part of the genome in the variable mutate system.
-:Speciation logging: For every speciation event above minimum species size, this outputs iteration number, number of species in event, shared cells, and then for each species the ID, number of individuals, number of cells occupied total, and number of cells in which species is sole occupant. Requires phylogeny mode to be set to *Phylogeny and metrics*.
+:Speciation logging: For every speciation event above minimum species size, this outputs iteration number, number of species in event, shared cells, and then for each species (i.e. parent and daughter[s]) the ID, number of individuals, number of cells occupied total, and number of cells in which species is sole occupant. Requires phylogeny mode to be set to *Phylogeny and metrics*.
 :Disparity logging: For each polling iteration this does a dump of every single genome, plus its X and Y coordinates.
 
 All logs contain a copy of the run settings, and explanatory text.
