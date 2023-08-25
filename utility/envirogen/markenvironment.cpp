@@ -27,8 +27,6 @@
 
 markenvironment::markenvironment(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)
 {
-    //X and Y
-
     objectcount = constructorSettings.markEnvironmentSettings.objectcount;
     maxSize = constructorSettings.markEnvironmentSettings.maxSize;
     minsize = constructorSettings.markEnvironmentSettings.minsize;

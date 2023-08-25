@@ -136,16 +136,29 @@ void russellenvironment::laplace()
     //https://stackoverflow.com/questions/1946830/multidimensional-variable-size-array-in-c
 
 
+    QVector<QVector<QVector<double>>> colourMap;
 
-    double colourMap[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()][3];
+    for (int i = 0; i < x; i++)
+    {
+        colourMap.append(QVector<QVector<double>>());
+        for (int j = 0; j < y; j++)
+        {
+            colourMap[i].append(QVector <double>());
+            for (int k = 0; k < 3; k++)
+            {
+                colourMap[i][j].append(static_cast<double>(environment[i][j][k]));
+            }
+        }
+    }
+
     //Do it all in double colourMap so don't get errors from using environment (integers)
     int laplace[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()];
     double eTotal, e[3];
     //Laplacian = residual, total and then residual for R,G and B
 
     //Initialise colourmap from environment to make laplacian faster
-    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+    for (int n = 0; n < x; n++)
+        for (int m = 0; m < y; m++)
         {
             laplace[n][m] = 0;
             for (int i = 0; i < 3; i++)colourMap[n][m][i] = environment[n][m][i];
