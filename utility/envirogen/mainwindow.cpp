@@ -561,7 +561,7 @@ void MainWindow::on_sFromImPushbutton_clicked()
 //RJG - Launch about dialogue
 void MainWindow::about()
 {
-    About adialogue;
+    About adialogue(this);
     adialogue.exec();
 }
 

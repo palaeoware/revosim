@@ -25,6 +25,8 @@ EnvironmentClass::EnvironmentClass(EnvironmentSettings constructorSettings)
     savePath = constructorSettings.savePath;
     batch = constructorSettings.batch;
 
+    mainWindowPointer = constructorSettings.mainWindowPointer;
+
     for (int n = 0; n < x; n++)
         for (int m = 0; m < y; m++)
         {

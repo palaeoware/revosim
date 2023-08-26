@@ -55,12 +55,12 @@ combine::combine(EnvironmentSettings constructorSettings) : EnvironmentClass(con
 
 void combine::ReadSettings()
 {
-    stackOne.setPath(MainWin->ui->stackOneText->toPlainText());
-    stackTwo.setPath(MainWin->ui->stackTwoText->toPlainText());
-    start = MainWin->ui->combineStart->value();
-    currentGen = MainWin->iterations;
-    percentStart = MainWin->ui->percentStartSpin->value();
-    percentEnd = MainWin->ui->percentEndSpin->value();
+    stackOne.setPath(mainWindowPointer->ui->stackOneText->toPlainText());
+    stackTwo.setPath(mainWindowPointer->ui->stackTwoText->toPlainText());
+    start = mainWindowPointer->ui->combineStart->value();
+    currentGen = mainWindowPointer->iterations;
+    percentStart = mainWindowPointer->ui->percentStartSpin->value();
+    percentEnd = mainWindowPointer->ui->percentEndSpin->value();
 }
 
 void combine::regenerate()

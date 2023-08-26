@@ -50,6 +50,7 @@ protected:
     QString savePath;
     randoms simulationRandoms;
     bool batch;
+    MainWindow *mainWindowPointer;
 
 private:
 

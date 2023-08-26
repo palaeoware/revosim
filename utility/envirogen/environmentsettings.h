@@ -11,10 +11,9 @@ public:
     EnvironmentSettings(MainWindow *mainWin);
 
     int x, y;
-
     QString savePath;
-
     bool batch = false;
+    MainWindow *mainWindowPointer;
 
     struct settingsRussell
     {
@@ -65,6 +64,11 @@ public:
     };
     settingsColour colourEnvironmentSettings;
 
+    struct settingsMakeStack
+    {
+        QString fileName;
+    };
+    settingsMakeStack makeStackSettings;
 };
 
 #endif // ENVIRONMENTSETTINGS_H
