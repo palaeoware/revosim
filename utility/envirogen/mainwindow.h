@@ -70,7 +70,7 @@ private:
     bool stopFlag, pauseFlag;
 
     void refreshEnvironment(EnvironmentClass *environmentObject);
-    bool generateEnvironment(int environmentType, QString path, int x, int y, EnvironmentSettings localEnvironmentSettings, bool batch = false);
+    bool generateEnvironment(int environmentType, EnvironmentSettings localEnvironmentSettings, bool batch = false);
     QString setupSaveDirectory(int runsLocal);
     void newEnvironmentImage();
     void reset(EnvironmentClass *environmentObject);

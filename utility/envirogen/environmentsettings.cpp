@@ -9,6 +9,7 @@ EnvironmentSettings::EnvironmentSettings(MainWindow *mainWin)
     //All environments
     x = mainWin->ui->spinSize->value();
     y = mainWin->ui->spinSize->value();
+    generations = mainWin->ui->numGenerations->value();
     savePath = mainWin->ui->path->toPlainText(); //Note this will need to be overwritten in many instances by the output of set up save directory
     mainWindowPointer = mainWin;
 

@@ -38,8 +38,6 @@ public:
 
     virtual void regenerate();
 
-    void save(int generations);
-
     //Hard limits of 1000 - right now.
     quint8 environment[1000][1000][3];
 

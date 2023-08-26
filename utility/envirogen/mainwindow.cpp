@@ -37,6 +37,16 @@
 #include <QInputDialog>
 #include <QtConcurrent>
 
+/*********** TREvoSim structure - overview ***********/
+/* Following a rewrite by RJG in August 2023, the classes interacting in Envirogen are as follows:
+ * -- Environment class - this is a base class from which the different environments derive. It stores some of the settings e.g. X and Y coords
+ * -- Each type of environment inherits this, and then adds its own settings, and has a rewritten regenerate function
+ * -- In order to allow batches to be run in parallel, these have been largely divorced from the GUI - unless they are not running in batch mode
+ * -- To this end there is a class environment settings, which at the point generation is initiated, places all the of the readings from the GUI into an object of this class
+ * -- This is then passed to the constructor of each derived environment object (as well as the base class), allowing each replicate to run independently of the GUI
+ * The only tab that relies on the GUI now is combine stacks. The rest are either available as batch mode or could be very easily if we so wish.
+ */
+/****************************************************/
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -189,11 +199,10 @@ void MainWindow::tab_changed(int index)
 
 void MainWindow::runPressed()
 {
-    QString path = setupSaveDirectory(runs);
-    if (path.length() < 2) return;
     currentEnvironmentSettings = new EnvironmentSettings(this);
-    currentEnvironmentSettings->savePath = path; //Eventually we can do this above, but for compatability between environments, currently do both
-    generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value(), *currentEnvironmentSettings);
+    currentEnvironmentSettings->savePath =  setupSaveDirectory(runs);
+    if (currentEnvironmentSettings->savePath.length() < 2)return;
+    generateEnvironment(ui->environment_comboBox->currentIndex(), *currentEnvironmentSettings);
     delete currentEnvironmentSettings;
     runs++;
 }
@@ -234,11 +243,10 @@ void MainWindow::runBatchPressed()
         //Do the runs using QtConcurrent::filter which modified the sequence in place
         futureWatcher.setFuture(QtConcurrent::filter(runsList, [this](const int &run)
         {
-            QString path = setupSaveDirectory(run);
-            if (path.length() < 2) return false;
             EnvironmentSettings localEnvironmentSettings = *currentEnvironmentSettings;
-            localEnvironmentSettings.savePath = path; //Eventually we can do this above, but for compatability between environments, currently do both
-            return generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value(), localEnvironmentSettings, true);
+            localEnvironmentSettings.savePath =  setupSaveDirectory(run);
+            if (localEnvironmentSettings.savePath.length() < 2)return false;
+            return generateEnvironment(ui->environment_comboBox->currentIndex(), localEnvironmentSettings, true);
         }));
 
         // Display the dialog and start the event loop.
@@ -250,19 +258,10 @@ void MainWindow::runBatchPressed()
     //Run up to 1 times so this cannot get caught in an infinite loop
     while (runsList.count() > 0 && count < 1 && batchRunning);
     delete currentEnvironmentSettings;
-
-    /*  for (runs = 0; runs < runBatchFor; runs++)
-      {
-          QString path = setupSaveDirectory(runs);
-          if (path.length() < 2) return;
-          generateEnvironment(ui->environment_comboBox->currentIndex(), path, ui->spinSize->value(), ui->spinSize->value(), true);
-      }
-      */
 }
 
 QString MainWindow::setupSaveDirectory(int runsLocal)
 {
-
     QDir saveDirectory(ui->path->toPlainText());
     if (!saveDirectory.exists() && ui->save_images_checkbox->isChecked())
     {
@@ -287,7 +286,7 @@ QString MainWindow::setupSaveDirectory(int runsLocal)
 }
 
 //RJG - Generates environment based on which tab is selected in the tab dock widget.
-bool MainWindow::generateEnvironment(int environmentType, QString path, int x, int y, EnvironmentSettings localEnvironmentSettings, bool batch)
+bool MainWindow::generateEnvironment(int environmentType, EnvironmentSettings localEnvironmentSettings, bool batch)
 {
     //RJG - new environment object
     EnvironmentClass *environmentObject = nullptr;
@@ -303,7 +302,7 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
         break;
     case 2: //Noise stack
         environmentObject = new noiseenvironment(localEnvironmentSettings);
-        if (this->ui->noiseMin->value() >= this->ui->noiseMax->value())
+        if (localEnvironmentSettings.noiseEnvironmentSettings.nMin >= localEnvironmentSettings.noiseEnvironmentSettings.nMax)
         {
             QMessageBox::warning(this, "Error", "Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
             reset(environmentObject);
@@ -317,7 +316,8 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
             reset(environmentObject);
             return false;
         }
-        generations = this->ui->combineStart->value() + stackTwoSize;
+        //This one is not possible from batch, so fine to use pointer to main window
+        localEnvironmentSettings.generations = this->ui->combineStart->value() + stackTwoSize;
         break;
     case 4:
         environmentObject = new colour(localEnvironmentSettings); //Colour stacks
@@ -336,10 +336,10 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
     }
 
     //RJG - Sort generations (required for combine)
-    generations = this->ui->numGenerations->value();
+    generations = localEnvironmentSettings.generations;
     int store_generations = generations;
 
-    //RJG - Add a progress bar
+    //RJG - Add a progress bar if not batch
     QProgressBar prBar;
 
     //RJG - Need to sort GUI if we are not doing a batch
@@ -373,11 +373,11 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
 
         if (saveImages)
         {
-            QImage saveImage(x, y, QImage::Format_RGB32);
-            for (int n = 0; n < x; n++)
-                for (int m = 0; m < y; m++)
+            QImage saveImage(localEnvironmentSettings.x, localEnvironmentSettings.y, QImage::Format_RGB32);
+            for (int n = 0; n < localEnvironmentSettings.x; n++)
+                for (int m = 0; m < localEnvironmentSettings.y; m++)
                     saveImage.setPixel(n, m, qRgb(environmentObject->environment[n][m][0], environmentObject->environment[n][m][1], environmentObject->environment[n][m][2]));
-            QString savePath = QString(path + QDir::separator() + "%1.png").arg(i, 4, 10, QChar('0'));
+            QString savePath = QString(localEnvironmentSettings.savePath + QDir::separator() + "%1.png").arg(i, 4, 10, QChar('0'));
             saveImage.save(savePath);
         }
 
@@ -392,7 +392,6 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
             generations = -1;
             break;
         }
-
     }
 
     //RJG - Reset GUI and inform user.
@@ -445,18 +444,22 @@ void MainWindow::setGUIButtons()
     //RJG - Sort out GUI and pause/stop
     stopFlag = false;
     startButton->setEnabled(false);
+    runForBatchButton->setEnabled(false);
     pauseButton->setEnabled(true);
     stopButton->setEnabled(true);
     ui->output_tab->setEnabled(false);
+    ui->dockWidgetContents->setEnabled(false);
 }
 
 void MainWindow::resetGUIButtons()
 {
     //RJG - Sort buttons and GUI
     startButton->setEnabled(true);
+    runForBatchButton->setEnabled(true);
     pauseButton->setEnabled(false);
     stopButton->setEnabled(false);
     ui->output_tab->setEnabled(true);
+    ui->dockWidgetContents->setEnabled(true);
 }
 
 void MainWindow::reset(EnvironmentClass *environmentObject)

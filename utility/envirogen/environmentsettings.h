@@ -10,7 +10,7 @@ class EnvironmentSettings
 public:
     EnvironmentSettings(MainWindow *mainWin);
 
-    int x, y;
+    int x, y, generations;
     QString savePath;
     bool batch = false;
     MainWindow *mainWindowPointer;

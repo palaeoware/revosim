@@ -20,6 +20,7 @@
 #include <QFile>
 #include <QApplication>
 #include <QVarLengthArray>
+#include <QDebug>
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -185,7 +186,8 @@ void russellenvironment::doLaplace()
 
             int radius = seeds[l].n - localX;
 
-            for (double newX = localX; newX < seeds[l].n + radius; newX++)
+            double newX = localX;
+            do
             {
                 if (newX > (x - 1))
                 {
@@ -195,7 +197,6 @@ void russellenvironment::doLaplace()
                         for (int i = 0; i < 3; i++)colourMap[(int)newX - (x - 1)][(int)localY][i] = seeds[l].colour[i];
                     }
                 }
-
                 else if (newX < 0)
                 {
                     if (periodic)
@@ -204,7 +205,6 @@ void russellenvironment::doLaplace()
                         for (int i = 0; i < 3; i++)colourMap[(int)newX + (x - 1)][(int)localY][i] = seeds[l].colour[i];
                     }
                 }
-
                 else
                 {
                     if (localY > 0 && localY < y)
@@ -213,7 +213,9 @@ void russellenvironment::doLaplace()
                         for (int i = 0; i < 3; i++)colourMap[(int)newX][(int)localY][i] = seeds[l].colour[i];
                     }
                 }
+                newX += 1.0;
             }
+            while (newX < seeds[l].n + radius);
             z += .01;
         }
         while (z < PI);
@@ -235,7 +237,7 @@ void russellenvironment::doLaplace()
     }
 
 
-//Dilate overlapped selection if needed
+    //Dilate overlapped selection if needed
     for (int n = 0; n < x; n++)
         for (int m = 0; m < y; m++)
             if (laplace[n][m] > 1)
@@ -247,7 +249,7 @@ void russellenvironment::doLaplace()
                         else laplace[(i + x) % x][(j + y) % y] = -1;
                     }
 
-//Now smooth/interpolate
+    //Now smooth/interpolate
     int count = 0;
     do
     {
@@ -259,9 +261,8 @@ void russellenvironment::doLaplace()
                         for (int i = 0; i < 3; i++)
                         {
                             //Average difference surounding four pixels. Modulus to make periodic. Calculate laplacian residual.
-                            if (periodic)e[i] = colourMap[(n + 1) % (x - 1)][m][i] + colourMap[(n - 1 + (x - 1)) % (x - 1)][m][i] +
-                                                    colourMap[n][(m + 1) % (y - 1)][i] + colourMap[n][(m - 1 + (y - 1)) % (y - 1)][i]
-                                                    - 4.0 * colourMap[n][m][i];
+                            if (periodic)e[i] = colourMap[(n + 1) % (x - 1)][m][i] + colourMap[(n - 1 + (x - 1)) % (x - 1)][m][i] + colourMap[n][(m + 1) % (y - 1)][i] + colourMap[n][(m - 1 + (y - 1)) %
+                                                    (y - 1)][i] - 4.0 * colourMap[n][m][i];
                             else
                             {
                                 if (n == 0 && m == 0) e[i] = (colourMap[n][m + 1][i] + colourMap[n + 1][m][i]) - 2 * colourMap[n][m][i];
@@ -272,9 +273,7 @@ void russellenvironment::doLaplace()
                                 else if (m == 0)e[i] = (colourMap[n][m + 1][i] + colourMap[n - 1][m][i] + colourMap[n + 1][m][i]) - 3 * colourMap[n][m][i];
                                 else if (n == (x - 1))e[i] = (colourMap[n][m + 1][i] + colourMap[n - 1][m][i] + colourMap[n][m - 1][i]) - 3 * colourMap[n][m][i];
                                 else if (m == (y - 1))e[i] = (colourMap[n - 1][m][i] + colourMap[n + 1][m][i] + colourMap[n][m - 1][i]) - 3 * colourMap[n][m][i];
-                                else e[i] = colourMap[n + 1][m][i] + colourMap[n - 1][m][i] +
-                                                colourMap[n][m + 1][i] + colourMap[n][m - 1][i]
-                                                - 4.0 * colourMap[n][m][i];
+                                else e[i] = colourMap[n + 1][m][i] + colourMap[n - 1][m][i] + colourMap[n][m + 1][i] + colourMap[n][m - 1][i] - 4.0 * colourMap[n][m][i];
                             }
                             colourMap[n][m][i] += 1.2 * e[i] / 4.0; //Colour = average of surrounding pixels
                             //1.2 == factor to speed up the calculation.
@@ -297,8 +296,5 @@ void russellenvironment::doLaplace()
     for (int n = 0; n < x; n++)
         for (int m = 0; m < y; m++)
             for (int i = 0; i < 3; i++)
-            {
                 environment[n][m][i] = (quint8)colourMap[n][m][i];
-            }
-
 }
