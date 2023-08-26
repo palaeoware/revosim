@@ -19,48 +19,51 @@
 #ifndef RUSSELLENVIRONMENT_H
 #define RUSSELLENVIRONMENT_H
 
+#include "environmentclass.h"
 
-//RJG - This is Russell's environmental class which inherets environment class (above).
+//RJG - This is Russell's environmental class which inherets environment class.
 class russellenvironment : public EnvironmentClass
 {
 public:
-    russellenvironment();
+    russellenvironment(EnvironmentSettings constructorSettings);
     void regenerate();
 
 private:
-    typedef struct
+    struct seed
     {
         double n, m;
         double colour[3];
         double size;
         double nv, mv;
         bool initialised = false;
-    } seed;
+    };
 
     seed seeds[1000];
 
-    void laplace();
-    void readSettings();
+    void doLaplace();
+
+    //Data structures
+    //Do it all in double colourMap so don't get errors from using environment (integers)
+    QVector<QVector<QVector<double>>> colourMap;
+    QVector<QVector<QVector<bool>>> templaplace;
+    QVector<QVector<int>> laplace;
 
     int buffer;
-    int nseed;
-
-    int maxsize;
-
-    int sizevel;
-
-    double maxvel;
-    int maxacc;
-
-    int maxcvel;
-    bool periodic;
-    bool blur;
-    double converge;
-    double factor;
+    int nSeed;
+    int maxSize;
+    int sizeVelocity;
+    int maxAcceleration;
+    int maxColourVelocity;
     int numbGenerations;
 
-    double na, ma;
+    double converge;
+    double factor;
+    double maximumVelocity;
 
+    bool periodic;
+    bool blur;
+
+    double na, ma;
 };
 
 

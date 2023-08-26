@@ -19,10 +19,12 @@
 #ifndef MAKESTACK_H
 #define MAKESTACK_H
 
+#include "environmentclass.h"
+
 class makestack : public EnvironmentClass
 {
 public:
-    makestack();
+    makestack(EnvironmentSettings constructorSettings);
     void regenerate();
 
 private:

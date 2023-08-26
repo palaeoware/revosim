@@ -20,14 +20,15 @@
 
 #include <QColor>
 
+#include "environmentclass.h"
+
 class colour : public EnvironmentClass
 {
 public:
-    colour();
+    colour(EnvironmentSettings constructorSettings);
     void regenerate();
 
 private:
-    void readSettings();
     int colourRed, colourGreen, colourBlue;
 };
 

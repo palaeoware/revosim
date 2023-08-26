@@ -25,23 +25,20 @@
 #include <QString>
 #include "math.h"
 
-//Definitions of images size
-//#define GRID_X 100
-//#define GRID_Y 100
+#include "environmentsettings.h"
+#include "randoms.h"
 
 //RJG This is the base class that a bunch of the environmental generators inheret, which includes save and random number functions
 class EnvironmentClass
 {
 
 public:
-    EnvironmentClass();
+    EnvironmentClass(EnvironmentSettings constructorSettings);
     virtual ~EnvironmentClass();
 
     virtual void regenerate();
 
     void save(int generations);
-
-    void path(QString files_directory,  bool doSave);
 
     //Hard limits of 1000 - right now.
     quint8 environment[1000][1000][3];
@@ -49,8 +46,10 @@ public:
     bool error = false;
 
 protected:
-    QString dir;
-    bool saveMe;
+    int x, y;
+    QString savePath;
+    randoms simulationRandoms;
+    bool batch;
 
 private:
 

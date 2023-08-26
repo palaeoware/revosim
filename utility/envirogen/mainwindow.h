@@ -30,7 +30,7 @@
 
 #include "environmentclass.h"
 #include "environmentscene.h"
-#include "randoms.h"
+#include "environmentsettings.h"
 
 namespace Ui {
 class MainWindow;
@@ -45,7 +45,6 @@ public:
     ~MainWindow();
     Ui::MainWindow *ui;
     int iterations, runs;
-    randoms *simulationRandoms;
 
 private slots:
     void runPressed();
@@ -71,13 +70,14 @@ private:
     bool stopFlag, pauseFlag;
 
     void refreshEnvironment(EnvironmentClass *environmentObject);
-    bool generateEnvironment(int environmentType, QString path, int x, int y, bool batch = false);
+    bool generateEnvironment(int environmentType, QString path, int x, int y, EnvironmentSettings localEnvironmentSettings, bool batch = false);
     QString setupSaveDirectory(int runsLocal);
     void newEnvironmentImage();
     void reset(EnvironmentClass *environmentObject);
     void resetGUIButtons();
     void setGUIButtons();
     bool saveImages;
+    EnvironmentSettings *currentEnvironmentSettings;
 };
 
 extern MainWindow *MainWin;
