@@ -49,6 +49,7 @@ protected:
     int x, y;
     QString savePath;
     randoms simulationRandoms;
+    bool batch;
 
 private:
 

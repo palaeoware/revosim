@@ -68,8 +68,8 @@ void markenvironment::regenerate()
 {
 
     //reset to black
-    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+    for (int n = 0; n < x; n++)
+        for (int m = 0; m < y; m++)
         {
 
             environment[n][m][2] = 127;
@@ -94,14 +94,14 @@ void markenvironment::regenerate()
             objypos[i] = 0 - objypos[i];
             objyvel[i] = 0 - objyvel[i];
         }
-        if (objxpos[i] > (MainWin->ui->spinSize->value() - 1))
+        if (objxpos[i] > (x - 1))
         {
-            objxpos[i] = (2 * (MainWin->ui->spinSize->value() - 1)) - objxpos[i];
+            objxpos[i] = (2 * (x - 1)) - objxpos[i];
             objxvel[i] = 0 - objxvel[i];
         }
-        if (objypos[i] > (MainWin->ui->spinSize->value() - 1))
+        if (objypos[i] > (y - 1))
         {
-            objypos[i] = (2 * (MainWin->ui->spinSize->value() - 1)) - objypos[i];
+            objypos[i] = (2 * (y - 1)) - objypos[i];
             objyvel[i] = 0 - objyvel[i];
         }
 
@@ -171,8 +171,8 @@ void markenvironment::regenerate()
         for (int o = 0; o < 3; o++) if (objcolvel[i][o] > maxcolvel) objcolvel[i][o] = maxcolvel;
 
 
-        for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-            for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+        for (int n = 0; n < x; n++)
+            for (int m = 0; m < y; m++)
             {
                 //work out distance
                 double dist = sqrt((n - objxpos[i]) * (n - objxpos[i]) + (m - objypos[i]) * (m - objypos[i]));

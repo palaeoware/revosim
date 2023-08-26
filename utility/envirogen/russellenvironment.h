@@ -40,7 +40,13 @@ private:
 
     seed seeds[1000];
 
-    void laplace();
+    void doLaplace();
+
+    //Data structures
+    //Do it all in double colourMap so don't get errors from using environment (integers)
+    QVector<QVector<QVector<double>>> colourMap;
+    QVector<QVector<QVector<bool>>> templaplace;
+    QVector<QVector<int>> laplace;
 
     int buffer;
     int nSeed;

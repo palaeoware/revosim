@@ -41,8 +41,12 @@ EnvironmentSettings::EnvironmentSettings(MainWindow *mainWin)
     markEnvironmentSettings.sizetweak = mainWin->ui->ME_maxSizeAccel->value();
     markEnvironmentSettings.iter_reset = mainWin->ui->ME_Iterations->value();
 
-
     //Noise environment
     noiseEnvironmentSettings.nMin = mainWin->ui->noiseMin->value();
     noiseEnvironmentSettings.nMax = mainWin->ui->noiseMax->value();
+
+    //Colour environment
+    colourEnvironmentSettings.colourRed = mainWin->ui->spinRed->value();
+    colourEnvironmentSettings.colourGreen = mainWin->ui->spinGreen->value();
+    colourEnvironmentSettings.colourBlue = mainWin->ui->spinBlue->value();
 }

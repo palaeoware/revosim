@@ -14,6 +14,8 @@ public:
 
     QString savePath;
 
+    bool batch = false;
+
     struct settingsRussell
     {
         int buffer;
@@ -53,6 +55,15 @@ public:
         int nMax;
     };
     settingsNoise noiseEnvironmentSettings;
+
+    struct settingsColour
+    {
+
+        int colourRed;
+        int colourGreen;
+        int colourBlue;
+    };
+    settingsColour colourEnvironmentSettings;
 
 };
 

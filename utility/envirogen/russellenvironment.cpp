@@ -54,6 +54,29 @@ russellenvironment::russellenvironment(EnvironmentSettings constructorSettings) 
         seeds[i].size = ((double)r * (double)maxSize) / 256.;
         seeds[i].initialised = true;
     }
+
+    //Allocate structures
+    for (int i = 0; i < x; i++)
+    {
+        colourMap.append(QVector<QVector<double>>());
+        templaplace.append(QVector<QVector<bool>>());
+        laplace.append(QVector<int>());
+        for (int j = 0; j < y; j++)
+        {
+            colourMap[i].append(QVector <double>());
+            templaplace[i].append(QVector<bool>());
+            laplace[i].append(0);
+            for (int k = 0; k < 3; k++)
+            {
+                colourMap[i][j].append(static_cast<double>(environment[i][j][k]));
+            }
+
+            for (int k = 0; k < nSeed; k++)
+            {
+                templaplace[i][j].append(false);
+            }
+        }
+    }
 }
 
 
@@ -123,77 +146,52 @@ void russellenvironment::regenerate()
     }
 
     //Interpolation then occurs in the laplace function
-    laplace();
+    doLaplace();
 }
 
-void russellenvironment::laplace()
+void russellenvironment::doLaplace()
 {
 
     //Interpolate
-    //First fill colours
-
-    //TODO - fix all multidimensional arrays to what we see in
-    //https://stackoverflow.com/questions/1946830/multidimensional-variable-size-array-in-c
-
-
-    QVector<QVector<QVector<double>>> colourMap;
-
-    for (int i = 0; i < x; i++)
-    {
-        colourMap.append(QVector<QVector<double>>());
-        for (int j = 0; j < y; j++)
-        {
-            colourMap[i].append(QVector <double>());
-            for (int k = 0; k < 3; k++)
-            {
-                colourMap[i][j].append(static_cast<double>(environment[i][j][k]));
-            }
-        }
-    }
-
-    //Do it all in double colourMap so don't get errors from using environment (integers)
-    int laplace[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()];
     double eTotal, e[3];
     //Laplacian = residual, total and then residual for R,G and B
 
+    //First fill colours
     //Initialise colourmap from environment to make laplacian faster
     for (int n = 0; n < x; n++)
         for (int m = 0; m < y; m++)
         {
             laplace[n][m] = 0;
             for (int i = 0; i < 3; i++)colourMap[n][m][i] = environment[n][m][i];
+            for (int i = 0; i < nSeed; i++)templaplace[n][m][i] = false;
         }
 
-    double x, y;
+    double localX, localY;
+
     for (int l = 0; l < nSeed; l++)
     {
-        bool templaplace[MainWin->ui->spinSize->value()][MainWin->ui->spinSize->value()];
-        for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-            for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
-                templaplace[n][m] = false;
-
         for (double z = -PI; z < PI; z += .01)
         {
             //Draw circles...
-            x = seeds[l].n + (seeds[l].size * cos(z));
-            y = seeds[l].m + (seeds[l].size * sin(z));
+            localX = seeds[l].n + (seeds[l].size * cos(z));
+            localY = seeds[l].m + (seeds[l].size * sin(z));
 
             if (periodic)
             {
-                if (y > (MainWin->ui->spinSize->value() - 1)) y -= (MainWin->ui->spinSize->value() - 1);
-                if (y < 0)y += (MainWin->ui->spinSize->value() - 1);
+                if (localY > (y - 1)) localY -= (y - 1);
+                if (localY < 0)localY += (y - 1);
             }
 
-            int radius = seeds[l].n - x;
+            int radius = seeds[l].n - localX;
 
-            for (double newX = x; newX < seeds[l].n + radius; newX++)
+            for (double newX = localX; newX < seeds[l].n + radius; newX++)
             {
-                if (newX > (MainWin->ui->spinSize->value() - 1))
+                if (newX > (x - 1))
                 {
                     if (periodic)
                     {
-                        templaplace[(int)newX - (MainWin->ui->spinSize->value() - 1)][(int)y] = true;
-                        for (int i = 0; i < 3; i++)colourMap[(int)newX - (MainWin->ui->spinSize->value() - 1)][(int)y][i] = seeds[l].colour[i];
+                        templaplace[(int)newX - (x - 1)][(int)localY][l] = true;
+                        for (int i = 0; i < 3; i++)colourMap[(int)newX - (x - 1)][(int)localY][i] = seeds[l].colour[i];
                     }
                 }
 
@@ -201,17 +199,17 @@ void russellenvironment::laplace()
                 {
                     if (periodic)
                     {
-                        templaplace[(int)newX + (MainWin->ui->spinSize->value() - 1)][(int)y] = true;
-                        for (int i = 0; i < 3; i++)colourMap[(int)newX + (MainWin->ui->spinSize->value() - 1)][(int)y][i] = seeds[l].colour[i];
+                        templaplace[(int)newX + (x - 1)][(int)localY][l] = true;
+                        for (int i = 0; i < 3; i++)colourMap[(int)newX + (x - 1)][(int)localY][i] = seeds[l].colour[i];
                     }
                 }
 
                 else
                 {
-                    if (y > 0 && y < MainWin->ui->spinSize->value())
+                    if (localY > 0 && localY < y)
                     {
-                        templaplace[(int)newX][(int)y] = true;
-                        for (int i = 0; i < 3; i++)colourMap[(int)newX][(int)y][i] = seeds[l].colour[i];
+                        templaplace[(int)newX][(int)localY][l] = true;
+                        for (int i = 0; i < 3; i++)colourMap[(int)newX][(int)localY][i] = seeds[l].colour[i];
                     }
                 }
             }
@@ -219,32 +217,32 @@ void russellenvironment::laplace()
         }
 
         //Create laplace matrix which counts how many spots are overlapping in any given area
-        for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-            for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
-                if (templaplace[n][m])laplace[n][m]++;
+        for (int n = 0; n < x; n++)
+            for (int m = 0; m < y; m++)
+                if (templaplace[n][m][l])laplace[n][m]++;
 
         if (buffer == 0) //But not if buffer is set to zero - easy way of turning off system
-            for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-                for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
-                    if (laplace[n][m] > 1)laplace[n][m] = 1;
+            for (int n = 0; n < x; n++)
+                for (int m = 0; m < y; m++)
+                    if (laplace[n][m] > 1) laplace[n][m] = 1;
 
         if (blur) //Set all pixels to laplace
-            for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-                for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+            for (int n = 0; n < x; n++)
+                for (int m = 0; m < y; m++)
                     laplace[n][m] = 0;
     }
 
 
 //Dilate overlapped selection if needed
-    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+    for (int n = 0; n < x; n++)
+        for (int m = 0; m < y; m++)
             if (laplace[n][m] > 1)
                 //Current implementation is simple square which enlarges each overlapping pixel by amount buffer
                 for (int i = (n - buffer); i < (n + buffer); i++)
                     for (int j = (m - buffer); j < (m + buffer); j++)
                     {
-                        if (!periodic && i > 0 && j > 0 && i < (MainWin->ui->spinSize->value() - 1) && j < (MainWin->ui->spinSize->value() - 1) && laplace[i][j] == 1)laplace[i][j] = -1;
-                        else laplace[(i + MainWin->ui->spinSize->value()) % MainWin->ui->spinSize->value()][(j + MainWin->ui->spinSize->value()) % MainWin->ui->spinSize->value()] = -1;
+                        if (!periodic && i > 0 && j > 0 && i < (x - 1) && j < (y - 1) && laplace[i][j] == 1)laplace[i][j] = -1;
+                        else laplace[(i + x) % x][(j + y) % y] = -1;
                     }
 
 //Now smooth/interpolate
@@ -252,26 +250,26 @@ void russellenvironment::laplace()
     do
     {
         eTotal = 0.0; //This is the residual
-        for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-            for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+        for (int n = 0; n < x; n++)
+            for (int m = 0; m < y; m++)
                 if ((n + m) % 2 == count % 2) //Calculate it chess-board style
                     if (laplace[n][m] != 1) //If needs to be laplaced
                         for (int i = 0; i < 3; i++)
                         {
                             //Average difference surounding four pixels. Modulus to make periodic. Calculate laplacian residual.
-                            if (periodic)e[i] = colourMap[(n + 1) % (MainWin->ui->spinSize->value() - 1)][m][i] + colourMap[(n - 1 + (MainWin->ui->spinSize->value() - 1)) % (MainWin->ui->spinSize->value() - 1)][m][i] +
-                                                    colourMap[n][(m + 1) % (MainWin->ui->spinSize->value() - 1)][i] + colourMap[n][(m - 1 + (MainWin->ui->spinSize->value() - 1)) % (MainWin->ui->spinSize->value() - 1)][i]
+                            if (periodic)e[i] = colourMap[(n + 1) % (x - 1)][m][i] + colourMap[(n - 1 + (x - 1)) % (x - 1)][m][i] +
+                                                    colourMap[n][(m + 1) % (y - 1)][i] + colourMap[n][(m - 1 + (y - 1)) % (y - 1)][i]
                                                     - 4.0 * colourMap[n][m][i];
                             else
                             {
-                                if (n == 0 && m == 0)e[i] = (colourMap[n][m + 1][i] + colourMap[n + 1][m][i]) - 2 * colourMap[n][m][i];
-                                else if (n == (MainWin->ui->spinSize->value() - 1) && m == 0)e[i] = (colourMap[n - 1][m][i] + colourMap[n][m + 1][i]) - 2 * colourMap[n][m][i];
-                                else if (n == 0 && m == (MainWin->ui->spinSize->value() - 1))e[i] = (colourMap[n][m - 1][i] + colourMap[n + 1][m][i]) - 2 * colourMap[n][m][i];
-                                else if (n == (MainWin->ui->spinSize->value() - 1) && m == (MainWin->ui->spinSize->value() - 1))e[i] = (colourMap[n - 1][m][i] + colourMap[n][m - 1][i]) - 2 * colourMap[n][m][i];
+                                if (n == 0 && m == 0) e[i] = (colourMap[n][m + 1][i] + colourMap[n + 1][m][i]) - 2 * colourMap[n][m][i];
+                                else if (n == (x - 1) && m == 0)e[i] = (colourMap[n - 1][m][i] + colourMap[n][m + 1][i]) - 2 * colourMap[n][m][i];
+                                else if (n == 0 && m == (y - 1))e[i] = (colourMap[n][m - 1][i] + colourMap[n + 1][m][i]) - 2 * colourMap[n][m][i];
+                                else if (n == (x - 1) && m == (y - 1))e[i] = (colourMap[n - 1][m][i] + colourMap[n][m - 1][i]) - 2 * colourMap[n][m][i];
                                 else if (n == 0)e[i] = (colourMap[n][m + 1][i] + colourMap[n][m - 1][i] + colourMap[n + 1][m][i]) - 3 * colourMap[n][m][i];
                                 else if (m == 0)e[i] = (colourMap[n][m + 1][i] + colourMap[n - 1][m][i] + colourMap[n + 1][m][i]) - 3 * colourMap[n][m][i];
-                                else if (n == (MainWin->ui->spinSize->value() - 1))e[i] = (colourMap[n][m + 1][i] + colourMap[n - 1][m][i] + colourMap[n][m - 1][i]) - 3 * colourMap[n][m][i];
-                                else if (m == (MainWin->ui->spinSize->value() - 1))e[i] = (colourMap[n - 1][m][i] + colourMap[n + 1][m][i] + colourMap[n][m - 1][i]) - 3 * colourMap[n][m][i];
+                                else if (n == (x - 1))e[i] = (colourMap[n][m + 1][i] + colourMap[n - 1][m][i] + colourMap[n][m - 1][i]) - 3 * colourMap[n][m][i];
+                                else if (m == (y - 1))e[i] = (colourMap[n - 1][m][i] + colourMap[n + 1][m][i] + colourMap[n][m - 1][i]) - 3 * colourMap[n][m][i];
                                 else e[i] = colourMap[n + 1][m][i] + colourMap[n - 1][m][i] +
                                                 colourMap[n][m + 1][i] + colourMap[n][m - 1][i]
                                                 - 4.0 * colourMap[n][m][i];
@@ -283,19 +281,19 @@ void russellenvironment::laplace()
 
 
         count++;
-        eTotal = eTotal / (3.0 * ((double) MainWin->ui->spinSize->value()) * ((double) MainWin->ui->spinSize->value()));
+        eTotal = eTotal / (3.0 * ((double) x) * ((double) y));
 
         //Ideally still need to implement some kind of status bar / update
-        if (count % 1000 == 0)
+        if (count % 1000 == 0 && !batch)
         {
             QString prog = QString("Residual is currently %1 ").arg(eTotal);
-            MainWin->ui->statusBar->showMessage(prog);
+            //MainWin->ui->statusBar->showMessage(prog);
         }
     }
     while (eTotal > converge);
 
-    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+    for (int n = 0; n < x; n++)
+        for (int m = 0; m < y; m++)
             for (int i = 0; i < 3; i++)
             {
                 environment[n][m][i] = (quint8)colourMap[n][m][i];

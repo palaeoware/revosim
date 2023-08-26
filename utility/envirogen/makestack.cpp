@@ -39,8 +39,8 @@ void makestack::regenerate()
     QImage original;
     original.load(filename);
 
-    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+    for (int n = 0; n < x; n++)
+        for (int m = 0; m < y; m++)
         {
             QColor nmPixel = original.pixel(n, m);
             environment[n][m][0] = nmPixel.red();

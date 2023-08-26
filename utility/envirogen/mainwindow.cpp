@@ -37,8 +37,6 @@
 #include <QInputDialog>
 #include <QtConcurrent>
 
-MainWindow *MainWin;
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -47,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setWindowTitle(QString(PRODUCTNAME) + " v" + QString(SOFTWARE_VERSION) + " - compiled - " + __DATE__);
     setWindowIcon(QIcon (":/icon.png"));
     showMaximized();
-    MainWin = this;
+    //MainWin = this;
 
     //RJG - Globals for simulation
     generations = 500;
@@ -220,6 +218,7 @@ void MainWindow::runBatchPressed()
     bool batchRunning = true;
 
     currentEnvironmentSettings = new EnvironmentSettings(this);
+    currentEnvironmentSettings->batch = true;
     do
     {
         //In a previous version RJG had used the progress bar in the status bar, but connecting the future watcher signals and slots provide very challenging
@@ -304,7 +303,7 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
         break;
     case 2: //Noise stack
         environmentObject = new noiseenvironment(localEnvironmentSettings);
-        if (MainWin->ui->noiseMin->value() >= MainWin->ui->noiseMax->value())
+        if (this->ui->noiseMin->value() >= this->ui->noiseMax->value())
         {
             QMessageBox::warning(this, "Error", "Min is greater than Max - please change this before proceeding.", QMessageBox::Ok);
             reset(environmentObject);
@@ -318,7 +317,7 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
             reset(environmentObject);
             return false;
         }
-        generations = MainWin->ui->combineStart->value() + stackTwoSize;
+        generations = this->ui->combineStart->value() + stackTwoSize;
         break;
     case 4:
         environmentObject = new colour(localEnvironmentSettings); //Colour stacks
@@ -337,7 +336,7 @@ bool MainWindow::generateEnvironment(int environmentType, QString path, int x, i
     }
 
     //RJG - Sort generations (required for combine)
-    generations = MainWin->ui->numGenerations->value();
+    generations = this->ui->numGenerations->value();
     int store_generations = generations;
 
     //RJG - Add a progress bar
@@ -415,7 +414,7 @@ void MainWindow::newEnvironmentImage()
 {
     //RJG - Add images to the scenes
     if (!env_image->isNull())delete env_image;
-    env_image = new QImage(MainWin->ui->spinSize->value(), MainWin->ui->spinSize->value(), QImage::Format_RGB32);
+    env_image = new QImage(this->ui->spinSize->value(), this->ui->spinSize->value(), QImage::Format_RGB32);
     env_image->fill(0);
     env_item->setPixmap(QPixmap::fromImage(*env_image));
     //RJG - flag secene for deletion later, and then create a new one
@@ -430,8 +429,8 @@ void MainWindow::newEnvironmentImage()
 void MainWindow::refreshEnvironment(EnvironmentClass *environmentObject)
 {
     //RJG - Update the environment display (which is then used to save image)
-    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+    for (int n = 0; n < this->ui->spinSize->value(); n++)
+        for (int m = 0; m < this->ui->spinSize->value(); m++)
             env_image->setPixel(n, m, qRgb(environmentObject->environment[n][m][0], environmentObject->environment[n][m][1], environmentObject->environment[n][m][2]));
 
     env_item->setPixmap(QPixmap::fromImage(*env_image));

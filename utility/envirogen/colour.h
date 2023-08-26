@@ -29,7 +29,6 @@ public:
     void regenerate();
 
 private:
-    void readSettings();
     int colourRed, colourGreen, colourBlue;
 };
 

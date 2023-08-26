@@ -68,8 +68,8 @@ void combine::regenerate()
     ReadSettings();
 
     //Blank environment so it's obvious if something has gone wrong
-    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+    for (int n = 0; n < x; n++)
+        for (int m = 0; m < y; m++)
             for (int i = 0; i < 3; i++)
                 environment[n][m][i] = 0;
 
@@ -109,8 +109,8 @@ void combine::regenerate()
 void combine::combineImages(QImage sOne, double pOne, QImage sTwo)
 {
 
-    for (int n = 0; n < MainWin->ui->spinSize->value(); n++)
-        for (int m = 0; m < MainWin->ui->spinSize->value(); m++)
+    for (int n = 0; n < x; n++)
+        for (int m = 0; m < y; m++)
         {
             QColor nmPixelOne = sOne.pixel(n, m);
             QColor nmPixelTwo = sTwo.pixel(n, m);

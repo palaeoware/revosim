@@ -23,6 +23,7 @@ EnvironmentClass::EnvironmentClass(EnvironmentSettings constructorSettings)
     y = constructorSettings.y;
 
     savePath = constructorSettings.savePath;
+    batch = constructorSettings.batch;
 
     for (int n = 0; n < x; n++)
         for (int m = 0; m < y; m++)
