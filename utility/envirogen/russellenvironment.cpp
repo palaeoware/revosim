@@ -289,7 +289,7 @@ void russellenvironment::doLaplace()
         if (count % 1000 == 0 && !batch)
         {
             QString prog = QString("Residual is currently %1 ").arg(eTotal);
-            //MainWin->ui->statusBar->showMessage(prog);
+            mainWindowPointer->ui->statusBar->showMessage(prog);
         }
     }
     while (eTotal > converge);

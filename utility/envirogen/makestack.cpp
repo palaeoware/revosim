@@ -24,10 +24,10 @@
 
 makestack::makestack(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)
 {
-    readSettings();
-    if (filename.length() < 5)
+    fileName = constructorSettings.makeStackSettings.fileName;
+    if (fileName.length() < 5)
     {
-        QMessageBox::warning(0, "Error", "Image failed to load.", QMessageBox::Ok);
+        QMessageBox::warning(nullptr, "Error", "Image failed to load.", QMessageBox::Ok);
         error = true;
         return;
     }
@@ -35,9 +35,8 @@ makestack::makestack(EnvironmentSettings constructorSettings) : EnvironmentClass
 
 void makestack::regenerate()
 {
-    readSettings();
     QImage original;
-    original.load(filename);
+    original.load(fileName);
 
     for (int n = 0; n < x; n++)
         for (int m = 0; m < y; m++)
@@ -47,9 +46,4 @@ void makestack::regenerate()
             environment[n][m][1] = nmPixel.green();
             environment[n][m][2] = nmPixel.blue();
         }
-}
-
-void makestack::readSettings()
-{
-    filename = MainWin->ui->sFromImTxt->toPlainText();
 }

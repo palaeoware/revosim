@@ -10,6 +10,7 @@ EnvironmentSettings::EnvironmentSettings(MainWindow *mainWin)
     x = mainWin->ui->spinSize->value();
     y = mainWin->ui->spinSize->value();
     savePath = mainWin->ui->path->toPlainText(); //Note this will need to be overwritten in many instances by the output of set up save directory
+    mainWindowPointer = mainWin;
 
     //Russell environment
     russellEnvironmentSettings.nSeed = mainWin->ui->numSeed->value();
@@ -49,4 +50,7 @@ EnvironmentSettings::EnvironmentSettings(MainWindow *mainWin)
     colourEnvironmentSettings.colourRed = mainWin->ui->spinRed->value();
     colourEnvironmentSettings.colourGreen = mainWin->ui->spinGreen->value();
     colourEnvironmentSettings.colourBlue = mainWin->ui->spinBlue->value();
+
+    //Makestacksettings
+    makeStackSettings.fileName = mainWin->ui->sFromImTxt->toPlainText();
 }

@@ -201,7 +201,7 @@ void MainWindow::runPressed()
 void MainWindow::runBatchPressed()
 {
 
-    if (ui->environment_comboBox->currentIndex() > 2)
+    if (ui->environment_comboBox->currentIndex() > 3)
     {
         QMessageBox::warning(this, "Sorry!", "Batch runs are not currently available for your chosen environment type. Please request the developers add it.");
         return;
@@ -462,7 +462,7 @@ void MainWindow::resetGUIButtons()
 void MainWindow::reset(EnvironmentClass *environmentObject)
 {
     //RJG - Add logo to the scene
-    if (!env_image->isNull())delete env_image;
+    if (!env_image->isNull()) delete env_image;
     env_image = new QImage(":/palaeoware_logo_square.png");
     env_item->setPixmap(QPixmap::fromImage(*env_image));
 
@@ -561,7 +561,7 @@ void MainWindow::on_sFromImPushbutton_clicked()
 //RJG - Launch about dialogue
 void MainWindow::about()
 {
-    About adialogue;
+    About adialogue(this);
     adialogue.exec();
 }
 

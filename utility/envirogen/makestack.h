@@ -28,8 +28,7 @@ public:
     void regenerate();
 
 private:
-    void readSettings();
-    QString filename;
+    QString fileName;
 
 };
 
