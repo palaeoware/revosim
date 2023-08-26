@@ -170,7 +170,8 @@ void russellenvironment::doLaplace()
 
     for (int l = 0; l < nSeed; l++)
     {
-        for (double z = -PI; z < PI; z += .01)
+        double z = -PI;
+        do
         {
             //Draw circles...
             localX = seeds[l].n + (seeds[l].size * cos(z));
@@ -213,8 +214,9 @@ void russellenvironment::doLaplace()
                     }
                 }
             }
-
+            z += .01;
         }
+        while (z < PI);
 
         //Create laplace matrix which counts how many spots are overlapping in any given area
         for (int n = 0; n < x; n++)
