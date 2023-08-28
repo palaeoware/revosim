@@ -1,5 +1,5 @@
 ---
-title: 'REvoSim v3.0.1: A fast evolutionary simulation tool with ecological processes'
+title: 'REvoSim v3: A fast evolutionary simulation tool with ecological processes'
 tags:
   - C++
   - evolution
@@ -32,7 +32,7 @@ bibliography: paper.bib
 
 # Summary
 
-Simulations are an important tool for understanding ecology and evolution because they allow greater precision and customisation than traditional experiments or observation [@zurrell:2010; @cabral:2017; @barido-sottani:2020]. Additionally, they can model phenomena that occur over timescales too long to be easily empirically observed, but too short to be studied using the fossil record [@garwood:2019]. REvoSim v3.0.1 is a flexible, spatially explicit, individual-based eco-evolutionary simulation tool written in C++. It is an update of REvoSim v2 [@garwood:2019] that increases the flexibility of genetic architecture within the simulation while also incorporating ecological processes such as inter-organism interactions.
+Simulations are an important tool for understanding ecology and evolution because they allow greater precision and customisation than traditional experiments or observation [@zurrell:2010; @cabral:2017; @barido-sottani:2020]. Additionally, they can model phenomena that occur over timescales too long to be easily empirically observed, but too short to be studied using the fossil record [@garwood:2019]. REvoSim v3 is a flexible, spatially explicit, individual-based eco-evolutionary simulation tool written in C++. It is an update of REvoSim v2 [@garwood:2019] that increases the flexibility of genetic architecture within the simulation while also incorporating ecological processes such as inter-organism interactions.
 
 # Background
 
