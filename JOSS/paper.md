@@ -18,13 +18,13 @@ authors:
     orcid: 0000-0002-7137-7572
     affiliation: 1
 affiliations:
-  - name: Department of Earth Sciences and Engineering, Imperial College London, UK
+  - name: Department of Earth Sciences and Engineering, Imperial College London, United Kingdom
     index: 1
-  - name: Grantham Institute, Imperial College London, UK
+  - name: Grantham Institute, Imperial College London, United Kingdom
     index: 2
-  - name: Department of Earth and Environmental Sciences, University of Manchester, UK
+  - name: Department of Earth and Environmental Sciences, University of Manchester, United Kingdom
     index: 3
-  - name: Natural History Museum, London, UK
+  - name: Natural History Museum, London, United Kingdom
     index: 4
 date: 5 March 2023
 bibliography: paper.bib
