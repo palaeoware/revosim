@@ -692,7 +692,7 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
     for (int nOld = firstx; nOld <= lastx; nOld++)
         for (int mOld = 0; mOld < simulationSettings->gridY; mOld++)
         {
-            n = Randcelllist1[firstx + (StartingIndex % (lastx - firstx))];
+            n = Randcelllist1[firstx + (StartingIndex % (lastx - firstx + 1))];
             m = Randcelllist2[(StartingIndex + IndexOffset) % simulationSettings->gridY];
             CellSettings *settings = &cellSettings[n][m];
             int maxv = maxUsed[n][m];
