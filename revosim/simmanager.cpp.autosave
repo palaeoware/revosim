@@ -819,7 +819,7 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
             // Determine the food to be given to organisms per point of fitness that they have.
             float addFood;
             //totalFitness == 0 is no longer a safe indicator of an empty cell, but it does indicate that a cell does not need fed
-            if (totalFitness[n][m] > 0) addFood = (cellSettings[n][m].food / totalFitness[n][m]);
+            if (totalFitness[n][m]) addFood = (cellSettings[n][m].food / totalFitness[n][m]);
             else addFood = 0;
 
             int breedlistentries[67] = {0};
