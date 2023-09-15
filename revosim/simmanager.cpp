@@ -1250,14 +1250,11 @@ bool SimManager::iterate(int eMode, bool interpolate)
         aliveCount -= KillCounts[i];
 
     //Currently pathogens is messing up aliveCount - localKillCounts seem to be too high, so number goes very negative. Bodge fix for now:
-    if (temp_path_on)
-    {
         int tmp_alive_cnt = 0;
         for (int n = 0; n < simulationSettings->gridX; n++)
             for (int m = 0; m < simulationSettings->gridY; m++)
-                for (int c = 0; c < cellSettings[n][m].slotsPerSquare; c++)if (critters[n][m][c].fitness)tmp_alive_cnt++;
+                for (int c = 0; c < cellSettings[n][m].slotsPerSquare; c++)if (critters[n][m][c].age)tmp_alive_cnt++;
         aliveCount = tmp_alive_cnt;
-    }
 
     //Now handle spat settling
 
