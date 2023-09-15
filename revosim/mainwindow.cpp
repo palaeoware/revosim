@@ -888,6 +888,25 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
         else simulationManager->simulationSettings->pathogenMode = PATH_MODE_EVOLVE;
     });
 
+    //ENF - Biological cropping
+    QLabel *cropping_settings_label = new QLabel("Cropping settings");
+    cropping_settings_label->setStyleSheet("font-weight: bold");
+    interactionSettingsGrid->addWidget(cropping_settings_label, 16, 1, 1, 2);
+
+    QLabel *cropping_frequency_label = new QLabel("Cropping frequency:");
+    cropping_frequency_label->setToolTip("<font>Select the 'Cropping' rate. Min = 0; Max = 100.</font>");
+    croppingFrequencySpin = new QSpinBox;
+    croppingFrequencySpin->setMinimum(0);
+    croppingFrequencySpin->setMaximum(100);
+    croppingFrequencySpin->setValue(simulationManager->cellSettingsMaster->croppingFrequency);
+    croppingFrequencySpin->setToolTip("<font>Select the 'Cropping' rate. Min = 0; Max = 100.</font>");
+    interactionSettingsGrid->addWidget(cropping_frequency_label, 17, 1);
+    interactionSettingsGrid->addWidget(croppingFrequencySpin, 17, 2);
+    connect(croppingFrequencySpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
+    {
+        simulationManager->cellSettingsMaster->croppingFrequency = i;
+    });
+
     //ENF - Genome seeding settings
     /*QLabel *seeding_settings_label = new QLabel("Genome seeding settings");
     seeding_settings_label->setStyleSheet("font-weight: bold");

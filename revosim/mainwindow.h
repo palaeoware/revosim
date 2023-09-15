@@ -218,6 +218,7 @@ private:
     // Only in development branch (as is variable breed above)
     QSpinBox *pathogenMutateSpin{};
     QSpinBox *pathogenFrequencySpin{};
+    QSpinBox *croppingFrequencySpin{};
 
     //RJG - text edits for logs
     QTextEdit *headerTextEdit;

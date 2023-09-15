@@ -18,6 +18,7 @@ CellSettings::CellSettings()
     pathogenFrequency = 5;
     minDeltaPredatorness = 0;
     predationEfficiency = 10;
+    croppingFrequency = 0;
     asexual = false;
     obligateSexual = true;
     facultativeSexual = false;
