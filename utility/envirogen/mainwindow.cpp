@@ -37,7 +37,7 @@
 #include <QInputDialog>
 #include <QtConcurrent>
 
-/*********** TREvoSim structure - overview ***********/
+/*********** EnviroGen structure - overview ***********/
 /* Following a rewrite by RJG in August 2023, the classes interacting in Envirogen are as follows:
  * -- Environment class - this is a base class from which the different environments derive. It stores some of the settings e.g. X and Y coords
  * -- Each type of environment inherits this, and then adds its own settings, and has a rewritten regenerate function
@@ -230,8 +230,6 @@ void MainWindow::runBatchPressed()
     currentEnvironmentSettings->batch = true;
     do
     {
-        //In a previous version RJG had used the progress bar in the status bar, but connecting the future watcher signals and slots provide very challenging
-        //Hence now do this with a dialogue - first create a dialogue, then QFutureWatcher and connect signals and slots.
         QProgressDialog dialog;
         dialog.setLabelText(QString("Starting a batch run of %1 simulations on %2 cores.").arg(runsList.length()).arg(QThread::idealThreadCount()));
         QFutureWatcher<void> futureWatcher;

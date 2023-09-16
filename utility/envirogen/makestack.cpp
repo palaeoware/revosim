@@ -18,8 +18,6 @@
 #include <QFile>
 #include <QApplication>
 #include "environmentclass.h"
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "makestack.h"
 
 makestack::makestack(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)

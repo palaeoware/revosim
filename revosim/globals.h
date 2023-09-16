@@ -22,7 +22,7 @@
 #define FILEVERSION 3
 
 //Legal Stuff
-#define COPYRIGHT "Copyright © 2008-2022 Mark D. Sutton, Russell J. Garwood, Euan N. Furness, Alan R.T.Spencer"
+#define COPYRIGHT "Copyright © 2008-2023 Mark D. Sutton, Russell J. Garwood, Euan N. Furness, Alan R.T.Spencer"
 #define LICENCE "This program comes with ABSOLUTELY NO WARRANTY. This is free software, and you are welcome to redistribute it under the conditions of the GPL v3 license"
 
 //Programme Name
@@ -41,10 +41,6 @@
 #define READTHEDOCS "https://revosim.readthedocs.io/en/latest/"
 
 //Some defines
-#define RAND_SEED 10000
-#define PREROLLED_RANDS 60000
-#define MAX_GENOME_COUNT 100000 //Needs to be big enough for all species - if not software will throw a warning, and this needs to be increased
-#define PORTABLE_RAND_MAX 32767
 #define GRID_X 200
 #define GRID_Y 200
 #define SLOTS_PER_GRID_SQUARE 200

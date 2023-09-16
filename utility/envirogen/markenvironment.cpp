@@ -21,8 +21,6 @@
 #include <QString>
 #include <QFile>
 #include <QApplication>
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include "markenvironment.h"
 
 markenvironment::markenvironment(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)

@@ -20,9 +20,8 @@
 #include "globals.h"
 
 #include <QString>
-
-//RJG - so can access MainWin
-#include "mainwindow.h"
+#include <QIcon>
+#include <QFile>
 
 About::About(QWidget *parent) :
     QDialog(parent),
