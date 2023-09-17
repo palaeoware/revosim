@@ -69,6 +69,8 @@ extern quint32 genex[65536];
 extern quint32 tweakers[32]; // the 32 single bit XOR values (many uses!)
 extern quint64 tweakers64[64]; // 64-bit versions
 extern qint16 interaction[256][256]; // interactions tables
+extern int Randcelllist1[GRID_X];
+extern int Randcelllist2[GRID_Y];
 
 /****** Global data ******/
 extern Critter critters[GRID_X][GRID_Y][SLOTS_PER_GRID_SQUARE]; //Main array - static for speed

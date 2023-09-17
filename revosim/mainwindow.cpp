@@ -2501,19 +2501,6 @@ void MainWindow::report()
             totalfit += static_cast<quint64>(totalFitness[n2][m2]);
         }
 
-
-    //check alivecount
-    qint32 testAlive = 0;
-    for (int n2 = 0; n2 < simulationManager->simulationSettings->gridX; n2++)
-        for (int m2 = 0; m2 < simulationManager->simulationSettings->gridY; m2++)
-        for (int i=0; i<SLOTS_PER_GRID_SQUARE; i++)
-        {
-                if (critters[n2][m2][i].age>0)
-                    testAlive++;
-        }
-
-    qDebug()<<"Testalive - aliveCount = "<<(testAlive - simulationManager->aliveCount);
-
     double t = static_cast<double>(totalfit);
     t /= static_cast<double>(simulationManager->aliveCount);
     t /= static_cast<double>(simulationManager->cellSettingsMaster->settleTolerance);

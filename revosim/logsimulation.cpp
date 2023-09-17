@@ -130,7 +130,7 @@ QString LogSimulation::printDefaultLogSpeciesText()
 
     if (csvOutput)
         out << "*iteration*,*gridNumberAlive*,*gridMeanFitness*,*gridBreedEntries*,*gridBreedFails*,*speciesCount*,*speciesID*,*originTime*,*speciesParent*,*speciesSize*,*speciesModalGenome*<br />";
-    else out << "[S] *speciesID*,*originTime*,*speciesParent*,*speciesSize*,*speciesMeanFitness*,*speciesMeanEnvironmentalFitness*,*speciesModalGenome*<br />";
+    else out << "[S] *speciesID*,*originTime*,*speciesParent*,*speciesSize*,*speciesMeanFitness*,*speciesMeanEnvironmentalFitness*,*speciesModalGenome*,*speciesGenomeDiversity*<br />";
 
     return outString;
 }

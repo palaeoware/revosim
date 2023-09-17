@@ -61,6 +61,8 @@ int breedFails[GRID_X][GRID_Y]; //for analysis purposes
 int settles[GRID_X][GRID_Y]; //for analysis purposes
 int settlefails[GRID_X][GRID_Y]; //for analysis purposes
 int maxUsed[GRID_X][GRID_Y];
+int Randcelllist1[GRID_X];
+int Randcelllist2[GRID_Y];
 
 //Species stuff
 LogSpecies *rootSpecies;
@@ -645,44 +647,6 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
     int maxalive;
     int deathcount;
 
-    int celllist1[simulationSettings->gridX];
-    int celllist2[simulationSettings->gridY];
-
-    for (int n = 0; n < simulationSettings->gridX; n++)
-    {
-        celllist1[n] = n;
-    }
-    for (int m = 0; m < simulationSettings->gridY; m++)
-    {
-        celllist2[m] = m;
-    }
-
-    int Randcelllist1[simulationSettings->gridX];
-    int Randcelllist2[simulationSettings->gridY];
-
-    int transferredNumbers1 = 0;
-    while (transferredNumbers1 < simulationSettings->gridX)
-    {
-        int randomIndex = simulationRandoms->rand16() % simulationSettings->gridX;
-        if (celllist1[randomIndex] != -1)
-        {
-            celllist1[randomIndex] = -1;
-            Randcelllist1[transferredNumbers1] = randomIndex;
-            transferredNumbers1++;
-        }
-    }
-    int transferredNumbers2 = 0;
-    while (transferredNumbers2 < simulationSettings->gridY)
-    {
-        int randomIndex = simulationRandoms->rand16() % simulationSettings->gridY;
-        if (celllist2[randomIndex] != -1)
-        {
-            celllist2[randomIndex] = -1;
-            Randcelllist2[transferredNumbers2] = randomIndex;
-            transferredNumbers2++;
-        }
-    }
-
     int StartingIndex = 0;
     int IndexOffset = 0;
     int n;
@@ -1226,6 +1190,41 @@ bool SimManager::iterate(int eMode, bool interpolate)
     int KillCounts[256];
     for (int i = 0; i < ProcessorCount; i++) KillCounts[i] = 0;
 
+    //Create randomised list of cell coordinates for splitting among processors - ENF
+    int celllist1[simulationSettings->gridX];
+    int celllist2[simulationSettings->gridY];
+
+    for (int n = 0; n < simulationSettings->gridX; n++)
+    {
+        celllist1[n] = n;
+    }
+    for (int m = 0; m < simulationSettings->gridY; m++)
+    {
+        celllist2[m] = m;
+    }
+
+    int transferredNumbers1 = 0;
+    while (transferredNumbers1 < simulationSettings->gridX)
+    {
+        int randomIndex = simulationRandoms->rand16() % simulationSettings->gridX;
+        if (celllist1[randomIndex] != -1)
+        {
+            celllist1[randomIndex] = -1;
+            Randcelllist1[transferredNumbers1] = randomIndex;
+            transferredNumbers1++;
+        }
+    }
+    int transferredNumbers2 = 0;
+    while (transferredNumbers2 < simulationSettings->gridY)
+    {
+        int randomIndex = simulationRandoms->rand16() % simulationSettings->gridY;
+        if (celllist2[randomIndex] != -1)
+        {
+            celllist2[randomIndex] = -1;
+            Randcelllist2[transferredNumbers2] = randomIndex;
+            transferredNumbers2++;
+        }
+    }
     //do the magic! Set up futures objects, call the functions, wait till done, retrieve values
 
     for (int i = 0; i < ProcessorCount; i++)
