@@ -55,7 +55,7 @@ _____
 
 ## 3. Installation
 
-REvoSim and utility code may be compiled using Qt from the source code or installed from the binary releases on our [GitHub](https://github.com/palaeoware).
+If you wish to use REvoSim and utility packages for research or any other purpose without modifying the software, they can be installed from the binary releases on our [GitHub](https://github.com/palaeoware/revosim/releases/). If you wish to modify the software, you will need to compile them using Qt from the source code as described below.
 
 ### Compiling from source
 
