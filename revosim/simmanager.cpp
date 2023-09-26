@@ -992,7 +992,7 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
  * \param birthCountsLocal
  * \return
  */
-int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd, int *tryCountLocal, int *settleCountLocal, int *birthCountsLocal)
+int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd, int *birthCountsLocal)
 {
     if (simulationSettings->nonspatial)
     {
@@ -1005,7 +1005,6 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
             yPosition /= (((quint64)65536) * ((quint64)65536));
 
             mutexes[(int)xPosition][(int)yPosition]->lock(); //ensure no-one else buggers with this square
-            (*tryCountLocal)++;
             Critter *crit = critters[(int)xPosition][(int)yPosition];
             //Now put the baby into any free slot here
             for (int m = 0; m < cellSettings[xPosition][yPosition].slotsPerSquare; m++)
@@ -1023,7 +1022,6 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
                         (*birthCountsLocal)++;
                         if (m > maxUsed[xPosition][yPosition]) maxUsed[xPosition][yPosition] = m;
                         settles[xPosition][yPosition]++;
-                        (*settleCountLocal)++;
                     }
                     else settlefails[xPosition][yPosition]++;
                     break;
@@ -1065,7 +1063,6 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
             }
 
             mutexes[xPosition][yPosition]->lock(); //ensure no-one else buggers with this square
-            (*tryCountLocal)++;
             Critter *crit = critters[xPosition][yPosition];
             //Now put the baby into any free slot here
             for (int m = 0; m < cellSettings[xPosition][yPosition].slotsPerSquare; m++)
@@ -1084,7 +1081,6 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
                         (*birthCountsLocal)++;
                         if (m > maxUsed[xPosition][yPosition]) maxUsed[xPosition][yPosition] = m;
                         settles[xPosition][yPosition]++;
-                        (*settleCountLocal)++;
                     }
                     else settlefails[xPosition][yPosition]++;
                     break;
@@ -1257,13 +1253,6 @@ bool SimManager::iterate(int eMode, bool interpolate)
 
     //Now handle spat settling
 
-    int trycount = 0;
-    int settlecount = 0;
-
-    int trycounts[256];
-    for (int i = 0; i < ProcessorCount; i++) trycounts[i] = 0;
-    int settlecounts[256];
-    for (int i = 0; i < ProcessorCount; i++) settlecounts[i] = 0;
     int birthcounts[256];
     for (int i = 0; i < ProcessorCount; i++) birthcounts[i] = 0;
 
@@ -1274,7 +1263,7 @@ bool SimManager::iterate(int eMode, bool interpolate)
 
     //Parallel version of settle functions
     for (int i = 0; i < ProcessorCount; i++)
-        *(FuturesList[i]) = QtConcurrent::run(this, &SimManager::settleParallel, newgenomecounts_starts[i], newgenomecounts_ends[i], &(trycounts[i]), &(settlecounts[i]), &(birthcounts[i]));
+        *(FuturesList[i]) = QtConcurrent::run(this, &SimManager::settleParallel, newgenomecounts_starts[i], newgenomecounts_ends[i], &(birthcounts[i]));
 
     for (int i = 0; i < ProcessorCount; i++)
         FuturesList[i]->waitForFinished();
@@ -1283,8 +1272,6 @@ bool SimManager::iterate(int eMode, bool interpolate)
     for (int i = 0; i < ProcessorCount; i++)
     {
         aliveCount += birthcounts[i];
-        trycount += trycounts[i];
-        settlecount += settlecounts[i];
     }
 
     // ----RJG: Mutate pathogens if they are drifting - this needs to be done here to avoid multiple mutates.

@@ -159,7 +159,7 @@ private:
     void populateCellSettings();
     QList<QFuture<int>*> FuturesList;
     int iterateParallel(int firstx, int lastx, int newgenomes_local, int *killCountLocal);
-    int settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd, int *tryCountLocal, int *settleCountLocal, int *birthCountsLocal);
+    int settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd, int *birthCountsLocal);
 
     bool temp_path_on;
 
