@@ -61,6 +61,8 @@ int breedFails[GRID_X][GRID_Y]; //for analysis purposes
 int settles[GRID_X][GRID_Y]; //for analysis purposes
 int settlefails[GRID_X][GRID_Y]; //for analysis purposes
 int maxUsed[GRID_X][GRID_Y];
+int Randcelllist1[GRID_X];
+int Randcelllist2[GRID_Y];
 
 //Species stuff
 LogSpecies *rootSpecies;
@@ -166,7 +168,7 @@ SimManager::SimManager()
 //pass -1 for 'use QT's idea of what thread count should be' (the default)
 void SimManager::SetProcessorCount(int count)
 {
-    if (count==-1)
+    if (count == -1)
         ProcessorCount = QThread::idealThreadCount();
     else
         ProcessorCount = count;
@@ -645,10 +647,17 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
     int maxalive;
     int deathcount;
 
+    int StartingIndex = 0;
+    int IndexOffset = 0;
+    int n;
+    int m;
+
     // For every cell...
-    for (int n = firstx; n <= lastx; n++)
-        for (int m = 0; m < simulationSettings->gridY; m++)
+    for (int nOld = firstx; nOld <= lastx; nOld++)
+        for (int mOld = 0; mOld < simulationSettings->gridY; mOld++)
         {
+            n = Randcelllist1[firstx + (StartingIndex % (lastx - firstx + 1))];
+            m = Randcelllist2[(StartingIndex + IndexOffset) % simulationSettings->gridY];
             CellSettings *settings = &cellSettings[n][m];
             int maxv = maxUsed[n][m];
 
@@ -774,7 +783,10 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
             // Determine the food to be given to organisms per point of fitness that they have.
             float addFood;
             //totalFitness == 0 is no longer a safe indicator of an empty cell, but it does indicate that a cell does not need fed
-            if (totalFitness[n][m]) addFood = (cellSettings[n][m].food / totalFitness[n][m]);
+            int localFitness = totalFitness[n][m];
+            int localFood = cellSettings[n][m].food;
+            if (localFitness)
+                addFood = (localFood / localFitness);
             else addFood = 0;
 
             int breedlistentries[67] = {0};
@@ -948,6 +960,25 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                         }
                         //if (crit[c].energy < 1) crit[c].age = 1; // It'll die next iteration.
                     }
+            if (iteration > 500) // Bodge, which allows .bat running
+            {
+                for (int c = 0; c <= maxv; c++) //Bodge here to kill some percentage of organisms, at random, every iteration.
+                    if (crit[c].age)
+                    {
+                        quint32 diesForNoReasonNumber = (simulationRandoms->rand32()) % 100;
+                        if (diesForNoReasonNumber < static_cast<quint32>(cellSettingsMaster->croppingFrequency))
+                        {
+                            crit[c].age = 1;
+                            crit[c].energy = 0;
+                        }
+                    }
+            }
+            StartingIndex++;
+            if (StartingIndex >= simulationSettings->gridX)
+            {
+                StartingIndex = 0;
+                IndexOffset++;
+            }
         }
     return newGenomeCountLocal;
 }
@@ -961,7 +992,7 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
  * \param birthCountsLocal
  * \return
  */
-int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd, int *tryCountLocal, int *settleCountLocal, int *birthCountsLocal)
+int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd, int *birthCountsLocal)
 {
     if (simulationSettings->nonspatial)
     {
@@ -974,7 +1005,6 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
             yPosition /= (((quint64)65536) * ((quint64)65536));
 
             mutexes[(int)xPosition][(int)yPosition]->lock(); //ensure no-one else buggers with this square
-            (*tryCountLocal)++;
             Critter *crit = critters[(int)xPosition][(int)yPosition];
             //Now put the baby into any free slot here
             for (int m = 0; m < cellSettings[xPosition][yPosition].slotsPerSquare; m++)
@@ -992,7 +1022,6 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
                         (*birthCountsLocal)++;
                         if (m > maxUsed[xPosition][yPosition]) maxUsed[xPosition][yPosition] = m;
                         settles[xPosition][yPosition]++;
-                        (*settleCountLocal)++;
                     }
                     else settlefails[xPosition][yPosition]++;
                     break;
@@ -1034,7 +1063,6 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
             }
 
             mutexes[xPosition][yPosition]->lock(); //ensure no-one else buggers with this square
-            (*tryCountLocal)++;
             Critter *crit = critters[xPosition][yPosition];
             //Now put the baby into any free slot here
             for (int m = 0; m < cellSettings[xPosition][yPosition].slotsPerSquare; m++)
@@ -1053,7 +1081,6 @@ int SimManager::settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd,
                         (*birthCountsLocal)++;
                         if (m > maxUsed[xPosition][yPosition]) maxUsed[xPosition][yPosition] = m;
                         settles[xPosition][yPosition]++;
-                        (*settleCountLocal)++;
                     }
                     else settlefails[xPosition][yPosition]++;
                     break;
@@ -1147,18 +1174,51 @@ bool SimManager::iterate(int eMode, bool interpolate)
     else temp_path_on = false;
 
     //New parallelised version
-
     int newgenomecounts_starts[256]; //allow for up to 256 threads
     int newgenomecounts_ends[256]; //allow for up to 256 threads
 
     //work out positions in genome array that each thread can write to to guarantee no overlap
     int positionadd = (GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2) / ProcessorCount;
-    for (int i = 0; i < ProcessorCount; i++)
-        newgenomecounts_starts[i] = i * positionadd;
+    for (int i = 0; i < ProcessorCount; i++) newgenomecounts_starts[i] = i * positionadd;
 
     int KillCounts[256];
     for (int i = 0; i < ProcessorCount; i++) KillCounts[i] = 0;
 
+    //Create randomised list of cell coordinates for splitting among processors - ENF
+    int celllist1[simulationSettings->gridX];
+    int celllist2[simulationSettings->gridY];
+
+    for (int n = 0; n < simulationSettings->gridX; n++)
+    {
+        celllist1[n] = n;
+    }
+    for (int m = 0; m < simulationSettings->gridY; m++)
+    {
+        celllist2[m] = m;
+    }
+
+    int transferredNumbers1 = 0;
+    while (transferredNumbers1 < simulationSettings->gridX)
+    {
+        int randomIndex = simulationRandoms->rand16() % simulationSettings->gridX;
+        if (celllist1[randomIndex] != -1)
+        {
+            celllist1[randomIndex] = -1;
+            Randcelllist1[transferredNumbers1] = randomIndex;
+            transferredNumbers1++;
+        }
+    }
+    int transferredNumbers2 = 0;
+    while (transferredNumbers2 < simulationSettings->gridY)
+    {
+        int randomIndex = simulationRandoms->rand16() % simulationSettings->gridY;
+        if (celllist2[randomIndex] != -1)
+        {
+            celllist2[randomIndex] = -1;
+            Randcelllist2[transferredNumbers2] = randomIndex;
+            transferredNumbers2++;
+        }
+    }
     //do the magic! Set up futures objects, call the functions, wait till done, retrieve values
 
     for (int i = 0; i < ProcessorCount; i++)
@@ -1183,24 +1243,14 @@ bool SimManager::iterate(int eMode, bool interpolate)
         aliveCount -= KillCounts[i];
 
     //Currently pathogens is messing up aliveCount - localKillCounts seem to be too high, so number goes very negative. Bodge fix for now:
-    if (temp_path_on)
-    {
-        int tmp_alive_cnt = 0;
-        for (int n = 0; n < simulationSettings->gridX; n++)
-            for (int m = 0; m < simulationSettings->gridY; m++)
-                for (int c = 0; c < cellSettings[n][m].slotsPerSquare; c++)if (critters[n][m][c].fitness)tmp_alive_cnt++;
-        aliveCount = tmp_alive_cnt;
-    }
+    int tmp_alive_cnt = 0;
+    for (int n = 0; n < simulationSettings->gridX; n++)
+        for (int m = 0; m < simulationSettings->gridY; m++)
+            for (int c = 0; c < cellSettings[n][m].slotsPerSquare; c++)if (critters[n][m][c].age)tmp_alive_cnt++;
+    aliveCount = tmp_alive_cnt;
 
     //Now handle spat settling
 
-    int trycount = 0;
-    int settlecount = 0;
-
-    int trycounts[256];
-    for (int i = 0; i < ProcessorCount; i++) trycounts[i] = 0;
-    int settlecounts[256];
-    for (int i = 0; i < ProcessorCount; i++) settlecounts[i] = 0;
     int birthcounts[256];
     for (int i = 0; i < ProcessorCount; i++) birthcounts[i] = 0;
 
@@ -1211,7 +1261,7 @@ bool SimManager::iterate(int eMode, bool interpolate)
 
     //Parallel version of settle functions
     for (int i = 0; i < ProcessorCount; i++)
-        *(FuturesList[i]) = QtConcurrent::run(this, &SimManager::settleParallel, newgenomecounts_starts[i], newgenomecounts_ends[i], &(trycounts[i]), &(settlecounts[i]), &(birthcounts[i]));
+        *(FuturesList[i]) = QtConcurrent::run(this, &SimManager::settleParallel, newgenomecounts_starts[i], newgenomecounts_ends[i], &(birthcounts[i]));
 
     for (int i = 0; i < ProcessorCount; i++)
         FuturesList[i]->waitForFinished();
@@ -1220,8 +1270,6 @@ bool SimManager::iterate(int eMode, bool interpolate)
     for (int i = 0; i < ProcessorCount; i++)
     {
         aliveCount += birthcounts[i];
-        trycount += trycounts[i];
-        settlecount += settlecounts[i];
     }
 
     // ----RJG: Mutate pathogens if they are drifting - this needs to be done here to avoid multiple mutates.

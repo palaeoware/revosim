@@ -207,7 +207,6 @@ private:
     QSpinBox *targetSpin{};
     QSpinBox *environmentRateSpin{};
     QSpinBox *gridXSpin{};
-    QSpinBox *gridYSpin{};
     QSpinBox *settleToleranceSpin{};
     QSpinBox *genomeSizeSpin{};
     QSpinBox *slotsSpin{};
@@ -218,6 +217,7 @@ private:
     // Only in development branch (as is variable breed above)
     QSpinBox *pathogenMutateSpin{};
     QSpinBox *pathogenFrequencySpin{};
+    QSpinBox *croppingFrequencySpin{};
 
     //RJG - text edits for logs
     QTextEdit *headerTextEdit;

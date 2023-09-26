@@ -5,7 +5,7 @@ SimSettings::SimSettings()
 {
     //Settable ints
     gridX = 100; //Can't be used to declare arrays - hence there is a define to do this, and then this dictates how much of the array is actually filled (current max 256)
-    gridY = 100;
+    gridY = gridX;
     speciesSamples = 1;
     speciesSensitivity = 2;
     timeSliceConnect = 5;

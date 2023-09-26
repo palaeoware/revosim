@@ -130,7 +130,7 @@ QString LogSimulation::printDefaultLogSpeciesText()
 
     if (csvOutput)
         out << "*iteration*,*gridNumberAlive*,*gridMeanFitness*,*gridBreedEntries*,*gridBreedFails*,*speciesCount*,*speciesID*,*originTime*,*speciesParent*,*speciesSize*,*speciesModalGenome*<br />";
-    else out << "[S] *speciesID*,*originTime*,*speciesParent*,*speciesSize*,*speciesMeanFitness*,*speciesMeanEnvironmentalFitness*,*speciesModalGenome*<br />";
+    else out << "[S] *speciesID*,*originTime*,*speciesParent*,*speciesSize*,*speciesMeanFitness*,*speciesMeanEnvironmentalFitness*,*speciesModalGenome*,*speciesGenomeDiversity*<br />";
 
     return outString;
 }
@@ -168,6 +168,8 @@ QString LogSimulation::printSettings()
         settingsOut << "-- Environment mode: " << simSettings->environmentMode << "\n";
         settingsOut << "-- Species mode: " << speciesMode << "\n";
         settingsOut << "-- Genome size: " << simSettings->genomeSize << "\n";
+        settingsOut << "-- Interaction attempts per organism per iteration: " << cellsettings.interactions << "\n";
+        settingsOut << "-- Cropping rate: " << cellsettings.croppingFrequency << "\n";
 
         settingsOut << "\n- Bools:\n";
         settingsOut << "-- Recalculate fitness: " << simSettings->recalculateFitness << "\n";
@@ -245,7 +247,9 @@ QString LogSimulation::printSettings()
         settingsOut << "Minimum species size,";
         settingsOut << "Environment mode,";
         settingsOut << "Speices mode,";
-        settingsOut << "Genome size," << "\n";
+        settingsOut << "Genome size,";
+        settingsOut << "Interaction attempts per organism per iteration,";
+        settingsOut << "Cropping rate," << "\n";
 
         settingsOut << simSettings->gridX << ",";
         settingsOut << simSettings->gridY << ",";
@@ -265,7 +269,9 @@ QString LogSimulation::printSettings()
         settingsOut << simSettings->minSpeciesSize << ",";
         settingsOut << simSettings->environmentMode << ",";
         settingsOut << speciesMode << ",";
-        settingsOut << simSettings->genomeSize << "\n";
+        settingsOut << simSettings->genomeSize << ",";
+        settingsOut << cellsettings.interactions << ",";
+        settingsOut << cellsettings.croppingFrequency << "\n";
 
         settingsOut << "Bools\n";
         settingsOut << "Recalculate fitness,";

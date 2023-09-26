@@ -23,6 +23,7 @@ public:
     int pathogenFrequency; //Frequency of applying pathogens
     int minDeltaPredatorness; //Threshold difference in predator score for direct enregy theft to occur if such interactions are enabled.
     float predationEfficiency; // Conversion factor applied during direct energy theft interactions
+    int croppingFrequency; //Rate at which biological cropping occurs
     //Reproduction modes - variable breed uses non coding genome to dictate recombination
     bool asexual;
     bool obligateSexual;

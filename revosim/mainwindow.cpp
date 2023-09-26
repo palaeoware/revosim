@@ -494,36 +494,21 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     simulation_size_label->setStyleSheet("font-weight: bold");
     simulationSizeSettingsGrid->addWidget(simulation_size_label, 0, 1, 1, 2);
 
-    QLabel *gridX_label = new QLabel("Grid X:");
-    gridX_label->setToolTip("<font>Number of grid cells on the <i>x</i> axis.</font>");
+    QLabel *gridX_label = new QLabel("Grid Size:");
+    gridX_label->setToolTip("<font>Number of grid cells on each axis.</font>");
     gridXSpin = new QSpinBox;
     gridXSpin->setMinimum(1);
     gridXSpin->setMaximum(256);
     gridXSpin->setValue(simulationManager->simulationSettings->gridX);
-    gridXSpin->setToolTip("<font>Number of grid cells on the <i>x</i> axis.</font>");
+    gridXSpin->setToolTip("<font>Number of grid cells on each axis.</font>");
     simulationSizeSettingsGrid->addWidget(gridX_label, 2, 1);
     simulationSizeSettingsGrid->addWidget(gridXSpin, 2, 2);
     connect(gridXSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), mainWindow, [ = ](const int &i)
     {
         int oldRows = simulationManager->simulationSettings->gridX;
         simulationManager->simulationSettings->gridX = i;
-        redoImages(oldRows, simulationManager->simulationSettings->gridY);
-    });
-
-    QLabel *gridY_label = new QLabel("Grid Y:");
-    gridY_label->setToolTip("<font>Number of grid cells on the <i>y</i> axis.</font>");
-    gridYSpin = new QSpinBox;
-    gridYSpin->setMinimum(1);
-    gridYSpin->setMaximum(256);
-    gridYSpin->setValue(simulationManager->simulationSettings->gridY);
-    gridYSpin->setToolTip("<font>Number of grid cells on the <i>y</i> axis.</font>");
-    simulationSizeSettingsGrid->addWidget(gridY_label, 3, 1);
-    simulationSizeSettingsGrid->addWidget(gridYSpin, 3, 2);
-    connect(gridYSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), mainWindow,  [ = ](const int &i)
-    {
-        int oldColumns = simulationManager->simulationSettings->gridY;
         simulationManager->simulationSettings->gridY = i;
-        redoImages(simulationManager->simulationSettings->gridX, oldColumns);
+        redoImages(oldRows, simulationManager->simulationSettings->gridY);
     });
 
     QLabel *slots_label = new QLabel("Slots:");
@@ -886,6 +871,25 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     {
         if (i == 0) simulationManager->simulationSettings->pathogenMode = PATH_MODE_DRIFT;
         else simulationManager->simulationSettings->pathogenMode = PATH_MODE_EVOLVE;
+    });
+
+    //ENF - Biological cropping
+    QLabel *cropping_settings_label = new QLabel("Cropping settings");
+    cropping_settings_label->setStyleSheet("font-weight: bold");
+    interactionSettingsGrid->addWidget(cropping_settings_label, 16, 1, 1, 2);
+
+    QLabel *cropping_frequency_label = new QLabel("Cropping frequency:");
+    cropping_frequency_label->setToolTip("<font>Select the 'Cropping' rate. Min = 0; Max = 100.</font>");
+    croppingFrequencySpin = new QSpinBox;
+    croppingFrequencySpin->setMinimum(0);
+    croppingFrequencySpin->setMaximum(100);
+    croppingFrequencySpin->setValue(simulationManager->cellSettingsMaster->croppingFrequency);
+    croppingFrequencySpin->setToolTip("<font>Select the 'Cropping' rate. Min = 0; Max = 100.</font>");
+    interactionSettingsGrid->addWidget(cropping_frequency_label, 17, 1);
+    interactionSettingsGrid->addWidget(croppingFrequencySpin, 17, 2);
+    connect(croppingFrequencySpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
+    {
+        simulationManager->cellSettingsMaster->croppingFrequency = i;
     });
 
     //ENF - Genome seeding settings
@@ -2475,12 +2479,14 @@ void MainWindow::report()
 
     float atime = (timePerFrame());
 
-    double t = 0;
+    quint64 totalfit = 0;
     for (int n2 = 0; n2 < simulationManager->simulationSettings->gridX; n2++)
         for (int m2 = 0; m2 < simulationManager->simulationSettings->gridY; m2++)
         {
-            t += totalFitness[n2][m2];
+            totalfit += static_cast<quint64>(totalFitness[n2][m2]);
         }
+
+    double t = static_cast<double>(totalfit);
     t /= static_cast<double>(simulationManager->aliveCount);
     t /= static_cast<double>(simulationManager->cellSettingsMaster->settleTolerance);
     t *= 100; //now %age
@@ -4514,9 +4520,10 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
             if (settingsFileIn.name() == "revosim")
                 continue;
             if (settingsFileIn.name() == "gridX")
+            {
                 simulationManager->simulationSettings->gridX = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "gridY")
                 simulationManager->simulationSettings->gridY = settingsFileIn.readElementText().toInt();
+            }
             if (settingsFileIn.name() == "settleTolerance")
                 simulationManager->cellSettingsMaster->settleTolerance = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "slotsPerSquare")
@@ -4533,6 +4540,8 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
                 simulationManager->cellSettingsMaster->mutate = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "interactrate")
                 simulationManager->cellSettingsMaster->interactions = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "croppingRate")
+                simulationManager->cellSettingsMaster->croppingFrequency = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "predationefficiency")
                 simulationManager->cellSettingsMaster->predationEfficiency = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "minpredatorscore")
@@ -4690,7 +4699,6 @@ void MainWindow::updateGUIFromVariables()
 {
     //Ints
     gridXSpin->setValue(simulationManager->simulationSettings->gridX);
-    gridYSpin->setValue(simulationManager->simulationSettings->gridY);
     genomeSizeSpin->setValue(simulationManager->simulationSettings->genomeSize);
     settleToleranceSpin->setValue(simulationManager->cellSettingsMaster->settleTolerance);
     slotsSpin->setValue(simulationManager->cellSettingsMaster->slotsPerSquare);
@@ -4705,6 +4713,7 @@ void MainWindow::updateGUIFromVariables()
     environmentRateSpin->setValue(simulationManager->simulationSettings->environmentChangeRate);
     refreshRateSpin->setValue(refreshRate);
     interactionsSpin->setValue(simulationManager->cellSettingsMaster->interactions);
+    croppingFrequencySpin->setValue(simulationManager->cellSettingsMaster->croppingFrequency);
     predationDeltaSpin->setValue(simulationManager->cellSettingsMaster->minDeltaPredatorness);
     predationEfficiencySpin->setValue(simulationManager->cellSettingsMaster->predationEfficiency);
     pathogenMutateSpin->setValue(simulationManager->cellSettingsMaster->pathogenMutate);
@@ -4897,6 +4906,10 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("interactions");
     settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->interactions));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("croppingRate");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->croppingFrequency));
     settingsFileOut.writeEndElement();
 
     //Bools
@@ -5178,7 +5191,6 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
         loadSettings(options->value("settings"), true);
     }
     if (options->contains("x")) simulationManager->simulationSettings->gridX = options->value("x").toInt();
-    if (options->contains("y")) simulationManager->simulationSettings->gridY = options->value("y").toInt();
     //Do  r here as then load environment below calls setuprun, which will update the environmental counter
     if (options->contains("r")) simulationManager->simulationSettings->environmentChangeRate = options->value("r").toInt();
     if (options->contains("e")) loadEnvironmentFiles(options->value("e"));
@@ -5237,6 +5249,7 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
     if (options->contains("interactblocks")) simulationManager->cellSettingsMaster->interactBlocks = boolStringToBool(options->value("interactblocks"));
     if (options->contains("multibreedlist")) simulationManager->cellSettingsMaster->multiBreedList = boolStringToBool(options->value("multibreedlist"));
     if (options->contains("interactrate")) simulationManager->cellSettingsMaster->interactions = options->value("interactrate").toInt();
+    if (options->contains("cropping")) simulationManager->cellSettingsMaster->croppingFrequency = options->value("cropping").toInt();
     if (options->contains("interactfitness")) simulationManager->cellSettingsMaster->interactFitness = boolStringToBool(options->value("interactfitness"));
     if (options->contains("interactenergy")) simulationManager->cellSettingsMaster->interactEnergy = boolStringToBool(options->value("interactenergy"));
     if (options->contains("v2log"))
