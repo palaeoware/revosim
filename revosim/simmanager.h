@@ -117,7 +117,7 @@ public:
     ImageSequence *env; //RJG - this is the environment for the run
     friend class test; //RJG - make friend a test class so it can access private functions to test them
 
-    int ProcessorCount;
+    quint16 ProcessorCount;
     void SetProcessorCount(int count);
     void setupRun();
     bool iterate(int eMode, bool interpolate);
