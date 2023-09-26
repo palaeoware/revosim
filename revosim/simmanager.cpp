@@ -168,7 +168,7 @@ SimManager::SimManager()
 //pass -1 for 'use QT's idea of what thread count should be' (the default)
 void SimManager::SetProcessorCount(int count)
 {
-    if (count==-1)
+    if (count == -1)
         ProcessorCount = QThread::idealThreadCount();
     else
         ProcessorCount = count;
@@ -966,7 +966,7 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                     if (crit[c].age)
                     {
                         quint32 diesForNoReasonNumber = (simulationRandoms->rand32()) % 100;
-                        if (diesForNoReasonNumber < cellSettingsMaster->croppingFrequency)
+                        if (diesForNoReasonNumber < static_cast<quint32>(cellSettingsMaster->croppingFrequency))
                         {
                             crit[c].age = 1;
                             crit[c].energy = 0;
@@ -1178,14 +1178,12 @@ bool SimManager::iterate(int eMode, bool interpolate)
     else temp_path_on = false;
 
     //New parallelised version
-
     int newgenomecounts_starts[256]; //allow for up to 256 threads
     int newgenomecounts_ends[256]; //allow for up to 256 threads
 
     //work out positions in genome array that each thread can write to to guarantee no overlap
     int positionadd = (GRID_X * GRID_Y * SLOTS_PER_GRID_SQUARE * 2) / ProcessorCount;
-    for (int i = 0; i < ProcessorCount; i++)
-        newgenomecounts_starts[i] = i * positionadd;
+    for (int i = 0; i < ProcessorCount; i++) newgenomecounts_starts[i] = i * positionadd;
 
     int KillCounts[256];
     for (int i = 0; i < ProcessorCount; i++) KillCounts[i] = 0;
@@ -1249,11 +1247,11 @@ bool SimManager::iterate(int eMode, bool interpolate)
         aliveCount -= KillCounts[i];
 
     //Currently pathogens is messing up aliveCount - localKillCounts seem to be too high, so number goes very negative. Bodge fix for now:
-        int tmp_alive_cnt = 0;
-        for (int n = 0; n < simulationSettings->gridX; n++)
-            for (int m = 0; m < simulationSettings->gridY; m++)
-                for (int c = 0; c < cellSettings[n][m].slotsPerSquare; c++)if (critters[n][m][c].age)tmp_alive_cnt++;
-        aliveCount = tmp_alive_cnt;
+    int tmp_alive_cnt = 0;
+    for (int n = 0; n < simulationSettings->gridX; n++)
+        for (int m = 0; m < simulationSettings->gridY; m++)
+            for (int c = 0; c < cellSettings[n][m].slotsPerSquare; c++)if (critters[n][m][c].age)tmp_alive_cnt++;
+    aliveCount = tmp_alive_cnt;
 
     //Now handle spat settling
 
