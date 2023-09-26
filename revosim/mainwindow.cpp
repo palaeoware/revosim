@@ -494,36 +494,21 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     simulation_size_label->setStyleSheet("font-weight: bold");
     simulationSizeSettingsGrid->addWidget(simulation_size_label, 0, 1, 1, 2);
 
-    QLabel *gridX_label = new QLabel("Grid X:");
-    gridX_label->setToolTip("<font>Number of grid cells on the <i>x</i> axis.</font>");
+    QLabel *gridX_label = new QLabel("Grid Size:");
+    gridX_label->setToolTip("<font>Number of grid cells on each axis.</font>");
     gridXSpin = new QSpinBox;
     gridXSpin->setMinimum(1);
     gridXSpin->setMaximum(256);
     gridXSpin->setValue(simulationManager->simulationSettings->gridX);
-    gridXSpin->setToolTip("<font>Number of grid cells on the <i>x</i> axis.</font>");
+    gridXSpin->setToolTip("<font>Number of grid cells on each axis.</font>");
     simulationSizeSettingsGrid->addWidget(gridX_label, 2, 1);
     simulationSizeSettingsGrid->addWidget(gridXSpin, 2, 2);
     connect(gridXSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), mainWindow, [ = ](const int &i)
     {
         int oldRows = simulationManager->simulationSettings->gridX;
         simulationManager->simulationSettings->gridX = i;
-        redoImages(oldRows, simulationManager->simulationSettings->gridY);
-    });
-
-    QLabel *gridY_label = new QLabel("Grid Y:");
-    gridY_label->setToolTip("<font>Number of grid cells on the <i>y</i> axis.</font>");
-    gridYSpin = new QSpinBox;
-    gridYSpin->setMinimum(1);
-    gridYSpin->setMaximum(256);
-    gridYSpin->setValue(simulationManager->simulationSettings->gridY);
-    gridYSpin->setToolTip("<font>Number of grid cells on the <i>y</i> axis.</font>");
-    simulationSizeSettingsGrid->addWidget(gridY_label, 3, 1);
-    simulationSizeSettingsGrid->addWidget(gridYSpin, 3, 2);
-    connect(gridYSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), mainWindow,  [ = ](const int &i)
-    {
-        int oldColumns = simulationManager->simulationSettings->gridY;
         simulationManager->simulationSettings->gridY = i;
-        redoImages(simulationManager->simulationSettings->gridX, oldColumns);
+        redoImages(oldRows, simulationManager->simulationSettings->gridY);
     });
 
     QLabel *slots_label = new QLabel("Slots:");
@@ -4535,9 +4520,10 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
             if (settingsFileIn.name() == "revosim")
                 continue;
             if (settingsFileIn.name() == "gridX")
+            {
                 simulationManager->simulationSettings->gridX = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "gridY")
                 simulationManager->simulationSettings->gridY = settingsFileIn.readElementText().toInt();
+            }
             if (settingsFileIn.name() == "settleTolerance")
                 simulationManager->cellSettingsMaster->settleTolerance = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "slotsPerSquare")
@@ -4713,7 +4699,6 @@ void MainWindow::updateGUIFromVariables()
 {
     //Ints
     gridXSpin->setValue(simulationManager->simulationSettings->gridX);
-    gridYSpin->setValue(simulationManager->simulationSettings->gridY);
     genomeSizeSpin->setValue(simulationManager->simulationSettings->genomeSize);
     settleToleranceSpin->setValue(simulationManager->cellSettingsMaster->settleTolerance);
     slotsSpin->setValue(simulationManager->cellSettingsMaster->slotsPerSquare);
@@ -5206,7 +5191,6 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
         loadSettings(options->value("settings"), true);
     }
     if (options->contains("x")) simulationManager->simulationSettings->gridX = options->value("x").toInt();
-    if (options->contains("y")) simulationManager->simulationSettings->gridY = options->value("y").toInt();
     //Do  r here as then load environment below calls setuprun, which will update the environmental counter
     if (options->contains("r")) simulationManager->simulationSettings->environmentChangeRate = options->value("r").toInt();
     if (options->contains("e")) loadEnvironmentFiles(options->value("e"));

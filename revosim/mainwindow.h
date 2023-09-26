@@ -207,7 +207,6 @@ private:
     QSpinBox *targetSpin{};
     QSpinBox *environmentRateSpin{};
     QSpinBox *gridXSpin{};
-    QSpinBox *gridYSpin{};
     QSpinBox *settleToleranceSpin{};
     QSpinBox *genomeSizeSpin{};
     QSpinBox *slotsSpin{};
