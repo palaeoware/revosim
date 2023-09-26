@@ -4554,6 +4554,8 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
                 simulationManager->cellSettingsMaster->mutate = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "interactrate")
                 simulationManager->cellSettingsMaster->interactions = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name() == "croppingRate")
+                simulationManager->cellSettingsMaster->croppingFrequency = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "predationefficiency")
                 simulationManager->cellSettingsMaster->predationEfficiency = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name() == "minpredatorscore")
@@ -4726,6 +4728,7 @@ void MainWindow::updateGUIFromVariables()
     environmentRateSpin->setValue(simulationManager->simulationSettings->environmentChangeRate);
     refreshRateSpin->setValue(refreshRate);
     interactionsSpin->setValue(simulationManager->cellSettingsMaster->interactions);
+    croppingFrequencySpin->setValue(simulationManager->cellSettingsMaster->croppingFrequency);
     predationDeltaSpin->setValue(simulationManager->cellSettingsMaster->minDeltaPredatorness);
     predationEfficiencySpin->setValue(simulationManager->cellSettingsMaster->predationEfficiency);
     pathogenMutateSpin->setValue(simulationManager->cellSettingsMaster->pathogenMutate);
@@ -4918,6 +4921,10 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("interactions");
     settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->interactions));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("croppingRate");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->croppingFrequency));
     settingsFileOut.writeEndElement();
 
     //Bools
@@ -5258,6 +5265,7 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
     if (options->contains("interactblocks")) simulationManager->cellSettingsMaster->interactBlocks = boolStringToBool(options->value("interactblocks"));
     if (options->contains("multibreedlist")) simulationManager->cellSettingsMaster->multiBreedList = boolStringToBool(options->value("multibreedlist"));
     if (options->contains("interactrate")) simulationManager->cellSettingsMaster->interactions = options->value("interactrate").toInt();
+    if (options->contains("cropping")) simulationManager->cellSettingsMaster->croppingFrequency = options->value("cropping").toInt();
     if (options->contains("interactfitness")) simulationManager->cellSettingsMaster->interactFitness = boolStringToBool(options->value("interactfitness"));
     if (options->contains("interactenergy")) simulationManager->cellSettingsMaster->interactEnergy = boolStringToBool(options->value("interactenergy"));
     if (options->contains("v2log"))
