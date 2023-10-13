@@ -30,7 +30,7 @@ Software references:
 
 Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology 62(3),339-355. `https://doi.org/10.1111/pala.12420 <https://doi.org/10.1111/pala.12420>`_
 
-Furness, E.N., Garwood, R.J. and Sutton, M.D., 2023. REvoSim v3.0.0: A fast evolutionary simulation tool with ecological processes. JOSS. Submitted.
+Furness, E.N., Garwood, R.J. & Sutton, M.D. 2023. REvoSim v3: A fast evolutionary simulation tool with ecological processes. Journal of Open Source Software 8(89): 5284. doi: `10.21105/joss.05284 <10.21105/joss.05284>`
 
 Other references:
 ~~~~~~~~~~~~~~~~~
