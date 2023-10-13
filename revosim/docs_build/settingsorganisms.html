@@ -88,10 +88,10 @@
            <div itemprop="articleBody">
              
   <section id="configuring-your-organisms">
-<span id="organisms"></span><h1><span class="section-number">5. </span>Configuring your Organisms<a class="headerlink" href="#configuring-your-organisms" title="Permalink to this headline">¶</a></h1>
+<span id="organisms"></span><h1><span class="section-number">5. </span>Configuring your Organisms<a class="headerlink" href="#configuring-your-organisms" title="Permalink to this headline"></a></h1>
 <p>At the core of the REvoSim simulation are the digital organisms. A number of properties of these organisms can be defined in the suimulation, in the Organism tab of the Settings dock. These settings are as follows:</p>
 <section id="organism-settings">
-<h2><span class="section-number">5.1. </span>Organism settings<a class="headerlink" href="#organism-settings" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.1. </span>Organism settings<a class="headerlink" href="#organism-settings" title="Permalink to this headline"></a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Chance of mutation</dt>
 <dd class="field-odd"><p>This dictates the chance of a mutation when an organism breeds (if it is set to <em>n</em>, there is a <em>n</em>/256 chance of mutation). The default is 10, which thus equates to a 10/256 chance that a randomly selected bit in the words of the genome to which this is applied (see below) is flipped (from 0 to 1 or 1 to 0).</p>
@@ -105,7 +105,7 @@
 </dl>
 </section>
 <section id="breed-settings">
-<h2><span class="section-number">5.2. </span>Breed settings<a class="headerlink" href="#breed-settings" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.2. </span>Breed settings<a class="headerlink" href="#breed-settings" title="Permalink to this headline"></a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Breed threshold</dt>
 <dd class="field-odd"><p>Within a pixel, the energy provided each iteration is split between the digital organisms living within the pixel based on their fitness. A full description of how this is achieved can be found in the REvoSim paper. When a digital organism has stored enough energy to pay the breed cost and still exceed the breed threshold, it attempts to breed.</p>
@@ -145,7 +145,7 @@
 </dl>
 </section>
 <section id="settle-settings">
-<h2><span class="section-number">5.3. </span>Settle settings<a class="headerlink" href="#settle-settings" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.3. </span>Settle settings<a class="headerlink" href="#settle-settings" title="Permalink to this headline"></a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Dispersal</dt>
 <dd class="field-odd"><p>This figure dictates the extent to which juveniles disperse on settling. Small numbers equate to significant dispersal, larger numbers increase the likelihood that juveniles settle in the same pixel as their parent. How this is achieved is described in full in the REvoSim paper.</p>
@@ -156,7 +156,7 @@
 </dl>
 </section>
 <section id="genome-words-and-systems">
-<h2><span class="section-number">5.4. </span>Genome Words and Systems<a class="headerlink" href="#genome-words-and-systems" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">5.4. </span>Genome Words and Systems<a class="headerlink" href="#genome-words-and-systems" title="Permalink to this headline"></a></h2>
 <p>From REvoSim 3.0.0, genomes are no longer limited to 64-bits in length - rather the user can set the genome length of organisms to be between 1 and 32 words, each of which is 32-bits. All options (and associated functions) that can be applied to bits in a genome are called systems, and these systems can be applied to different words of the genome to achieve the desired outcome. Thus, for instance, to match the behaviour of REvoSim v2.0.0, organisms can be set to include a 2 word genome, the fitness system can be applied to word 0, and the breed and species ID systems can be applied to words 0 and 1. Where there is an on/off toggle in the settings for an option, systems are only applied if enabled in that toggle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Genome Size</dt>

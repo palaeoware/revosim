@@ -94,10 +94,10 @@
            <div itemprop="articleBody">
              
   <section id="running-log">
-<span id="logging"></span><h1><span class="section-number">9. </span>Running Log<a class="headerlink" href="#running-log" title="Permalink to this headline">¶</a></h1>
+<span id="logging"></span><h1><span class="section-number">9. </span>Running Log<a class="headerlink" href="#running-log" title="Permalink to this headline"></a></h1>
 <p>In addition to the Run end log and image logging (see <a class="reference internal" href="settingsoutput.html#outputs"><span class="std std-ref">Configuring Outputs and Run End Log</span></a>), plus the custom logs (see <a class="reference internal" href="mainmenu.html#mainmenu"><span class="std std-ref">Main Menu</span></a>), REvoSim has a versatile system to write customised logs at every polling iteration during a run. When enabled, this writes a file called REvoSim_log.txt to the output folder, then updates this by appending more data every polling iteration, giving an overview of the current run. The v3.0.0 logging systems functions by outputting text that has been entered in this dock (including line breaks). When doing so, it replaces key words/phrases surrounded by *stars* with values that document the state of the simulation. The three text areas/boxes in this dock allow different kinds of text for logs to be entered, as outlined below.</p>
 <section id="buttons">
-<h2><span class="section-number">9.1. </span>Buttons<a class="headerlink" href="#buttons" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">9.1. </span>Buttons<a class="headerlink" href="#buttons" title="Permalink to this headline"></a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Write to file</dt>
 <dd class="field-odd"><p>When this option is checked a log file is written during the course of every run. See <a class="reference internal" href="#logging"><span class="std std-ref">Running Log</span></a> for more details of REvoSim logs.</p>
@@ -120,11 +120,11 @@
 </dl>
 </section>
 <section id="header-text">
-<h2><span class="section-number">9.2. </span>Header text<a class="headerlink" href="#header-text" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">9.2. </span>Header text<a class="headerlink" href="#header-text" title="Permalink to this headline"></a></h2>
 <p>This text area can be used for text that should appear at the start of a log file, but is only written when the file is created. This could include the settings for any given run, comments relevant to the experiment, or a header for the remaining columns, for example.</p>
 </section>
 <section id="iteration-text">
-<h2><span class="section-number">9.3. </span>Iteration text<a class="headerlink" href="#iteration-text" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">9.3. </span>Iteration text<a class="headerlink" href="#iteration-text" title="Permalink to this headline"></a></h2>
 <p>This text is written to the log file every polling iteration. This is likely to include statistics about the grid as a whole, for example, number of living organisms, iteration number, or mean fitness. A full list of options is provided below.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Write header from iteration log</dt>
@@ -133,7 +133,7 @@
 </dl>
 </section>
 <section id="species-text">
-<h2><span class="section-number">9.4. </span>Species text<a class="headerlink" href="#species-text" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">9.4. </span>Species text<a class="headerlink" href="#species-text" title="Permalink to this headline"></a></h2>
 <p>This text is written to the log file for each species, for every polling iteration. This data might include species ID, its origin time, the ID of its parents, and the number of organisms in that species.  A full list of options is provided below.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Write header from species log</dt>
@@ -142,11 +142,11 @@
 </dl>
 </section>
 <section id="v3-0-0-log-options">
-<h2><span class="section-number">9.5. </span>v3.0.0 log options<a class="headerlink" href="#v3-0-0-log-options" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">9.5. </span>v3.0.0 log options<a class="headerlink" href="#v3-0-0-log-options" title="Permalink to this headline"></a></h2>
 <p>In v3.0.0 and later, custom logs can be created by entering outputs in the text areas as described above, including *keywords*. These keywords are replaced with outputs for further analysis when the log is written (e.g. *iteration* is replaced with the current iteration number).</p>
 <p>Keywords are show below, first per iteration keywords, then per species keywords (although some can be used in either context). The escape sequence for a star (*) is two stars (**).</p>
 <section id="iteration-keywords">
-<h3><span class="section-number">9.5.1. </span>Iteration keywords<a class="headerlink" href="#iteration-keywords" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">9.5.1. </span>Iteration keywords<a class="headerlink" href="#iteration-keywords" title="Permalink to this headline"></a></h3>
 <dl class="field-list simple">
 <dt class="field-odd">*dumpGenomes*</dt>
 <dd class="field-odd"><p>This writes the genomes of every living digital organism, and the X then Y coordinate in which they are found, separated by commas.</p>
@@ -190,7 +190,7 @@
 </dl>
 </section>
 <section id="species-keywords">
-<h3><span class="section-number">9.5.2. </span>Species keywords<a class="headerlink" href="#species-keywords" title="Permalink to this headline">¶</a></h3>
+<h3><span class="section-number">9.5.2. </span>Species keywords<a class="headerlink" href="#species-keywords" title="Permalink to this headline"></a></h3>
 <dl class="field-list simple">
 <dt class="field-odd">*Ca*</dt>
 <dd class="field-odd"><p>This is the sum of the gene frequency differences from the origin of a species for the word(s) included in the fitness algorithm.</p>
@@ -250,7 +250,7 @@
 </section>
 </section>
 <section id="v2-0-0-log">
-<h2><span class="section-number">9.6. </span>v2.0.0 log<a class="headerlink" href="#v2-0-0-log" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">9.6. </span>v2.0.0 log<a class="headerlink" href="#v2-0-0-log" title="Permalink to this headline"></a></h2>
 <p>The v2.0.0 log is structured as follows:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Timestamp</dt>
