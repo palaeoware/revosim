@@ -11,7 +11,9 @@ extensions = [
 # Define the projects that will share this configuration file.
 multiproject_projects = {
     "revosim/docs": {},
-    "utility/envirogen/docs": {},
+    "utility/envirogen/docs": {
+         "path": "utility/envirogen/docs"
+    },
 }
 
 # Common options.
