@@ -24,6 +24,9 @@ sphinx:
   # RJG - we do not want this, as there are some warnings when embedding mp4s that are apparently not yet suppressible
 
 # Explicitly set the version of Python and its requirements
+# Optional but recommended, declare the Python requirements required
+# to build your documentation
+# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
 python:
   install:
     - requirements: requirements.txt
@@ -32,10 +35,3 @@ python:
 formats:
   - pdf
   - epub
-
-# Optional but recommended, declare the Python requirements required
-# to build your documentation
-# See https://docs.readthedocs.io/en/stable/guides/reproducible-builds.html
-# python:
-#    install:
-#    - requirements: docs/requirements.txt
