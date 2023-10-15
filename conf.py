@@ -10,9 +10,15 @@ extensions = [
 
 # Define the projects that will share this configuration file.
 multiproject_projects = {
-    "revosim/docs": {},
+    "revosim/docs": {
+         "config": {
+            "project": "REvoSim",
+         },
+    },
     "utility/envirogen/docs": {
-         "path": "utility/envirogen/docs"
+         "config": {
+            "project": "EnviroGen",
+         },
     },
 }
 
