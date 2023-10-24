@@ -28,5 +28,7 @@ multiproject_projects = {
     },
 }
 
+docset = get_project(multiproject_projects)
+
 # Common options.
 html_theme = "sphinx_rtd_theme"
