@@ -13,11 +13,14 @@ multiproject_projects = {
     "revosim/docs": {
          "config": {
             "project": "REvoSim",
+            "html_title": "REvoSim",
+            "path":  "revosim/docs",
          },
     },
     "utility/envirogen/docs": {
          "config": {
             "project": "EnviroGen",
+            "html_title": "EnviroGen",
             "path":  "utility/envirogen/docs",
          },
     },
