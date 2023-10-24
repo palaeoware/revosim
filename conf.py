@@ -18,6 +18,7 @@ multiproject_projects = {
     "utility/envirogen/docs": {
          "config": {
             "project": "EnviroGen",
+            "path":  "utility/envirogen/docs",
          },
     },
 }
