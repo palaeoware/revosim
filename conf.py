@@ -8,6 +8,8 @@ extensions = [
    "multiproject",
 ]
 
+from multiproject.utils import get_project
+
 # Define the projects that will share this configuration file.
 multiproject_projects = {
     "revosim/docs": {
