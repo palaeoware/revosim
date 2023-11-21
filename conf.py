@@ -21,7 +21,7 @@ multiproject_projects = {
             "path":  "revosim/docs",
          },
     },
-    "EnviroGen": {
+    "utility/envirogen/docs": {
          #"use_config_file": False,
          "config": {
             "project": "EnviroGen",
