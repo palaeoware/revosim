@@ -6,23 +6,19 @@
 
 extensions = [
    "multiproject",
-   "sphinx.ext.intersphinx",
 ]
 
-#from multiproject.utils import get_project
-
 # Define the projects that will share this configuration file.
+# These have to match the project environmental variable defined in the readthedocs admin menu (readthedocs project --> admin --> environmental variables)
 multiproject_projects = {
-    "REvoSim": {
-         #"use_config_file": False,
+    "revosim/docs": {
          "config": {
             "project": "REvoSim",
             "html_title": "REvoSim",
             "path":  "revosim/docs",
          },
     },
-    "EnviroGen": {
-         #"use_config_file": False,
+    "utility/envirogen/docs": {
          "config": {
             "project": "EnviroGen",
             "html_title": "EnviroGen",
@@ -30,12 +26,6 @@ multiproject_projects = {
          },
     },
 }
-
-#docset = get_project(multiproject_projects)
-
-#locale_dirs = [
-#    f"{docset}/locale/",
-#]
 
 # Common options.
 html_theme = "sphinx_rtd_theme"
