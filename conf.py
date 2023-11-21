@@ -6,7 +6,6 @@
 
 extensions = [
    "multiproject",
-   "sphinx.ext.intersphinx",
 ]
 
 # Define the projects that will share this configuration file.
