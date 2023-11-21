@@ -14,7 +14,7 @@ extensions = [
 # Define the projects that will share this configuration file.
 multiproject_projects = {
     "REvoSim": {
-         "use_config_file": False,
+         #"use_config_file": False,
          "config": {
             "project": "REvoSim",
             "html_title": "REvoSim",
@@ -22,7 +22,7 @@ multiproject_projects = {
          },
     },
     "EnviroGen": {
-         "use_config_file": False,
+         #"use_config_file": False,
          "config": {
             "project": "EnviroGen",
             "html_title": "EnviroGen",
