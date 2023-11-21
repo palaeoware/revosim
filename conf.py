@@ -6,9 +6,10 @@
 
 extensions = [
    "multiproject",
+   "sphinx.ext.intersphinx",
 ]
 
-from multiproject.utils import get_project
+#from multiproject.utils import get_project
 
 # Define the projects that will share this configuration file.
 multiproject_projects = {
@@ -30,11 +31,11 @@ multiproject_projects = {
     },
 }
 
-docset = get_project(multiproject_projects)
+#docset = get_project(multiproject_projects)
 
-locale_dirs = [
-    f"{docset}/locale/",
-]
+#locale_dirs = [
+#    f"{docset}/locale/",
+#]
 
 # Common options.
 html_theme = "sphinx_rtd_theme"
