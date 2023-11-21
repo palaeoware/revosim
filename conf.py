@@ -12,7 +12,7 @@ from multiproject.utils import get_project
 
 # Define the projects that will share this configuration file.
 multiproject_projects = {
-    "revosim/docs": {
+    "REvoSim": {
          "use_config_file": False,
          "config": {
             "project": "REvoSim",
@@ -20,7 +20,7 @@ multiproject_projects = {
             "path":  "revosim/docs",
          },
     },
-    "utility/envirogen/docs": {
+    "EnviroGen": {
          "use_config_file": False,
          "config": {
             "project": "EnviroGen",
@@ -31,6 +31,10 @@ multiproject_projects = {
 }
 
 docset = get_project(multiproject_projects)
+
+locale_dirs = [
+    f"{docset}/locale/",
+]
 
 # Common options.
 html_theme = "sphinx_rtd_theme"
