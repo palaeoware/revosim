@@ -26,9 +26,9 @@ copyright = '2023, Russell J. Garwood, Alan R.T. Spencer, Mark D. Sutton'
 author = 'Russell J. Garwood, Alan R.T. Spencer, Mark D. Sutton'
 
 # The short X.Y version
-version = '3.0.0'
+version = '3.0.1'
 # The full version, including alpha/beta/rc tags
-release = '3.0.0'
+release = '3.0.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -59,7 +59,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

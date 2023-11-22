@@ -42,7 +42,7 @@ This text is written to the log file for each species, for every polling iterati
 v3.0.0 log options
 ------------------
 
-In the v3.0.0 custom logs can be created by entering outputs in the text areas as described above, including \*keywords\*. These keywords are replaced with outputs for further analysis when the log is written (e.g. \*iteration\* is replaced with the current iteration number). 
+In v3.0.0 and later, custom logs can be created by entering outputs in the text areas as described above, including \*keywords\*. These keywords are replaced with outputs for further analysis when the log is written (e.g. \*iteration\* is replaced with the current iteration number). 
 
 Keywords are show below, first per iteration keywords, then per species keywords (although some can be used in either context). The escape sequence for a star (\*) is two stars (\*\*).
 

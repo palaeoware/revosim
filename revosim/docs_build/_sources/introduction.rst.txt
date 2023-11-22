@@ -10,7 +10,7 @@ Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level si
 
 That paper is based on version 2.0.0, versions from 3.0.0 have a number of additional capabilities including, for example, multi-length genomes (in v2.0.0 these were 64 bits). These changes are documented in the paper:
 
-Furness, E.N., Garwood, R.J. and Sutton, M.D., 2023. REvoSim v3.0.0: A fast evolutionary simulation tool with ecological processes. JOSS. Submitted.
+Furness, E.N., Garwood, R.J. & Sutton, M.D. 2023. REvoSim v3: A fast evolutionary simulation tool with ecological processes. Journal of Open Source Software 8(89): 5284. doi: `10.21105/joss.05284 <10.21105/joss.05284>`
 
 A utility program, EnviroGen, is available to generate environments for REvoSim and thus provide a high level of control over the nature of the environment used for simulations. This is documented separately.
 

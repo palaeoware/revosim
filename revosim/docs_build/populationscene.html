@@ -104,18 +104,18 @@
            <div itemprop="articleBody">
              
   <section id="population-scene">
-<span id="populationscene"></span><h1><span class="section-number">4.3. </span>Population Scene<a class="headerlink" href="#population-scene" title="Permalink to this headline">¶</a></h1>
+<span id="populationscene"></span><h1><span class="section-number">4.3. </span>Population Scene<a class="headerlink" href="#population-scene" title="Permalink to this headline"></a></h1>
 <p>The Population Scene is the program’s visual output showing what is taking place within the defined simulation space. When the program is first started, or after a Reset is called, the Population Scene will default to showing a single coloured pixel in the centre of the population grid, unless Dual Reseed or 3- or 5-tier Trophic Reseed is selected is selected. By default this pixel represents the starting genome of the seeding organism: black pixels are those without any living digital organisms.</p>
 <figure class="align-center" id="id1">
 <img alt="_images/populationSceneDefault.png" src="_images/populationSceneDefault.png" />
 <figcaption>
-<p><span class="caption-text">Default Population Scene showing a single starting genome in the centre.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Default Population Scene showing a single starting genome in the centre.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <figure class="align-center" id="id2">
 <img alt="_images/populationSceneDuelReseed.png" src="_images/populationSceneDuelReseed.png" />
 <figcaption>
-<p><span class="caption-text">Default Population Scene showing a two genomes, one on left and another on the right, as set by the Duel Reseed option.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+<p><span class="caption-text">Default Population Scene showing a two genomes, one on left and another on the right, as set by the Duel Reseed option.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
 </figcaption>
 </figure>
 <p>The Population Scene can be set using the drop down menu to show different output modes, as shown below:</p>
@@ -124,84 +124,84 @@
 </figure>
 <p>The Population Scene can also be saved as an image stack in order to e.g. create movies or analyse runs - see <a class="reference internal" href="settingsoutput.html#outputs"><span class="std std-ref">Configuring Outputs and Run End Log</span></a>.  Currently supported visualisation modes are:</p>
 <section id="population-count">
-<h2><span class="section-number">4.3.1. </span>Population Count<a class="headerlink" href="#population-count" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.1. </span>Population Count<a class="headerlink" href="#population-count" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationSceneCount.png" src="_images/populationSceneCount.png" />
 </figure>
 <p>Each grid-square is visualized with a grey-level representing the current number of creatures alive in the square.</p>
 </section>
 <section id="mean-fitness">
-<h2><span class="section-number">4.3.2. </span>Mean Fitness<a class="headerlink" href="#mean-fitness" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.2. </span>Mean Fitness<a class="headerlink" href="#mean-fitness" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationSceneMeanFitness.png" src="_images/populationSceneMeanFitness.png" />
 </figure>
 <p>Each grid-square is visualized with a grey-level representing the mean fitness of all creatures alive in the square, scaled so that white is maximum fitness (=’Settle Tolerance’).</p>
 </section>
 <section id="visualisation-system-1">
-<h2><span class="section-number">4.3.3. </span>Visualisation system 1<a class="headerlink" href="#visualisation-system-1" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.3. </span>Visualisation system 1<a class="headerlink" href="#visualisation-system-1" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationSceneVS1.png" src="_images/populationSceneVS1.png" />
 </figure>
 <p>From v3.0.0 REvoSim features two visualisation systems for user-defined genome words. The words for each are set in the systems section of the Simulation settings docker. These both work in the same way: for each grid-square, the most commonly occurring (modal) sequence for the selected genome words is computed. These are then converted into a colour: e.g. for a single 32-bit word the level of red is the (scaled) count of 1’s in the least significant 11 bits, the level of green is the (scaled) count of ‘1’s in the next least significant 11 bits, and the level of blue is the (scaled) count of ‘1’s in the most significant 10 bits. The equivalent operation is applied if &gt;1 genome words are selected. This visualization approach provides a quick means of distinguishing sequences, ensuring that small genomic changes result in small changes in colour. It does not, however, guarantee that the same colour will in all cases represent the same genome (as many very different genomes may possess the same bit-counts in section of the genome words).</p>
 </section>
 <section id="visualisation-system-2">
-<h2><span class="section-number">4.3.4. </span>Visualisation system 2<a class="headerlink" href="#visualisation-system-2" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.4. </span>Visualisation system 2<a class="headerlink" href="#visualisation-system-2" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationSceneVS2.png" src="_images/populationSceneVS2.png" />
 </figure>
 <p>This operates in the same way as first visualisation system, but is included to allow two different word sets to be visualised (and saved as image stacks) if required.</p>
 </section>
 <section id="settles">
-<h2><span class="section-number">4.3.5. </span>Settles<a class="headerlink" href="#settles" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.5. </span>Settles<a class="headerlink" href="#settles" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationSceneSettles.png" src="_images/populationSceneSettles.png" />
 </figure>
 <p>Each grid-square is visualized with a grey-level representing the number of successful ‘settling’ events in that square since the last visualization.</p>
 </section>
 <section id="breed-settle-fails-r-breed-g-settle">
-<h2><span class="section-number">4.3.6. </span>Breed/Settle Fails (R=Breed; G=Settle)<a class="headerlink" href="#breed-settle-fails-r-breed-g-settle" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.6. </span>Breed/Settle Fails (R=Breed; G=Settle)<a class="headerlink" href="#breed-settle-fails-r-breed-g-settle" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationSceneBreedFail.png" src="_images/populationSceneBreedFail.png" />
 </figure>
 <p>Each grid-square is assigned a colour representing the number of ‘fails’ since the last visualization. The number of ‘breed fails’ (attempts to breed that were aborted due to compatibility) provides the red level, and the number of ‘settle fails’ (attempts to settle that resulted in a fitness of 0 and hence the death of the settling creature) provides the green level. Fail visualizations are scaled non-linearly (using <em>v</em> = 100*f*0.8, where <em>f</em> = mean fails per iteration, and v is visualized intensity on a scale 0-255). Fail visualization maps the edge of species or subspecies ranges, as it highlights cells where gene-flow is restricted by any mechanism.</p>
 </section>
 <section id="species">
-<h2><span class="section-number">4.3.7. </span>Species<a class="headerlink" href="#species" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.7. </span>Species<a class="headerlink" href="#species" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationSceneSpecies.png" src="_images/populationSceneSpecies.png" />
 </figure>
 <p>REvoSim simulations often produce discrete species, i.e. reproductively isolated gene-pools, and for many macroevolutionary studies the identification and tracking of the fate of species is a requirement. This visualisation option assigns a unique colour to each species, and colours each grid-square with the species in the lowest occupied slot of that square.</p>
 </section>
 <section id="interactions">
-<h2><span class="section-number">4.3.8. </span>Interactions<a class="headerlink" href="#interactions" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.8. </span>Interactions<a class="headerlink" href="#interactions" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationSceneInteractions.png" src="_images/populationSceneInteractions.png" />
 </figure>
 <p>This option visualises the difference between the environmental fitness of the first organism in a grid-square, and the total fitness of that organism including interactions. It thus provides an easy overview of the impact that interactions are having on fitness  when interactions are set to modify organism fitness values.</p>
 </section>
 <section id="breed-list">
-<h2><span class="section-number">4.3.9. </span>Breed list<a class="headerlink" href="#breed-list" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.9. </span>Breed list<a class="headerlink" href="#breed-list" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationSceneBreedlist.png" src="_images/populationSceneBreedlist.png" />
 </figure>
 <p>This visualises the breed list, and is of the greatest utility when multiple breed lists are enabled (the following calculation is applied even when multiple breed lists are not enabled). When selected, every organism in a cell is inspected to determine the breed list that it is using, and the index of the most frequent breed list is used to determine the colour intensity of the red channel, the second most for green, and the third for blue. As such, cells with organisms placed in just one breed list are pure red; cells with a single but established dominant genome are grey (the 2nd and 3rd most frequent breed list are on either side of the breed list for that dominant genome, due to jitter, and their similar index values will result in similar intensities in all three colour channels); and cells with more than one dominant genome will be coloured (the different breed lists for those genomes result in different intensities in the colour channels, creating non-grey pixels).</p>
 </section>
 <section id="pathogens-word-1">
-<h2><span class="section-number">4.3.10. </span>Pathogens word 1<a class="headerlink" href="#pathogens-word-1" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.10. </span>Pathogens word 1<a class="headerlink" href="#pathogens-word-1" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationScenePathogens1.png" src="_images/populationScenePathogens1.png" />
 </figure>
 <p>This option allows pathogens to be visualised - it follows the same approach as the visualisation systems, albeit with hard coded pathogen words. If flexibility is required, please request this. This option visualises the first word of the pathogen genome.</p>
 </section>
 <section id="pathogens-word-2">
-<h2><span class="section-number">4.3.11. </span>Pathogens word 2<a class="headerlink" href="#pathogens-word-2" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.11. </span>Pathogens word 2<a class="headerlink" href="#pathogens-word-2" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationScenePathogens2.png" src="_images/populationScenePathogens2.png" />
 </figure>
 <p>This option is the same as the above, but visualises the second word of the pathogen genome.</p>
 </section>
 <section id="stolen-energy">
-<h2><span class="section-number">4.3.12. </span>Stolen energy<a class="headerlink" href="#stolen-energy" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.12. </span>Stolen energy<a class="headerlink" href="#stolen-energy" title="Permalink to this headline"></a></h2>
 <figure class="align-center">
 <img alt="_images/populationSceneStolenEnergy.png" src="_images/populationSceneStolenEnergy.png" />
 </figure>
