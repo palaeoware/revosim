@@ -173,6 +173,7 @@ private:
     QCheckBox *excludeWithoutDescendantsCheckbox{};
     QCheckBox *loggingCheckbox{};
     QCheckBox *autoWriteLogCheckbox{};
+    QCheckBox *autoWriteLogIndividualsCheckbox{};
 
     //RJG - radios and spins
     QRadioButton *phylogenyOffButton{};

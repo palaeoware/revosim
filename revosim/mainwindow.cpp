@@ -1072,9 +1072,14 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     });
 
 
+    autoWriteLogIndividualsCheckbox = new QCheckBox("Automatically create individuals log for batch runs");
+    autoWriteLogIndividualsCheckbox->setChecked(false);
+    autoWriteLogIndividualsCheckbox->setToolTip("<font>Turn on/off this option to automatically write the individuals log after batch runs</font>");
+    fileLoggingGrid->addWidget(autoWriteLogIndividualsCheckbox, 6, 1, 1, 2);
+
     QPushButton *dumpIndividualsButton = new QPushButton("Write data on every individual for current run");
     dumpIndividualsButton ->setToolTip("<font>Use this option to write key data for every living individual to file.</font>");
-    fileLoggingGrid->addWidget(dumpIndividualsButton, 6, 1, 1, 2);
+    fileLoggingGrid->addWidget(dumpIndividualsButton, 7, 1, 1, 2);
     connect(dumpIndividualsButton, SIGNAL (clicked()), this, SLOT(writeIndividualsData()));
 
     //ARTS - Advanced
@@ -2066,6 +2071,7 @@ void MainWindow::runForNSimulation(int iterations)
 
 
     if (autoWriteLogCheckbox->isChecked()) writeRunData();
+    if (autoWriteLogIndividualsCheckbox->isChecked()) writeIndividualsData();
 
     if (iterations == 0) // do 'finished' popups only if no iteration count was passed, i.e. NOT if command line run
     {
@@ -2216,8 +2222,8 @@ void MainWindow::startBatchSimulation()
             i--;
         }
 
-        if (autoWriteLogCheckbox->isChecked())writeRunData();
-
+        if (autoWriteLogCheckbox->isChecked()) writeRunData();
+        if (autoWriteLogIndividualsCheckbox->isChecked()) writeIndividualsData();
         batchRuns++;
 
         if (!stopFlag && batchRuns < batchTargetRuns)
@@ -3677,6 +3683,7 @@ void MainWindow::saveSimulation(QString filename)
             out << environmentInterpolate;
             out << fitnessLoggingToFile;
             out << autoWriteLogCheckbox->isChecked();
+            out << autoWriteIndividaulsLogCheckbox->isChecked();
             out << savePopulationCount->isChecked();
             out << saveMeanFitness->isChecked();
             out << saveVisSysOneAsColour->isChecked();
@@ -4000,6 +4007,8 @@ void MainWindow::loadSimulation(QString filename)
     bool inBool;
     in >> inBool;
     autoWriteLogCheckbox->setChecked(inBool);
+    in >> inBool;
+    autoWriteIndividualsLogCheckbox->setChecked(inBool);
     in >> inBool;
     savePopulationCount->setChecked(inBool);
     in >> inBool;
@@ -4522,6 +4531,9 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
             if (settingsFileIn.name() == "gridX")
             {
                 simulationManager->simulationSettings->gridX = settingsFileIn.readElementText().toInt();
+            }
+            if (settingsFileIn.name() == "gridY")
+            {
                 simulationManager->simulationSettings->gridY = settingsFileIn.readElementText().toInt();
             }
             if (settingsFileIn.name() == "settleTolerance")
@@ -4647,6 +4659,8 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
             //Only GUI options
             if (settingsFileIn.name() == "autowrite")
                 autoWriteLogCheckbox->setChecked(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name() == "autowriteIndividuals")
+                autoWriteLogIndividualsCheckbox->setChecked(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name() == "savePopulationCount")
                 savePopulationCount->setChecked(intToBool(settingsFileIn.readElementText().toInt()));
             if (settingsFileIn.name() == "saveMeanFitness")
@@ -4991,6 +5005,10 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("autowrite");
     settingsFileOut.writeCharacters(QString("%1").arg(autoWriteLogCheckbox->isChecked()));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("autowriteIndividuals");
+    settingsFileOut.writeCharacters(QString("%1").arg(autoWriteLogIndividualsCheckbox->isChecked()));
     settingsFileOut.writeEndElement();
 
     settingsFileOut.writeStartElement("savePopulationCount");
