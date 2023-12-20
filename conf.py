@@ -2,8 +2,7 @@
 #
 # Configuration file for the Sphinx documentation builder.
 #
-# This file is set up to allow the sphinx-multiproject to build the docs for envirogen and revosim at the same time
-
+# This file is set up to allow the sphinx-multiproject to build the docs for envirogen and revosim from a single repository
 extensions = [
    "multiproject",
 ]

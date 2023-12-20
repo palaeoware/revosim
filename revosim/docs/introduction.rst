@@ -22,7 +22,7 @@ In brief, controls for the simulation are found on the toolbar at the top of the
 :Pause: Pause a simulation.
 :Stop: Cancel a simulation.
 :Reset: Reset the simulation and reseed with a random digital organism in the central pixel.
-:Reseed: Launch a dialogue to allow the simulation to be reseeded with a known genome, with two individuals that share a (random or user defined) genome, or with a large number of organisms with fixed genome with known properties (see :ref:`interactions`).
+:Reseed: Launch a dialogue to allow the simulation to be reseeded with a known genome, with two individuals that share a (random or user defined) genome, or with a large number of organisms with fixed genome with known properties (see :ref:`settingsinteractions`).
 :Genome: Launch Genome Comparison Dock which allows genomes to be inspected and compared.
 :Settings: Launch Settings Dock which allows variables to be defined.
 :Logging: Output options are included in a separate dock, launched by clicking this button.
