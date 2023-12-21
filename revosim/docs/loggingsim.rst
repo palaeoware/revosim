@@ -78,8 +78,8 @@ Species keywords
 :\*speciesID\*: REvoSim's ID for a species, which is useful for correlating statistics with the tree output by the software.
 :\*speciesMeanEnvironmentalFitness\*: The mean fitness of the species from the environmental fitness algorithm.
 :\*speciesMeanFitness\*: The mean fitness of the species from the environmental fitness allgorithm plus any interactions that impact on fitness.
-:\*speciesMeanRunningEnergy\*: This is the mean total lifetime energy of the organisms within a species (see :ref:`interactions`).
-:\*speciesMeanRunningStolenEnergy\*: This is the mean total lifetime stolen energy of the organisms within a species (see :ref:`interactions`).
+:\*speciesMeanRunningEnergy\*: This is the mean total lifetime energy of the organisms within a species (see :ref:`settingsinteractions`).
+:\*speciesMeanRunningStolenEnergy\*: This is the mean total lifetime stolen energy of the organisms within a species (see :ref:`settingsinteractions`).
 :\*speciesModalGenome\*: This outputs the modal genome of the species.
 :\*speciesParent\*: This outputs the REvoSim species ID for the parent species.
 :\*speciesSize\*: The number of individuals within the species.
