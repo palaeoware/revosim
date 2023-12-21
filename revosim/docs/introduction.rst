@@ -42,8 +42,8 @@ Simulation setup
 Variables can be defined within the settings dock on the right. Full descriptions of these and their implications can be found in the REvoSim paper. Clicking settings on the toolbar at the top of a window toggles the visibility of this dock. At the bottom of the dock are three tabs, each of which has variables associated with different aspects of the simulation.
 
 :Organism tab: This includes the variables which dictate the behaviour of the digital organisms in a REvoSim run. This includes chance of mutation, starting age (i.e. length of life), breed threshold and cost, mode of breeding, and breed settings. More information: :ref:`organisms`
-:Simulation tab: This includes the settings for the environment and associated files, simulation size, fitness target (i.e. the nature of the fitness lanscape), energy input, settle tolerance, and species tracking. More information: :ref:`simulations`
-:Interactions tab: Here you can find the settings for interactions between individuals, and also settings for the predator system in REvoSim.  More information: :ref:`interactions`
+:Simulation tab: This includes the settings for the environment and associated files, simulation size, fitness target (i.e. the nature of the fitness landscape), energy input, settle tolerance, and species tracking. More information: :ref:`simulations`
+:Interactions tab: Here you can find the settings for interactions between individuals, and also settings for the predator system in REvoSim.  More information: :ref:`settingsinteractions`
 
 Output setup
 ------------
