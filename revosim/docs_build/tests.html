@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>13. Tests &mdash; REvoSim 3.0.0 documentation</title>
+  <title>13. Tests &mdash; REvoSim 3.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0.0
+                3.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -88,23 +88,23 @@
            <div itemprop="articleBody">
              
   <section id="tests">
-<h1><span class="section-number">13. </span>Tests<a class="headerlink" href="#tests" title="Permalink to this headline"></a></h1>
+<h1><span class="section-number">13. </span>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h1>
 <p>REvoSim has a test mode which is toggled by hitting the Tests button on the menu bar. This runs a series of software tests and then displays the output within the REvoSim main window (the Test Log). The GUI of the software when in test mode is shown below.</p>
 <figure class="align-center" id="id1">
 <img alt="_images/windowLayoutTests.png" src="_images/windowLayoutTests.png" />
 <figcaption>
-<p><span class="caption-text">REvoSim main window in test mode.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-text">REvoSim main window in test mode.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <section id="revosim-test-log">
-<h2><span class="section-number">13.1. </span>REvoSim test log<a class="headerlink" href="#revosim-test-log" title="Permalink to this headline"></a></h2>
-<p>Our chosen approach allows all users to visually inpsect the outputs of the tests if they so wish, even if they are not able to build the software themselves. Tests that fail will appear in bright green font with a test failed message at the front. If you are using the software for your research, please do feel free to inspect the test outputs and contact the authors with any queries.</p>
-<p>The expectations of each test, as well as the results, are written to a test log. Outputs are generally either numbers, or text strings which should be identical. The latter are output as MD5 checksums for space and clarity (if the text is the same, the checksum will be too). Each test generally comprises multiple components testing the different elements of a logically connected element of the software. An annotated exmaple of one of these is shown below.</p>
+<h2><span class="section-number">13.1. </span>REvoSim test log<a class="headerlink" href="#revosim-test-log" title="Permalink to this headline">¶</a></h2>
+<p>Our chosen approach allows all users to visually inspect the outputs of the tests if they so wish, even if they are not able to build the software themselves. Tests that fail will appear in bright green font with a test failed message at the front. If you are using the software for your research, please do feel free to inspect the test outputs and contact the authors with any queries.</p>
+<p>The expectations of each test, as well as the results, are written to a test log. Outputs are generally either numbers, or text strings which should be identical. The latter are output as MD5 checksums for space and clarity (if the text is the same, the checksum will be too). Each test generally comprises multiple components testing the different elements of a logically connected element of the software. An annotated example of one of these is shown below.</p>
 <section id="test-zero-annotated-output">
-<h3><span class="section-number">13.1.1. </span>Test zero - Annotated output<a class="headerlink" href="#test-zero-annotated-output" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">13.1.1. </span>Test zero - Annotated output<a class="headerlink" href="#test-zero-annotated-output" title="Permalink to this headline">¶</a></h3>
 <p>As an example of one of REvoSim’s test, we use here test zero - which ensures REvoSim’s random numbers are working as expected. The output is as follows:</p>
 <blockquote>
-<div><p>Running test on random number functions (these run off QT’s QRandomGenerator if you want to read about the sytsem).</p>
+<div><p>Running test on random number functions (these run off QT’s QRandomGenerator if you want to read about the system).</p>
 </div></blockquote>
 <p>Many tests will provide useful information regarding the functioning of the underlying elements – in this case, REvoSim’s random numbers rely upon the <a class="reference external" href="https://doc.qt.io/qt-5/qrandomgenerator.html">QRandomGenerator class</a> of the Qt framework.</p>
 <blockquote>
@@ -127,12 +127,12 @@
 </section>
 </section>
 <section id="failed-tests">
-<h2><span class="section-number">13.2. </span>Failed Tests<a class="headerlink" href="#failed-tests" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">13.2. </span>Failed Tests<a class="headerlink" href="#failed-tests" title="Permalink to this headline">¶</a></h2>
 <p>If a test fails, the outputs appear in green with a failure message at the top, and message at the bottom highlighting explaining what has failed.</p>
 <figure class="align-center" id="id2">
 <img alt="_images/test_failed.png" src="_images/test_failed.png" />
 <figcaption>
-<p><span class="caption-text">A failed REvoSim test. Don’t panic, it’s in the development branch.</span><a class="headerlink" href="#id2" title="Permalink to this image"></a></p>
+<p><span class="caption-text">A failed REvoSim test. Don’t panic, it’s in the development branch.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 </section>

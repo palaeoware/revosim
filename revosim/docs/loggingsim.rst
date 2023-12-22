@@ -8,7 +8,7 @@ In addition to the Run end log and image logging (see :ref:`outputs`), plus the 
 Buttons
 -------
 
-:Write to file: When this option is checked a log file is written during the course of every run. See :ref:`logging` for more details of REvoSim logs.
+:Write to file: When this option is checked a log file is written during the course of every run.
 
 :Instructions: This button creates a pop up window with simplified instructions for writing the running log. 
 
@@ -77,7 +77,7 @@ Species keywords
 :\*speciesGenomeDiversity\*: This is the number of distinct genomes included within a species.
 :\*speciesID\*: REvoSim's ID for a species, which is useful for correlating statistics with the tree output by the software.
 :\*speciesMeanEnvironmentalFitness\*: The mean fitness of the species from the environmental fitness algorithm.
-:\*speciesMeanFitness\*: The mean fitness of the species from the environmental fitness allgorithm plus any interactions that impact on fitness.
+:\*speciesMeanFitness\*: The mean fitness of the species from the environmental fitness algorithm plus any interactions that impact on fitness.
 :\*speciesMeanRunningEnergy\*: This is the mean total lifetime energy of the organisms within a species (see :ref:`settingsinteractions`).
 :\*speciesMeanRunningStolenEnergy\*: This is the mean total lifetime stolen energy of the organisms within a species (see :ref:`settingsinteractions`).
 :\*speciesModalGenome\*: This outputs the modal genome of the species.
@@ -114,8 +114,8 @@ The v2.0.0 log is structured as follows:
     - Species trophic level (the mean trophic level of individuals in the species)
     - Species genome diversity
   
-:Log data: The log then begins. Iterations are separated by new line breaks. Every iteration has a single [I] line, one [P] line, and then an [S] line for every species above the minimum species size. We note that it does not exlude species without descendents because it is written during the simulation, appending to the file for speed. To filter out those species without descendents would introduce the need to store and then regularly filter the log data, and thus would come with a notable computational overhead.
+:Log data: The log then begins. Iterations are separated by new line breaks. Every iteration has a single [I] line, one [P] line, and then an [S] line for every species above the minimum species size. We note that it does not exclude species without descendents because it is written during the simulation, appending to the file for speed. To filter out those species without descendents would introduce the need to store and then regularly filter the log data, and thus would come with a notable computational overhead.
 
-:CSV format: If the 'Log file formatted as CSV' option is checked in output settings, the log file has a different and simpler format using the 'comma separated value' system. This may be easier to parse in some software (e.g. spreadsheets). A single header row is generated at the start of the file, providing titles for columms. Subsequent rows are generated for each [S] record described above, but these also include columns with the [I] and [P] records in each row. All fields described above are included in the output.
+:CSV format: If the 'Log file formatted as CSV' option is checked in output settings, the log file has a different and simpler format using the 'comma separated value' system. This may be easier to parse in some software (e.g. spreadsheets). A single header row is generated at the start of the file, providing titles for columns. Subsequent rows are generated for each [S] record described above, but these also include columns with the [I] and [P] records in each row. All fields described above are included in the output.
 
 This logging system is designed to allow as many potential elements of a RevoSim run to be quantified as possible. Should any further measures or statistics be required, please file a `feature request <https://github.com/palaeoware/revosim/issues>`_.

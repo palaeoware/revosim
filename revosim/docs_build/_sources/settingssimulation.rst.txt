@@ -71,7 +71,7 @@ To create a new linkage, use the push button labelled "Link a variable to an ima
 
 :Variable: This is the variable to which you would like to control using an image stack.
 :Load Images: Clicking this image loads a dialogue allowing you to load an image stack that controls the variable defined above, as described in the introduction to linkages.
-:Mode: This radio button defines the image mode for the stack controlling the variable. The modes are the same as used for the environment - see :ref:`Environment settings`.
+:Mode: This radio button defines the image mode for the stack controlling the variable. The modes are the same as used for the environment - see `Environment settings`_.
 :Interpolate images: As with the environment settings, this defines whether REvoSim interpolates between images.
 :Refresh rate: The update rate of the image stacks controlling variables does not need to be the same as e.g. the environmental refresh rate: this spin box defines how often (in iterations) the next image in the stack is loaded.
 

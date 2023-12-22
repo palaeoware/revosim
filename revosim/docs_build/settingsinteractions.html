@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>7. Configuring Interactions &mdash; REvoSim 3.0.0 documentation</title>
+  <title>7. Configuring Interactions &mdash; REvoSim 3.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0.0
+                3.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -86,13 +86,13 @@
            <div itemprop="articleBody">
              
   <section id="configuring-interactions">
-<span id="settingsinteractions"></span><h1><span class="section-number">7. </span>Configuring Interactions<a class="headerlink" href="#configuring-interactions" title="Permalink to this headline"></a></h1>
+<span id="settingsinteractions"></span><h1><span class="section-number">7. </span>Configuring Interactions<a class="headerlink" href="#configuring-interactions" title="Permalink to this headline">¶</a></h1>
 <section id="interaction-settings">
-<h2><span class="section-number">7.1. </span>Interaction settings<a class="headerlink" href="#interaction-settings" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">7.1. </span>Interaction settings<a class="headerlink" href="#interaction-settings" title="Permalink to this headline">¶</a></h2>
 <p>Interactions were added to REvoSim for the release of v3.0.0. These are tools that allow individuals (or segments of individuals’ genomes) in REvoSim simulations to interact with other individuals in the same cell. This occurs when offspring are settling, or every iteration, as described below. Interactions can increase or decrease the fitness of an individual, or its energy. In general, interaction systems compare the genomes (or parts thereof) of two individuals - individual 1, to which any fitness modification is applied, and individual 2. When interactions are applied, individual 1 typically interacts with multiple other individuals (i.e. the program can loop through a random selection of individual 2s), and this process is repeated for every individual in a cell (except in instances where interactions are only applied on settling, i.e. fitness interactions when recalculate fitness is not selected).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Genome blocks</dt>
-<dd class="field-odd"><p>The genomes of both individuals are split into two-bit blocks: each two bits can be a number from 0-3 (i.e. 00,01,10 or 11). For every two bit block, the numbers in each genome are used to look up a value from the a-priori interaction table (this is a 4x4 grid of user-set interaction numbers that can be modified by clicking <em>Edit the interacions grid</em>). The values are summed across all two bit blocks of the genome. For fitness interactions, this total is added to the fitness of organism 1. See below for energy interactions.</p>
+<dd class="field-odd"><p>The genomes of both individuals are split into two-bit blocks: each two bits can be a number from 0-3 (i.e. 00,01,10 or 11). For every two bit block, the numbers in each genome are used to look up a value from the a-priori interaction table (this is a 4x4 grid of user-set interaction numbers that can be modified by clicking <em>Edit the interactions grid</em>). The values are summed across all two bit blocks of the genome. For fitness interactions, this total is added to the fitness of organism 1. See below for energy interactions.</p>
 </dd>
 <dt class="field-even">Genome XOR</dt>
 <dd class="field-even"><p>Here a bit shift is applied to the genome of individual 1, which is then compared to individual 2. More specifically, the bits in the genome of individual 1 are shifted one to the right, and the results of an exclusive or between the resulting binary string and the genome of individual two are subject to a bit count, providing a number. The process is then repeated with a bit shift in the other direction for individual 1, to provide a second number. For fitness interactions, this number is subtracted from the first, and the resulting number is used to modify the fitness of individual 1. See below for energy interactions.</p>
@@ -124,7 +124,7 @@
 </dl>
 </section>
 <section id="pathogen-settings">
-<h2><span class="section-number">7.2. </span>Pathogen settings<a class="headerlink" href="#pathogen-settings" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">7.2. </span>Pathogen settings<a class="headerlink" href="#pathogen-settings" title="Permalink to this headline">¶</a></h2>
 <p>REvoSim v3.0.0 also includes a newly added pathogens system. Given the abstract nature of the software, these could equally be considered equivalent to predators: in a basic sense they act as antagonists. At present there are two options, drift and evolve:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Drift</dt>

@@ -24,4 +24,4 @@ The first ten genomes from the Genome Comparison Dock are pulled through to the 
 .. figure:: _static/reseedDialog.png
     :align: center
 
-    Reseed dialog showing first ten genomes as selected in the Genome Comparison Dock (created with v2.0.0).
+    Reseed dialogue showing first ten genomes as selected in the Genome Comparison Dock (created with v2.0.0).

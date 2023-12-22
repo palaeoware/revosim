@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>12. Command Line Options &mdash; REvoSim 3.0.0 documentation</title>
+  <title>12. Command Line Options &mdash; REvoSim 3.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0.0
+                3.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -87,7 +87,7 @@
            <div itemprop="articleBody">
              
   <section id="command-line-options">
-<span id="commandline"></span><h1><span class="section-number">12. </span>Command Line Options<a class="headerlink" href="#command-line-options" title="Permalink to this headline"></a></h1>
+<span id="commandline"></span><h1><span class="section-number">12. </span>Command Line Options<a class="headerlink" href="#command-line-options" title="Permalink to this headline">¶</a></h1>
 <p>REvoSim provides command line options to enable full control of simulations from command line or batch file environments. Every parameter configurable in the GUI can be set from the command line, and the program can be instructed to execute a simulation and then exit.</p>
 <p>This document does not provide instructions on how to write a batch file, or determine correct paths (which will differ between operating systems).</p>
 <p>Command line switches are documented below, and examples are given of their usage. Any combination of switches in any order is allowed. Note that on some systems, path names with spaces may cause problems: these are best avoided, but alternatively paths can be encased in double quotes if they contain a space.</p>
@@ -102,7 +102,7 @@
 </div>
 <p>The easiest way of modifying multiple variables for runs - and of setting custom log text, which was added in REvoSim v3.0.0 - is to use the software to output a settings files, and then to load this from the command line (--settings).</p>
 <section id="running-via-ssh">
-<h2><span class="section-number">12.1. </span>Running via SSH<a class="headerlink" href="#running-via-ssh" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">12.1. </span>Running via SSH<a class="headerlink" href="#running-via-ssh" title="Permalink to this headline">¶</a></h2>
 <p>In many instances it may be beneficial to run REvoSim on a remote machine. With remote desktopping solutions that provide a GUI, this can be achieved very easily following the normal operating procedures. However, due to the development of REvoSim, launching the software via the command line launches the GUI. This means that it is not possible to launch the command line version via SSH unless X-forwarding or another such solution is implemented. However, if no interaction with the GUI is required, there are a number of solutions that can bypass this requirement. The simplest, that will work on the majority of systems with Qt installed, is to include the flag -platform offscreen:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">/revosim \--auto 1000 -platform offscreen</span>
 </pre></div>
@@ -114,7 +114,7 @@
 <p>In any case, once a run is complete, you can then use e.g. SFTP to collect output files as required.</p>
 </section>
 <section id="single-letter-switches">
-<h2><span class="section-number">12.2. </span>Single-letter switches<a class="headerlink" href="#single-letter-switches" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">12.2. </span>Single-letter switches<a class="headerlink" href="#single-letter-switches" title="Permalink to this headline">¶</a></h2>
 <p>These can be used as either in single letter form (-a) or long form (--startage - note the double -). All require a value, which can be separated from the switch using a space or an equals - or in single character mode, without a separator at all (this doesn’t work in – long form, where a separator IS required). Where no parameter is noted in square brackets this is a boolean option, which is either On or Off (you can also use 1/0, true/false, yes/no, y/n - which are not case sensitive). e.g.</p>
 <ul class="simple">
 <li><p>-a30</p></li>
@@ -287,7 +287,7 @@
 </ul>
 </section>
 <section id="long-option-only-switches">
-<h2><span class="section-number">12.3. </span>Long option only switches<a class="headerlink" href="#long-option-only-switches" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">12.3. </span>Long option only switches<a class="headerlink" href="#long-option-only-switches" title="Permalink to this headline">¶</a></h2>
 <p>We ran out of letters! These require the long format, with --. Otherwise they work as above.</p>
 <ul>
 <li><dl class="option-list">

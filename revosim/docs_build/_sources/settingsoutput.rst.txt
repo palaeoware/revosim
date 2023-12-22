@@ -12,7 +12,7 @@ Options in the Output settings tab are as follows:
 
 :Output save path: This is the folder into which all outputs from REvoSim (logs, images, any other files) are saved. For consistency these are all placed within a newly created folder called *REvoSim_output*. Text files are placed within the root of this folder, and images are placed in their own folder within *REvoSim_output*.
 
-:Refresh/polling rate: This is the frequency (in iterations) that the simulation is polled. Polling includes running the full clustering analysis intergral to the thorough species-identification algorithm (see RevoSim 2019 paper), writing the in-simulation log, writing any requested image files to disk, and updating the GUI (unless disabled). Because the species identification system has a significant computational overhead, if species tracking is on, frequent polling will significantly slow the simulation.
+:Refresh/polling rate: This is the frequency (in iterations) that the simulation is polled. Polling includes running the full clustering analysis integral to the thorough species-identification algorithm (see RevoSim 2019 paper), writing the in-simulation log, writing any requested image files to disk, and updating the GUI (unless disabled). Because the species identification system has a significant computational overhead, if species tracking is on, frequent polling will significantly slow the simulation.
 
 :Image logging: Any of the simulation visualisations during a run can be saved as an image (png stacks labelled by iteration number). The tick boxes in this part of the tab dictate which images are saved. See :ref:`populationscene` for full descriptions of each option.
 
@@ -50,7 +50,7 @@ REvoSim provides a detailed log file at the end of runs - or on request during a
     -- Species current modal genome
     -- Species current mean trophic level
 
-    **Note that this excludes species with less individuals than minimum species size, but is not able to exlude species without descendants, which can only be achieved with the end-run log.**
+    **Note that this excludes species with less individuals than minimum species size, but is not able to exclude species without descendants, which can only be achieved with the end-run log.**
 ..
 
 :Log - detailed species data: The rest of the log file comprises detailed data for each species in csv format, in the same order they appear in the tree. For each species, for every polling iteration, REvoSim provides the following data:
@@ -97,7 +97,7 @@ REvoSim provides the following options for the run end log:
 
 :Write data for current run: This option outputs the detailed log for the currently running simulation at the point at which the button is pressed.
 
-:Exclude species without descendents: Under most settings a significant number of small, short-lived species may appear regularly within a REvoSim run. Given the significant amount of data REvoSim can generate, and the fact that these short lived species will be unimportant for many studies (potentially masking important obvservations), this option rationalises REvoSim detailed logs by only including species with descendents in the end run log and tree.
+:Exclude species without descendents: Under most settings a significant number of small, short-lived species may appear regularly within a REvoSim run. Given the significant amount of data REvoSim can generate, and the fact that these short lived species will be unimportant for many studies (potentially masking important observations), this option rationalises REvoSim detailed logs by only including species with descendents in the end run log and tree.
 
 :Minimum species size: It is also possible to filter the species data in the log files so that only species above a certain number of individuals are included in the logs. This spin box dictates what that minimum cut-off is.
 

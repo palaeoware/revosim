@@ -11,16 +11,16 @@ REvoSim has a test mode which is toggled by hitting the Tests button on the menu
 REvoSim test log
 ----------------
 
-Our chosen approach allows all users to visually inpsect the outputs of the tests if they so wish, even if they are not able to build the software themselves. Tests that fail will appear in bright green font with a test failed message at the front. If you are using the software for your research, please do feel free to inspect the test outputs and contact the authors with any queries. 
+Our chosen approach allows all users to visually inspect the outputs of the tests if they so wish, even if they are not able to build the software themselves. Tests that fail will appear in bright green font with a test failed message at the front. If you are using the software for your research, please do feel free to inspect the test outputs and contact the authors with any queries. 
 
-The expectations of each test, as well as the results, are written to a test log. Outputs are generally either numbers, or text strings which should be identical. The latter are output as MD5 checksums for space and clarity (if the text is the same, the checksum will be too). Each test generally comprises multiple components testing the different elements of a logically connected element of the software. An annotated exmaple of one of these is shown below. 
+The expectations of each test, as well as the results, are written to a test log. Outputs are generally either numbers, or text strings which should be identical. The latter are output as MD5 checksums for space and clarity (if the text is the same, the checksum will be too). Each test generally comprises multiple components testing the different elements of a logically connected element of the software. An annotated example of one of these is shown below. 
 
 Test zero - Annotated output
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 As an example of one of REvoSim's test, we use here test zero - which ensures REvoSim's random numbers are working as expected. The output is as follows:
 
-    Running test on random number functions (these run off QT's QRandomGenerator if you want to read about the sytsem).
+    Running test on random number functions (these run off QT's QRandomGenerator if you want to read about the system).
 
 Many tests will provide useful information regarding the functioning of the underlying elements -- in this case, REvoSim's random numbers rely upon the `QRandomGenerator class <https://doc.qt.io/qt-5/qrandomgenerator.html>`_ of the Qt framework.
 

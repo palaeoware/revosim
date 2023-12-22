@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>6. Setting up the Simulation &mdash; REvoSim 3.0.0 documentation</title>
+  <title>6. Setting up the Simulation &mdash; REvoSim 3.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0.0
+                3.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -93,10 +93,10 @@
            <div itemprop="articleBody">
              
   <section id="setting-up-the-simulation">
-<span id="simulations"></span><h1><span class="section-number">6. </span>Setting up the Simulation<a class="headerlink" href="#setting-up-the-simulation" title="Permalink to this headline"></a></h1>
+<span id="simulations"></span><h1><span class="section-number">6. </span>Setting up the Simulation<a class="headerlink" href="#setting-up-the-simulation" title="Permalink to this headline">¶</a></h1>
 <p>REvoSim provides the user with control of many elements of the simulation. These are introduced herein, and can be modified within the the Simulation tab of the Settings dock, or from the command line.</p>
 <section id="environment-settings">
-<h2><span class="section-number">6.1. </span>Environment settings<a class="headerlink" href="#environment-settings" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.1. </span>Environment settings<a class="headerlink" href="#environment-settings" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Change environmental files</dt>
 <dd class="field-odd"><p>REvoSim launches with a default environment comprising three stripes in different shades of blue. This can be changed by clicking on this button, which will launch a file explorer. Using this allows a single, or multiple environment images (any standard image format) to be loaded. Environment image files are currently limited to 100 x 100 pixels in size.</p>
@@ -116,7 +116,7 @@
 </dl>
 </section>
 <section id="simulation-size">
-<h2><span class="section-number">6.2. </span>Simulation size<a class="headerlink" href="#simulation-size" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.2. </span>Simulation size<a class="headerlink" href="#simulation-size" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Grid X</dt>
 <dd class="field-odd"><p>This dictates the size of the simulation grid in the X direction. If this is smaller than the environmental image it selects the left side of the image.</p>
@@ -130,7 +130,7 @@
 </dl>
 </section>
 <section id="simulation-settings">
-<h2><span class="section-number">6.3. </span>Simulation settings<a class="headerlink" href="#simulation-settings" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.3. </span>Simulation settings<a class="headerlink" href="#simulation-settings" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Fitness target</dt>
 <dd class="field-odd"><p>This is the target value used by the fitness algorithm as described in the REvoSim paper. In brief, it is the value that the hamming distance between the gemome words in the fitness system and the environmental masks (numbers dictated by the colour) is optimised towards. Changing it modifies the fitness landscape: a value of 48 - with one genome word - has the greatest number of genomes with peak fitness, and either side of this value, fewer genomes display peak fitness. This is shown in the graph below, where black points represent the number of genomes with peak fitness for all fitness targets. The red star is the default value for one word, 66; in this particular set of runs, there there are ~3000 genomes capable of peak fitness with the default target, but this can vary given differing masks. Note that there are some values for which no organisms will be capable of survival: if this occurs, REvoSim will provide a warning. Also note that the graph below can be created and distribution of fitnesses quantified using the count peaks option in the commands menu of REvoSim. When changing the number of genome words used by the fitness system from the organism tab, REvoSim will provide the option of updating the fitness target to a commensurate value for the new number of words. If you would like to further discuss the nature of fitness landscapes within REvoSim please contact the authors, as this is something we have thought about a lot.</p>
@@ -155,7 +155,7 @@
 </dl>
 </section>
 <section id="phylogeny-settings">
-<h2><span class="section-number">6.4. </span>Phylogeny settings<a class="headerlink" href="#phylogeny-settings" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.4. </span>Phylogeny settings<a class="headerlink" href="#phylogeny-settings" title="Permalink to this headline">¶</a></h2>
 <p>These radio buttons dictate the mode which by REvoSim tracks phylogeny.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Off</dt>
@@ -174,11 +174,11 @@
 <p><em>Note</em>: Moving between off and any form of tracking has a significant performance cost: there is little computational overhead moving between the different tracking options. Moving from basic to phylogeny to metrics does, however, come with an increasing memory overhead, as the trees and metrics are by necessity stored in RAM during a run, and written when the run completes. This could have implications for runs with a significant number of organisms and large numbers of iterations. See <a class="reference internal" href="loggingsim.html#logging"><span class="std std-ref">Running Log</span></a> and <a class="reference internal" href="settingsoutput.html#outputs"><span class="std std-ref">Configuring Outputs and Run End Log</span></a> for more details REvoSim outputs.</p>
 </section>
 <section id="linkages">
-<h2><span class="section-number">6.5. </span>Linkages<a class="headerlink" href="#linkages" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">6.5. </span>Linkages<a class="headerlink" href="#linkages" title="Permalink to this headline">¶</a></h2>
 <p>This is a capability introduced in v3.0.0 that links REvoSim variables to image maps (or each other, a functionality that has yet to be added, but is easily implemented on request). As default, REvoSim offers limited linked variables, however the system is designed so more can be added with ease. Please contact the authors if you would like one to be added - we will happily do so.</p>
 <p>As currently coded, the image stack selected is used to spatially control a variable: specifically, for integer variables, the value of the R channel is multiplied by the value of the selected variable as defined in the settings docker. So, for example, if energy is set to 5 overall, for a pixel with an R value of 0 in the image map the energy will be set to 0 for that iteration. If the R value is set to 255, the energy level for that pixel will be 1275 (5x225). <em>Note that this means that when using a linked integer variable it is likely that the default values will need to be changed.</em> For boolean variables, an R channel value of zero is off, all other zero values (1-255) is on.</p>
 <section id="create-new-linkage">
-<h3><span class="section-number">6.5.1. </span>Create new linkage<a class="headerlink" href="#create-new-linkage" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.5.1. </span>Create new linkage<a class="headerlink" href="#create-new-linkage" title="Permalink to this headline">¶</a></h3>
 <p>To create a new linkage, use the push button labelled “Link a variable to an image mask”. This creates a pop up window with the following options:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Variable</dt>
@@ -188,7 +188,7 @@
 <dd class="field-even"><p>Clicking this image loads a dialogue allowing you to load an image stack that controls the variable defined above, as described in the introduction to linkages.</p>
 </dd>
 <dt class="field-odd">Mode</dt>
-<dd class="field-odd"><p>This radio button defines the image mode for the stack controlling the variable. The modes are the same as used for the environment - see <a class="reference internal" href="#environment-settings"><span class="std std-ref">Environment settings</span></a>.</p>
+<dd class="field-odd"><p>This radio button defines the image mode for the stack controlling the variable. The modes are the same as used for the environment - see <a class="reference internal" href="#environment-settings">Environment settings</a>.</p>
 </dd>
 <dt class="field-even">Interpolate images</dt>
 <dd class="field-even"><p>As with the environment settings, this defines whether REvoSim interpolates between images.</p>
@@ -199,7 +199,7 @@
 </dl>
 </section>
 <section id="edit-linkage">
-<h3><span class="section-number">6.5.2. </span>Edit linkage<a class="headerlink" href="#edit-linkage" title="Permalink to this headline"></a></h3>
+<h3><span class="section-number">6.5.2. </span>Edit linkage<a class="headerlink" href="#edit-linkage" title="Permalink to this headline">¶</a></h3>
 <p>Once added, a linkage appears as a list item in the <em>Current linkages</em> text box on the bottom right of the simulation docker. To edit one double click on the linkage. Doing so will load a pre-filled dialogue with the same options as the add new linkage dialogue outlined above, all of which can be changed as required. The linkage can also be deleted using this dialogue box.</p>
 </section>
 </section>

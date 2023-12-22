@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>4.4. Environment Scene &mdash; REvoSim 3.0.0 documentation</title>
+  <title>4.4. Environment Scene &mdash; REvoSim 3.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0.0
+                3.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -90,13 +90,13 @@
            <div itemprop="articleBody">
              
   <section id="environment-scene">
-<span id="environment"></span><h1><span class="section-number">4.4. </span>Environment Scene<a class="headerlink" href="#environment-scene" title="Permalink to this headline"></a></h1>
+<span id="environment"></span><h1><span class="section-number">4.4. </span>Environment Scene<a class="headerlink" href="#environment-scene" title="Permalink to this headline">¶</a></h1>
 <p>Every grid-square of the Population Scene possess an ‘environment’, which consists of three integer parameters in the range 0-255. These are visualized as colour, the three parameters representing red, green and blue values (further details of how this is achieved are available in the REvoSim paper). The environment for the entire grid can thus conveniently be visualised as a raster (bitmapped) 24-bit colour image in the Environmental Scene. Environments can be static (specified by a single raster image), or dynamic (specified by a sequence of raster images).</p>
 <p>The default environmental scene consists of a static image with three colour zones. This image can be changed from the Simulation Settings panel.</p>
 <figure class="align-center" id="id1">
 <img alt="_images/populationSceneDefault.png" src="_images/populationSceneDefault.png" />
 <figcaption>
-<p><span class="caption-text">Default Environmental Scene showing three blocks of colour in vertical strips.</span><a class="headerlink" href="#id1" title="Permalink to this image"></a></p>
+<p><span class="caption-text">Default Environmental Scene showing three blocks of colour in vertical strips.</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
 </figcaption>
 </figure>
 <p>Dynamic environments can be enabled via the Simulation Settings panel. There are currently three modes of transformation between image sequences, these are:</p>

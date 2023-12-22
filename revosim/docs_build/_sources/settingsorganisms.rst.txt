@@ -6,14 +6,14 @@
 Configuring your Organisms
 ==========================
 
-At the core of the REvoSim simulation are the digital organisms. A number of properties of these organisms can be defined in the suimulation, in the Organism tab of the Settings dock. These settings are as follows:
+At the core of the REvoSim simulation are the digital organisms. A number of properties of these organisms can be defined in the simulation, in the Organism tab of the Settings dock. These settings are as follows:
 
 Organism settings
 -----------------
 
 :Chance of mutation: This dictates the chance of a mutation when an organism breeds (if it is set to *n*, there is a *n*/256 chance of mutation). The default is 10, which thus equates to a 10/256 chance that a randomly selected bit in the words of the genome to which this is applied (see below) is flipped (from 0 to 1 or 1 to 0).
 
-:Variable mutation: This uses the number of ones in a user-defined section of the genome to dictate the probability of a mutation ocurring. This uses a cumulative standard normal distribution from -3 to 3, created using the math.h complementary error function and then scaled between zero and the maximum random number. This allows the probability of mutation occurring to be controlled by generating a random number, and applying a mutation with 99.865% probability if an individual has no ones in a 32-bit section of controlling genome, to 0.24579% with 31 ones. If you are using this you will probably want the mutation log enabled (Tools |rarr| Custom Logging |rarr| Variable mutation log). This outputs a histogram for the grid showing the number of ones in the non-coding genome (as well as providing an overview of mutation probabilities).
+:Variable mutation: This uses the number of ones in a user-defined section of the genome to dictate the probability of a mutation occurring. This uses a cumulative standard normal distribution from -3 to 3, created using the math.h complementary error function and then scaled between zero and the maximum random number. This allows the probability of mutation occurring to be controlled by generating a random number, and applying a mutation with 99.865% probability if an individual has no ones in a 32-bit section of controlling genome, to 0.24579% with 31 ones. If you are using this you will probably want the mutation log enabled (Tools |rarr| Custom Logging |rarr| Variable mutation log). This outputs a histogram for the grid showing the number of ones in the non-coding genome (as well as providing an overview of mutation probabilities).
 
 :Start age: Every iteration each organism loses one from its age counter. This setting dictates the value at which this counter is set when an organism is born. As such, this dictates generation times within the software.
 
@@ -26,7 +26,7 @@ Breed settings
 
 :Maximum difference to breed: In sexual breeding mode, if two organisms attempting to breed have a hamming distance greater than this value when genomes are compared, breeding fails.
 
-:Use max difference to breed: Depending on the nature of a study, maximum difference to breed may not be desired. This tickbox dictates whether it is enforced. If unticked, in sexual modes, breeding failure does not occur on the basis of genomic distance.
+:Use max difference to breed: Depending on the nature of a study, maximum difference to breed may not be desired. This tick box dictates whether it is enforced. If unticked, in sexual modes, breeding failure does not occur on the basis of genomic distance.
 
 :Breed only within species: When this checkbox is ticked, during sexual selections, digital organisms can only breed with other members of the same species. This only occurs if species tracking is turned on.
 
@@ -47,7 +47,7 @@ Settle settings
 
 :Dispersal: This figure dictates the extent to which juveniles disperse on settling. Small numbers equate to significant dispersal, larger numbers increase the likelihood that juveniles settle in the same pixel as their parent. How this is achieved is described in full in the REvoSim paper.
 
-:Nonspatial settling: For some evolutionary phenomena, the impact of space/dispersal may have an unknown impact and not be the element of interest within a simulation, and thus be undesirable. This tickbox allows juveniles to be randomly placed within the simulation (note that with a non-uniform environment, space will still have some impact on the simulation).
+:Nonspatial settling: For some evolutionary phenomena, the impact of space/dispersal may have an unknown impact and not be the element of interest within a simulation, and thus be undesirable. This tick box allows juveniles to be randomly placed within the simulation (note that with a non-uniform environment, space will still have some impact on the simulation).
 
 Genome Words and Systems
 ------------------------
@@ -56,7 +56,7 @@ From REvoSim 3.0.0, genomes are no longer limited to 64-bits in length - rather 
 
 :Genome Size: This dictates the number of genome word for all organisms in the simulation. Its minimum is limited by the words entered in the systems below (i.e. if a system is applied to word number four, you cannot reduce this value below that word). 
 
-The options below this allow systems to be applied to words of the genome. Counts use C++ numbering, thus start from zero, and above nine continue from A-V. When a string is entered, the label will turn green if it can be applied with the current settings. If a string requires that the number of words is increased, this is implemented in the genome size option above. If an option is not possible, the label turns red. Some options, when changed, provide further prompts suggesting changes of relevant settings to achieve a viable confiugration. Options dictate the following:
+The options below this allow systems to be applied to words of the genome. Counts use C++ numbering, thus start from zero, and above nine continue from A-V. When a string is entered, the label will turn green if it can be applied with the current settings. If a string requires that the number of words is increased, this is implemented in the genome size option above. If an option is not possible, the label turns red. Some options, when changed, provide further prompts suggesting changes of relevant settings to achieve a viable configuration. Options dictate the following:
 
 :Fitness: Which words are used in the REvoSim fitness algorithm.
 

@@ -7,7 +7,7 @@ At the bottom of the GUI - below the population and environment views - is an in
 
 :Batch: When RevoSim is running in batch mode, this shows how many runs are completed out of the total number requested.
 :Iteration: The number of iterations that had been completed since the start of the simulation at the last polling interval.
-:Iterations per hour: This provides an indication of the speed at which RevoSim is running, and thus it is realtively easy to calculate  how long any given run will take.
+:Iterations per hour: This provides an indication of the speed at which RevoSim is running, and thus it is relatively easy to calculate  how long any given run will take.
 :Organisms: This is a count of the total number of digital organisms alive at the last polling iteration.
 :Milliseconds per iteration: This is an alternative measure of speed.
 :Mean fitness: This is the mean fitness of all living organisms in the simulation at the last polling iteration.

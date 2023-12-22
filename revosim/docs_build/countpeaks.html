@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>11.1. Count peaks &mdash; REvoSim 3.0.0 documentation</title>
+  <title>11.1. Count peaks &mdash; REvoSim 3.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0.0
+                3.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -87,8 +87,8 @@
            <div itemprop="articleBody">
              
   <section id="count-peaks">
-<span id="countpeaks"></span><h1><span class="section-number">11.1. </span>Count peaks<a class="headerlink" href="#count-peaks" title="Permalink to this headline"></a></h1>
-<p>A key element of REvoSim is its fitness algorithm, described in depth in the REvoSim paper. The countpeaks command in the REvoSim main menu is included to provide a simple quantification of the fitness landscape given the current masks. These change when the software is restarted, and thus in any given run there will be shifts in the fitness lanscape.</p>
+<span id="countpeaks"></span><h1><span class="section-number">11.1. </span>Count peaks<a class="headerlink" href="#count-peaks" title="Permalink to this headline">¶</a></h1>
+<p>A key element of REvoSim is its fitness algorithm, described in depth in the REvoSim paper. The countpeaks command in the REvoSim main menu is included to provide a simple quantification of the fitness landscape given the current masks. These change when the software is restarted, and thus in any given run there will be shifts in the fitness landscape.</p>
 <p>To provide quantification, the count peaks command cycles through every possible 32-bit number, calculating its fitness for the current masks, selected fitness target, and user-defined RGB values (these are requested from the user on initiation of the count peaks command). When this is complete, the software outputs these in a text file written to the output folder (as defined in the Output tab of the Settings dock) that lists fitness <em>vs</em> genome count. An example is shown below.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">REvoSim</span> <span class="n">Peak</span> <span class="n">Counting</span> <span class="mi">2018</span><span class="o">-</span><span class="mi">12</span><span class="o">-</span><span class="mi">17</span><span class="n">T16</span><span class="p">:</span><span class="mi">56</span><span class="p">:</span><span class="mi">57</span>
 <span class="o">===================</span>

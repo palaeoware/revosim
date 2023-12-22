@@ -22,14 +22,14 @@ If you wish to use REvoSim it is generally easiest to use the resources linked a
 
 **Windows 64-bit**
 
-*QT Creator + QT >v5.11 using MSYS2 (64-bit) and MinGW (64-bit)*. We recommend you install and use MSYS2 (64-bit) a Windows package manager, based on modern Cygwin (POSIX compatibility layer) and MinGW-w64, that allows easy installation of QT v5.x 64-bit.
+*QT Creator + QT > v5.11 using MSYS2 (64-bit) and MinGW (64-bit)*. We recommend you install and use MSYS2 (64-bit) a Windows package manager, based on modern Cygwin (POSIX compatibility layer) and MinGW-w64, that allows easy installation of QT v5.x 64-bit.
 
 #. Download and run the latest version of `MSYS2 <https://www.msys2.org/>`_ for 64-bit Windows. This will be name "mysys2-x86_64-..." for the 64-bit installer.
 #. Follow the install instructions. We have used the default install location of "C:\mysys64\" and it is here that includes required in the .pro files point. If you install MSYS2 to another location the .pro files will need to be updated to your install location.
 #. Once installed open up MSYS2 shell and run the pacman update command: pacman -Syu Note that as this will almost certainly update pacman itself you may have to close down and restart the MYSYS2 shell before re-running the command to finish.
 #. Once MSYS2 and pacman are fully updated run the following command to install QT 5.x and its dependencies: pacman -S mingw-w64-x86_64-qt-creator mingw-w64-x86_64-qt5
 #. Optional - if you intend on debugging the software in QT and wish to use GDB then run the following to install the matching GBD debugger: pacman -S mingw-w64-x86_64-gdb
-#. At this stage you should have the following under the MYSYS2 install location:
+#. At this stage you should have the following under the MSYS2 install location:
     * {install location}/mingw64 (Main ming64 folder)
     * {install location}/mingw64/bin/qmake.exe (QMake for QT version)
     * {install location}/mingw64/bin/g++.exe (C++ complier)

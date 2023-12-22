@@ -3,7 +3,7 @@
 Count peaks
 ===========
 
-A key element of REvoSim is its fitness algorithm, described in depth in the REvoSim paper. The countpeaks command in the REvoSim main menu is included to provide a simple quantification of the fitness landscape given the current masks. These change when the software is restarted, and thus in any given run there will be shifts in the fitness lanscape.
+A key element of REvoSim is its fitness algorithm, described in depth in the REvoSim paper. The countpeaks command in the REvoSim main menu is included to provide a simple quantification of the fitness landscape given the current masks. These change when the software is restarted, and thus in any given run there will be shifts in the fitness landscape.
 
 To provide quantification, the count peaks command cycles through every possible 32-bit number, calculating its fitness for the current masks, selected fitness target, and user-defined RGB values (these are requested from the user on initiation of the count peaks command). When this is complete, the software outputs these in a text file written to the output folder (as defined in the Output tab of the Settings dock) that lists fitness *vs* genome count. An example is shown below.
 

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>8. Configuring Outputs and Run End Log &mdash; REvoSim 3.0.0 documentation</title>
+  <title>8. Configuring Outputs and Run End Log &mdash; REvoSim 3.0.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <img src="_static/REvoSim.jpg" class="logo" alt="Logo"/>
           </a>
               <div class="version">
-                3.0.0
+                3.0.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -89,17 +89,17 @@
            <div itemprop="articleBody">
              
   <section id="configuring-outputs-and-run-end-log">
-<span id="outputs"></span><h1><span class="section-number">8. </span>Configuring Outputs and Run End Log<a class="headerlink" href="#configuring-outputs-and-run-end-log" title="Permalink to this headline"></a></h1>
+<span id="outputs"></span><h1><span class="section-number">8. </span>Configuring Outputs and Run End Log<a class="headerlink" href="#configuring-outputs-and-run-end-log" title="Permalink to this headline">¶</a></h1>
 <p>From v3.0.0, REvoSim has a versatile logging system, that can be accessed by clicking the logging button on the main toolbar. This launches an Output Dock, which appears in the left dock area and has two tabs, placed at the bottom. The Output settings tab has a number of options that dictate the behaviour of the REvoSim logging system, and buttons to output two predefined logs at any point in a run. In addition to these, the Running log tab provides a flexible system for writing logs as a simulation run progresses.</p>
 <section id="output-options">
-<h2><span class="section-number">8.1. </span>Output options<a class="headerlink" href="#output-options" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">8.1. </span>Output options<a class="headerlink" href="#output-options" title="Permalink to this headline">¶</a></h2>
 <p>Options in the Output settings tab are as follows:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Output save path</dt>
 <dd class="field-odd"><p>This is the folder into which all outputs from REvoSim (logs, images, any other files) are saved. For consistency these are all placed within a newly created folder called <em>REvoSim_output</em>. Text files are placed within the root of this folder, and images are placed in their own folder within <em>REvoSim_output</em>.</p>
 </dd>
 <dt class="field-even">Refresh/polling rate</dt>
-<dd class="field-even"><p>This is the frequency (in iterations) that the simulation is polled. Polling includes running the full clustering analysis intergral to the thorough species-identification algorithm (see RevoSim 2019 paper), writing the in-simulation log, writing any requested image files to disk, and updating the GUI (unless disabled). Because the species identification system has a significant computational overhead, if species tracking is on, frequent polling will significantly slow the simulation.</p>
+<dd class="field-even"><p>This is the frequency (in iterations) that the simulation is polled. Polling includes running the full clustering analysis integral to the thorough species-identification algorithm (see RevoSim 2019 paper), writing the in-simulation log, writing any requested image files to disk, and updating the GUI (unless disabled). Because the species identification system has a significant computational overhead, if species tracking is on, frequent polling will significantly slow the simulation.</p>
 </dd>
 <dt class="field-odd">Image logging</dt>
 <dd class="field-odd"><p>Any of the simulation visualisations during a run can be saved as an image (png stacks labelled by iteration number). The tick boxes in this part of the tab dictate which images are saved. See <a class="reference internal" href="populationscene.html#populationscene"><span class="std std-ref">Population Scene</span></a> for full descriptions of each option.</p>
@@ -107,7 +107,7 @@
 </dl>
 </section>
 <section id="run-end-log">
-<h2><span class="section-number">8.2. </span>Run end log<a class="headerlink" href="#run-end-log" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">8.2. </span>Run end log<a class="headerlink" href="#run-end-log" title="Permalink to this headline">¶</a></h2>
 <p>REvoSim provides a detailed log file at the end of runs - or on request during a run - that features the information below. This can be automatically output at the end of every run in batch mode (see option <em>Automatically create detailed log on batch runs</em> below), or dumped as required using the <em>Write data for current run</em> button highlighted below. The log is written to the current output folder, and is placed in a file called REvoSim_end_run_log.txt. This file is structured as follows:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Timestamp</dt>
@@ -165,7 +165,7 @@
 </div>
 </section>
 <section id="run-end-log-options">
-<h2><span class="section-number">8.3. </span>Run end log options<a class="headerlink" href="#run-end-log-options" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">8.3. </span>Run end log options<a class="headerlink" href="#run-end-log-options" title="Permalink to this headline">¶</a></h2>
 <p>REvoSim provides the following options for the run end log:</p>
 <dl class="field-list simple">
 <dt class="field-odd">Automatically create detailed log on batch runs</dt>
@@ -175,7 +175,7 @@
 <dd class="field-even"><p>This option outputs the detailed log for the currently running simulation at the point at which the button is pressed.</p>
 </dd>
 <dt class="field-odd">Exclude species without descendents</dt>
-<dd class="field-odd"><p>Under most settings a significant number of small, short-lived species may appear regularly within a REvoSim run. Given the significant amount of data REvoSim can generate, and the fact that these short lived species will be unimportant for many studies (potentially masking important obvservations), this option rationalises REvoSim detailed logs by only including species with descendents in the end run log and tree.</p>
+<dd class="field-odd"><p>Under most settings a significant number of small, short-lived species may appear regularly within a REvoSim run. Given the significant amount of data REvoSim can generate, and the fact that these short lived species will be unimportant for many studies (potentially masking important observations), this option rationalises REvoSim detailed logs by only including species with descendents in the end run log and tree.</p>
 </dd>
 <dt class="field-even">Minimum species size</dt>
 <dd class="field-even"><p>It is also possible to filter the species data in the log files so that only species above a certain number of individuals are included in the logs. This spin box dictates what that minimum cut-off is.</p>
@@ -183,7 +183,7 @@
 </dl>
 </section>
 <section id="other-options">
-<h2><span class="section-number">8.4. </span>Other options<a class="headerlink" href="#other-options" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">8.4. </span>Other options<a class="headerlink" href="#other-options" title="Permalink to this headline">¶</a></h2>
 <dl class="field-list simple">
 <dt class="field-odd">Don’t update GUI</dt>
 <dd class="field-odd"><p>This option allows runs to proceed without updating the GUI (although note that this prevents images being saved during a run). Checking this allow REvoSim to run marginally faster, and may be of utility for very long runs.</p>
@@ -191,7 +191,7 @@
 </dl>
 </section>
 <section id="custom-logs">
-<h2><span class="section-number">8.5. </span>Custom logs<a class="headerlink" href="#custom-logs" title="Permalink to this headline"></a></h2>
+<h2><span class="section-number">8.5. </span>Custom logs<a class="headerlink" href="#custom-logs" title="Permalink to this headline">¶</a></h2>
 <p>In addition to the Run end log, and running log (see <a class="reference internal" href="loggingsim.html#logging"><span class="std std-ref">Running Log</span></a>), there are a series of custom logs that can be selected in the tools option of the main menu (see <a class="reference internal" href="mainmenu.html#mainmenu"><span class="std std-ref">Main Menu</span></a>).</p>
 </section>
 </section>

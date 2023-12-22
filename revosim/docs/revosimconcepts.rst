@@ -6,7 +6,7 @@ Concepts and Example Usage
 Concepts
 --------
 
-There are a number of underlying concepts that are useful to consider when using REvoSim. Please bear in mind that the model itself is fully described in the publications listed on the :ref:`Introduction` page. Prior to publishing any work using the software, or for more details on the following, please do check these out. To see how the software fits into the wider field, the paper `Digital Evolution for Ecology Research: A Review <https://www.frontiersin.org/articles/10.3389/fevo.2021.750779/full>`_ provides a useful overview.
+There are a number of underlying concepts that are useful to consider when using REvoSim. Please bear in mind that the model itself is fully described in the publications listed on the :ref:`introduction` page. Prior to publishing any work using the software, or for more details on the following, please do check these out. To see how the software fits into the wider field, the paper `Digital Evolution for Ecology Research: A Review <https://www.frontiersin.org/articles/10.3389/fevo.2021.750779/full>`_ provides a useful overview.
 
 If it would be beneficial to have further concepts outlined below, please contact the authors. 
 
@@ -18,7 +18,7 @@ Within this framework, runs in REvoSim - that typically start with a single geno
 
 **Time**
 
-Time in a REvoSim simulation is measured in iterations. Every iteration, the algorithms that comprise the model are completed once. In order to link this to real world time units, it is useful to consider the average time per generation. Exactly how iterations map to real time, however, depends on the settings you use for any given run. You can investigate this using REvoSim's :ref:`Logging` system: the \*gridGeneration\* tag can be used for any settings to calculate and output the average age of all organisms successfully breeding in a polling iteration. This works on the assumption -- which is true for the majority of settings -- that organisms will breed once in their lifetime. This assumption can be tested (and a correction factor calculated and applied if so desired) by using the \*gridNumberAlive\* and \*gridBreedSuccess\* log outputs to calculate the proportion of breeds for the grid per unit population.
+Time in a REvoSim simulation is measured in iterations. Every iteration, the algorithms that comprise the model are completed once. In order to link this to real world time units, it is useful to consider the average time per generation. Exactly how iterations map to real time, however, depends on the settings you use for any given run. You can investigate this using REvoSim's :ref:`logging` system: the \*gridGeneration\* tag can be used for any settings to calculate and output the average age of all organisms successfully breeding in a polling iteration. This works on the assumption -- which is true for the majority of settings -- that organisms will breed once in their lifetime. This assumption can be tested (and a correction factor calculated and applied if so desired) by using the \*gridNumberAlive\* and \*gridBreedSuccess\* log outputs to calculate the proportion of breeds for the grid per unit population.
 
 Using this approach demonstrates, for example, that the average generation time for default REvoSim settings is between 11 and 12 iterations. 
 
