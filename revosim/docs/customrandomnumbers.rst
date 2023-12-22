@@ -6,7 +6,7 @@
 Custom Random Numbers
 =====================
 
-As of version 3.0.0, REvoSim employs QT's random number library QRandomGenerator that is securely seeded. More information about this library can be found at in the Qt documentation: `QRandomGenerator class <https://doc.qt.io/qt-5/qrandomgenerator.html>`_. Earlier versions of REvoSim employed a pre-generated table of 65,536 random numbers 0-255 sourced from 10Mb of quantum-generated random numbers from `randomnumbers.info <http://www.randomnumbers.info>`_ that were packaged into the executable. REvoSim still offers the option to employ this approach via the option to load a custom random numbers file if preferred by the user. 
+As of version 3.0.0, REvoSim employs QT's random number library QRandomGenerator to create its random numbers. Specifically, it uses a QRandomGenerator::global() that is securely seeded. More information about this library can be found at in the Qt documentation: `QRandomGenerator class <https://doc.qt.io/qt-5/qrandomgenerator.html>`_. Earlier versions of REvoSim employed a pre-generated table of 65,536 random numbers 0-255 sourced from 10Mb of quantum-generated random numbers from `randomnumbers.info <http://www.randomnumbers.info>`_ that were packaged into the executable. REvoSim still offers the option to employ this approach via the option to load a custom random numbers file if preferred by the user. 
 
 To load a custom file of random numbers use the 'Commands |rarr| Load Random Numbers…' command from the main menu to open a file selection dialogue.
 
