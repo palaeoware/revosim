@@ -15,6 +15,13 @@ needs_sphinx = '1.0'
 # Usually you set "language" from the command line for these cases.
 language = 'en'
 
+# -- Options for HTML output -------------------------------------------------
+
+# The theme to use for HTML and HTML Help pages.  See the documentation for
+# a list of builtin themes.
+#
+html_theme = "sphinx_rtd_theme"
+
 # Add any Sphinx extension module names here, as strings. They can be extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones
 # RJG - This file is set up to allow the sphinx-multiproject to build the docs for envirogen and revosim from a single repository
 extensions = [
@@ -39,6 +46,3 @@ multiproject_projects = {
          },
     },
 }
-
-# Common options.
-html_theme = "sphinx_rtd_theme"
