@@ -81,6 +81,9 @@
 #define RESEED_MODE_DUAL_IDENTICAL 3
 #define RESEED_MODE_DUAL_KNOWN 4
 
+#define HGT_SYNOYMOUS 0
+#define HGT_NON_SYNOYMOUS 1
+
 //RJG - Add new linkages here - this is a define in order to be able to provide text to the command line parser (needed before simulation manager is created)
 #define LINKAGES_LIST "Energy", "No_selection", "Mutation_rate"
 

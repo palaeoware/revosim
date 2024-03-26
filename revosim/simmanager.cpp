@@ -161,6 +161,10 @@ SimManager::SimManager()
     genomeComparisonSystem->setGenomeWordsFromString("01", MAX_GENOME_WORDS);
     systemsList.append(genomeComparisonSystem);
 
+    hgtSystem = new HgtSystem();
+    hgtSystem->setGenomeWordsFromString("01", MAX_GENOME_WORDS);
+    systemsList.append(hgtSystem);
+
     simulationLog = new LogSimulation(simulationSettings);
 }
 
@@ -779,6 +783,41 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                 breedSuccess[n][m] = 0;
                 breedGeneration[n][m] = 0;
             }
+
+            quint32 deadlistentries[SLOTS_PER_GRID_SQUARE]; //PG produce a list in the cell of all organism set to die
+            for (int i = 0; i < SLOTS_PER_GRID_SQUARE; i++)
+                for (int c = 0; c <= maxv; c++)
+                    if (crit[c].age < 2||crit[c].energy == 0) // PG - check age < 2 correct
+                    {
+                        deadlistentries[i] = *crit[c].genomeWords;
+                    }
+
+
+            // need to change so a random dead genome is selected, now it is just the last non-empty one
+            if (cellSettingsMaster->hgtTransform)
+            {
+                quint32 genometransfer;
+                for (int i = 0; i < SLOTS_PER_GRID_SQUARE; i++)
+                    if (deadlistentries[i])
+                    {
+                        genometransfer = deadlistentries[i];
+                    }
+
+
+                quint32 mask =  ~(0 << simulationManager->simulationSettings->genomeSize*32); //genomes of 1s
+                mask = hgtSystem->GenerateMask(mask);
+                genometransfer =  hgtSystem->GenerateTransform(genometransfer, mask);
+
+                for (int c = 0; c <= maxv; c++)
+                    if (hgtSystem->willTransform() & genometransfer !=0)
+                    {
+                        if (iteration %100==0)
+                        {
+                            hgtSystem->Transform(crit[c].genomeWords, genometransfer, mask);
+                        }
+                    }
+            }
+
 
             // Determine the food to be given to organisms per point of fitness that they have.
             float addFood;

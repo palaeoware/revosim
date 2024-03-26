@@ -892,6 +892,46 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
         simulationManager->cellSettingsMaster->croppingFrequency = i;
     });
 
+    //PG - HGT settings
+    QLabel *hgt_settings_label = new QLabel("HGT settings");
+    hgt_settings_label->setStyleSheet("font-weight: bold");
+    interactionSettingsGrid->addWidget(hgt_settings_label, 18, 1, 1, 2);
+    hgtCheckbox = new QCheckBox("Transformation activated");
+    hgtCheckbox->setChecked(simulationManager->cellSettingsMaster->pathOn);
+    hgtCheckbox->setToolTip("<font>Turn on/off transformation (HGT).</font>");
+    interactionSettingsGrid->addWidget(hgtCheckbox, 19, 1, 1, 2);
+    connect(hgtCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
+    {
+        simulationManager->cellSettingsMaster->hgtTransform = i;
+    });
+
+    QLabel *hgt_mode_label = new QLabel("Transformation mode:");
+    interactionSettingsGrid->addWidget(pathogen_mode_label, 20, 1, 1, 2);
+
+    // PG- to add in when functions sorted, currently only non-Synonoymous works.
+    // hgtSynonoymousRadio = new QRadioButton("Synonymous");
+    // hgtSynonoymousRadio->setToolTip("<font>Select to use allow hgt to only in include synonymous transfers.</font>");
+    // hgtNonSynonoymousRadio = new QRadioButton("Non-synonymous");
+    // hgtNonSynonoymousRadio->setToolTip("<font>Select to use allow hgt to allow non-synonymous transfers.</font>");
+
+    // auto *hgtButtonGroup = new QButtonGroup;
+    // hgtButtonGroup->addButton(hgtSynonoymousRadio, 0);
+    // hgtButtonGroup->addButton(hgtNonSynonoymousRadio, 1);
+    // hgtSynonoymousRadio->setChecked(true);
+    // auto *HgtModeGrid = new QGridLayout;
+
+    // HgtModeGrid->addWidget(hgtSynonoymousRadio, 1, 1, 1, 1);
+    // HgtModeGrid->addWidget(hgtNonSynonoymousRadio, 1, 2, 1, 1);
+
+    // interactionSettingsGrid->addLayout(HgtModeGrid, 21, 1, 1, 2);
+
+    // connect(hgtButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i)
+    // {
+    //     if (i == 0) simulationManager->simulationSettings->pathogenMode = HGT_SYNOYMOUS;
+    //     else simulationManager->simulationSettings->pathogenMode = HGT_NON_SYNOYMOUS;
+    // });
+
+
     //ENF - Genome seeding settings
     /*QLabel *seeding_settings_label = new QLabel("Genome seeding settings");
     seeding_settings_label->setStyleSheet("font-weight: bold");

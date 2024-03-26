@@ -39,6 +39,7 @@
 #include "variablemutatesystem.h"
 #include "visualisationsystem.h"
 #include "genomecomparisonsystem.h"
+#include "hgtsystem.h"
 
 #include <QElapsedTimer>
 #include <QFuture>
@@ -150,6 +151,7 @@ public:
     VisualisationSystem *visualisationSystem2;
     LogSimulation *simulationLog;
     GenomeComparisonSystem *genomeComparisonSystem;
+    HgtSystem *hgtSystem;
 
 
 

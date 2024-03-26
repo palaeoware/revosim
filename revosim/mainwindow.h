@@ -174,6 +174,7 @@ private:
     QCheckBox *loggingCheckbox{};
     QCheckBox *autoWriteLogCheckbox{};
     QCheckBox *autoWriteLogIndividualsCheckbox{};
+    QCheckBox *hgtCheckbox{};
 
     //RJG - radios and spins
     QRadioButton *phylogenyOffButton{};
@@ -199,6 +200,8 @@ private:
     QRadioButton *seedingDefaultRadio{};
     QRadioButton *seeding3TierRadio{};
     QRadioButton *seeding5TierRadio{};
+    QRadioButton *hgtSynonoymousRadio{};
+    QRadioButton *hgtNonSynonoymousRadio{};
 
     QSpinBox *minSpeciesSizeSpin{};
     QSpinBox *mutateSpin{};

@@ -58,7 +58,8 @@ SOURCES += main.cpp \
     test.cpp \
     variablebreedsystem.cpp \
     variablemutatesystem.cpp \
-    visualisationsystem.cpp
+    visualisationsystem.cpp \
+    hgtsystem.cpp
 
 HEADERS += mainwindow.h \
     bitcountsystem.h \
@@ -100,7 +101,9 @@ HEADERS += mainwindow.h \
     test.h \
     variablebreedsystem.h \
     variablemutatesystem.h \
-    visualisationsystem.h
+    visualisationsystem.h \
+    hgtsystem.h
+
 
 FORMS += mainwindow.ui \
     genomecomparison.ui \

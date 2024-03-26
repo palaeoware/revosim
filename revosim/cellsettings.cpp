@@ -33,4 +33,5 @@ CellSettings::CellSettings()
     interactFitness = false;
     interactEnergy = false;
     interactWithinSpecies = true;
+    hgtTransform = false;
 }
