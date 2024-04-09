@@ -897,7 +897,7 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     hgt_settings_label->setStyleSheet("font-weight: bold");
     interactionSettingsGrid->addWidget(hgt_settings_label, 18, 1, 1, 2);
     hgtCheckbox = new QCheckBox("Transformation activated");
-    hgtCheckbox->setChecked(simulationManager->cellSettingsMaster->pathOn);
+    hgtCheckbox->setChecked(simulationManager->cellSettingsMaster->hgtTransform);
     hgtCheckbox->setToolTip("<font>Turn on/off transformation (HGT).</font>");
     interactionSettingsGrid->addWidget(hgtCheckbox, 19, 1, 1, 2);
     connect(hgtCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
@@ -906,30 +906,53 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     });
 
     QLabel *hgt_mode_label = new QLabel("Transformation mode:");
-    interactionSettingsGrid->addWidget(pathogen_mode_label, 20, 1, 1, 2);
+    interactionSettingsGrid->addWidget(hgt_mode_label, 20, 1, 1, 2);
 
     // PG- to add in when functions sorted, currently only non-Synonoymous works.
-    // hgtSynonoymousRadio = new QRadioButton("Synonymous");
-    // hgtSynonoymousRadio->setToolTip("<font>Select to use allow hgt to only in include synonymous transfers.</font>");
-    // hgtNonSynonoymousRadio = new QRadioButton("Non-synonymous");
-    // hgtNonSynonoymousRadio->setToolTip("<font>Select to use allow hgt to allow non-synonymous transfers.</font>");
+    hgtSynonoymousRadio = new QRadioButton("Synonymous");
+    hgtSynonoymousRadio->setToolTip("<font>Select to use allow hgt to only in include synonymous transfers.</font>");
+    hgtNonSynonoymousRadio = new QRadioButton("Non-synonymous");
+    hgtNonSynonoymousRadio->setToolTip("<font>Select to use allow hgt to allow non-synonymous transfers.</font>");
 
-    // auto *hgtButtonGroup = new QButtonGroup;
-    // hgtButtonGroup->addButton(hgtSynonoymousRadio, 0);
-    // hgtButtonGroup->addButton(hgtNonSynonoymousRadio, 1);
-    // hgtSynonoymousRadio->setChecked(true);
-    // auto *HgtModeGrid = new QGridLayout;
+    auto *hgtButtonGroup = new QButtonGroup;
+    hgtButtonGroup->addButton(hgtSynonoymousRadio, 0);
+    hgtButtonGroup->addButton(hgtNonSynonoymousRadio, 1);
+    hgtSynonoymousRadio->setChecked(true);
+    auto *HgtModeGrid = new QGridLayout;
 
-    // HgtModeGrid->addWidget(hgtSynonoymousRadio, 1, 1, 1, 1);
-    // HgtModeGrid->addWidget(hgtNonSynonoymousRadio, 1, 2, 1, 1);
+    HgtModeGrid->addWidget(hgtSynonoymousRadio, 1, 1, 1, 1);
+    HgtModeGrid->addWidget(hgtNonSynonoymousRadio, 1, 2, 1, 1);
 
-    // interactionSettingsGrid->addLayout(HgtModeGrid, 21, 1, 1, 2);
+    interactionSettingsGrid->addLayout(HgtModeGrid, 21, 1, 1, 2);
 
-    // connect(hgtButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i)
-    // {
-    //     if (i == 0) simulationManager->simulationSettings->pathogenMode = HGT_SYNOYMOUS;
-    //     else simulationManager->simulationSettings->pathogenMode = HGT_NON_SYNOYMOUS;
-    // });
+    connect(hgtButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i)
+    {
+        if (i == 0) simulationManager->simulationSettings->hgtMode = HGT_SYNOYMOUS;
+        else simulationManager->simulationSettings->hgtMode = HGT_NON_SYNOYMOUS;
+    });
+
+    QLabel *transfer_length_label = new QLabel("Transfer length: ");
+    transfer_length_label->setToolTip("<font>Set the HGT transfer length.</font>");
+    transferlengthSpin = new QSpinBox;
+    transferlengthSpin->setMinimum(0);
+    transferlengthSpin->setMaximum(simulationManager->simulationSettings->genomeSize*32);
+    transferlengthSpin->setValue(simulationManager->cellSettingsMaster->hgtTransferLength);
+    transferlengthSpin->setToolTip("<font>Set the HGT transfer length.</font>");
+    interactionSettingsGrid->addWidget(transfer_length_label, 22, 1);
+    interactionSettingsGrid->addWidget(transferlengthSpin, 22, 2);
+    connect(transferlengthSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
+    {
+        simulationManager->cellSettingsMaster->hgtTransferLength = i;
+    });
+
+    randomlengthCheckbox = new QCheckBox("Random transfer length");
+    randomlengthCheckbox->setToolTip("<font>Turn on/off nonSpatial settling of offspring.</font>");
+    interactionSettingsGrid->addWidget(randomlengthCheckbox, 23, 1, 1, 2);
+    randomlengthCheckbox->setChecked(simulationManager->simulationSettings->hgtrandomlength);
+    connect(randomlengthCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
+    {
+        simulationManager->simulationSettings->hgtrandomlength = i;
+    });
 
 
     //ENF - Genome seeding settings

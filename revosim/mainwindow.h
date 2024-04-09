@@ -175,6 +175,7 @@ private:
     QCheckBox *autoWriteLogCheckbox{};
     QCheckBox *autoWriteLogIndividualsCheckbox{};
     QCheckBox *hgtCheckbox{};
+    QCheckBox *randomlengthCheckbox{};
 
     //RJG - radios and spins
     QRadioButton *phylogenyOffButton{};
@@ -222,6 +223,7 @@ private:
     QSpinBox *pathogenMutateSpin{};
     QSpinBox *pathogenFrequencySpin{};
     QSpinBox *croppingFrequencySpin{};
+    QSpinBox *transferlengthSpin{};
 
     //RJG - text edits for logs
     QTextEdit *headerTextEdit;

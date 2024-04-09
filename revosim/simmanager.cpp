@@ -811,10 +811,7 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                 for (int c = 0; c <= maxv; c++)
                     if (hgtSystem->willTransform() & genometransfer !=0)
                     {
-                        if (iteration %100==0)
-                        {
-                            hgtSystem->Transform(crit[c].genomeWords, genometransfer, mask);
-                        }
+                            hgtSystem->Transform(crit[c].genomeWords, genometransfer, mask);     
                     }
             }
 

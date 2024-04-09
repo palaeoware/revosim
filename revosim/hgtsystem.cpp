@@ -19,17 +19,30 @@ bool HgtSystem::willTransform()
     else return false;
 }
 
+int HgtSystem::generatetransferLength()
+{
+    // generate random transfer length if set or use user defined transfer length
+    int transferlength=0;
+    if (simulationManager->simulationSettings->hgtrandomlength)
+    {
+        transferlength= QRandomGenerator::global()->bounded(0,simulationManager->simulationSettings->genomeSize*32); // length of transfer segment
+    }
+    else
+    {
+        transferlength= simulationManager->cellSettingsMaster->hgtTransferLength;// length of transfer segment set by the user
+    }
+    return transferlength;
+}
+
 quint32 HgtSystem::GenerateMask(quint32 mask)
 {
     //generate transfer genome mask from donor genome and mask of target area used in transformation
-
     int genomelength = simulationManager->simulationSettings->genomeSize*32; // check hgt applies to all the words
-    int startpostion= QRandomGenerator::global()->bounded(0,simulationManager->simulationSettings->genomeSize*32); // starting position from transfer genome
-    int transferlength= QRandomGenerator::global()->bounded(0,simulationManager->simulationSettings->genomeSize*32-startpostion); // length of transfer segment
-
-    mask = (mask >> (genomelength - transferlength));
+    int transferlength= generatetransferLength();
+    int startpostion= QRandomGenerator::global()->bounded(0,simulationManager->simulationSettings->genomeSize*32- transferlength); // starting position from transfer genome
+    mask= (mask >> (genomelength - transferlength));
     // qDebug() << mask << genomelength << startpostion << transferlength; -used to check
-    mask = mask << (genomelength - (transferlength + startpostion)); //mask of transfer length
+    mask= mask << (genomelength - (transferlength + startpostion)); //mask of transfer length
     //qDebug() << mask <<  genomelength << startpostion << transferlength; -used to check
     return mask;
 }
@@ -37,8 +50,18 @@ quint32 HgtSystem::GenerateMask(quint32 mask)
 
 quint32 HgtSystem::GenerateTransform(quint32 genometransfer, quint32 mask)
 {
-    //generate the transfer genome
-    genometransfer = mask & genometransfer;
+    if (simulationManager->simulationSettings->hgtMode == HGT_SYNOYMOUS)
+    {
+        //generate the transfer genome
+        genometransfer = mask & genometransfer;
+    }
+
+    else
+    {
+        mask = mask >> 1;
+        genometransfer = mask & genometransfer;
+    }
+
     //qDebug() << mask << genometransfer;  -used to check
     return genometransfer;
 }
