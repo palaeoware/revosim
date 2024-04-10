@@ -50,27 +50,29 @@ quint32 HgtSystem::GenerateMask(quint32 mask)
 
 quint32 HgtSystem::GenerateTransform(quint32 genometransfer, quint32 mask)
 {
-    if (simulationManager->simulationSettings->hgtMode == HGT_SYNOYMOUS)
-    {
-        //generate the transfer genome
-        genometransfer = mask & genometransfer;
-    }
+    // //generate the transfer genome
+    // if (simulationManager->simulationSettings->hgtMode == HGT_SYNOYMOUS)
+    // {
+    //     genometransfer = mask & genometransfer;
+    // }
 
-    else
-    {
-        mask = mask >> 1;
-        genometransfer = mask & genometransfer;
-    }
+    // else
+    // {
+    //     mask = mask >> 1;
+    //     genometransfer = mask & genometransfer;
+    // }
 
-    //qDebug() << mask << genometransfer;  -used to check
+    // //qDebug() << mask << genometransfer;  -used to check
+    // return genometransfer;
+    genometransfer = mask & genometransfer;
     return genometransfer;
+
 }
 
 
 void HgtSystem::Transform(quint32* genome, quint32 genometransfer, quint32 mask)
 {
   //transform organism genome to include transfer segement
-
    *genome = (*genome & ~(mask))|genometransfer;
 
     // //qDebug() << x <<  *genome << mask << genometransfer << "1" ;
@@ -78,6 +80,4 @@ void HgtSystem::Transform(quint32* genome, quint32 genometransfer, quint32 mask)
     // //qDebug() << x << *genome << "2" ;
     // x = x|genometransfer;
     // //qDebug() << x << *genome << "3" ;
-
-
 }
