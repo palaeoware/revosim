@@ -37,33 +37,36 @@ int HgtSystem::generatetransferLength()
 quint32 HgtSystem::GenerateMask(quint32 mask)
 {
     //generate transfer genome mask from donor genome and mask of target area used in transformation
-    int genomelength = simulationManager->simulationSettings->genomeSize*32; // check hgt applies to all the words
+    int genomelength = simulationManager->simulationSettings->genomeSize*16; // check hgt applies to all the words
     int transferlength= generatetransferLength();
-    int startpostion= QRandomGenerator::global()->bounded(0,simulationManager->simulationSettings->genomeSize*32- transferlength); // starting position from transfer genome
+    int startpostion= QRandomGenerator::global()->bounded(0,simulationManager->simulationSettings->genomeSize*16- transferlength); // starting position from transfer genome
     mask= (mask >> (genomelength - transferlength));
-    // qDebug() << mask << genomelength << startpostion << transferlength; -used to check
     mask= mask << (genomelength - (transferlength + startpostion)); //mask of transfer length
-    //qDebug() << mask <<  genomelength << startpostion << transferlength; -used to check
+
+    if (bitCount(mask)!=5)
+    {
+        qDebug() << simulationManager->printGenome(mask) <<" " << genomelength <<" "  << transferlength <<" "<< startpostion;
+    }
     return mask;
 }
 
 
 quint32 HgtSystem::GenerateTransform(quint32 genometransfer, quint32 mask)
 {
-    // //generate the transfer genome
-    // if (simulationManager->simulationSettings->hgtMode == HGT_SYNOYMOUS)
-    // {
-    //     genometransfer = mask & genometransfer;
-    // }
+    //generate the transfer genome
+    if (simulationManager->simulationSettings->hgtMode == HGT_SYNOYMOUS)
+    {
+        genometransfer = mask & genometransfer;
+    }
 
-    // else
-    // {
-    //     mask = mask >> 1;
-    //     genometransfer = mask & genometransfer;
-    // }
+    else
+    {
+        mask = mask >> 1;
+        genometransfer = mask & genometransfer;
+    }
 
-    // //qDebug() << mask << genometransfer;  -used to check
-    // return genometransfer;
+    //qDebug() << mask << genometransfer;  -used to check
+    return genometransfer;
     genometransfer = mask & genometransfer;
     return genometransfer;
 

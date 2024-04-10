@@ -352,8 +352,8 @@ bool test::testThree(QString &outString)
 
     System *system = new System("testSystem");
 
-    for (int i = 0; i < 100; i++)
-    {
+        for (int i = 0; i < 100; i++)
+        {
         quint32 random = QRandomGenerator::global()->generate();
         std::bitset<32> tweakerBitSetB(random);
         int count1 = 0;
@@ -797,82 +797,37 @@ bool test::testEight(QString &outString)
 
     out << "Testing the HGT system with a known genome.\n";
 
-
-    quint32 rgenome = {simulationManager->simulationRandoms->rand32()};
-    out << "Recipent genome as number: " << rgenome;
-    quint32 dgenome = {simulationManager->simulationRandoms->rand32()};
-    out << "\n Donor genome as number: " << dgenome;
-
-    QString rgenomestr = simulationManager->printGenome(rgenome);
-    out << "\n Donor genome as binary: " << rgenomestr;
-    QString dgenomestr = simulationManager->printGenome(dgenome);
-    out << "\n Recipent genome as binary: " << dgenomestr;
-
-    out << "\n First test mask creation: Genome transfer length 5 Synonoumous";
+    out << "\n First test mask creation: \n Genome transfer length = 5 \n HGT mode = Synonoumous\n\n";
     simulationManager->cellSettingsMaster->hgtTransferLength = 5;
-    simulationManager->simulationSettings->hgtMode == HGT_SYNOYMOUS;
-    quint32 mask =  ~(0 << simulationManager->simulationSettings->genomeSize*32); //genomes of 1s
-    mask = simulationManager->hgtSystem->GenerateMask(mask);
-    out <<"\n Mask created :" << simulationManager->printGenome(mask);
-    int target = simulationManager->hgtSystem->bitCount(mask);
-    if ( simulationManager->cellSettingsMaster->hgtTransferLength != target)
+    simulationManager->simulationSettings->hgtMode = HGT_SYNOYMOUS;
+    simulationManager->simulationSettings->genomeSize = 2;
+
+
+    for (int i = 0; i < 100; i++)
     {
-        testFlag = false;
-        out << "\n Test failed.\n";
+        out << "\n" << i << "\n";
+        quint32 rgenome = {simulationManager->simulationRandoms->rand32()};
+        out << "\n Recipent genome as number: " << rgenome;
+        quint32 dgenome = {simulationManager->simulationRandoms->rand32()};
+        out << "\n Donor genome as number: " << dgenome;
+
+        QString rgenomestr = simulationManager->printGenome(rgenome);
+        out << "\n Donor genome as binary: " << rgenomestr;
+        QString dgenomestr = simulationManager->printGenome(dgenome);
+        out << "\n Recipent genome as binary: " << dgenomestr;
+
+
+        quint32 mask =  ~(0 << simulationManager->simulationSettings->genomeSize*16); //genomes of 1s
+        out <<"\n"<< simulationManager->printGenome(mask) << "\n";
+        mask = simulationManager->hgtSystem->GenerateMask(mask);
+        out <<"\n Mask created :" << simulationManager->printGenome(mask);
+        int target = simulationManager->hgtSystem->bitCount(mask);
+        if ( simulationManager->cellSettingsMaster->hgtTransferLength != target)
+        {
+            testFlag = false;
+            out << "\n Test failed.\n";
+        }
     }
-    mask = simulationManager->hgtSystem->GenerateTransform(dgenome, mask);
-    if ( simulationManager->cellSettingsMaster->hgtTransferLength != target)
-    {
-        testFlag = false;
-        out << "\n Test failed.\n";
-    }
-    out << "\n Transfer mask: " <<  simulationManager->printGenome(mask);
-
-
-
-    // //RJG - set masks to zero, genome words to 1 - outputs should always me max possible value
-    // for (int i = 0; i < 256; i++)
-    //     for (int j = 0; j < 3; j++)
-    //         environmentalFitnessSytem->setXOR(i, j, 0);
-    // quint32 *genomeWords = new quint32[MAX_GENOME_WORDS];
-    // for (int i = 0; i < MAX_GENOME_WORDS; i++)genomeWords[i] = ~0;
-    // quint8 *environment = simulationManager->env->returnRGB(50, 50);
-
-    // //RJG - Test 1 word
-    // int count = environmentalFitnessSytem->calculateFitness(genomeWords, environment);
-    // int target = environmentalFitnessSytem->returnUseGenomeWordsCount() * 3 * 32;
-    // out << "Fitness should be " << target << " is " << count << ".\n";
-    // if (count != target)
-    // {
-    //     testFlag = false;
-    //     out << "Test failed.\n";
-    // }
-
-    // //RJG - Test 2 words
-    // environmentalFitnessSytem->setGenomeWordsFromString("01", 2);
-    // count = environmentalFitnessSytem->calculateFitness(genomeWords, environment);
-    // target = environmentalFitnessSytem->returnUseGenomeWordsCount() * 3 * 32;
-    // out << "Fitness should be " << target << " is " << count << ".\n";
-    // if (count != target)
-    // {
-    //     testFlag = false;
-    //     out << "Test failed.\n";
-    // }
-
-    // //RJG - Test 4 words
-    // environmentalFitnessSytem->setGenomeWordsFromString("014A", 32);
-    // count = environmentalFitnessSytem->calculateFitness(genomeWords, environment);
-    // target = environmentalFitnessSytem->returnUseGenomeWordsCount() * 3 * 32;
-    // out << "Fitness should be " << target << " is " << count << ".\n";
-    // if (count != target)
-    // {
-    //     testFlag = false;
-    //     out << "Test failed.\n";
-    // }
-
-    // //RJG - redo lookups to fix masks
-    // simulationManager->makeLookups();
-
     if (testFlag) out << "\n Tests passed.\n\n";
     return testFlag;
 }
