@@ -338,7 +338,7 @@ void Analyser::recordFrequencies(Species *sp, GenomeHashTable *spTable, int grou
     {
         spTable->getSetForOneWordFromAllGenomes(diversitySet, group, i);
         sp->diversityPerWord[i]=diversitySet->count();
-        qDebug()<<"Species "<<sp->ID<<" diversity for word "<<i<< " is "<<sp->diversityPerWord[i];
+        //qDebug()<<"Species "<<sp->ID<<" diversity for word "<<i<< " is "<<sp->diversityPerWord[i];
         diversitySet->clear();
     }
     delete diversitySet;
