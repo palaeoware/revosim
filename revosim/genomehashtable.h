@@ -41,6 +41,7 @@ public:
     int bins;
     void copyEntryRehashed(SpeciesBinEntry *entry);
     float sumFrequencies(float data[][32], int group);
+    void getSetForOneWordFromAllGenomes(QSet<quint32> *set, int group, int word);
     SpeciesBinEntry *entryByIndex(int thebin, int i);
     int rawCount, insertCount;
 
@@ -48,6 +49,7 @@ public:
     int offsetToPointer;
     int genomeSize;
     int entries_per_block;
+
 
 private:
     int getBin(quint32 *genome);

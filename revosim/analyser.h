@@ -43,6 +43,7 @@ public:
     int internalID;
     int size;
     int genomeDiversity;
+    int diversityPerWord[MAX_GENOME_WORDS];
     float fitness;
     float envFitness;
     float totalEnergy;
@@ -52,6 +53,7 @@ public:
     float Ca, NCa, Cr, NCr;
     LogSpecies *logSpeciesStructure; //which log species it's equivalent to
     quint32 type[MAX_GENOME_WORDS];
+
     quint64 ID;
     quint64 parent;
     float frequenciesAtOrigination[MAX_GENOME_WORDS][32]; //for gene frequency tracking

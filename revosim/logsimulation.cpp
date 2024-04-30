@@ -42,16 +42,24 @@ void LogSimulation::CreateReplacementText()
     replacementText.insert("*printTime*", "*printTime*");
     replacementText.insert("*dumpGenomes*", "Genome_dump");
     replacementText.insert("*gridSpeciesRange*", "Grid_species_range");
+
     QStringList frequenciesHeaders;
     for (int ii = 0; ii < simSettings->genomeSize; ii++)
         for (int jj = 0; jj < 32; jj++)
             frequenciesHeaders.append(QString("O_%1_%2").arg(ii).arg(jj));
     replacementText.insert("*originalGeneFrequencies*", frequenciesHeaders.join(","));
+
     frequenciesHeaders.clear();
     for (int ii = 0; ii < simSettings->genomeSize; ii++)
         for (int jj = 0; jj < 32; jj++)
             frequenciesHeaders.append(QString("C_%1_%2").arg(ii).arg(jj));
     replacementText.insert("*currentGeneFrequencies*", frequenciesHeaders.join(","));
+
+    frequenciesHeaders.clear();
+    for (int ii = 0; ii < simSettings->genomeSize; ii++)
+        frequenciesHeaders.append(QString("WD_%1").arg(ii));
+    replacementText.insert("*speciesDiversityPerWord*", frequenciesHeaders.join(","));
+
     replacementText.insert("*Ca*", "sum_fitness_difference_from_origin_(Ca)");
     replacementText.insert("*NCa*", "sum_breed_only_difference_from_origin_(NCa)");
     replacementText.insert("*Cr*", "sum_fitness_difference_from_last_(Cr)");
@@ -503,6 +511,9 @@ QString LogSimulation::processLogTextSpecies(QString text)
         textLocal.replace("*NCa*", QString::number(oldSpeciesList->at(i).NCa));
         textLocal.replace("*NCr*", QString::number(oldSpeciesList->at(i).NCr));
 
+        if (textLocal.contains(("*speciesDiversityPerWord*")))
+            textLocal.replace("*speciesDiversityPerWord*", GetDiversityPerWordString(oldSpeciesList->at(i)));
+
         out << textLocal;
     }
 
@@ -521,6 +532,15 @@ QString LogSimulation::GetFrequenciesLogString(Species species, bool original)
             else
                 stringList.append(QString::number(species.frequenciesLastIteration[i][j]));
         }
+
+    return stringList.join(",");
+}
+
+QString LogSimulation::GetDiversityPerWordString(Species species)
+{
+    QStringList stringList;
+    for (int i = 0; i < simulationManager->simulationSettings->genomeSize; i++)
+        stringList.append(QString::number(species.diversityPerWord[i]));
 
     return stringList.join(",");
 }

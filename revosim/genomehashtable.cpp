@@ -87,6 +87,36 @@ float GenomeHashTable::sumFrequencies(float data[][32], int group)
     return total;
 }
 
+
+//This is recursive, and gets the full set of genomes for one particular word
+void GenomeHashTable::getSetForOneWordFromAllGenomes(QSet<quint32> *set, int group, int word)
+{
+    if (word<0 || word>=genomeSize)
+    {
+        qDebug()<<"Error in getSetForOneWordFromAllGenomes - illegal word requested";
+        return;
+    }
+    for (int i = 0; i < bins; i++)
+    {
+        if (binData.at(i).subHash != nullptr)
+        {
+            binData.at(i).subHash->getSetForOneWordFromAllGenomes(set, group, word);
+        }
+        else
+        {
+            for (int j = 0; j < binData.at(i).binEntries.count(); j++)
+            {
+                SpeciesBinEntry *be = binData.at(i).binEntries.at(j);
+                if (be->group == group)
+                {
+                    set->insert(be->genome[word]);
+                }
+            }
+        }
+    }
+    return;
+}
+
 int GenomeHashTable::getBin(quint32 *genome)
 {
     return sis->bitcountAllMasked(genome, levelInHierarchy);

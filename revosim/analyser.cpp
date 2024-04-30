@@ -36,6 +36,7 @@
 #include <QTextStream>
 #include <QMap>
 #include <QApplication>
+#include <QSet>
 #include <cstring> //for memcpy
 /**
  * @brief Species::Species
@@ -63,6 +64,8 @@ Species::Species()
     NCr = 0;
 
     for (int i = 0; i < MAX_GENOME_WORDS; i++) for (int j = 0; j < 32; j++) frequenciesAtOrigination[i][j] = frequenciesLastIteration[i][j] = 0;
+    for (int i = 0; i < MAX_GENOME_WORDS; i++) diversityPerWord[i]=0;
+
     //no need to initialise complexlogdata. I hope!
 }
 
@@ -329,6 +332,16 @@ void Analyser::recordFrequencies(Species *sp, GenomeHashTable *spTable, int grou
         for (int j = 0; j < 32; j++)
             sp->frequenciesLastIteration[i][j]  = temporaryFrequencies[i][j];
 
+    //And finally, work out diversity by word
+    QSet<quint32> *diversitySet = new QSet<quint32>();
+    for (int i = 0; i < simulationManager->simulationSettings->genomeSize; i++)
+    {
+        spTable->getSetForOneWordFromAllGenomes(diversitySet, group, i);
+        sp->diversityPerWord[i]=diversitySet->count();
+        qDebug()<<"Species "<<sp->ID<<" diversity for word "<<i<< " is "<<sp->diversityPerWord[i];
+        diversitySet->clear();
+    }
+    delete diversitySet;
 }
 
 //mutex locked operation from parallel processing - in theory two processes might
@@ -538,6 +551,7 @@ int Analyser::perSpeciesAnalyis(Species *s)
 
             newsp.size = g->occurrenceCount;
             newsp.genomeDiversity = g->genomeCount;
+
 
             //and put copied species (with new type) into the new species list
             addSpeciesToList(newsp);

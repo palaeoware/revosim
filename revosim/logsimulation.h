@@ -59,8 +59,9 @@ private:
     QString writeSpeciationLog();
     QString writeMutationLog();
     QString GetFrequenciesLogString(Species species, bool original);
-
+    QString GetDiversityPerWordString(Species species);
     SimSettings *simSettings;
+
 };
 
 #endif // LOGSIMULATION_H

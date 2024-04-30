@@ -75,6 +75,7 @@ Species keywords
 :\*NCa\*:  This is the sum of the gene frequency differences from the origin of a species for the word(s) *not* included in the fitness algorithm.
 :\*NCr\*: This is the sum of the gene frequency differences from the last polling iteration for the word(s) *not* included in the fitness algorithm.
 :\*speciesGenomeDiversity\*: This is the number of distinct genomes included within a species.
+:\*speciesDiversityPerWord\*: This is the number of distinct genomes for each word, considered independently.
 :\*speciesID\*: REvoSim's ID for a species, which is useful for correlating statistics with the tree output by the software.
 :\*speciesMeanEnvironmentalFitness\*: The mean fitness of the species from the environmental fitness algorithm.
 :\*speciesMeanFitness\*: The mean fitness of the species from the environmental fitness algorithm plus any interactions that impact on fitness.
