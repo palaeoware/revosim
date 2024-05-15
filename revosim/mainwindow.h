@@ -96,6 +96,7 @@ public:
     //RJG - to do - moving this here so can access from logger, but ultimately will want better solution
     Analyser *analyser;
 
+    bool isShowingDiversityLog();
 protected:
     void changeEvent(QEvent *e);
     void resizeEvent(QResizeEvent *e);

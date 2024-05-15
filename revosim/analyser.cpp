@@ -224,7 +224,7 @@ void Analyser::groupsGenealogicalTracker_v3()
     outstring += QString("EuanFitness: %1ms  ").arg(t.elapsed() - last);
     last = t.elapsed();
 
-    if (simulationManager->simulationLog->loggingInCellDiversity())
+    if (simulationManager->simulationLog->loggingInCellDiversity() || mainWindow->isShowingDiversityLog())
     {
         DiversityAnalysis(0, simulationManager->simulationSettings->gridX-1);
         outstring += QString("DiversityAnalyser: %1ms  ").arg(t.elapsed() - last);
@@ -1478,6 +1478,7 @@ void Analyser::DiversityAnalysis(int firstx, int lastx)
     for (int i=0; i<oldSpeciesList->count(); i++)
         distributionsBySpeciesID.insert(oldSpeciesList->at(i).ID, new QList<float>);
 
+    float maxValue = 0;
     for (int n = firstx; n <= lastx; n++)
     {
         for (int m = 0; m < ycount; m++)
@@ -1519,11 +1520,29 @@ void Analyser::DiversityAnalysis(int firstx, int lastx)
             }
 
             //divide totals by counts, add to main list for this species
+            int bestCount = 0;
+            quint64 bestID = 0;
+            float bestDiv = 0;
             foreach (quint64 speciesID, localCounts.keys())
-                distributionsBySpeciesID[speciesID]->append((float)localTotalDifferences[speciesID]
-                                                            / (float)localCounts[speciesID]);
+            {
+                float div = (float)localTotalDifferences[speciesID] / (float)localCounts[speciesID];
+                distributionsBySpeciesID[speciesID]->append(div);
+                if (localCounts[speciesID] > bestCount)
+                {
+                    bestCount = localCounts[speciesID];
+                    bestID = speciesID;
+                    bestDiv = div;
+                }
+            }
 
+            if (localCounts.count()>0)
+            {
+                simulationManager->simulationLog->perCellDiversity[n][m]=bestDiv;
+                if (bestDiv>maxValue) maxValue=bestDiv;
+            }
         }
+
+        simulationManager->simulationLog->maxPerCellDiversity = maxValue;
 
         //At this point we have the data we need - for each species we have a list of mean in-cell hamming distances
         //So we need to sort and sample those lists to determine distributions, write some values into species structures,

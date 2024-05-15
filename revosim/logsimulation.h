@@ -37,6 +37,10 @@ public:
     QString validateLog(QString text, int logType);
 
     bool loggingInCellDiversity();
+
+    float maxPerCellDiversity=0;
+    float perCellDiversity[GRID_X][GRID_Y];
+
 private:
     QString headerText;
     QString logIterationText;

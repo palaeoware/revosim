@@ -249,6 +249,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->populationWindowComboBox->addItem("Pathogens - word 1", QVariant(10));
     ui->populationWindowComboBox->addItem("Pathogens - word 2", QVariant(11));
     ui->populationWindowComboBox->addItem("Stolen energy", QVariant(12));
+    ui->populationWindowComboBox->addItem("Local diversity (modal species)", QVariant(13));
 
     //ARTS -Population Window dropdown set current index. Note this value is the index not the data value.
     ui->populationWindowComboBox->setCurrentIndex(2);
@@ -2988,6 +2989,23 @@ void MainWindow::refreshPopulations()
         }
     }
 
+    if (currentSelectedMode == 13)   //visualisation for per-cell diversity
+    {
+        for (int n = 0; n < simulationManager->simulationSettings->gridX; n++)
+        {
+            for (int m = 0; m < simulationManager->simulationSettings->gridY; m++)
+            {
+
+                if (totalFitness[n][m] == 0) populationImageColour->setPixel(n, m, 0); //black if square is empty
+                else
+                {
+                    populationImage->setPixel(n, m, (int)(255*simulationManager->simulationLog->perCellDiversity[n][m]/simulationManager->simulationLog->maxPerCellDiversity));
+                }
+            }
+            populationItem->setPixmap(QPixmap::fromImage(*populationImage));
+        }
+    }
+
     lastReport = static_cast<int>(simulationManager->iteration);
 }
 
@@ -4483,6 +4501,11 @@ QString MainWindow::handleAnalysisTool(int code)
     //ui->plainTextEdit->appendPlainText(OutputString);
 
     return OutputString;
+}
+
+bool MainWindow::isShowingDiversityLog()
+{
+    return ui->populationWindowComboBox->itemData(ui->populationWindowComboBox->currentIndex()).toInt()==13;
 }
 
 /*!
