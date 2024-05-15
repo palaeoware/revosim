@@ -8,6 +8,11 @@ BreedSystem::BreedSystem() : System("Breed System")
 //Return true if breed compatible
 bool BreedSystem::tryBreed(quint32 *genome, quint32 *partnerGenome, int maxDifference)
 {
+    return breedDistance(genome,partnerGenome)<=maxDifference;
+}
+
+int BreedSystem::breedDistance(quint32 *genome, quint32 *partnerGenome)
+{
     int bitcount=0;
     for (int i=0; i<useGenomeWordsCount; i++)
     {
@@ -16,7 +21,6 @@ bool BreedSystem::tryBreed(quint32 *genome, quint32 *partnerGenome, int maxDiffe
 
         //add to cumulative bit difference count
         bitcount += bitCount(genomeWord);
-        if (bitcount>maxDifference) return false; //get out if gone over limit (cut out some iterations)
     }
-    return true; // got to end, so must have had max or fewer differences
+    return bitcount;
 }

@@ -60,6 +60,17 @@ void LogSimulation::CreateReplacementText()
         frequenciesHeaders.append(QString("WD_%1").arg(ii));
     replacementText.insert("*speciesDiversityPerWord*", frequenciesHeaders.join(","));
 
+    frequenciesHeaders.clear();
+    frequenciesHeaders.append("perCellDiversityMean");
+    frequenciesHeaders.append("perCellDiversityPercentile5");
+    frequenciesHeaders.append("perCellDiversityPercentile10");
+    frequenciesHeaders.append("perCellDiversityPercentile25");
+    frequenciesHeaders.append("perCellDiversityMedian");
+    frequenciesHeaders.append("perCellDiversityPercentile75");
+    frequenciesHeaders.append("perCellDiversityPercentile90");
+    frequenciesHeaders.append("perCellDiversityPercentile95");
+    replacementText.insert("*speciesPerCellDiversity*", frequenciesHeaders.join(","));
+
     replacementText.insert("*Ca*", "sum_fitness_difference_from_origin_(Ca)");
     replacementText.insert("*NCa*", "sum_breed_only_difference_from_origin_(NCa)");
     replacementText.insert("*Cr*", "sum_fitness_difference_from_last_(Cr)");
@@ -426,6 +437,11 @@ QString LogSimulation::validateLog(QString text, int logType)
     return returnText;
 }
 
+bool LogSimulation::loggingInCellDiversity()
+{
+    return logSpeciesText.contains("*speciesPerCellDiversity*");
+}
+
 /********** Logging functions **********/
 //At end of run in run for/batch mode, or on click when a run is going, this allows user to output the final log, along with the tree for the run.
 void LogSimulation::writeRunData(QString globalSavePath, int batchRuns)
@@ -514,6 +530,10 @@ QString LogSimulation::processLogTextSpecies(QString text)
         if (textLocal.contains(("*speciesDiversityPerWord*")))
             textLocal.replace("*speciesDiversityPerWord*", GetDiversityPerWordString(oldSpeciesList->at(i)));
 
+        if (textLocal.contains(("*speciesPerCellDiversity*")))
+            textLocal.replace("*speciesPerCellDiversity*", GetPerCellDiversityString(oldSpeciesList->at(i)));
+
+
         out << textLocal;
     }
 
@@ -544,6 +564,18 @@ QString LogSimulation::GetDiversityPerWordString(Species species)
 
     return stringList.join(",");
 }
+
+
+QString LogSimulation::GetPerCellDiversityString(Species species)
+{
+    QStringList stringList;
+    stringList.append(QString::number(species.meanInCellDiversity));
+    for (int i = 0; i < 7; i++)
+        stringList.append(QString::number(species.inCellDiversityDistribution[i]));
+
+    return stringList.join(",");
+}
+
 
 //RJG - grid level outputs
 QString LogSimulation::processLogTextGeneral(QString text)

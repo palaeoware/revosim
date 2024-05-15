@@ -2383,6 +2383,7 @@ void MainWindow::runSetUp()
     nextRefresh = refreshRate;
 
     if (loggingCheckbox->isChecked()) writeLog();
+
 }
 
 void MainWindow::doSavePath()
@@ -5156,6 +5157,7 @@ void MainWindow::on_actionSettings_Dock_triggered()
 void MainWindow::on_actionOutput_Dock_triggered()
 {
     updateOutputDockVisibility();
+
 }
 
 

@@ -36,6 +36,7 @@ public:
 
     QString validateLog(QString text, int logType);
 
+    bool loggingInCellDiversity();
 private:
     QString headerText;
     QString logIterationText;
@@ -62,6 +63,7 @@ private:
     QString GetDiversityPerWordString(Species species);
     SimSettings *simSettings;
 
+    QString GetPerCellDiversityString(Species species);
 };
 
 #endif // LOGSIMULATION_H

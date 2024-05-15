@@ -317,3 +317,8 @@ bool Critter::operator == (const Critter &c) const
     if (speciesID != c.speciesID) return false;
     return true;
 }
+
+int Critter::CalculateHammingDistance(Critter *other)
+{
+    return simulationManager->breedSystem->breedDistance(genomeWords, other->genomeWords);
+}

@@ -44,6 +44,9 @@ public:
     int size;
     int genomeDiversity;
     int diversityPerWord[MAX_GENOME_WORDS];
+    float meanInCellDiversity;
+    float inCellDiversityDistribution[7]; //5,10,25,median,75,90,95th percentiles
+
     float fitness;
     float envFitness;
     float totalEnergy;
@@ -76,6 +79,7 @@ public:
     bool speciationLogging;
     QString speciationLogText;
 
+    void DiversityAnalysis(int firstx, int lastx);
 private:
 
     QHash<quint64, GenomeHashTable *> allTables;

@@ -85,7 +85,7 @@ Species keywords
 :\*speciesParent\*: This outputs the REvoSim species ID for the parent species.
 :\*speciesSize\*: The number of individuals within the species.
 :\*speciesTrophicLevel\*: The mean trophic level of the organisms in a species.
-
+:\*speciesPerCellDiversity\*: Outputs eight columns of data on diversity of a species within each cell. For each cell, a mean pairwise difference is calculcated between all members of the species. The log system outputs (a) the mean of these means, over all cells occupied by the species, and (b) the 5th, 10th, 25th, 50th (median), 75th, 90th and 95th percentiles of the population of these means. 
 v2.0.0 log
 ----------
 

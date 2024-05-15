@@ -52,6 +52,7 @@ public:
     float trophicLevel;
     quint32 *genomeWords; //new genome data
     quint64 speciesID; //this is inherited from parents
+    int CalculateHammingDistance(Critter *other);
 };
 
 

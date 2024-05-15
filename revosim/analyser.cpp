@@ -17,6 +17,7 @@
 
 #include "analyser.h"
 #include "mainwindow.h"
+#include "qglobal.h"
 #include "simmanager.h"
 #include "globals.h"
 #include "analysistools.h"
@@ -62,12 +63,15 @@ Species::Species()
     Cr = 0;
     NCa = 0;
     NCr = 0;
+    meanInCellDiversity = 0;
+    for (int i = 0; i < 7; i++) inCellDiversityDistribution[i]=0;
 
     for (int i = 0; i < MAX_GENOME_WORDS; i++) for (int j = 0; j < 32; j++) frequenciesAtOrigination[i][j] = frequenciesLastIteration[i][j] = 0;
     for (int i = 0; i < MAX_GENOME_WORDS; i++) diversityPerWord[i]=0;
 
     //no need to initialise complexlogdata. I hope!
 }
+
 
 /*!
  * \brief Analyser::Analyser
@@ -147,7 +151,7 @@ void Analyser::groupsGenealogicalTracker_v3()
     foreach (Species s, *oldSpeciesList)
     {
         Species *sp = new Species();
-        *sp = s;
+        *sp = s; //this does a memberwise copy automatically I'm told. Well I never!
         speciesQueue.enqueue(sp);
     }
     int processorCount = simulationManager->ProcessorCount;
@@ -219,6 +223,13 @@ void Analyser::groupsGenealogicalTracker_v3()
 
     outstring += QString("EuanFitness: %1ms  ").arg(t.elapsed() - last);
     last = t.elapsed();
+
+    if (simulationManager->simulationLog->loggingInCellDiversity())
+    {
+        DiversityAnalysis(0, simulationManager->simulationSettings->gridX-1);
+        outstring += QString("DiversityAnalyser: %1ms  ").arg(t.elapsed() - last);
+        last = t.elapsed();
+    }
 
     //clean up - recursively delete the custom tables, and reset custom memory manager
     qDeleteAll(allTables);
@@ -1450,4 +1461,91 @@ void Analyser::gatherGenomesParallel(int firstx, int lastx)
                 }
             }
         }
+}
+
+
+//Work out mean pairwise difference in each cell for each species
+//and store all values so we can work out a distribution
+void Analyser::DiversityAnalysis(int firstx, int lastx)
+{
+    int ycount = simulationManager->simulationSettings->gridY;
+    int zcount = simulationManager->cellSettingsMaster->slotsPerSquare;
+
+    //Set up data structures
+    QMap<quint64, QList<float> *> distributionsBySpeciesID;
+    QMap<quint64, int> localCounts, localTotalDifferences;
+
+    for (int i=0; i<oldSpeciesList->count(); i++)
+        distributionsBySpeciesID.insert(oldSpeciesList->at(i).ID, new QList<float>);
+
+    for (int n = firstx; n <= lastx; n++)
+    {
+        for (int m = 0; m < ycount; m++)
+        {
+            //For every cell - clear count/totalling dictionarie
+            localCounts.clear();
+            localTotalDifferences.clear();
+
+            for (int c = 0; c < zcount-1; c++)
+            {
+                Critter *crit = &(critters[n][m][c]);
+                if (crit->age > 0) //if it's alive
+                {
+                    //check all critters further down the list
+                    for (int c2 = c+1; c2<zcount; c2++)
+                    {
+                        Critter *crit2 = &(critters[n][m][c2]);
+
+                        //if THIS is both alive and the same species
+                        if (crit2->age > 0 && crit2->speciesID == crit->speciesID)
+                        {
+                            //calculate difference
+                            int diff = crit->CalculateHammingDistance(crit2);
+                            if (!localCounts.contains(crit2->speciesID))
+                            {
+                                //no entry in dictionary for this species - create one for one pair
+                                localCounts.insert(crit2->speciesID,1);
+                                localTotalDifferences.insert(crit2->speciesID,diff);
+                            }
+                            else
+                            {
+                                //entry existed - add a pair
+                                localCounts[crit2->speciesID]++;
+                                localTotalDifferences[crit2->speciesID]+= diff;
+                            }
+                        }
+                    }
+                }
+            }
+
+            //divide totals by counts, add to main list for this species
+            foreach (quint64 speciesID, localCounts.keys())
+                distributionsBySpeciesID[speciesID]->append((float)localTotalDifferences[speciesID]
+                                                            / (float)localCounts[speciesID]);
+
+        }
+
+        //At this point we have the data we need - for each species we have a list of mean in-cell hamming distances
+        //So we need to sort and sample those lists to determine distributions, write some values into species structures,
+        //then we are done
+    }
+
+    for (int i=0; i<oldSpeciesList->count(); i++)
+    {
+        QList<float> *data = distributionsBySpeciesID[oldSpeciesList->at(i).ID];
+        std::sort(data->begin(), data->end());
+
+        (*oldSpeciesList)[i].meanInCellDiversity = std::accumulate(data->begin(), data->end(),0) / ((float)data->count());
+
+        //5,10,25,50,75,90,95 percentile
+        (*oldSpeciesList)[i].inCellDiversityDistribution[0] = data->at((data->count() * 5)/100);
+        (*oldSpeciesList)[i].inCellDiversityDistribution[1] = data->at((data->count() * 10)/100);
+        (*oldSpeciesList)[i].inCellDiversityDistribution[2] = data->at((data->count() * 25)/100);
+        (*oldSpeciesList)[i].inCellDiversityDistribution[3] = data->at((data->count() * 50)/100);
+        (*oldSpeciesList)[i].inCellDiversityDistribution[4] = data->at((data->count() * 75)/100);
+        (*oldSpeciesList)[i].inCellDiversityDistribution[5] = data->at((data->count() * 90)/100);
+        (*oldSpeciesList)[i].inCellDiversityDistribution[6] = data->at((data->count() * 95)/100);
+    }
+
+    qDeleteAll(distributionsBySpeciesID);
 }

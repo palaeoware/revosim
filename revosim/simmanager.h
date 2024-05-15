@@ -152,8 +152,6 @@ public:
     GenomeComparisonSystem *genomeComparisonSystem;
 
 
-
-
 private:
     void makeLookups();
     void populateCellSettings();
