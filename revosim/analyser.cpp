@@ -1559,6 +1559,9 @@ void Analyser::DiversityAnalysis(int firstx, int lastx)
 
             (*oldSpeciesList)[i].meanInCellDiversity = std::accumulate(data->begin(), data->end(),0) / ((float)data->count());
 
+            if ((*oldSpeciesList)[i].meanInCellDiversity != (*oldSpeciesList)[i].meanInCellDiversity)
+                qDebug()<<"NAN!";
+
             //5,10,25,50,75,90,95 percentile
             (*oldSpeciesList)[i].inCellDiversityDistribution[0] = data->at((data->count() * 5)/100);
             (*oldSpeciesList)[i].inCellDiversityDistribution[1] = data->at((data->count() * 10)/100);
@@ -1571,7 +1574,7 @@ void Analyser::DiversityAnalysis(int firstx, int lastx)
         else
         {
             (*oldSpeciesList)[i].meanInCellDiversity=0;
-            for (int i=0; i<7; i++) (*oldSpeciesList)[i].inCellDiversityDistribution[i]=0;
+            for (int j=0; j<7; j++) (*oldSpeciesList)[i].inCellDiversityDistribution[j]=0;
         }
     }
 
