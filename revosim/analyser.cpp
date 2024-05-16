@@ -860,7 +860,7 @@ int Analyser::generateGroupsFor(GenomeHashTable *thisSpecies)
         }
     }
 
-    //lookups can no longer grow - so just get their pointers so use further down
+    //lookups can no longer grow - so just get their pointers to use further down
     qint32 *lookuparray = grouplookupVLA.data();
     qint32 *groupcodearray = groupcodesVLA.data();
 

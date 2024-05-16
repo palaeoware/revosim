@@ -568,7 +568,10 @@ QString LogSimulation::GetDiversityPerWordString(Species species)
 
 QString LogSimulation::GetPerCellDiversityString(Species species)
 {
+    if (species.size==1) return "0,0,0,0,0,0,0,0";
+
     QStringList stringList;
+
     stringList.append(QString::number(species.meanInCellDiversity));
     for (int i = 0; i < 7; i++)
         stringList.append(QString::number(species.inCellDiversityDistribution[i]));
