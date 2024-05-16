@@ -1552,18 +1552,27 @@ void Analyser::DiversityAnalysis(int firstx, int lastx)
     for (int i=0; i<oldSpeciesList->count(); i++)
     {
         QList<float> *data = distributionsBySpeciesID[oldSpeciesList->at(i).ID];
-        std::sort(data->begin(), data->end());
 
-        (*oldSpeciesList)[i].meanInCellDiversity = std::accumulate(data->begin(), data->end(),0) / ((float)data->count());
+        if (data->count()>0)
+        {
+            std::sort(data->begin(), data->end());
 
-        //5,10,25,50,75,90,95 percentile
-        (*oldSpeciesList)[i].inCellDiversityDistribution[0] = data->at((data->count() * 5)/100);
-        (*oldSpeciesList)[i].inCellDiversityDistribution[1] = data->at((data->count() * 10)/100);
-        (*oldSpeciesList)[i].inCellDiversityDistribution[2] = data->at((data->count() * 25)/100);
-        (*oldSpeciesList)[i].inCellDiversityDistribution[3] = data->at((data->count() * 50)/100);
-        (*oldSpeciesList)[i].inCellDiversityDistribution[4] = data->at((data->count() * 75)/100);
-        (*oldSpeciesList)[i].inCellDiversityDistribution[5] = data->at((data->count() * 90)/100);
-        (*oldSpeciesList)[i].inCellDiversityDistribution[6] = data->at((data->count() * 95)/100);
+            (*oldSpeciesList)[i].meanInCellDiversity = std::accumulate(data->begin(), data->end(),0) / ((float)data->count());
+
+            //5,10,25,50,75,90,95 percentile
+            (*oldSpeciesList)[i].inCellDiversityDistribution[0] = data->at((data->count() * 5)/100);
+            (*oldSpeciesList)[i].inCellDiversityDistribution[1] = data->at((data->count() * 10)/100);
+            (*oldSpeciesList)[i].inCellDiversityDistribution[2] = data->at((data->count() * 25)/100);
+            (*oldSpeciesList)[i].inCellDiversityDistribution[3] = data->at((data->count() * 50)/100);
+            (*oldSpeciesList)[i].inCellDiversityDistribution[4] = data->at((data->count() * 75)/100);
+            (*oldSpeciesList)[i].inCellDiversityDistribution[5] = data->at((data->count() * 90)/100);
+            (*oldSpeciesList)[i].inCellDiversityDistribution[6] = data->at((data->count() * 95)/100);
+        }
+        else
+        {
+            (*oldSpeciesList)[i].meanInCellDiversity=0;
+            for (int i=0; i<7; i++) (*oldSpeciesList)[i].inCellDiversityDistribution[i]=0;
+        }
     }
 
     qDeleteAll(distributionsBySpeciesID);
