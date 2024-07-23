@@ -141,12 +141,12 @@ _____
 
 ## 5. Documentation
 
-All documentation for REvoSim is online at [http://revosim.readthedocs.io/](http://revosim.readthedocs.io/). This is a version controlled user manual automatically parsed from the .rst found under the docs folders in our software folders. EnviroGen documentation is managed in the same way, and can be found at [http://envirogen.readthedocs.io/]((http://revosim.readthedocs.io/).
+All documentation for REvoSim is online at [http://revosim.readthedocs.io/](http://revosim.readthedocs.io/). This is a version controlled user manual automatically parsed from the .rst found under the docs folders in our software folders. EnviroGen documentation is managed in the same way, and can be found at [http://envirogen.readthedocs.io/](http://envirogen.readthedocs.io/).
 _____
 
 ## 6. Contributing to the code
 
-Contribution to the code in this repository is welcome. Please read the [Repository Contribution](https://github.com/palaeoware/repoconventions)  document for a guide to our coding style and repository structure before submitting any code updates.
+Contribution to the code in this repository is welcome. Please read the [Repository Contribution](https://github.com/palaeoware/repoconventions) document for information on our licencing, code of conduct, coding style, and repository structure before submitting any code updates.
 
 _____
 
@@ -157,8 +157,6 @@ Bug reporting and feature requests should be made through the [GitHub Issues](..
 
 _____
 
-
-t:@palaeoware
 
 e:palaeoware@gmail.com
 
