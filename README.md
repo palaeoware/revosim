@@ -16,13 +16,14 @@ ______
 ## Software references:
 Garwood, R.J., Spencer A.R.T. and Sutton, M.D., 2019. REvoSim: Organism-level simulation of macro- and microevolution. Palaeontology 62(3),339-355. [https://doi.org/10.1111/pala.12420](https://doi.org/10.1111/pala.12420)
 
-Furness, E.N., Garwood, R.J. and Sutton, M.D., 2023. REvoSim v3.0.0: A fast evolutionary simulation tool with ecological processes. JOSS. Accepted.
+Furness, E.N., Garwood, R.J. and Sutton, M.D., 2023. REvoSim v3.0.0: A fast evolutionary simulation tool with ecological processes. JOSS  8(89), 5284. [https://doi.org/10.21105/joss.05284](https://doi.org/10.21105/joss.05284)
 
 ## Other references:
-Furness E.N., Garwood R.J., Mannion P.D. & Sutton M.D. 2021. Evolutionary simulations clarify and reconcile biodiversity-disturbance models. Proceedings of the Royal Society B 288(1949):20210240. doi: 10.1098/rspb.2021.0240
+Furness E.N., Garwood R.J., Mannion P.D. & Sutton M.D. 2021. Evolutionary simulations clarify and reconcile biodiversity-disturbance models. Proceedings of the Royal Society B 288(1949):20210240. [https://doi.org/10.1098/rspb.2021.0240](https://doi.org/10.1098/rspb.2021.0240)
 
-Furness, E.N., Garwood, R.J., Mannion, P. D. & Sutton, M.D. 2021. Productivity, niche availability, species richness and extinction risk: Untangling relationships using individual-based simulations. Ecology and Evolution 11(13): 8923-8940. doi: 10.1002/ece3.7730
+Furness, E.N., Garwood, R.J., Mannion, P. D. & Sutton, M.D. 2021. Productivity, niche availability, species richness and extinction risk: Untangling relationships using individual-based simulations. Ecology and Evolution 11(13): 8923-8940. [https://doi.org/10.1002/ece3.7730](https://doi.org/10.1002/ece3.7730)
 
+Furness, E.N. & Sutton, M.D. 2024. The biological cropping hypothesis over evolutionary time: an experimental test. Theoretical Ecology, 17: 121-129. [https://doi.org/10.1007/s12080-024-00579-3](https://doi.org/10.1007/s12080-024-00579-3)
 _____
 
 CONTENTS:
