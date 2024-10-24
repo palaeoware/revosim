@@ -1,4 +1,4 @@
-/*!
+ /*!
  * @file
  *
  * Main Window
@@ -905,14 +905,27 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
         simulationManager->cellSettingsMaster->hgtTransform = i;
     });
 
-    QLabel *hgt_mode_label = new QLabel("Transformation mode:");
-    interactionSettingsGrid->addWidget(hgt_mode_label, 20, 1, 1, 2);
+
+
+    QLabel *transfer_chance_label = new QLabel("Transfer chance 1 in : ");
+    transfer_chance_label->setToolTip("<font>Set the HGT transfer chance.</font>");
+    transferchanceSpin = new QSpinBox;
+    transferchanceSpin->setMinimum(1);
+    transferchanceSpin->setMaximum(1000000);
+    interactionSettingsGrid->addWidget(transfer_chance_label, 20, 1);
+    interactionSettingsGrid->addWidget(transferchanceSpin, 20, 2);
+    QLabel *hgt_mode_label = new QLabel("Transformation placement:");
+    interactionSettingsGrid->addWidget(hgt_mode_label, 21, 1, 1, 2);
+    connect(transferchanceSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
+    {
+        simulationManager->cellSettingsMaster-> hgtTransferChance = i;
+    });
 
     // PG- to add in when functions sorted, currently only non-Synonoymous works.
-    hgtSynonoymousRadio = new QRadioButton("Synonymous");
-    hgtSynonoymousRadio->setToolTip("<font>Select to use allow hgt to only in include synonymous transfers.</font>");
-    hgtNonSynonoymousRadio = new QRadioButton("Non-synonymous");
-    hgtNonSynonoymousRadio->setToolTip("<font>Select to use allow hgt to allow non-synonymous transfers.</font>");
+    hgtSynonoymousRadio = new QRadioButton("Same position");
+    hgtSynonoymousRadio->setToolTip("<font>Transfer segment placed in recipent at same location as donor genome.</font>");
+    hgtNonSynonoymousRadio = new QRadioButton("Shifted position");
+    hgtNonSynonoymousRadio->setToolTip("<font>Transfer segment placed in recipent at different location than donor.</font>");
 
     auto *hgtButtonGroup = new QButtonGroup;
     hgtButtonGroup->addButton(hgtSynonoymousRadio, 0);
@@ -923,7 +936,7 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     HgtModeGrid->addWidget(hgtSynonoymousRadio, 1, 1, 1, 1);
     HgtModeGrid->addWidget(hgtNonSynonoymousRadio, 1, 2, 1, 1);
 
-    interactionSettingsGrid->addLayout(HgtModeGrid, 21, 1, 1, 2);
+    interactionSettingsGrid->addLayout(HgtModeGrid, 22, 1, 1, 2);
 
     connect(hgtButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i)
     {
@@ -934,12 +947,12 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     QLabel *transfer_length_label = new QLabel("Transfer length: ");
     transfer_length_label->setToolTip("<font>Set the HGT transfer length.</font>");
     transferlengthSpin = new QSpinBox;
-    transferlengthSpin->setMinimum(0);
+    transferlengthSpin->setMinimum(1);
     transferlengthSpin->setMaximum(simulationManager->simulationSettings->genomeSize*32);
     transferlengthSpin->setValue(simulationManager->cellSettingsMaster->hgtTransferLength);
     transferlengthSpin->setToolTip("<font>Set the HGT transfer length.</font>");
-    interactionSettingsGrid->addWidget(transfer_length_label, 22, 1);
-    interactionSettingsGrid->addWidget(transferlengthSpin, 22, 2);
+    interactionSettingsGrid->addWidget(transfer_length_label, 23, 1);
+    interactionSettingsGrid->addWidget(transferlengthSpin, 23, 2);
     connect(transferlengthSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
     {
         simulationManager->cellSettingsMaster->hgtTransferLength = i;
@@ -947,7 +960,7 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
 
     randomlengthCheckbox = new QCheckBox("Random transfer length");
     randomlengthCheckbox->setToolTip("<font>Turn on/off nonSpatial settling of offspring.</font>");
-    interactionSettingsGrid->addWidget(randomlengthCheckbox, 23, 1, 1, 2);
+    interactionSettingsGrid->addWidget(randomlengthCheckbox, 24, 1, 1, 2);
     randomlengthCheckbox->setChecked(simulationManager->simulationSettings->hgtrandomlength);
     connect(randomlengthCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
     {

@@ -1,3 +1,4 @@
+
 /**
  * @file
  * Simulation Manager
@@ -784,10 +785,12 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                 breedGeneration[n][m] = 0;
             }
 
+            //---------------------------------------HGT block (make sure it's in the right place------------------------
+
             quint32 deadlistentries[SLOTS_PER_GRID_SQUARE]; //PG produce a list in the cell of all organism set to die
             for (int i = 0; i < SLOTS_PER_GRID_SQUARE; i++)
                 for (int c = 0; c <= maxv; c++)
-                    if (crit[c].age < 2||crit[c].energy == 0) // PG - check age < 2 correct
+                    if (crit[c].age < 2  ||crit[c].energy == 0) // PG - check age < 2 correct
                     {
                         deadlistentries[i] = *crit[c].genomeWords;
                     }
@@ -801,20 +804,25 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                     if (deadlistentries[i])
                     {
                         genometransfer = deadlistentries[i];
+
                     }
 
 
-                quint32 mask =  ~(0 << simulationManager->simulationSettings->genomeSize*32); //genomes of 1s
-                mask = hgtSystem->GenerateMask(mask);
+
+                quint32 mask =  ~(0 << simulationManager->simulationSettings->genomeSize*32); //mask genomes of 1s
+                mask = hgtSystem->generateMask(mask);
                 genometransfer =  hgtSystem->GenerateTransform(genometransfer, mask);
 
+
+
+
                 for (int c = 0; c <= maxv; c++)
-                    if (hgtSystem->willTransform() & genometransfer !=0)
+                    if (hgtSystem->willTransform() & (genometransfer !=0))
                     {
-                            hgtSystem->Transform(crit[c].genomeWords, genometransfer, mask);     
+                            hgtSystem->Transform(crit[c].genomeWords, genometransfer, mask);
                     }
             }
-
+            //---------------------------------------HGT block------------------------------------------------------------
 
             // Determine the food to be given to organisms per point of fitness that they have.
             float addFood;

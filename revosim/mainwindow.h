@@ -224,6 +224,7 @@ private:
     QSpinBox *pathogenFrequencySpin{};
     QSpinBox *croppingFrequencySpin{};
     QSpinBox *transferlengthSpin{};
+    QSpinBox *transferchanceSpin{};
 
     //RJG - text edits for logs
     QTextEdit *headerTextEdit;

@@ -35,4 +35,5 @@ CellSettings::CellSettings()
     interactWithinSpecies = true;
     hgtTransform = false;
     hgtTransferLength = 0;
+    hgtTransferChance = 2000;
 }

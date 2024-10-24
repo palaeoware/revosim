@@ -41,6 +41,7 @@ public:
     bool interactWithinSpecies; //Allows interactions between members of the same species
     bool hgtTransform;
     int hgtTransferLength;
+    int hgtTransferChance;
 
 };
 
