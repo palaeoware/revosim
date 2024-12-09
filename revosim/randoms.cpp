@@ -7,12 +7,14 @@ randoms::randoms()
     newRandoms16();
     newRandoms32();
     newRandoms64();
+    //newHgtRandoms();
 
     //Note that all are quint16 - so will just cycle from 0 to 65536 with a ++
     nextRandom8 = 0;
     nextRandom16 = 0;
     nextRandom32 = 0;
     nextRandom64 = 0;
+    //nextHgtRandoms = 0;
 }
 
 quint8 randoms::rand8()
@@ -55,11 +57,24 @@ void randoms::newRandoms32()
 
 quint64 randoms::rand64()
 {
-    if (nextRandom64 == 0) newRandoms64();
-    return randoms64[nextRandom64++];
+    if (nextRandom32 == 0) newRandoms64();
+    return randoms32[nextRandom32++];
 }
 
 void randoms::newRandoms64()
 {
     QRandomGenerator::global()->fillRange(randoms64);
 }
+
+// quint32 randoms::hgtrand32()
+// {
+//     if (nextHgtRandoms == 0) newHgtRandoms();
+//     return HGTrandoms[nextHgtRandoms++];
+// }
+
+
+// void randoms::newHgtRandoms()
+// {
+//    QRandomGenerator::global()->fillRange(HGTrandoms);
+// }
+

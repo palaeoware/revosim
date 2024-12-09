@@ -813,9 +813,9 @@ bool test::testEight(QString &outString)
 
 
         // create initial mask of genome length
-        quint32 mask =  ~(0 << simulationManager->simulationSettings->genomeSize*32); //genomes of 1s
+        //mask =  ~(0 << simulationManager->simulationSettings->genomeSize*32); //genomes of 1s
         // use generateMask function to create mask of transfer segment
-        mask = simulationManager->hgtSystem->generateMask(mask);
+        quint32 mask = simulationManager->hgtSystem->generateMask(&dgenome);
 
         //determine first set bit in mask
         int position = 0;
@@ -876,7 +876,7 @@ bool test::testEight(QString &outString)
         }
         else out << "\n Transformation sucessful... \n";
 
-        out << "Mask  : \n " << simulationManager->printGenome(rgenome);
+        //out << "Mask  : \n " << simulationManager->printGenome(rgenome);
     }
     if (testFlag) out << "\n Tests passed.\n\n";
     return testFlag;

@@ -40,6 +40,8 @@
 #include "visualisationsystem.h"
 #include "genomecomparisonsystem.h"
 #include "hgtsystem.h"
+#include "variablehgtlensystem.h"
+#include "variablehgtprobsystem.h"
 
 #include <QElapsedTimer>
 #include <QFuture>
@@ -152,6 +154,8 @@ public:
     LogSimulation *simulationLog;
     GenomeComparisonSystem *genomeComparisonSystem;
     HgtSystem *hgtSystem;
+    VariableHgtProbSystem *variableHgtProbSystem;
+    VariableHgtLenSystem *variableHgtLenSystem;
 
 
 

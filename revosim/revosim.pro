@@ -57,6 +57,8 @@ SOURCES += main.cpp \
     system.cpp \
     test.cpp \
     variablebreedsystem.cpp \
+    variablehgtprobsystem.cpp \
+    variablehgtlensystem.cpp \
     variablemutatesystem.cpp \
     visualisationsystem.cpp \
     hgtsystem.cpp
@@ -100,6 +102,8 @@ HEADERS += mainwindow.h \
     system.h \
     test.h \
     variablebreedsystem.h \
+    variablehgtprobsystem.h \
+    variablehgtlensystem.h \
     variablemutatesystem.h \
     visualisationsystem.h \
     hgtsystem.h
@@ -129,4 +133,3 @@ RC_FILE = resources/revosim.rc
 
 #Mac icon
 ICON = ../resources/revosim.icns
-

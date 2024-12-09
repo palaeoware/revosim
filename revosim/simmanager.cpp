@@ -1,4 +1,3 @@
-
 /**
  * @file
  * Simulation Manager
@@ -165,6 +164,14 @@ SimManager::SimManager()
     hgtSystem = new HgtSystem();
     hgtSystem->setGenomeWordsFromString("01", MAX_GENOME_WORDS);
     systemsList.append(hgtSystem);
+
+    variableHgtProbSystem = new VariableHgtProbSystem();
+    variableHgtProbSystem->setGenomeWordsFromString("1", MAX_GENOME_WORDS);
+    systemsList.append(variableHgtProbSystem);
+
+    variableHgtLenSystem = new VariableHgtLenSystem();
+    variableHgtLenSystem->setGenomeWordsFromString("0", MAX_GENOME_WORDS);
+    systemsList.append(variableHgtLenSystem);
 
     simulationLog = new LogSimulation(simulationSettings);
 }
@@ -630,7 +637,6 @@ void SimManager::setupRun()
             for (int o = 0; o < PATH_DEPTH; o++)
                 //RJG - Seed pathogen layer with 64 bit randoms too
                 pathogens[n][m][o] = simulationRandoms->rand64();
-
     //RJG - reset warning system
     warningCount = 0;
 }
@@ -785,44 +791,45 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                 breedGeneration[n][m] = 0;
             }
 
-            //---------------------------------------HGT block (make sure it's in the right place------------------------
 
-            quint32 deadlistentries[SLOTS_PER_GRID_SQUARE]; //PG produce a list in the cell of all organism set to die
-            for (int i = 0; i < SLOTS_PER_GRID_SQUARE; i++)
-                for (int c = 0; c <= maxv; c++)
-                    if (crit[c].age < 2  ||crit[c].energy == 0) // PG - check age < 2 correct
-                    {
-                        deadlistentries[i] = *crit[c].genomeWords;
-                    }
-
-
-            // need to change so a random dead genome is selected, now it is just the last non-empty one
-            if (cellSettingsMaster->hgtTransform)
-            {
+            //---------------------------------------HGT block (make sure it's in the right place) ------------------------
+            //PG- if either hgt setting selected enter hgt loop
+            if (cellSettingsMaster->hgtTransform | simulationSettings->hgtvariable){
+                quint32 deadlistentries[SLOTS_PER_GRID_SQUARE]={0};
                 quint32 genometransfer;
-                for (int i = 0; i < SLOTS_PER_GRID_SQUARE; i++)
-                    if (deadlistentries[i])
-                    {
-                        genometransfer = deadlistentries[i];
 
+                //PG -produce a list in the cell of all organism set to die and select one of their genome words at random
+                for (int i = 0; i < SLOTS_PER_GRID_SQUARE; i++){
+                    for (int c = 0; c <= maxv; c++){
+                        //quint32 randomWord = simulationRandoms->rand32() % (simulationManager->simulationSettings->genomeSize);
+                        //PG- TODO add loop 1 to genomeWord[max] for speed
+                        if (crit[c].age < 2  ||crit[c].energy == 0)  deadlistentries[i] = crit[c].genomeWords[0];
+                        //PG- select one of the genomes of the organisms on the list as the transfer organism
+                        if (deadlistentries[i]!=0) genometransfer = deadlistentries[i];
+                        //could speed up if first one used, is there a bias for chosing first or last? Might be safer to create a list of dead, choose random number off the list
+                        //Need think about energy stealing interactions having 0 fitness
                     }
+                }
 
 
 
-                quint32 mask =  ~(0 << simulationManager->simulationSettings->genomeSize*32); //mask genomes of 1s
-                mask = hgtSystem->generateMask(mask);
-                genometransfer =  hgtSystem->GenerateTransform(genometransfer, mask);
-
-
-
-
-                for (int c = 0; c <= maxv; c++)
-                    if (hgtSystem->willTransform() & (genometransfer !=0))
-                    {
-                            hgtSystem->Transform(crit[c].genomeWords, genometransfer, mask);
+                //PG- if there is a donor genome, appply HGT loop to each individual genome word
+                if (genometransfer !=0){
+                // need to make sure the slot is occupied - optimised and safety
+                    for (int c = 0; c <= maxv; c++){
+                        for(int i = 0; i < simulationManager->simulationSettings->genomeSize; i++){
+                        // PG - if GUI settings or variable breed probabilty determine HGT will take place, do the thing
+                            if ((cellSettingsMaster->hgtTransform && hgtSystem->willTransform()) || (simulationSettings->hgtvariable && variableHgtProbSystem->willTransfer(crit[c].genomeWords))){
+                                quint32 mask = hgtSystem->generateMask(crit[c].genomeWords);
+                                genometransfer =  hgtSystem->GenerateTransform(genometransfer, mask);
+                                hgtSystem->Transform(crit[c].genomeWords, genometransfer, mask);
+                            }
+                        }
                     }
+                }
             }
-            //---------------------------------------HGT block------------------------------------------------------------
+            //----------------------------------------HGT block------------------------------------------------------------
+
 
             // Determine the food to be given to organisms per point of fitness that they have.
             float addFood;

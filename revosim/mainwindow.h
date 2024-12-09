@@ -176,6 +176,8 @@ private:
     QCheckBox *autoWriteLogIndividualsCheckbox{};
     QCheckBox *hgtCheckbox{};
     QCheckBox *randomlengthCheckbox{};
+    QCheckBox *variablehgtCheckbox{};
+
 
     //RJG - radios and spins
     QRadioButton *phylogenyOffButton{};
@@ -242,7 +244,9 @@ private:
     QLineEdit *interactions_word_edit;
     QLineEdit *visualisations_word_edit;
     QLineEdit *visualisations_word_edit_2;
-
+    QLineEdit *variable_hgt_word_edit;
+    QLineEdit *variable_hgt_word_edit_1;
+    QLineEdit *variable_hgt_word_edit_2;
 
     // Interactions
     QSpinBox *interactionsSpin{};
@@ -266,6 +270,7 @@ private:
     QImage *populationImageColour;
     QGraphicsPixmapItem *populationItem;
     QGraphicsPixmapItem *environmentItem;
+    QButtonGroup *hgtButtonGroup;
 
     QTimer fitnessMessageTimer;
 

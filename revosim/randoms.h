@@ -16,12 +16,15 @@ private:
     quint16 randoms16[65536];
     quint32 randoms32[65536];
     quint64 randoms64[65536];
+
     const quint8 mask8 = ~0;
     const quint16 mask16 = ~0;
+
     void newRandoms8();
     void newRandoms16();
     void newRandoms32();
     void newRandoms64();
+
     quint16 nextRandom8, nextRandom16, nextRandom32, nextRandom64;
 };
 

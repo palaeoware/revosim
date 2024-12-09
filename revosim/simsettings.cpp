@@ -38,4 +38,5 @@ SimSettings::SimSettings()
     linkagesOn = false;
     randomReseedBeforeGenetic = true;
     hgtrandomlength = false;
+    hgtvariable = false;
 }
