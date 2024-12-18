@@ -43,7 +43,7 @@ public:
     bool linkagesOn;
     bool randomReseedBeforeGenetic;
     bool hgtrandomlength;
-    bool hgtvariable;
+    bool variableHgt;
 };
 
 #endif // SIMSETTINGS_H

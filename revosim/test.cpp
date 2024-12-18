@@ -1,4 +1,5 @@
 #include "test.h"
+#include <ostream>
 
 //RJG - this is revosim test system. Called from main window, friend of simulation manager, so can access private functions.
 //All tests follow similar structure - you can write outputs to out stream, and return testFlag as true if passed, false fi failed.
@@ -796,88 +797,112 @@ bool test::testEight(QString &outString)
 
     out << "Testing the HGT system with 100 known genomes.\n";
 
-    // set settings for hgt transfer
-    simulationManager->cellSettingsMaster->hgtTransferLength = 5;
+    //- set settings for hgt transfer
+    simulationManager->cellSettingsMaster->hgtTransferLength = 10;
     simulationManager->simulationSettings->hgtMode = HGT_SYNOYMOUS;
-    simulationManager->simulationSettings->genomeSize = 1;
+    simulationManager->simulationSettings->genomeSize = 3;
     out << "\n Settings: \n Genome transfer length = 5 \n HGT mode = Synonoumous\n\n";
 
-
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
     {
         out << "\n\n" << i << "\n";
 
-        // create recipent and donor genomes
-        quint32 rgenome = {simulationManager->simulationRandoms->rand32()};
-        quint32 dgenome = {simulationManager->simulationRandoms->rand32()};
+        //- create recipent and donor genomes and mask
+        quint32 recipentGenome[3] = {simulationManager->simulationRandoms->rand32(),simulationManager->simulationRandoms->rand32(),simulationManager->simulationRandoms->rand32()};
+        quint32 donorGenome[3] = {simulationManager->simulationRandoms->rand32(),simulationManager->simulationRandoms->rand32(),simulationManager->simulationRandoms->rand32()};
+        quint32 mask[MAX_GENOME_WORDS];
+        quint32 donorGenomeCopy[3] =  {donorGenome[0], donorGenome[1], donorGenome[2]};
 
+        //- use generateMask function to create mask of transfer segment
+        simulationManager->hgtSystem->generateMask(donorGenome, mask, simulationManager->simulationSettings->genomeSize);
 
-        // create initial mask of genome length
-        //mask =  ~(0 << simulationManager->simulationSettings->genomeSize*32); //genomes of 1s
-        // use generateMask function to create mask of transfer segment
-        quint32 mask = simulationManager->hgtSystem->generateMask(&dgenome);
-
-        //determine first set bit in mask
-        int position = 0;
-        int maskchk = mask;
-        for (int i = 0; i < 32; i++)
+        //-determine first set bit in mask
+        int startPosition = 0;
+        for (int i = 0; i < 3; i++)
         {
+            for (int j = 0; j < 32; j++)
+            {
+                int flag = (mask[i] >> j) & 1;
 
-            int flag = (maskchk >> i ) & 1;
-            if (flag == 1) {
-                break;
+                if (flag == 0)  // If the bit is 0
+                    {
+                        startPosition = j + (i * 32);  // Record the position of the first 0 bit
+                        break;  // Exit the loop once the first 0 is found
+                    }
             }
-            position++;
         }
 
         // Test 1- Check mask has correct number of bits set
-        int target = simulationManager->hgtSystem->bitCount(mask);
-        if ( simulationManager->cellSettingsMaster->hgtTransferLength != target)
+        int totalBitCount = 0;
+        for (int i = 0; i < simulationManager->simulationSettings->genomeSize; i++)
+        {
+            int bitCount = simulationManager->hgtSystem->bitCount(~(mask[i]));
+            totalBitCount += bitCount;
+        }
+        if ( simulationManager->cellSettingsMaster->hgtTransferLength != totalBitCount)
         {
             testFlag = false;
-            out << "\n Mask has incorrect number of bits\n";
+            out << "\n Mask has incorrect number of bits\n" << totalBitCount;
         }
-
         else out << "Mask has correct number of bits set... \n";
 
+        //Test 2 - Check if the transfer sequence matches the donor genome after generateTransfer
+        simulationManager->hgtSystem->generateTransfer(donorGenome, mask, simulationManager->simulationSettings->genomeSize);
+        int position = 0;  //- overall bit position
 
-
-        //Test 2 - Check if the transfer sequence matches the donor genome after GenerateTransform
-        quint32 genometransfer;
-        genometransfer = simulationManager->hgtSystem->GenerateTransform(dgenome, mask);
-
-
-        int transfercheck = (genometransfer >> position) & 1;
-        int donorcheck = (dgenome >> position) & 1;
-        if (transfercheck != donorcheck)
+        for (int i = 0; i < simulationManager->simulationSettings->genomeSize; i++)
         {
-            testFlag = false;
-            out << "\n Mask does not contain binary sequence from donor genome in correct position \n";
+            for (int j = 0; j < 32; j++)
+            {
+                if (position >= startPosition && position < (startPosition + totalBitCount)) //- if postition within the transfer segment
+                {
+                    int transferCheck = ((donorGenome[i] & ~(mask[i])) >> j) & 1;
+                    int donorCheck = ((donorGenomeCopy[i] & ~(mask[i])) >> j) & 1;
+
+                    if (transferCheck != donorCheck)
+                    {
+                        testFlag = false;
+                        out <<  "\n Bits don't match and they should!" << position;
+                    }
+                }
+                position++;
+            }
         }
-        else out << "Mask contains binary sequence from donor genome in correct position... \n";
-
-
-        out << "\n Donor genome :------ " << simulationManager->printGenome(dgenome) ;
-        out << "\n Recipient genome :-- " <<  simulationManager->printGenome(rgenome) << "\n" ;
-        out << "--------------------------------------------------------------------------";
-
+        if (testFlag) out << "Transfer segement matches donor genome sequence... \n";
 
         //Test 3 - Apply the transformation and check if the recipient genome matches the donor in the transfer position
-        simulationManager->hgtSystem->Transform(&rgenome, genometransfer, mask);
-        out << "\n Recipient after :----- " <<  simulationManager->printGenome(rgenome) << "\n" ;
-        out << "Mask :------------------" <<  simulationManager->printGenome(mask) << "\n" ;
+        simulationManager->hgtSystem->transformRecipient(recipentGenome, donorGenome, mask, simulationManager->simulationSettings->genomeSize);
+        position = 0;  //- overall bit position
 
-        transfercheck = (genometransfer >> position) & 1;
-        donorcheck = (dgenome >> position) & 1;
-        if (transfercheck != donorcheck)
+        for (int i = 0; i < simulationManager->simulationSettings->genomeSize; i++)
         {
-            testFlag = false;
-            out << "\n Transformation unsucessful \n";
-        }
-        else out << "\n Transformation sucessful... \n";
+            for (int j = 0; j < 32; j++)
+            {
+                if (position >= startPosition && position < (startPosition + totalBitCount)) //- if postition within the transfer segment
+                {
+                    int transferCheck = ((recipentGenome[i] & ~(mask[i])) >> j) & 1;
+                    int donorCheck = ((donorGenomeCopy[i] & ~(mask[i])) >> j) & 1;
 
-        //out << "Mask  : \n " << simulationManager->printGenome(rgenome);
+                    if (transferCheck != donorCheck)
+                    {
+                        testFlag = false;
+                        out << "\n Bits don't match and they should!" << position;
+                    }
+                }
+                position++;
+            }
+        }
+        if (testFlag) out << "Transformations successful....\n";
+
+       for (int i = 0; i < simulationManager->simulationSettings->genomeSize; i++)
+        {
+           out << "\n Recipent genome["<< i <<"]:---------------" << simulationManager->printGenome(recipentGenome[i]) ;
+           out << "\n Donor genome["<< i <<"]:------------------" << simulationManager->printGenome(donorGenomeCopy[i]) ;
+           out << "\n Mask["<< i <<"]:------------------------------" << simulationManager->printGenome(mask[i]) ;
+           out << "\n *********************************** \n";
+        }
     }
+
     if (testFlag) out << "\n Tests passed.\n\n";
     return testFlag;
 }

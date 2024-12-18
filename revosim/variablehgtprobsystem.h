@@ -11,7 +11,7 @@ class VariableHgtProbSystem : public System
 public:
     VariableHgtProbSystem();
     bool setGenomeWordsFromString(QString s, int maxsize);
-    bool willTransfer(const quint32 *genome);
+    bool variableWillTransform(const quint32 *genome);
 
 private:
 

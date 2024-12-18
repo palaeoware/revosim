@@ -898,12 +898,12 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     interactionSettingsGrid->addWidget(hgt_settings_label, 18, 1, 1, 2);
 
     variablehgtCheckbox = new QCheckBox("Variable HGT");
-    variablehgtCheckbox->setChecked(simulationManager->simulationSettings->hgtvariable);
+    variablehgtCheckbox->setChecked(simulationManager->simulationSettings->variableHgt);
     variablehgtCheckbox->setToolTip("<font>Turn on/off variable transformation (HGT).</font>");
     interactionSettingsGrid->addWidget(variablehgtCheckbox, 19, 1, 1, 2);
     connect(variablehgtCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
     {
-        simulationManager->simulationSettings->hgtvariable = i;
+        simulationManager->simulationSettings->variableHgt = i;
     });
 
 
@@ -974,7 +974,6 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     transfer_length_label->setToolTip("<font>Set the HGT transfer length.</font>");
     transferlengthSpin = new QSpinBox;
     transferlengthSpin->setMinimum(1);
-    transferlengthSpin->setMaximum(32);
     transferlengthSpin->setValue(simulationManager->cellSettingsMaster->hgtTransferLength);
     transferlengthSpin->setToolTip("<font>Set the HGT transfer length.</font>");
     interactionSettingsGrid->addWidget(transfer_length_label, 23, 1);
@@ -982,6 +981,23 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     connect(transferlengthSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
     {
         simulationManager->cellSettingsMaster->hgtTransferLength = i;
+    });
+
+    //- make sure transfer length inputted is less than the genome size
+    connect(transferlengthSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), [ = ](const int &i)
+    {
+        if (i > (simulationManager->simulationSettings->genomeSize *32))
+        {
+            transferlengthSpin->clear();
+        }
+    });
+
+    connect(genomeSizeSpin, &QSpinBox::textChanged, this, [ = ](const QString & s)
+    {
+        if (transferlengthSpin->value() > (genomeSizeSpin->value()*32))
+        {
+            transferlengthSpin->clear();
+        }
     });
 
     randomlengthCheckbox = new QCheckBox("Random transfer length");
@@ -1774,32 +1790,47 @@ QScrollArea *MainWindow::createWordsScrollArea()
         }
     });
 
-    //PG - HGT variable length and variable probability
-    SysLabel *hgt_word_label = new SysLabel("HGT : ");
-    scrollAreaGrid->addWidget(hgt_word_label, 10, 0);
-    variable_hgt_word_edit = new QLineEdit;
-    scrollAreaGrid->addWidget(variable_hgt_word_edit, 10, 1);
-    variable_hgt_word_edit->setText(simulationManager->hgtSystem->returnGenomeWordInUseString());
-    wordsInUse.insert("Hgtprobability", simulationManager->hgtSystem->returnGenomeWordInUseString());
-    connect(variable_hgt_word_edit, &QLineEdit::textChanged, this, [ = ](const QString & s)
+
+    //PG -HGT system applies to all words at the minute
+    //If the genome size changes, update the genome words in use
+    connect(genomeSizeSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), mainWindow,  [ = ](const int &i)
     {
-        int max = simulationManager->hgtSystem->returnMaxFromString(s);
-        if (max < 0 || max > MAX_GENOME_WORDS)
-        {
-            hgt_word_label->changeColour(Qt::red);
-            return;
+        QString s;
+        for (int j = 0; j < i; ++j){
+               s += QString::number(i);
+            }
 
-        }
-        //+1 here due to zero counting - i.e. if we want to be using word 3, we need to be using 4 words.
-        else if (max + 1 > genomeSizeSpin->value())genomeSizeSpin->setValue(max + 1);
-
-        if (!simulationManager->hgtSystem->setGenomeWordsFromString(s, genomeSizeSpin->value())) hgt_word_label->changeColour(Qt::red);
-        else
-        {
-            hgt_word_label->changeColourTimer(Qt::darkGreen, 1000);
-            wordsInUse.insert("Hgt", s);
-        }
+        simulationManager->hgtSystem->setGenomeWordsFromString(s, genomeSizeSpin->value());
+        qDebug() << simulationManager->hgtSystem->returnGenomeWordInUseString();
     });
+
+    //PG - HGT variable length and variable probability
+    //SysLabel *hgt_word_label = new SysLabel("HGT : ");
+    //scrollAreaGrid->addWidget(hgt_word_label, 10, 0);
+    //variable_hgt_word_edit = new QLineEdit;
+    //scrollAreaGrid->addWidget(variable_hgt_word_edit, 10, 1);
+    // variable_hgt_word_edit->setText(simulationManager->hgtSystem->returnGenomeWordInUseString());
+    // wordsInUse.insert("Hgtprobability", simulationManager->hgtSystem->returnGenomeWordInUseString());
+    // connect(variable_hgt_word_edit, &QLineEdit::textChanged, this, [ = ](const QString & s)
+    // {
+    //     int max = simulationManager->hgtSystem->returnMaxFromString(s);
+    //     if (max < 0 || max > MAX_GENOME_WORDS)
+    //     {
+    //         hgt_word_label->changeColour(Qt::red);
+    //         return;
+
+    //     }
+    //     //+1 here due to zero counting - i.e. if we want to be using word 3, we need to be using 4 words.
+    //     else if (max + 1 > genomeSizeSpin->value())genomeSizeSpin->setValue(max + 1);
+
+    //     if (!simulationManager->hgtSystem->setGenomeWordsFromString(s, genomeSizeSpin->value())) hgt_word_label->changeColour(Qt::red);
+    //     else
+    //     {
+    //         hgt_word_label->changeColourTimer(Qt::darkGreen, 1000);
+    //         wordsInUse.insert("Hgt", s);
+    //     }
+    // });
+
 
     SysLabel *hgt_word_label_1 = new SysLabel("Variable HGT probability: ");
     scrollAreaGrid->addWidget(hgt_word_label_1, 11, 0);
@@ -1827,7 +1858,7 @@ QScrollArea *MainWindow::createWordsScrollArea()
         }
     });
 
-    SysLabel *hgt_word_label_2 = new SysLabel("Varibale HGT Transfer Length: ");
+    SysLabel *hgt_word_label_2 = new SysLabel("Variable HGT Transfer Length: ");
     scrollAreaGrid->addWidget(hgt_word_label_2, 12, 0);
     variable_hgt_word_edit_2 = new QLineEdit;
     scrollAreaGrid->addWidget(variable_hgt_word_edit_2, 12, 1);

@@ -7,7 +7,6 @@ VariableHgtProbSystem::VariableHgtProbSystem() : System("Variable HGT System")
 
 }
 
-// RJG - This modifies the inhereted function in order to redo the probability distribution when genome length is changed
 bool VariableHgtProbSystem::setGenomeWordsFromString(QString s, int maxsize)
 {
     bool returnValue = System::setGenomeWordsFromString(s, maxsize);
@@ -17,9 +16,9 @@ bool VariableHgtProbSystem::setGenomeWordsFromString(QString s, int maxsize)
 }
 
 //PG - if this returns true HGT will take place based on organism's genome
-bool VariableHgtProbSystem::willTransfer(const quint32 *genome)
+bool VariableHgtProbSystem::variableWillTransform(const quint32 *genome)
 {
-    //PG - get bitcounts for the words assigned to this system
+    //- get bitcounts for the words assigned to this system
     quint32 bitcount = 0;
 
     for (int i = 0; i < useGenomeWordsCount; i++)
@@ -28,18 +27,19 @@ bool VariableHgtProbSystem::willTransfer(const quint32 *genome)
         bitcount += bitCount(genomeWord);
     }
 
-    //PG- stolen safety check in case user has not set genomeWords to use this
+    //- stolen safety check in case user has not set genomeWords to use this
     if (bitcount >= static_cast<quint32>(cumulativeDistribution.length()))
     {
         qInfo() << "Error - returning false in variable HGT prob";
         return false;
     }
 
+    //generate random number between 1 and value from cumlative distribution, return true if number is 1
     quint64 number = (simulationManager->simulationRandoms->rand64() % cumulativeDistribution[bitcount]);
     return (number == 1);
 }
 
-//PG - way 2 create linear distribution between 10^-7 and 10^-3 chance for bit count
+//PG - create linear distribution between 10^-7 and 10^-3 chance for bit count
 void VariableHgtProbSystem::createCumulativeLinearDistribution(){
 
     cumulativeDistribution.clear();
