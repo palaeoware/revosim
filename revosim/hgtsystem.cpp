@@ -87,7 +87,6 @@ void HgtSystem::transformRecipient(quint32* genome, quint32* donorGenome, quint3
     for (size_t i = 0; i < size; i++)
     {
         genome[i] = (genome[i] & mask[i])| donorGenome[i];
-        qDebug() << "Transform";
     }
 }
 
