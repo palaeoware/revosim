@@ -343,7 +343,7 @@ void MainWindow::createMainToolbar()
     stopButton->setToolTip(tr("<font>Use this button stop any simulation or batched run.</font>"));
     resetButton->setToolTip(tr("<font>Use this button reset the simulation.</font>"));
     reseedButton->setToolTip(tr("<font>Use this button reseed the simulation with a custom starting genome.</font>"));
-    genomeComparisonButton->setToolTip(tr("<font>Use this button to open the Genome Comparission Dock.</font>"));
+    genomeComparisonButton->setToolTip(tr("<font>Use this button to open the Genome Comparison Dock.</font>"));
     logButton->setToolTip(tr("<font>This launches a dialogue to allow you to modify the REvoSim running log.</font>"));
     testButton->setToolTip(tr("<font>Use this button to open and then run the REvoSim test suite.</font>"));
     settingsButton->setToolTip(tr("<font>Use this button to open the Settings Dock.</font>"));
