@@ -55,8 +55,8 @@ void randoms::newRandoms32()
 
 quint64 randoms::rand64()
 {
-    if (nextRandom32 == 0) newRandoms64();
-    return randoms32[nextRandom32++];
+    if (nextRandom64 == 0) newRandoms64();
+    return randoms32[nextRandom64++];
 }
 
 void randoms::newRandoms64()

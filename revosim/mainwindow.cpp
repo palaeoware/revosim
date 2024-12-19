@@ -906,8 +906,6 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
         simulationManager->simulationSettings->variableHgt = i;
     });
 
-
-
     hgtCheckbox = new QCheckBox("Transformation activated");
     hgtCheckbox->setChecked(simulationManager->cellSettingsMaster->hgtTransform);
     hgtCheckbox->setToolTip("<font>Turn on/off transformation (HGT).</font>");
@@ -931,7 +929,6 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
             variablehgtCheckbox->setChecked(false);
         }
     });
-
 
     QLabel *transfer_chance_label = new QLabel("Transfer probability - 1 in ");
     transfer_chance_label->setToolTip("<font>Set the HGT transfer chance per cell per generation.</font>");
@@ -1023,10 +1020,6 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
             variablehgtCheckbox->setChecked(false);
         }
     });
-
-
-
-
 
     //ENF - Genome seeding settings
     /*QLabel *seeding_settings_label = new QLabel("Genome seeding settings");
@@ -1134,7 +1127,6 @@ QDockWidget *MainWindow::createOutputSettingsDock()
     QLabel *imagesLabel = new QLabel("Image logging");
     imagesLabel->setObjectName("imagesLabel");
     imagesGrid->addWidget(imagesLabel, 1, 1, 1, 2);
-
 
     savePopulationCount = new QCheckBox("Population count");
     savePopulationCount->setToolTip("<font>Turn on/off to log the 'Population Count' as an image.</font>");
@@ -1803,34 +1795,6 @@ QScrollArea *MainWindow::createWordsScrollArea()
         simulationManager->hgtSystem->setGenomeWordsFromString(s, genomeSizeSpin->value());
         qDebug() << simulationManager->hgtSystem->returnGenomeWordInUseString();
     });
-
-    //PG - HGT variable length and variable probability
-    //SysLabel *hgt_word_label = new SysLabel("HGT : ");
-    //scrollAreaGrid->addWidget(hgt_word_label, 10, 0);
-    //variable_hgt_word_edit = new QLineEdit;
-    //scrollAreaGrid->addWidget(variable_hgt_word_edit, 10, 1);
-    // variable_hgt_word_edit->setText(simulationManager->hgtSystem->returnGenomeWordInUseString());
-    // wordsInUse.insert("Hgtprobability", simulationManager->hgtSystem->returnGenomeWordInUseString());
-    // connect(variable_hgt_word_edit, &QLineEdit::textChanged, this, [ = ](const QString & s)
-    // {
-    //     int max = simulationManager->hgtSystem->returnMaxFromString(s);
-    //     if (max < 0 || max > MAX_GENOME_WORDS)
-    //     {
-    //         hgt_word_label->changeColour(Qt::red);
-    //         return;
-
-    //     }
-    //     //+1 here due to zero counting - i.e. if we want to be using word 3, we need to be using 4 words.
-    //     else if (max + 1 > genomeSizeSpin->value())genomeSizeSpin->setValue(max + 1);
-
-    //     if (!simulationManager->hgtSystem->setGenomeWordsFromString(s, genomeSizeSpin->value())) hgt_word_label->changeColour(Qt::red);
-    //     else
-    //     {
-    //         hgt_word_label->changeColourTimer(Qt::darkGreen, 1000);
-    //         wordsInUse.insert("Hgt", s);
-    //     }
-    // });
-
 
     SysLabel *hgt_word_label_1 = new SysLabel("Variable HGT probability: ");
     scrollAreaGrid->addWidget(hgt_word_label_1, 11, 0);

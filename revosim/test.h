@@ -8,9 +8,6 @@
 #include <bitset>
 #include <QRegularExpression>
 
-
-
-
 class test
 {
 public:

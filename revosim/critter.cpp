@@ -157,9 +157,6 @@ bool Critter::iterateParallel(int *killCountLocal, float addFood, int settleTole
         //RJG - Here is where an individual dies.
         if ((--age) == 0)
         {
-            //qDebug() << *genomeWords; // PG list of organisms with age 0
-
-
             (*killCountLocal)++;
             genomeBitCountWithJitter = -1;
             codingGenomeBitCount = -1;

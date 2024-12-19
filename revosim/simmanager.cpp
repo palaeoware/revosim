@@ -638,6 +638,7 @@ void SimManager::setupRun()
             for (int o = 0; o < PATH_DEPTH; o++)
                 //RJG - Seed pathogen layer with 64 bit randoms too
                 pathogens[n][m][o] = simulationRandoms->rand64();
+
     //RJG - reset warning system
     warningCount = 0;
 }

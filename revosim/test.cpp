@@ -1,5 +1,4 @@
 #include "test.h"
-#include <ostream>
 
 //RJG - this is revosim test system. Called from main window, friend of simulation manager, so can access private functions.
 //All tests follow similar structure - you can write outputs to out stream, and return testFlag as true if passed, false fi failed.
@@ -353,8 +352,8 @@ bool test::testThree(QString &outString)
 
     System *system = new System("testSystem");
 
-        for (int i = 0; i < 100; i++)
-        {
+    for (int i = 0; i < 100; i++)
+    {
         quint32 random = QRandomGenerator::global()->generate();
         std::bitset<32> tweakerBitSetB(random);
         int count1 = 0;
