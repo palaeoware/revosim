@@ -1,4 +1,4 @@
- /*!
+/*!
  * @file
  *
  * Main Window
