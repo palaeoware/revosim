@@ -12,7 +12,7 @@ public:
     VariableHgtLenSystem();
     bool setGenomeWordsFromString(QString s, int maxsize);
     quint32 transferLength (const quint32 *genome);
-    int genomeSize;
+    int transformableGenomeSize;
 
 
 

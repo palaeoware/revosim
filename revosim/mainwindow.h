@@ -176,7 +176,10 @@ private:
     QCheckBox *autoWriteLogIndividualsCheckbox{};
     QCheckBox *hgtCheckbox{};
     QCheckBox *randomlengthCheckbox{};
-    QCheckBox *variablehgtCheckbox{};
+    QCheckBox *variablehgtprobCheckbox{};
+    QCheckBox *variablehgtlenCheckbox{};
+    QCheckBox *variablehgtidCheckbox{};
+    QCheckBox *hgtidCheckbox{};
 
 
     //RJG - radios and spins
@@ -227,6 +230,7 @@ private:
     QSpinBox *croppingFrequencySpin{};
     QSpinBox *transferlengthSpin{};
     QSpinBox *transferchanceSpin{};
+    QSpinBox *transfermaxdifferenceSpin{};
 
     //RJG - text edits for logs
     QTextEdit *headerTextEdit;
@@ -244,9 +248,10 @@ private:
     QLineEdit *interactions_word_edit;
     QLineEdit *visualisations_word_edit;
     QLineEdit *visualisations_word_edit_2;
-    QLineEdit *variable_hgt_word_edit;
+    QLineEdit *hgt_word_edit_1;
     QLineEdit *variable_hgt_word_edit_1;
     QLineEdit *variable_hgt_word_edit_2;
+    QLineEdit *variable_hgt_word_edit_3;
 
     // Interactions
     QSpinBox *interactionsSpin{};

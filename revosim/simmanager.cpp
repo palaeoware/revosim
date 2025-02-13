@@ -170,9 +170,13 @@ SimManager::SimManager()
     systemsList.append(variableHgtProbSystem);
 
     variableHgtLenSystem = new VariableHgtLenSystem();
-    variableHgtLenSystem->genomeSize = simulationSettings->genomeSize;
+    variableHgtLenSystem->transformableGenomeSize = hgtSystem->returnUseGenomeWordsCount();
     variableHgtLenSystem->setGenomeWordsFromString("0", MAX_GENOME_WORDS);
     systemsList.append(variableHgtLenSystem);
+
+    variableHgtIdSystem = new VariableHgtIdSystem();
+    variableHgtIdSystem->setGenomeWordsFromString("0", MAX_GENOME_WORDS);
+    systemsList.append(variableHgtIdSystem);
 
     simulationLog = new LogSimulation(simulationSettings);
 }
@@ -794,9 +798,9 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
             }
 
 
-            //- HGT block
-            //PG- if either hgt setting selected enter hgt loop
-            if (cellSettingsMaster->hgtTransform | simulationSettings->variableHgt)
+            //PG- HGT block
+            //- if either hgt setting selected enter hgt loop
+            if (cellSettingsMaster->hgtTransform | simulationSettings->variableHgtProb)
             {
 
                 quint32* willDie[256]; //maximum slots per grid square
@@ -813,21 +817,24 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                         }
                 }
 
-                //- randomly select one "dead" donor genome for the cell
+                //- If there is at least one organism flagged to die in cell, randomly select one "dead" donor genome
                 if (willDieCount !=0)
                 {
                     quint32 selectedGenome = simulationRandoms->rand32() % willDieCount;
                     quint32* donorGenome = willDie[selectedGenome];
 
+                    //- Iterate through organisms slots in the cell
                     for (int c = 0; c <= cellSettingsMaster->slotsPerSquare; c++)
                     {
                         //- if slot is not empty, if GUI settings or variable breed probabilty determine HGT will take place, do the thing
-                        if ((crit[c].age) && (((cellSettingsMaster->hgtTransform && hgtSystem->willTransform()) || (simulationSettings->variableHgt && variableHgtProbSystem->variableWillTransform(crit[c].genomeWords)))))
+                        if ((crit[c].age) && (((cellSettingsMaster->hgtTransform && hgtSystem->willTransform()) || (simulationSettings->variableHgtProb && variableHgtProbSystem->variableWillTransform(crit[c].genomeWords)))))
                         {
-                            quint32 mask[MAX_GENOME_WORDS];
-                            hgtSystem->generateMask(crit[c].genomeWords, mask, simulationSettings->genomeSize); // generate mask for transformation
-                            hgtSystem->generateTransfer(donorGenome, mask, simulationSettings->genomeSize); // use mask to generate transfer segment
-                            hgtSystem->transformRecipient(crit[c].genomeWords, donorGenome, mask, simulationSettings->genomeSize); // tranform recipient genome by inserting transformation segment
+                            quint32 mask[simulationSettings->genomeSize]; // mask created based on transfer position and length, needed for correct transfer into recipent
+                            quint32 maskofdonor[simulationSettings->genomeSize]; // mask of donor segment, created to prevent overwriting of donor genome
+
+                            hgtSystem->generateMask(crit[c].genomeWords, mask); // generate mask for transformation
+                            hgtSystem->generateTransfer(donorGenome, mask, maskofdonor); // use mask to generate transfer segment
+                            hgtSystem->transformRecipient(crit[c].genomeWords, donorGenome, mask, maskofdonor); // tranform recipient genome by inserting transformation segment
                         }
                     }
                 }

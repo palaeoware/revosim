@@ -42,6 +42,7 @@
 #include "hgtsystem.h"
 #include "variablehgtlensystem.h"
 #include "variablehgtprobsystem.h"
+#include "variablehgtidsystem.h"
 
 #include <QElapsedTimer>
 #include <QFuture>
@@ -156,6 +157,7 @@ public:
     HgtSystem *hgtSystem;
     VariableHgtProbSystem *variableHgtProbSystem;
     VariableHgtLenSystem *variableHgtLenSystem;
+    VariableHgtIdSystem *variableHgtIdSystem;
 
 
 

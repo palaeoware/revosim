@@ -57,6 +57,7 @@ SOURCES += main.cpp \
     system.cpp \
     test.cpp \
     variablebreedsystem.cpp \
+    variablehgtidsystem.cpp \
     variablehgtprobsystem.cpp \
     variablehgtlensystem.cpp \
     variablemutatesystem.cpp \
@@ -102,6 +103,7 @@ HEADERS += mainwindow.h \
     system.h \
     test.h \
     variablebreedsystem.h \
+    variablehgtidsystem.h \
     variablehgtprobsystem.h \
     variablehgtlensystem.h \
     variablemutatesystem.h \

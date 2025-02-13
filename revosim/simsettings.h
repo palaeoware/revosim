@@ -13,6 +13,7 @@ public:
     int gridY;
     int environmentChangeRate;
     int maxDifference; //Maximum difference to breed, key for species definitions
+    int maxDifferenceHgt; //Maximum difference to preform HGT
     int speciesSamples; //no longer used - keep for backwards compat of files
     int speciesSensitivity; //no longer used - keep for backwards compat of files
     int timeSliceConnect; //no longer used - keep for backwards compat of files
@@ -43,7 +44,10 @@ public:
     bool linkagesOn;
     bool randomReseedBeforeGenetic;
     bool hgtrandomlength;
-    bool variableHgt;
+    bool variableHgtProb;
+    bool variableHgtLen;
+    bool variableHgtId;
+    bool hgtId;
 };
 
 #endif // SIMSETTINGS_H

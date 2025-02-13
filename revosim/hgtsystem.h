@@ -10,10 +10,11 @@ class HgtSystem : public System
 {
 public:
     HgtSystem();
-    void generateMask (quint32* genome, quint32* mask, size_t size);
+    void generateMask (quint32* genome, quint32* mask);
     bool willTransform();
-    void generateTransfer(quint32* donorGenome, quint32* mask, size_t size);
-    void transformRecipient(quint32* genome, quint32* donorGenome, quint32* mask, size_t size);
+    void generateTransfer(quint32* donorGenome, quint32* mask, quint32* maskofdonor);
+    void transformRecipient(quint32* genome, quint32* donorGenome, quint32* mask, quint32* maskofdonor);
+    void transform(quint32* genome, quint32* mask, quint32* donorGenome);
 
 
 private:

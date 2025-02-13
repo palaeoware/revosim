@@ -14,6 +14,7 @@ SimSettings::SimSettings()
     lastSpeciesCalculated = 0;
     minSpeciesSize = 0;
     maxDifference = 3;
+    maxDifferenceHgt = 1;
     genomeSize = 2;
     environmentMode = ENV_MODE_LOOP;
     pathogenMode = PATH_MODE_DRIFT;
@@ -38,5 +39,8 @@ SimSettings::SimSettings()
     linkagesOn = false;
     randomReseedBeforeGenetic = true;
     hgtrandomlength = false;
-    variableHgt = false;
+    variableHgtProb = false;
+    variableHgtLen = false;
+    variableHgtId = false;
+    hgtId = false;
 }
