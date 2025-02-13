@@ -42,6 +42,7 @@ EnvironmentSettings::EnvironmentSettings(MainWindow *mainWin)
     markEnvironmentSettings.veltweak = mainWin->ui->ME_MaxAccel->value();
     markEnvironmentSettings.sizetweak = mainWin->ui->ME_maxSizeAccel->value();
     markEnvironmentSettings.iter_reset = mainWin->ui->ME_Iterations->value();
+    markEnvironmentSettings.toroidal = mainWin->ui->ME_Toroidal->isChecked();
 
     //Noise environment
     noiseEnvironmentSettings.nMin = mainWin->ui->noiseMin->value();

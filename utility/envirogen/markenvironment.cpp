@@ -21,6 +21,7 @@
 #include <QString>
 #include <QFile>
 #include <QApplication>
+#include <QDebug>
 #include "markenvironment.h"
 
 markenvironment::markenvironment(EnvironmentSettings constructorSettings) : EnvironmentClass(constructorSettings)
@@ -40,6 +41,7 @@ markenvironment::markenvironment(EnvironmentSettings constructorSettings) : Envi
     veltweak = constructorSettings.markEnvironmentSettings.veltweak;
     sizetweak = constructorSettings.markEnvironmentSettings.sizetweak;
     iter_reset = constructorSettings.markEnvironmentSettings.iter_reset;
+    toroidal = constructorSettings.markEnvironmentSettings.toroidal;
 
     for (int i = 0; i < objectcount; i++)
     {
@@ -65,6 +67,7 @@ markenvironment::markenvironment(EnvironmentSettings constructorSettings) : Envi
 void markenvironment::regenerate()
 {
 
+
     //reset to black
     for (int n = 0; n < x; n++)
         for (int m = 0; m < y; m++)
@@ -81,26 +84,46 @@ void markenvironment::regenerate()
         //add velocities
         objxpos[i] += (objxvel[i] * speedfactor);
         objypos[i] += (objyvel[i] * speedfactor);
-        //handle bouncing
-        if (objxpos[i] < 0)
+
+        if (toroidal)
         {
-            objxpos[i] = 0 - objxpos[i];
-            objxvel[i] = 0 - objxvel[i];
+            if (objxpos[i] < 0)
+                objxpos[i] += x;
+
+            if (objypos[i] < 0)
+                objypos[i] += y;
+
+            if (objxpos[i] >= x)
+                objxpos[i] -= x;
+
+            if (objypos[i] >= y)
+                objypos[i] -= y;
+
         }
-        if (objypos[i] < 0)
+        else
         {
-            objypos[i] = 0 - objypos[i];
-            objyvel[i] = 0 - objyvel[i];
-        }
-        if (objxpos[i] > (x - 1))
-        {
-            objxpos[i] = (2 * (x - 1)) - objxpos[i];
-            objxvel[i] = 0 - objxvel[i];
-        }
-        if (objypos[i] > (y - 1))
-        {
-            objypos[i] = (2 * (y - 1)) - objypos[i];
-            objyvel[i] = 0 - objyvel[i];
+
+            //handle bouncing
+            if (objxpos[i] < 0)
+            {
+                objxpos[i] = 0 - objxpos[i];
+                objxvel[i] = 0 - objxvel[i];
+            }
+            if (objypos[i] < 0)
+            {
+                objypos[i] = 0 - objypos[i];
+                objyvel[i] = 0 - objyvel[i];
+            }
+            if (objxpos[i] > (x - 1))
+            {
+                objxpos[i] = (2 * (x - 1)) - objxpos[i];
+                objxvel[i] = 0 - objxvel[i];
+            }
+            if (objypos[i] > (y - 1))
+            {
+                objypos[i] = (2 * (y - 1)) - objypos[i];
+                objyvel[i] = 0 - objyvel[i];
+            }
         }
 
         //add size change, apply limits
@@ -173,7 +196,19 @@ void markenvironment::regenerate()
             for (int m = 0; m < y; m++)
             {
                 //work out distance
-                double dist = sqrt((n - objxpos[i]) * (n - objxpos[i]) + (m - objypos[i]) * (m - objypos[i]));
+                double dist;
+                if (toroidal)
+                {
+                    //distance in x and y are closest of non-wrap and the two wraps
+                    double xd = qMin(qMin(qAbs(n-objxpos[i]),  qAbs(n-x-(objxpos[i]))), qAbs(n+x-(objxpos[i])));
+                    double yd = qMin(qMin(qAbs(m-objypos[i]),  qAbs(m-y-(objypos[i]))), qAbs(m+y-(objypos[i])));
+
+                    dist = sqrt(xd*xd+yd*yd);
+                }
+                else
+                {
+                    dist = sqrt((n - objxpos[i]) * (n - objxpos[i]) + (m - objypos[i]) * (m - objypos[i]));
+                }
                 if (dist < objsize[i])
                 {
                     for (int o = 0; o < 3; o++)
