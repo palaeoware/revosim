@@ -1,7 +1,8 @@
 # -------------------------------------------------
 # Project created by QtCreator 2010-02-10T13:30:03
 # -------------------------------------------------
-QT += widgets concurrent
+
+QT += widgets concurrent core gui core5compat
 
 TARGET = revosim
 

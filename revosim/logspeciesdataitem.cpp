@@ -17,6 +17,8 @@
 
 #include "logspeciesdataitem.h"
 #include <QTextStream>
+#include <QString>
+
 LogSpeciesDataItem::LogSpeciesDataItem()
     = default;
 
