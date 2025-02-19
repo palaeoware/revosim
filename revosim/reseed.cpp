@@ -102,7 +102,7 @@ Reseed::Reseed(QWidget *parent) :
     tierGroup->addButton(ui->radio3Tier, 1);
     tierGroup->addButton(ui->radio5Tier, 2);
 
-    connect(tierGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, [ = ](const int &i)
+    connect(tierGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::idClicked), this, [ = ](const int &i)
     {
         //RJG - Deal here with the GUI - set options in accept so as to allow cancellation
         if (i > 0)
