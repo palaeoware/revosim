@@ -269,7 +269,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     showMaximized();
 
     //RJG - add shortcut for tests
-    new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_T), this, SLOT(doTests()));
+    new QShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_T), this, SLOT(doTests()));
 
 }
 

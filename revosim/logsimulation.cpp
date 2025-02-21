@@ -1032,8 +1032,8 @@ void LogSimulation::loadLogXML(QString fileName)
 
             //Strings
             if (xmlFileIn.name().toString() == "headerText")headerText = xmlFileIn.readElementText();
-            if (xmlFileIn.name() == "logIterationText")logIterationText = xmlFileIn.readElementText();
-            if (xmlFileIn.name() == "logSpeciesText")logSpeciesText = xmlFileIn.readElementText();
+            if (xmlFileIn.name().toString() == "logIterationText")logIterationText = xmlFileIn.readElementText();
+            if (xmlFileIn.name().toString() == "logSpeciesText")logSpeciesText = xmlFileIn.readElementText();
 
         }
     }

@@ -150,8 +150,9 @@ void Analyser::groupsGenealogicalTracker_v3()
     int processorCount = simulationManager->ProcessorCount;
 
     //set them going. Each one pulls one from the queue and does it - until queue is done
+    //RJG Feb 25 - note that the parameter order to this has changed from qt5 to qt6. More: https://doc.qt.io/qt-6/concurrent-changes-qt6.html
     for (int i = 0; i < processorCount; i++)
-        *(FuturesList[i]) = QtConcurrent::run(this, &Analyser::speciesAnalysisWorker, i);
+        *(FuturesList[i]) = QtConcurrent::run(&Analyser::speciesAnalysisWorker, this, i);
 
     for (int i = 0; i < processorCount; i++)
         FuturesList[i]->waitForFinished();
