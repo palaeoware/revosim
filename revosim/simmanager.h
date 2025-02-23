@@ -47,6 +47,7 @@
 #include <QMutex>
 #include <QPlainTextEdit>
 #include <QStringList>
+#include <QtConcurrent>
 #include <QtConcurrentRun>
 #include <QTime>
 #include <QTimer>

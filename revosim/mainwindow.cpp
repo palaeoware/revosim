@@ -41,6 +41,7 @@
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QString>
 #include <QStringList>
 #include <QTextStream>
 #include <QThread>
@@ -268,7 +269,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     showMaximized();
 
     //RJG - add shortcut for tests
-    new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_T), this, SLOT(doTests()));
+    new QShortcut(QKeySequence(Qt::CTRL | Qt::SHIFT | Qt::Key_T), this, SLOT(doTests()));
 
 }
 
@@ -463,7 +464,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     environmentModeGrid->addWidget(environmentModeOnceButton, 1, 2, 1, 1);
     environmentModeGrid->addWidget(environmentModeLoopButton, 2, 1, 1, 1);
     environmentModeGrid->addWidget(environmentModeBounceButton, 2, 2, 1, 1);
-    connect(environmentModeButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), mainWindow, [ = ](const int &i)
+    connect(environmentModeButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::idClicked), mainWindow, [ = ](const int &i)
     {
         environmentModeChanged(i, false);
     });
@@ -621,7 +622,7 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     phylogenyGrid->addWidget(basicPhylogenyButton, 1, 2, 1, 1);
     phylogenyGrid->addWidget(phylogenyButton, 2, 1, 1, 1);
     phylogenyGrid->addWidget(phylogenyAndMetricsButton, 2, 2, 1, 1);
-    connect(phylogenyButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), mainWindow, [ = ](const int &i)
+    connect(phylogenyButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::idClicked), mainWindow, [ = ](const int &i)
     {
         speciesModeChanged(i, false);
     });
@@ -701,7 +702,7 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     interactionsGrid->addWidget(BlockInteractionsRadio, 1, 2, 1, 1);
     interactionSettingsGrid->addLayout(interactionsGrid, 1, 1, 1, 2);
 
-    connect(interactionsButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const bool & i)
+    connect(interactionsButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::idClicked), [ = ](const bool & i)
     {
         if (i == 0) simulationManager->cellSettingsMaster->interactBlocks = false;
         else simulationManager->cellSettingsMaster->interactBlocks = true;
@@ -742,7 +743,7 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     interactionMethodsGrid->addWidget(NoInteractionTypeRadio, 3, 1, 1, 1);
     interactionSettingsGrid->addLayout(interactionMethodsGrid, 3, 1, 1, 2);
 
-    connect(FitnessEnergyButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i)
+    connect(FitnessEnergyButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::idClicked), [ = ](const int &i)
     {
         if (i == 0)
         {
@@ -867,7 +868,7 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
 
     interactionSettingsGrid->addLayout(pathogenModeGrid, 15, 1, 1, 2);
 
-    connect(pathogenButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i)
+    connect(pathogenButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::idClicked), [ = ](const int &i)
     {
         if (i == 0) simulationManager->simulationSettings->pathogenMode = PATH_MODE_DRIFT;
         else simulationManager->simulationSettings->pathogenMode = PATH_MODE_EVOLVE;
@@ -1270,7 +1271,7 @@ QDockWidget *MainWindow::createOrganismSettingsDock()
 
     organismSettingsGrid->addLayout(breedModeGrid, 13, 1, 1, 2);
 
-    connect(breedingButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i)
+    connect(breedingButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::idClicked), [ = ](const int &i)
     {
         if (i == 0)
         {
@@ -4526,170 +4527,170 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
         if (token == QXmlStreamReader::StartElement)
         {
             //Ints
-            if (settingsFileIn.name() == "revosim")
+            if (settingsFileIn.name().toString() == "revosim")
                 continue;
-            if (settingsFileIn.name() == "gridX")
+            if (settingsFileIn.name().toString() == "gridX")
             {
                 simulationManager->simulationSettings->gridX = settingsFileIn.readElementText().toInt();
             }
-            if (settingsFileIn.name() == "gridY")
+            if (settingsFileIn.name().toString() == "gridY")
             {
                 simulationManager->simulationSettings->gridY = settingsFileIn.readElementText().toInt();
             }
-            if (settingsFileIn.name() == "settleTolerance")
+            if (settingsFileIn.name().toString() == "settleTolerance")
                 simulationManager->cellSettingsMaster->settleTolerance = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "slotsPerSquare")
+            if (settingsFileIn.name().toString() == "slotsPerSquare")
                 simulationManager->cellSettingsMaster->slotsPerSquare = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "startAge")
+            if (settingsFileIn.name().toString() == "startAge")
                 simulationManager->cellSettingsMaster->startAge = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "dispersal")
+            if (settingsFileIn.name().toString() == "dispersal")
                 simulationManager->cellSettingsMaster->dispersal = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "food")
+            if (settingsFileIn.name().toString() == "food")
                 simulationManager->cellSettingsMaster->food = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "breedCost")
+            if (settingsFileIn.name().toString() == "breedCost")
                 simulationManager->cellSettingsMaster->breedCost = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "mutate")
+            if (settingsFileIn.name().toString() == "mutate")
                 simulationManager->cellSettingsMaster->mutate = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "interactrate")
+            if (settingsFileIn.name().toString() == "interactrate")
                 simulationManager->cellSettingsMaster->interactions = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "croppingRate")
+            if (settingsFileIn.name().toString() == "croppingRate")
                 simulationManager->cellSettingsMaster->croppingFrequency = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "predationefficiency")
+            if (settingsFileIn.name().toString() == "predationefficiency")
                 simulationManager->cellSettingsMaster->predationEfficiency = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "minpredatorscore")
+            if (settingsFileIn.name().toString() == "minpredatorscore")
                 simulationManager->cellSettingsMaster->minDeltaPredatorness = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "pathogenMutate")
+            if (settingsFileIn.name().toString() == "pathogenMutate")
                 simulationManager->cellSettingsMaster->pathogenMutate = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "pathogenFrequency")
+            if (settingsFileIn.name().toString() == "pathogenFrequency")
                 simulationManager->cellSettingsMaster->pathogenFrequency = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "maxDifference")
+            if (settingsFileIn.name().toString() == "maxDifference")
                 simulationManager->simulationSettings->maxDifference = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "breedThreshold")
+            if (settingsFileIn.name().toString() == "breedThreshold")
                 simulationManager->cellSettingsMaster->breedThreshold = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "target")
+            if (settingsFileIn.name().toString() == "target")
                 simulationManager->cellSettingsMaster->target = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "environmentChangeRate")
+            if (settingsFileIn.name().toString() == "environmentChangeRate")
                 simulationManager->simulationSettings->environmentChangeRate = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "refreshRate")
+            if (settingsFileIn.name().toString() == "refreshRate")
                 refreshRate = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "environmentMode")
+            if (settingsFileIn.name().toString() == "environmentMode")
                 environmentModeChanged(settingsFileIn.readElementText().toInt(), true);
-            if (settingsFileIn.name() == "pathogenMode")
+            if (settingsFileIn.name().toString() == "pathogenMode")
                 simulationManager->simulationSettings->pathogenMode = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "interactions")
+            if (settingsFileIn.name().toString() == "interactions")
                 simulationManager->cellSettingsMaster->interactions = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "predationEfficiency")
+            if (settingsFileIn.name().toString() == "predationEfficiency")
                 simulationManager->cellSettingsMaster->predationEfficiency = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "minDeltaPredatorness")
+            if (settingsFileIn.name().toString() == "minDeltaPredatorness")
                 simulationManager->cellSettingsMaster->minDeltaPredatorness = settingsFileIn.readElementText().toInt();
 
             //No Gui options for the remaining settings as yet.
-            if (settingsFileIn.name() == "speciesSamples")
+            if (settingsFileIn.name().toString() == "speciesSamples")
                 simulationManager->simulationSettings->speciesSamples = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "speciesSensitivity")
+            if (settingsFileIn.name().toString() == "speciesSensitivity")
                 simulationManager->simulationSettings->speciesSensitivity = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "timeSliceConnect")
+            if (settingsFileIn.name().toString() == "timeSliceConnect")
                 simulationManager->simulationSettings->timeSliceConnect = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "minSpeciesSize")
+            if (settingsFileIn.name().toString() == "minSpeciesSize")
                 simulationManager->simulationSettings->minSpeciesSize = static_cast<quint64>(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "speciesMode")
+            if (settingsFileIn.name().toString() == "speciesMode")
                 speciesMode = static_cast<quint64>(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "genomeSize")
+            if (settingsFileIn.name().toString() == "genomeSize")
                 simulationManager->simulationSettings->genomeSize = settingsFileIn.readElementText().toInt();
 
             //Bools
-            if (settingsFileIn.name() == "recalculateFitness")
+            if (settingsFileIn.name().toString() == "recalculateFitness")
                 simulationManager->simulationSettings->recalculateFitness = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "noSelection")
+            if (settingsFileIn.name().toString() == "noSelection")
                 simulationManager->cellSettingsMaster->noSelection = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "toroidal")
+            if (settingsFileIn.name().toString() == "toroidal")
                 simulationManager->simulationSettings->toroidal = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "nonspatial")
+            if (settingsFileIn.name().toString() == "nonspatial")
                 simulationManager->simulationSettings->nonspatial = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "breedDifference")
+            if (settingsFileIn.name().toString() == "breedDifference")
                 simulationManager->cellSettingsMaster->breedDifference = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "breedSpecies")
+            if (settingsFileIn.name().toString() == "breedSpecies")
                 simulationManager->cellSettingsMaster->breedSpecies = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "pathOn")
+            if (settingsFileIn.name().toString() == "pathOn")
                 simulationManager->cellSettingsMaster->pathOn = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "variableMutate")
+            if (settingsFileIn.name().toString() == "variableMutate")
                 simulationManager->cellSettingsMaster->variableMutate = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "allowExcludeWithDescendants")
+            if (settingsFileIn.name().toString() == "allowExcludeWithDescendants")
                 allowExcludeWithDescendants = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "obligateSexual")
+            if (settingsFileIn.name().toString() == "obligateSexual")
                 simulationManager->cellSettingsMaster->obligateSexual = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "facultativeSexual")
+            if (settingsFileIn.name().toString() == "facultativeSexual")
                 simulationManager->cellSettingsMaster->facultativeSexual = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "asexual")
+            if (settingsFileIn.name().toString() == "asexual")
                 simulationManager->cellSettingsMaster->asexual = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "variableBreed")
+            if (settingsFileIn.name().toString() == "variableBreed")
                 simulationManager->cellSettingsMaster->variableBreed = settingsFileIn.readElementText().toInt();
-            if (settingsFileIn.name() == "logging")
+            if (settingsFileIn.name().toString() == "logging")
                 simulationManager->simulationSettings->logging = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "csvoutput")
+            if (settingsFileIn.name().toString() == "csvoutput")
                 simulationManager->simulationLog->csvOutput = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "gui")
+            if (settingsFileIn.name().toString() == "gui")
                 simulationManager->simulationSettings->gui = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "environmentInterpolate")
+            if (settingsFileIn.name().toString() == "environmentInterpolate")
                 simulationManager->simulationSettings->environmentInterpolate = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "interactBlocks")
+            if (settingsFileIn.name().toString() == "interactBlocks")
                 simulationManager->cellSettingsMaster->interactBlocks = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "multiBreedList")
+            if (settingsFileIn.name().toString() == "multiBreedList")
                 simulationManager->cellSettingsMaster->multiBreedList = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "interactFitness")
+            if (settingsFileIn.name().toString() == "interactFitness")
                 simulationManager->cellSettingsMaster->interactFitness = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "interactEnergy")
+            if (settingsFileIn.name().toString() == "interactEnergy")
                 simulationManager->cellSettingsMaster->interactEnergy = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "interactWithinSpecies")
+            if (settingsFileIn.name().toString() == "interactWithinSpecies")
                 simulationManager->cellSettingsMaster->interactWithinSpecies = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "predationRestriction")
+            if (settingsFileIn.name().toString() == "predationRestriction")
                 simulationManager->simulationSettings->predationRestriction = intToBool(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "v2log")
+            if (settingsFileIn.name().toString() == "v2log")
             {
                 logTextEdit->setText(simulationManager->simulationLog->printDefaultLogSpeciesText());
                 iterationTextEdit->setText(simulationManager->simulationLog->printDefaultLogIterationText());
                 headerTextEdit->setText(simulationManager->simulationLog->printDefaultHeaderText());
             }
-            if (settingsFileIn.name() == "randomReseedBeforeGenetic")
+            if (settingsFileIn.name().toString() == "randomReseedBeforeGenetic")
                 simulationManager->simulationSettings->randomReseedBeforeGenetic = intToBool(settingsFileIn.readElementText().toInt());
 
             //No gui options for below
-            if (settingsFileIn.name() == "fitnessLoggingToFile")
+            if (settingsFileIn.name().toString() == "fitnessLoggingToFile")
                 simulationManager->simulationSettings->fitnessLoggingToFile = intToBool(settingsFileIn.readElementText().toInt());
             //Only GUI options
-            if (settingsFileIn.name() == "autowrite")
+            if (settingsFileIn.name().toString() == "autowrite")
                 autoWriteLogCheckbox->setChecked(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "autowriteIndividuals")
+            if (settingsFileIn.name().toString() == "autowriteIndividuals")
                 autoWriteLogIndividualsCheckbox->setChecked(settingsFileIn.readElementText().toInt());
-            if (settingsFileIn.name() == "savePopulationCount")
+            if (settingsFileIn.name().toString() == "savePopulationCount")
                 savePopulationCount->setChecked(intToBool(settingsFileIn.readElementText().toInt()));
-            if (settingsFileIn.name() == "saveMeanFitness")
+            if (settingsFileIn.name().toString() == "saveMeanFitness")
                 saveMeanFitness->setChecked(intToBool(settingsFileIn.readElementText().toInt()));
-            if (settingsFileIn.name() == "saveVisSysOneAsColour")
+            if (settingsFileIn.name().toString() == "saveVisSysOneAsColour")
                 saveVisSysOneAsColour->setChecked(intToBool(settingsFileIn.readElementText().toInt()));
-            if (settingsFileIn.name() == "saveSpecies")
+            if (settingsFileIn.name().toString() == "saveSpecies")
                 saveSpecies->setChecked(intToBool(settingsFileIn.readElementText().toInt()));
-            if (settingsFileIn.name() == "saveVisSysTwoAsColour")
+            if (settingsFileIn.name().toString() == "saveVisSysTwoAsColour")
                 saveVisSysTwoAsColour->setChecked(intToBool(settingsFileIn.readElementText().toInt()));
-            if (settingsFileIn.name() == "saveSettles")
+            if (settingsFileIn.name().toString() == "saveSettles")
                 saveSettles->setChecked(intToBool(settingsFileIn.readElementText().toInt()));
-            if (settingsFileIn.name() == "saveFailsSettles")
+            if (settingsFileIn.name().toString() == "saveFailsSettles")
                 saveFailsSettles->setChecked(intToBool(settingsFileIn.readElementText().toInt()));
-            if (settingsFileIn.name() == "saveEnvironment")
+            if (settingsFileIn.name().toString() == "saveEnvironment")
                 saveEnvironment->setChecked(intToBool(settingsFileIn.readElementText().toInt()));
 
             //Strings
-            if (settingsFileIn.name() == "globalSavePath")
+            if (settingsFileIn.name().toString() == "globalSavePath")
                 globalSavePath->setText(settingsFileIn.readElementText());
-            if (settingsFileIn.name() == "headerTextEdit")
+            if (settingsFileIn.name().toString() == "headerTextEdit")
                 simulationManager->simulationLog->setHeaderTextFromGUI(settingsFileIn.readElementText());
-            if (settingsFileIn.name() == "iterationTextEdit")
+            if (settingsFileIn.name().toString() == "iterationTextEdit")
                 simulationManager->simulationLog->setIterationTextFromGUI(settingsFileIn.readElementText());
-            if (settingsFileIn.name() == "logTextEdit")
+            if (settingsFileIn.name().toString() == "logTextEdit")
                 simulationManager->simulationLog->setSpeciestTextFromGUI(settingsFileIn.readElementText());
 
             for (auto &s : simulationManager->systemsList)
-                if (settingsFileIn.name() == s->returnName().replace(" ", "_"))
+                if (settingsFileIn.name().toString() == s->returnName().replace(" ", "_"))
                     s->setGenomeWordsFromString(settingsFileIn.readElementText(), simulationManager->simulationSettings->genomeSize);
         }
     }

@@ -1,8 +1,9 @@
 #ifndef SIMSETTINGS_H
 #define SIMSETTINGS_H
 
-#include <QStringList>
-#include <globals.h>
+#include "globals.h"
+#include <qt6/QtCore/qglobal.h>
+
 
 class SimSettings
 {

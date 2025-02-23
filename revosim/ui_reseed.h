@@ -65,7 +65,7 @@ public:
         label_3->setObjectName(QString::fromUtf8("label_3"));
         QFont font;
         font.setBold(true);
-        font.setWeight(75);
+        font.setWeight(QFont::Bold);
         label_3->setFont(font);
 
         verticalLayout->addWidget(label_3);
