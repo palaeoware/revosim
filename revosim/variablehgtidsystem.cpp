@@ -39,14 +39,14 @@ bool VariableHgtIdSystem::tryTransform(quint32* genome, quint32* maskofgenome, q
         //- Make the max difference between the donor transfer segment and reciprical genomic place in the recipent
        maxDifference= linearDistribution[bitcount];
     } else {
-
-        maxDifference= simulationManager->simulationSettings-> maxDifferenceHgt;  //ADD TO THE GUI
+        //- if max difference is user-set, use this
+        maxDifference= simulationManager->simulationSettings-> maxDifferenceHgt;
     }
 
     //- reset bit count to 0 for sequence difference evaluation
     bitcount=0;
 
-    for (int i = 0; i < simulationManager->simulationSettings->genomeSize; i++) // CHECK WORD COUNT IS RIGHT HERE
+    for (int i = 0; i < simulationManager->hgtSystem->useGenomeWordsCount; i++) // CHECK WORD COUNT IS RIGHT HERE
     {
         //Get XORed genome of the two masks to get bit difference between the transfer sequence
         quint32 genomeWord = maskofgenome[i] ^ maskofdonor[i];
@@ -54,9 +54,10 @@ bool VariableHgtIdSystem::tryTransform(quint32* genome, quint32* maskofgenome, q
         //add to cumulative bit difference count
         bitcount += bitCount(genomeWord);
         //qDebug() << bitcount;
-        if (bitcount > maxDifference) return false; //get out if gone over limit (cut out some iterations)
+        if (bitcount > maxDifference) return false; //get out if gone over limit
     }
-    return true; // got to end, so must have had max or fewer differences
+    // has max or fewer differences so transformation can take place
+    return true;
 }
 
 
@@ -72,6 +73,30 @@ void VariableHgtIdSystem::createLinearDistribution()
     }
     //qDebug()<< linearDistribution;
  }
+
+//PG - for logging
+quint32 VariableHgtIdSystem::returnBitcount(const quint32 *genome)
+{
+    quint32 bitcount = 0;
+    for (int i = 0; i < useGenomeWordsCount; i++)
+    {
+        quint32 genomeWord = genome[useGenomeWords[i]];
+        bitcount += bitCount(genomeWord);
+    }
+    return bitcount;
+}
+
+//PG - for logging
+quint32 VariableHgtIdSystem::returnCumulativeDistributionAtN(int n)
+{
+    if (n >= linearDistribution.length())
+    {
+        qInfo() << "Error returning cumulative distribution - n out of bounds";
+        return 0;
+    }
+    else return linearDistribution[n];
+}
+
 
 
 

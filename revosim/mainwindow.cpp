@@ -4653,7 +4653,9 @@ void MainWindow::writeLog()
     if (ui->actionVariable_mutation_logging->isChecked())simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_MUTATION);
     if (ui->actionSpeciation_logging->isChecked() && analyser->speciationLogText.length() > 0)simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_SPECIATION);
     if (ui->actionDisparity_logging->isChecked())simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_DISPARITY);
-
+    if (ui->actionVariable_hgt_prob_logging->isChecked())simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_HGT_PROB);
+    if (ui->actionVariable_hgt_len_logging->isChecked())simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_HGT_LEN);
+    if (ui->actionVariable_hgt_id_logging->isChecked())simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_HGT_ID);
 }
 
 
@@ -5809,6 +5811,9 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
             ui->actionRecombination_logging->setChecked(true);
             ui->actionVariable_mutation_logging->setChecked(true);
             ui->actionSpeciation_logging->setChecked(true);
+            ui->actionVariable_hgt_prob_logging->setChecked(true);
+            ui->actionVariable_hgt_len_logging->setChecked(true);
+            ui->actionVariable_hgt_id_logging->setChecked(true);
         }
     }
 

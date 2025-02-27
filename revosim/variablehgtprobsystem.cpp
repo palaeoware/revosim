@@ -7,11 +7,12 @@ VariableHgtProbSystem::VariableHgtProbSystem() : System("Variable HGT System")
 
 }
 
+//PG - variable HGT probability system set up
 bool VariableHgtProbSystem::setGenomeWordsFromString(QString s, int maxsize)
 {
     bool returnValue = System::setGenomeWordsFromString(s, maxsize);
-    if (returnValue) createCumulativeLogLinearDistribution();
-    //if (returnValue) createCumulativeLinearDistribution();
+    //if (returnValue) createCumulativeLogLinearDistribution();
+    if (returnValue) createCumulativeLinearDistribution();
     return returnValue;
 }
 
@@ -40,15 +41,43 @@ bool VariableHgtProbSystem::variableWillTransform(const quint32 *genome)
 }
 
 //PG - create linear distribution between 10^-7 and 10^-3 chance for bit count
+// void VariableHgtProbSystem::createCumulativeLinearDistribution(){
+
+//     cumulativeDistribution.clear();
+
+//     quint64 max = 1e7;
+//     quint64 min = 1e3;
+//     quint64 step = (max - min) / ((useGenomeWordsCount * 32)-1);
+
+//     for (int i = 0; i < useGenomeWordsCount * 32; i++) cumulativeDistribution.append(max - (step * i));
+
+//     //qDebug() << cumulativeDistribution;
+// }
+
+
+//PG - create linear distribution between 10^-7 and 10^-3 chance for bit count- Test for more frequent
 void VariableHgtProbSystem::createCumulativeLinearDistribution(){
 
     cumulativeDistribution.clear();
 
-    quint64 max = 1e7;
-    quint64 min = 1e3;
-    quint64 step = (max - min) / ((useGenomeWordsCount * 32)-1);
+    quint64 max = 1e3;
+    quint64 min = 1e1;
+    double step = (log10(max) - log10(min)) / ((useGenomeWordsCount* 32) - 1);
 
-    for (int i = 0; i < useGenomeWordsCount * 32; i++) cumulativeDistribution.append(max - (step * i));
+    for (int i = 0; i < useGenomeWordsCount * 32; i++)
+    {
+        double LogValue = log10(max) - (step * i);
+        double value = std::pow(10, LogValue);
+
+
+        cumulativeDistribution.append(static_cast<quint64>(value));
+    }
+
+    // quint64 step = (max - min) / ((useGenomeWordsCount * 32)-1);
+
+    // for (int i = 0; i < useGenomeWordsCount * 32; i++) cumulativeDistribution.append(max - (step * i));
+
+    qDebug() << cumulativeDistribution;
 }
 
 
@@ -69,6 +98,31 @@ void VariableHgtProbSystem::createCumulativeLogLinearDistribution()
 
         cumulativeDistribution.append(static_cast<quint64>(value));
     }
+
+    //qDebug() << cumulativeDistribution;
+}
+
+//PG - for logging
+quint32 VariableHgtProbSystem::returnBitcount(const quint32 *genome)
+{
+    quint32 bitcount = 0;
+    for (int i = 0; i < useGenomeWordsCount; i++)
+    {
+        quint32 genomeWord = genome[useGenomeWords[i]];
+        bitcount += bitCount(genomeWord);
+    }
+    return bitcount;
+}
+
+//PG - for logging
+quint32 VariableHgtProbSystem::returnCumulativeDistributionAtN(int n)
+{
+    if (n >= cumulativeDistribution.length())
+    {
+        qInfo() << "Error returning cumulative distribution - n out of bounds";
+        return 0;
+    }
+    else return cumulativeDistribution[n];
 }
 
 

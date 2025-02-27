@@ -54,9 +54,32 @@ void VariableHgtLenSystem::createCumulativeLinearDistribution()
     {
         cumulativeDistribution.append(max - (step * i));
     }
-
     //qDebug()<< cumulativeDistribution ;
  }
+
+//PG - for logging
+quint32 VariableHgtLenSystem::returnBitcount(const quint32 *genome)
+{
+    quint32 bitcount = 0;
+    for (int i = 0; i < useGenomeWordsCount; i++)
+    {
+        quint32 genomeWord = genome[useGenomeWords[i]];
+        bitcount += bitCount(genomeWord);
+    }
+    return bitcount;
+}
+
+
+//PG - for logging
+quint32 VariableHgtLenSystem::returnCumulativeDistributionAtN(int n)
+{
+    if (n >= cumulativeDistribution.length())
+    {
+        qInfo() << "Error returning cumulative distribution - n out of bounds";
+        return 0;
+    }
+    else return cumulativeDistribution[n];
+}
 
 
 

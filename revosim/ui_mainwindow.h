@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.3
+** Created by: Qt User Interface Compiler version 5.15.12
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -63,6 +63,9 @@ public:
     QAction *actionOutput_Dock;
     QAction *actionUseNewSpeciesID;
     QAction *actionGatherBySpecies;
+    QAction *actionVariable_hgt_prob_logging;
+    QAction *actionVariable_hgt_len_logging;
+    QAction *actionVariable_hgt_id_logging;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QFrame *frame_2;
@@ -206,6 +209,15 @@ public:
         actionGatherBySpecies->setObjectName(QString::fromUtf8("actionGatherBySpecies"));
         actionGatherBySpecies->setCheckable(true);
         actionGatherBySpecies->setChecked(true);
+        actionVariable_hgt_prob_logging = new QAction(MainWindow);
+        actionVariable_hgt_prob_logging->setObjectName(QString::fromUtf8("actionVariable_hgt_prob_logging"));
+        actionVariable_hgt_prob_logging->setCheckable(true);
+        actionVariable_hgt_len_logging = new QAction(MainWindow);
+        actionVariable_hgt_len_logging->setObjectName(QString::fromUtf8("actionVariable_hgt_len_logging"));
+        actionVariable_hgt_len_logging->setCheckable(true);
+        actionVariable_hgt_id_logging = new QAction(MainWindow);
+        actionVariable_hgt_id_logging->setObjectName(QString::fromUtf8("actionVariable_hgt_id_logging"));
+        actionVariable_hgt_id_logging->setCheckable(true);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -380,7 +392,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 1288, 68));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 1288, 69));
         horizontalLayout_5 = new QHBoxLayout(scrollAreaWidgetContents);
         horizontalLayout_5->setSpacing(6);
         horizontalLayout_5->setContentsMargins(11, 11, 11, 11);
@@ -611,6 +623,9 @@ public:
         menuCustom_Logging->addAction(actionVariable_mutation_logging);
         menuCustom_Logging->addAction(actionSpeciation_logging);
         menuCustom_Logging->addAction(actionDisparity_logging);
+        menuCustom_Logging->addAction(actionVariable_hgt_prob_logging);
+        menuCustom_Logging->addAction(actionVariable_hgt_len_logging);
+        menuCustom_Logging->addAction(actionVariable_hgt_id_logging);
         menuHelp->addAction(actionReportBugIssueFeatureRequest);
         menuHelp->addAction(actionCode_on_GitHub);
         menuHelp->addAction(actionOnline_User_Manual);
@@ -700,6 +715,9 @@ public:
         actionOutput_Dock->setText(QCoreApplication::translate("MainWindow", "Output Dock", nullptr));
         actionUseNewSpeciesID->setText(QCoreApplication::translate("MainWindow", "UseNewSpeciesID", nullptr));
         actionGatherBySpecies->setText(QCoreApplication::translate("MainWindow", "GatherBySpecies", nullptr));
+        actionVariable_hgt_prob_logging->setText(QCoreApplication::translate("MainWindow", "Variable HGT Probability logging", nullptr));
+        actionVariable_hgt_len_logging->setText(QCoreApplication::translate("MainWindow", "Variable HGT Length logging", nullptr));
+        actionVariable_hgt_id_logging->setText(QCoreApplication::translate("MainWindow", "Variable HGT ID logging", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "<b>Population:</b>", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Environment/Linkage:</span></p></body></html>", nullptr));
         batchLabel->setText(QCoreApplication::translate("MainWindow", "<b>Batch:</b>", nullptr));

@@ -12,10 +12,11 @@ public:
     VariableHgtProbSystem();
     bool setGenomeWordsFromString(QString s, int maxsize);
     bool variableWillTransform(const quint32 *genome);
+    quint32 returnBitcount(const quint32 *genome);
+    QVector <quint64> cumulativeDistribution;
+    quint32 returnCumulativeDistributionAtN(int n);
 
 private:
-
-    QVector <quint64> cumulativeDistribution;
     void createCumulativeLinearDistribution();
     void createCumulativeLogLinearDistribution();
 };
