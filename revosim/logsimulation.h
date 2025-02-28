@@ -1,10 +1,11 @@
 #ifndef LOGSIMULATION_H
 #define LOGSIMULATION_H
 
-#include <cellsettings.h>
-#include <simsettings.h>
-#include <analyser.h>
+#include "cellsettings.h"
+#include "simsettings.h"
+#include "analyser.h"
 
+#include <QString>
 #include <QTextStream>
 #include <QDir>
 

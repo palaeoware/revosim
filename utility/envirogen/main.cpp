@@ -20,7 +20,6 @@
 #include <QSplashScreen>
 #include <QString>
 #include <QStyle>
-#include <QDesktopWidget>
 #include <QTimer>
 
 #include "mainwindow.h"

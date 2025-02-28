@@ -1280,8 +1280,9 @@ bool SimManager::iterate(int eMode, bool interpolate)
     }
     //do the magic! Set up futures objects, call the functions, wait till done, retrieve values
 
+    //RJG Feb 25 - note that the parameter order to this has changed from qt5 to qt6. More: https://doc.qt.io/qt-6/concurrent-changes-qt6.html
     for (int i = 0; i < ProcessorCount; i++)
-        *(FuturesList[i]) = QtConcurrent::run(this, &SimManager::iterateParallel,
+        *(FuturesList[i]) = QtConcurrent::run(&SimManager::iterateParallel, this,
                                               (i * simulationSettings->gridX) / ProcessorCount, (((i + 1) * simulationSettings->gridX) / ProcessorCount) - 1, newgenomecounts_starts[i],
                                               &(KillCounts[i]));
 
@@ -1319,8 +1320,9 @@ bool SimManager::iterate(int eMode, bool interpolate)
     */
 
     //Parallel version of settle functions
+    //RJG Feb 25 - note that the parameter order to this has changed from qt5 to qt6. More: https://doc.qt.io/qt-6/concurrent-changes-qt6.html
     for (int i = 0; i < ProcessorCount; i++)
-        *(FuturesList[i]) = QtConcurrent::run(this, &SimManager::settleParallel, newgenomecounts_starts[i], newgenomecounts_ends[i], &(birthcounts[i]));
+        *(FuturesList[i]) = QtConcurrent::run(&SimManager::settleParallel, this, newgenomecounts_starts[i], newgenomecounts_ends[i], &(birthcounts[i]));
 
     for (int i = 0; i < ProcessorCount; i++)
         FuturesList[i]->waitForFinished();

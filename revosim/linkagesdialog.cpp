@@ -108,7 +108,7 @@ void linkagesDialog::setUpGUI()
     modeButtonGroup->addButton(modeOnceButton, ENV_MODE_ONCE);
     modeButtonGroup->addButton(modeLoopButton, ENV_MODE_LOOP);
     modeButtonGroup->addButton(modeBounceButton, ENV_MODE_BOUNCE);
-    connect(modeButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, [ = ](const int i)
+    connect(modeButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::idClicked), this, [ = ](const int i)
     {
         linkageLocal->mode = i;
     });

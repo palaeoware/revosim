@@ -45,6 +45,7 @@ public:
         double veltweak, sizetweak, coltweak, tighttweak;
         int iter_to_accel;
         int iter_reset;
+        bool toroidal;
     };
     settingsMark markEnvironmentSettings;
 

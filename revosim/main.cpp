@@ -20,7 +20,6 @@
 #include "globals.h"
 
 #include <QApplication>
-#include <QDesktopWidget>
 #include <QSplashScreen>
 #include <QString>
 #include <QStyle>

@@ -165,6 +165,8 @@ public:
     QPushButton *sFromImPushbutton;
     QLabel *label_37;
     QLabel *stack_label;
+    QCheckBox *ME_Toroidal;
+    QLabel *labelToroidal;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -541,7 +543,7 @@ public:
 
         verticalSpacer_5 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
-        gridLayout->addItem(verticalSpacer_5, 19, 0, 1, 1);
+        gridLayout->addItem(verticalSpacer_5, 20, 0, 1, 1);
 
         label_20 = new QLabel(mark_tab);
         label_20->setObjectName(QString::fromUtf8("label_20"));
@@ -670,6 +672,18 @@ public:
         ME_maxSizeVel->setValue(3.000000000000000);
 
         gridLayout->addWidget(ME_maxSizeVel, 9, 1, 1, 1);
+
+
+        ME_Toroidal = new QCheckBox(mark_tab);
+        ME_Toroidal->setObjectName(QString::fromUtf8("ME_Toroidal"));
+        ME_Toroidal->setText("Toroidal");
+        ME_Toroidal->setChecked(false);
+        labelToroidal = new QLabel(mark_tab);
+        labelToroidal->setObjectName(QString::fromUtf8("ME_Toroidal_Label"));
+        labelToroidal->setText("Background:");
+        gridLayout->addWidget(ME_Toroidal, 19, 1, 1, 1);
+        gridLayout->addWidget(labelToroidal, 19, 0, 1, 1);
+
 
         m_environment_label = new QLabel(mark_tab);
         m_environment_label->setObjectName(QString::fromUtf8("m_environment_label"));
