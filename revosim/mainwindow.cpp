@@ -898,16 +898,16 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     hgt_settings_label->setStyleSheet("font-weight: bold");
     interactionSettingsGrid->addWidget(hgt_settings_label, 18, 1, 1, 2);
 
-    variablehgtprobCheckbox = new QCheckBox("Variable HGT probability");
+    variablehgtprobCheckbox = new QCheckBox("Variable probability");
     variablehgtprobCheckbox->setChecked(simulationManager->simulationSettings->variableHgtProb);
-    variablehgtprobCheckbox->setToolTip("<font>Turn on/off variable transformation (HGT).</font>");
+    variablehgtprobCheckbox->setToolTip("<font>Turn on/off variable transformation probability (HGT).</font>");
     interactionSettingsGrid->addWidget(variablehgtprobCheckbox, 19, 1, 1, 2);
     connect(variablehgtprobCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
     {
         simulationManager->simulationSettings->variableHgtProb = i;
     });
 
-    hgtCheckbox = new QCheckBox("Transformation activated");
+    hgtCheckbox = new QCheckBox("Transformation");
     hgtCheckbox->setChecked(simulationManager->cellSettingsMaster->hgtTransform);
     hgtCheckbox->setToolTip("<font>Turn on/off transformation (HGT).</font>");
     interactionSettingsGrid->addWidget(hgtCheckbox, 19, 2, 1, 2);
@@ -932,24 +932,24 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
     });
 
     QLabel *transfer_chance_label = new QLabel("Transfer probability - 1 in ");
-    transfer_chance_label->setToolTip("<font>Set the HGT transfer chance per cell per generation.</font>");
+    transfer_chance_label->setToolTip("<font>Set the HGT transfer chance per cell per iteration if transformation activated.</font>");
     transferchanceSpin = new QSpinBox();
     transferchanceSpin->setMinimum(100);
     transferchanceSpin->setMaximum(10000000);
     interactionSettingsGrid->addWidget(transfer_chance_label, 20, 1);
     interactionSettingsGrid->addWidget(transferchanceSpin, 20, 2);
 
-    variablehgtlenCheckbox = new QCheckBox("Variable HGT length");
+    variablehgtlenCheckbox = new QCheckBox("Variable length");
     variablehgtlenCheckbox->setChecked(simulationManager->simulationSettings->variableHgtLen);
-    variablehgtlenCheckbox->setToolTip("<font>Turn on/off variable transformation (HGT).</font>");
+    variablehgtlenCheckbox->setToolTip("<font>Turn on/off variable transformation length (HGT).</font>");
     interactionSettingsGrid->addWidget(variablehgtlenCheckbox, 22, 1, 1, 2);
     connect(variablehgtlenCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
     {
         simulationManager->simulationSettings->variableHgtLen = i;
     });
 
-    randomlengthCheckbox = new QCheckBox("Random transfer length");
-    randomlengthCheckbox->setToolTip("<font>Turn on/off nonSpatial settling of offspring.</font>");
+    randomlengthCheckbox = new QCheckBox("Random length");
+    randomlengthCheckbox->setToolTip("<font>Turn on/off random transfer length.</font>");
     interactionSettingsGrid->addWidget(randomlengthCheckbox, 22, 2, 1, 2);
     randomlengthCheckbox->setChecked(simulationManager->simulationSettings->hgtrandomlength);
     connect(randomlengthCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
@@ -1020,16 +1020,16 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
         }
     });
 
-    variablehgtidCheckbox = new QCheckBox("Variable HGT ID matching");
+    variablehgtidCheckbox = new QCheckBox("Variable max diff");
     variablehgtidCheckbox->setChecked(simulationManager->simulationSettings->variableHgtId);
-    variablehgtidCheckbox->setToolTip("<font>Turn on/off variable transformation (HGT).</font>");
+    variablehgtidCheckbox->setToolTip("<font>Turn on/off variable homologous transformation (HGT).</font>");
     interactionSettingsGrid->addWidget(variablehgtidCheckbox, 24, 1, 1, 2);
     connect(variablehgtidCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
     {
         simulationManager->simulationSettings->variableHgtId = i;
     });
 
-    hgtidCheckbox = new QCheckBox("ID matching enabled");
+    hgtidCheckbox = new QCheckBox("HGT Max diff");
     hgtidCheckbox->setToolTip("<font>Turn on/off max Difference to hgt.</font>");
     interactionSettingsGrid->addWidget(hgtidCheckbox, 24, 2, 1, 2);
     hgtidCheckbox->setChecked(simulationManager->simulationSettings->hgtId);
@@ -1091,11 +1091,12 @@ QDockWidget *MainWindow::createInteractionSettingsDock()
 
     interactionSettingsGrid->addLayout(HgtModeGrid, 27, 1, 1, 2);
 
-    connect(hgtButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), [ = ](const int &i)
+    connect(hgtButtonGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::idClicked), [ = ](const int &i)
     {
         if (i == 0) simulationManager->simulationSettings->hgtMode = HGT_SYNOYMOUS;
         else simulationManager->simulationSettings->hgtMode = HGT_NON_SYNOYMOUS;
     });
+
 
     //ENF - Genome seeding settings
     /*QLabel *seeding_settings_label = new QLabel("Genome seeding settings");
@@ -2683,11 +2684,11 @@ void MainWindow::runSetUp()
     ui->actionReseed->setEnabled(false);
     reseedButton->setEnabled(false);
 
-    if (simulationManager->simulationSettings->logging && speciesMode == SPECIES_MODE_NONE)
-    {
-        if (!autoFromCommand) QMessageBox::warning(this, "Be aware", "Species tracking is off, so the log files won't show species information");
-        else qInfo() << "Species tracking is off, so the log files won't show species information";
-    }
+    // if (simulationManager->simulationSettings->logging && speciesMode == SPECIES_MODE_NONE)
+    // {
+    //     if (!autoFromCommand) QMessageBox::warning(this, "Be aware", "Species tracking is off, so the log files won't show species information");
+    //     else qInfo() << "Species tracking is off, so the log files won't show species information";
+    // }
 
     doSavePath();
 

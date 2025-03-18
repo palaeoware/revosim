@@ -41,6 +41,19 @@
 /docs/_templates/*
 /.vscode
 
+
 # Misc 
 make.bat
 Makefile
+/revosim/bin
+/revosim/bin/*
+/revosim/build
+/revosim/build/*
+/revosim/debug
+/revosim/debug/*
+/revosim/.qtc_clangd
+/revosim/.qtc_clangd/*
+/revosim/release
+/revosim/release/*
+
+

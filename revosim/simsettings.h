@@ -2,7 +2,7 @@
 #define SIMSETTINGS_H
 
 #include "globals.h"
-#include <qt6/QtCore/qglobal.h>
+#include <QtCore/qglobal.h>
 
 
 class SimSettings

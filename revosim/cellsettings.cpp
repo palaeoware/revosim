@@ -20,7 +20,7 @@ CellSettings::CellSettings()
     predationEfficiency = 10;
     croppingFrequency = 0;
     hgtTransferLength = 1;
-    hgtTransferChance = 1000;
+    hgtTransferChance = 100;
     asexual = false;
     obligateSexual = true;
     facultativeSexual = false;

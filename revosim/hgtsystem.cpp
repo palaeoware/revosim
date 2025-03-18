@@ -39,9 +39,9 @@ void HgtSystem::generateMask(quint32* genome, quint32* mask)
         for (int j = 0; j < 32; j++)
         {
             quint32 index = (j + (i * 32)) % genomeTransformableLength;
-            if ((index >= startPosition && !wraps && index < startPosition + transferLength) || // no wrapping and bit position within transfer segment
-                (index >= startPosition && wraps && index < genomeTransformableLength) || //  wrapping and bit position greater or equal to start position
-                (index < wrappedLength && wraps))  // wrapping and less than wrapped length
+            if (((index >= startPosition) && !wraps && (index < startPosition + transferLength)) || // no wrapping and bit position within transfer segment
+                ((index >= startPosition) && wraps && (index < genomeTransformableLength)) || //  wrapping and bit position greater or equal to start position
+                ((index < wrappedLength) && wraps))  // wrapping and less than wrapped length
             {
                 (mask[i] &= ~(1 << j)); // make bit = 0
             }
@@ -78,7 +78,7 @@ void HgtSystem::generateTransfer(quint32* donorGenome, quint32* positionMask, qu
 
 
 //PG- transform organism genome to include transfer segement
-void HgtSystem::transformRecipient(quint32* genome, quint32* donorGenome, quint32* positionMask, quint32* donorMask)
+void HgtSystem::transformRecipient(quint32* genome, quint32* positionMask, quint32* donorMask)
 {
     //- if variable hgt id or max difference to HGT is enforced
     if ((simulationManager->simulationSettings->variableHgtId || simulationManager->simulationSettings->hgtId))
@@ -128,7 +128,7 @@ void HgtSystem::transform(quint32* genome, quint32* positionMask, quint32* donor
 //PG- shift the transferable segment and mask to allow non-homologous transformation
 void HgtSystem::shift(quint32* positionMask, quint32* donorMask)
 {
-    quint32 leftShift = simulationManager->simulationRandoms->rand32() % 2;
+    quint32 leftShift = simulationManager->simulationRandoms->rand32() % 2; // generate random number to see determine movement of shift left or right
 
     quint32 tempDonorMask[useGenomeWordsCount];
     quint32 tempPositionMask[useGenomeWordsCount];
