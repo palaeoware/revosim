@@ -914,7 +914,7 @@ bool test::testEight(QString &outString)
                     maskWord++; // Increment maskWord only for valid genome words
                 }
             }
-            if (testFlag) out << "Transformations successful....\n";
+            if (testFlag) out << "Transformation successful....\n";
 
 
         //- Output results
