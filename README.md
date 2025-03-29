@@ -24,6 +24,8 @@ Furness E.N., Garwood R.J., Mannion P.D. & Sutton M.D. 2021. Evolutionary simula
 Furness, E.N., Garwood, R.J., Mannion, P. D. & Sutton, M.D. 2021. Productivity, niche availability, species richness and extinction risk: Untangling relationships using individual-based simulations. Ecology and Evolution 11(13): 8923-8940. [https://doi.org/10.1002/ece3.7730](https://doi.org/10.1002/ece3.7730)
 
 Furness, E.N. & Sutton, M.D. 2024. The biological cropping hypothesis over evolutionary time: an experimental test. Theoretical Ecology, 17: 121-129. [https://doi.org/10.1007/s12080-024-00579-3](https://doi.org/10.1007/s12080-024-00579-3)
+
+Furness E.N., Speed, J.D.M., Garwood R.J. & Sutton M.D. 2025. The role of evolutionary processes in determining trophic structure. Oikos 2025(1): e10597. [https://doi.org/10.1111/oik.10597](https://doi.org/10.1111/oik.10597) 
 _____
 
 CONTENTS:
