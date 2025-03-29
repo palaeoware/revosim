@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'about.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.3
+** Created by: Qt User Interface Compiler version 6.8.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,6 +10,7 @@
 #define UI_ABOUT_H
 
 #include <QtCore/QVariant>
+#include <QtWidgets/QAbstractButton>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QDialogButtonBox>
@@ -39,37 +40,37 @@ public:
     void setupUi(QDialog *About)
     {
         if (About->objectName().isEmpty())
-            About->setObjectName(QString::fromUtf8("About"));
+            About->setObjectName("About");
         About->resize(600, 680);
         layoutWidget = new QWidget(About);
-        layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
+        layoutWidget->setObjectName("layoutWidget");
         layoutWidget->setGeometry(QRect(10, 10, 581, 661));
         verticalLayout = new QVBoxLayout(layoutWidget);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName("verticalLayout");
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         header = new QLabel(layoutWidget);
-        header->setObjectName(QString::fromUtf8("header"));
+        header->setObjectName("header");
 
         verticalLayout->addWidget(header);
 
         textLabel_1 = new QLabel(layoutWidget);
-        textLabel_1->setObjectName(QString::fromUtf8("textLabel_1"));
+        textLabel_1->setObjectName("textLabel_1");
 
         verticalLayout->addWidget(textLabel_1);
 
         textLabel_2 = new QLabel(layoutWidget);
-        textLabel_2->setObjectName(QString::fromUtf8("textLabel_2"));
+        textLabel_2->setObjectName("textLabel_2");
 
         verticalLayout->addWidget(textLabel_2);
 
         textLabel_3 = new QLabel(layoutWidget);
-        textLabel_3->setObjectName(QString::fromUtf8("textLabel_3"));
+        textLabel_3->setObjectName("textLabel_3");
 
         verticalLayout->addWidget(textLabel_3);
 
         textBrowser = new QTextBrowser(layoutWidget);
-        textBrowser->setObjectName(QString::fromUtf8("textBrowser"));
-        textBrowser->viewport()->setProperty("cursor", QVariant(QCursor(Qt::ArrowCursor)));
+        textBrowser->setObjectName("textBrowser");
+        textBrowser->viewport()->setProperty("cursor", QVariant(QCursor(Qt::CursorShape::ArrowCursor)));
         textBrowser->setAcceptDrops(false);
         textBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         textBrowser->setOverwriteMode(false);
@@ -77,15 +78,15 @@ public:
         verticalLayout->addWidget(textBrowser);
 
         horizontalLayout = new QHBoxLayout();
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setObjectName("horizontalLayout");
         horizontalLayout->setContentsMargins(0, 10, -1, -1);
         footer1 = new QLabel(layoutWidget);
-        footer1->setObjectName(QString::fromUtf8("footer1"));
+        footer1->setObjectName("footer1");
 
         horizontalLayout->addWidget(footer1);
 
         footer2 = new QLabel(layoutWidget);
-        footer2->setObjectName(QString::fromUtf8("footer2"));
+        footer2->setObjectName("footer2");
 
         horizontalLayout->addWidget(footer2);
 
@@ -93,7 +94,7 @@ public:
         verticalLayout->addLayout(horizontalLayout);
 
         buttonBox = new QDialogButtonBox(layoutWidget);
-        buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
+        buttonBox->setObjectName("buttonBox");
         buttonBox->setOrientation(Qt::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::Close);
 
@@ -101,8 +102,8 @@ public:
 
 
         retranslateUi(About);
-        QObject::connect(buttonBox, SIGNAL(accepted()), About, SLOT(accept()));
-        QObject::connect(buttonBox, SIGNAL(rejected()), About, SLOT(reject()));
+        QObject::connect(buttonBox, &QDialogButtonBox::accepted, About, qOverload<>(&QDialog::accept));
+        QObject::connect(buttonBox, &QDialogButtonBox::rejected, About, qOverload<>(&QDialog::reject));
 
         QMetaObject::connectSlotsByName(About);
     } // setupUi

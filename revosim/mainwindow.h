@@ -174,6 +174,13 @@ private:
     QCheckBox *loggingCheckbox{};
     QCheckBox *autoWriteLogCheckbox{};
     QCheckBox *autoWriteLogIndividualsCheckbox{};
+    QCheckBox *hgtCheckbox{};
+    QCheckBox *randomlengthCheckbox{};
+    QCheckBox *variablehgtprobCheckbox{};
+    QCheckBox *variablehgtlenCheckbox{};
+    QCheckBox *variablehgtidCheckbox{};
+    QCheckBox *hgtidCheckbox{};
+
 
     //RJG - radios and spins
     QRadioButton *phylogenyOffButton{};
@@ -199,6 +206,8 @@ private:
     QRadioButton *seedingDefaultRadio{};
     QRadioButton *seeding3TierRadio{};
     QRadioButton *seeding5TierRadio{};
+    QRadioButton *hgtSynonoymousRadio{};
+    QRadioButton *hgtNonSynonoymousRadio{};
 
     QSpinBox *minSpeciesSizeSpin{};
     QSpinBox *mutateSpin{};
@@ -219,6 +228,9 @@ private:
     QSpinBox *pathogenMutateSpin{};
     QSpinBox *pathogenFrequencySpin{};
     QSpinBox *croppingFrequencySpin{};
+    QSpinBox *transferlengthSpin{};
+    QSpinBox *transferchanceSpin{};
+    QSpinBox *transfermaxdifferenceSpin{};
 
     //RJG - text edits for logs
     QTextEdit *headerTextEdit;
@@ -236,7 +248,10 @@ private:
     QLineEdit *interactions_word_edit;
     QLineEdit *visualisations_word_edit;
     QLineEdit *visualisations_word_edit_2;
-
+    QLineEdit *hgt_word_edit_1;
+    QLineEdit *variable_hgt_word_edit_1;
+    QLineEdit *variable_hgt_word_edit_2;
+    QLineEdit *variable_hgt_word_edit_3;
 
     // Interactions
     QSpinBox *interactionsSpin{};
@@ -260,6 +275,7 @@ private:
     QImage *populationImageColour;
     QGraphicsPixmapItem *populationItem;
     QGraphicsPixmapItem *environmentItem;
+    QButtonGroup *hgtButtonGroup;
 
     QTimer fitnessMessageTimer;
 
