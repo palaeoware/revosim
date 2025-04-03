@@ -35,7 +35,7 @@ public:
     quint32 maxSizeIncludingChildren();
     QString writeNewickString(int childIndex, quint64 lastTimeBase, bool killFluff);
     QString writeData(int childIndex, quint64 lastTimeBase, bool killFluff, quint64 parentID = 0);
-    QString writeDataLine(quint64 start, quint64 end, quint64 speciesID, quint64 parentID);
+    QString writeDataLine(quint64 start, quint64 end, quint64 speciesID, quint64 actualSpeciesID, quint64 parentID);
 
     quint32 maxSize{};
     quint64 ID{};

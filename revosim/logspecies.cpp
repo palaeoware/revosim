@@ -22,7 +22,7 @@
 
 #include <QTextStream>
 
-
+#define BRANCH_LENGTH_FOR_FLUFF 0
 
 /*!
  * \brief LogSpecies::LogSpecies
@@ -51,7 +51,7 @@ LogSpecies::~LogSpecies()
  * \return QString
  */
 
-QString LogSpecies::writeDataLine(quint64 start, quint64 end, quint64 speciesID, quint64 parentID)
+QString LogSpecies::writeDataLine(quint64 start, quint64 end, quint64 speciesID, quint64 actualSpeciesID, quint64 parentID)
 {
     QString outstring;
     QTextStream out(&outstring);
@@ -60,7 +60,7 @@ QString LogSpecies::writeDataLine(quint64 start, quint64 end, quint64 speciesID,
     {
         if (di->iteration >= start && di->iteration < end)
         {
-            out << speciesID << "," << parentID << ",";
+            out << speciesID << "," << actualSpeciesID << "," << parentID << ",";
             out << di->iteration << "," << di->size << ",";
             //RJG - with v3.0.0 we need to output multiple words
             QString genome;
@@ -89,10 +89,16 @@ QString LogSpecies::writeData(int childIndex, quint64 lastTimeBase, bool killFlu
 {
     //modelled on writeNewickString
     int cc = children.count();
-    quint64 speciesID = ids++;
+    quint64 treeNodeID = ids++;
+    quint64 actualSpeciesID = ID;
+    if (actualSpeciesID>1)
+    {
+        actualSpeciesID--;  //Don't ask. I have no idea why ID for all except species 1 is out by one - this fixes it though
+    }
+
     if (lastTimeBase == 0) lastTimeBase = timeOfFirstAppearance;
     if (cc <= childIndex)
-        return writeDataLine(lastTimeBase, timeOfLastAppearance, speciesID, parentID);
+        return writeDataLine(lastTimeBase, timeOfLastAppearance, treeNodeID, actualSpeciesID, parentID);
 
     int nextchildindex = cc; //for if it runs off the end
     quint64 thisgeneration = 0;
@@ -101,7 +107,7 @@ QString LogSpecies::writeData(int childIndex, quint64 lastTimeBase, bool killFlu
     {
         if (!genvalid || children[i]->timeOfFirstAppearance == thisgeneration)
         {
-            if (!(children[i]->isFluff()))
+            if (!(children[i]->isFluff()) || !killFluff)
             {
                 genvalid = true;
                 thisgeneration = children[i]->timeOfFirstAppearance;
@@ -114,19 +120,19 @@ QString LogSpecies::writeData(int childIndex, quint64 lastTimeBase, bool killFlu
         }
     }
 
-    if (!genvalid) return writeDataLine(lastTimeBase, timeOfLastAppearance, speciesID, parentID);
+    if (!genvalid) return writeDataLine(lastTimeBase, timeOfLastAppearance, treeNodeID, actualSpeciesID, parentID);
 
     //now recurse onto (a) this with new settings, and (b) the children
     QString s;
     QTextStream out(&s);
-    out << writeData(nextchildindex, thisgeneration, killFluff, speciesID); //my 'offspring'
+    out << writeData(nextchildindex, thisgeneration, killFluff, treeNodeID); //my 'offspring'
     for (int i = childIndex; i < nextchildindex; i++)
     {
 
-        if (!(children[i]->isFluff()))
-            out << children.at(i)->writeData(0, thisgeneration, killFluff, speciesID);
+        if (!(children[i]->isFluff()) || !killFluff)
+            out << children.at(i)->writeData(0, thisgeneration, killFluff, treeNodeID);
     }
-    out << writeDataLine(lastTimeBase, thisgeneration, speciesID, parentID);
+    out << writeDataLine(lastTimeBase, thisgeneration, treeNodeID, actualSpeciesID, parentID);
 
     return s;
 
@@ -196,15 +202,28 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
     //recursively generate Newick-format text description of tree
     //bl is branch length. For simple nodes - just last appearance time - first
     int cc = children.count();
-    quint64 bl;
-    quint64 speciesID = ids++;
+    quint64 branchLength;
+    quint64 treeNodeID = ids++;
+    quint64 actualSpeciesID = ID;
+    if (actualSpeciesID>1)
+    {
+        actualSpeciesID--;  //Don't ask. I have no idea why ID for all except species 1 is out by one - this fixes it though
+    }
+
+
+
     if (lastTimeBase == 0) lastTimeBase = timeOfFirstAppearance;
+
     if (cc <= childIndex)
     {
-        bl = timeOfLastAppearance - lastTimeBase;
-        QString s = QString ("ID%1-%2:%3").arg(speciesID).arg(maxSize).arg(bl);
-        return s;
+        branchLength = timeOfLastAppearance - lastTimeBase;
+        if (timeOfLastAppearance < lastTimeBase) //seems to happen for fluff species
+        {
+            branchLength=BRANCH_LENGTH_FOR_FLUFF;
+        }
+        return QString ("ID%1-%2-%3:%4").arg(treeNodeID).arg(actualSpeciesID).arg(maxSize).arg(branchLength);
     }
+
     int nextchildindex = cc; //for if it runs off the end
     quint64 thisgeneration = 0;
     bool genvalid = false;
@@ -212,7 +231,7 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
     {
         if (!genvalid || children[i]->timeOfFirstAppearance == thisgeneration)
         {
-            if (!(children[i]->isFluff()))
+            if (!(children[i]->isFluff()) || !killFluff)
             {
                 genvalid = true;
                 thisgeneration = children[i]->timeOfFirstAppearance;
@@ -229,11 +248,22 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
     if (!genvalid)
     {
         //actually no children
-        bl = timeOfLastAppearance - lastTimeBase;
-        QString s = QString ("ID%1-%2:%3").arg(speciesID).arg(maxSize).arg(bl);
-        return s;
+
+        branchLength = timeOfLastAppearance - lastTimeBase;
+
+        if (timeOfLastAppearance < lastTimeBase) //seems to happen for fluff species
+        {
+            branchLength=BRANCH_LENGTH_FOR_FLUFF;
+        }
+
+        return QString ("ID%1-%2-%3:%4").arg(treeNodeID).arg(actualSpeciesID).arg(maxSize).arg(branchLength);
     }
-    bl = thisgeneration - lastTimeBase;
+    branchLength = thisgeneration - lastTimeBase;
+
+    if (thisgeneration < lastTimeBase) //seems to happen for fluff species
+    {
+        branchLength=BRANCH_LENGTH_FOR_FLUFF;
+    }
 
     //now recurse onto (a) this with new settings, and (b) the children
     QString s;
@@ -241,10 +271,10 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
     out << "(" << writeNewickString(nextchildindex, thisgeneration, killFluff);
     for (int i = childIndex; i < nextchildindex; i++)
     {
-        if (!(children[i]->isFluff()))
+        if (!(children[i]->isFluff()) || !killFluff)
             out << "," << children.at(i)->writeNewickString(0, thisgeneration, killFluff);
     }
-    out << ")ID" << speciesID << "-" << maxSize << ":" << bl;
+    out << ")ID" << treeNodeID << "-" << actualSpeciesID << "-"<< maxSize << ":" << branchLength;
     return s;
 
 }
