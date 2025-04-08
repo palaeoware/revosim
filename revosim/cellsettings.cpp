@@ -19,6 +19,8 @@ CellSettings::CellSettings()
     minDeltaPredatorness = 0;
     predationEfficiency = 10;
     croppingFrequency = 0;
+    hgtTransferLength = 1;
+    hgtTransferChance = 100;
     asexual = false;
     obligateSexual = true;
     facultativeSexual = false;
@@ -33,4 +35,5 @@ CellSettings::CellSettings()
     interactFitness = false;
     interactEnergy = false;
     interactWithinSpecies = true;
+    hgtTransform = false;
 }

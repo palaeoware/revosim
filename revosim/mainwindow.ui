@@ -384,7 +384,7 @@
             <x>0</x>
             <y>0</y>
             <width>1288</width>
-            <height>49</height>
+            <height>69</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -766,7 +766,7 @@
      <x>0</x>
      <y>0</y>
      <width>1292</width>
-     <height>17</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuCommands">
@@ -811,6 +811,9 @@
      <addaction name="actionVariable_mutation_logging"/>
      <addaction name="actionSpeciation_logging"/>
      <addaction name="actionDisparity_logging"/>
+     <addaction name="actionVariable_hgt_prob_logging"/>
+     <addaction name="actionVariable_hgt_len_logging"/>
+     <addaction name="actionVariable_hgt_id_logging"/>
     </widget>
     <addaction name="actionGenomeComparison"/>
     <addaction name="actionSettings_Dock"/>
@@ -1070,6 +1073,30 @@
    </property>
    <property name="text">
     <string>GatherBySpecies</string>
+   </property>
+  </action>
+  <action name="actionVariable_hgt_prob_logging">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Variable HGT Probability logging</string>
+   </property>
+  </action>
+  <action name="actionVariable_hgt_len_logging">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Variable HGT Length logging</string>
+   </property>
+  </action>
+  <action name="actionVariable_hgt_id_logging">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Variable HGT ID logging</string>
    </property>
   </action>
  </widget>

@@ -52,6 +52,9 @@ private:
     QString writeDisparityLogHeader(bool fullDetails = false);
     QString writeSpeciationLogHeader();
     QString writeMutationLogHeader();
+    QString writeVariableHgtProbHeader();
+    QString writeVariableHgtLenHeader();
+    QString writeVariableHgtIdHeader();
 
     QString writeCustomLog();
     QString writeFitnessLog();
@@ -59,6 +62,9 @@ private:
     QString writeDisparityLog(bool fullDetails = false);
     QString writeSpeciationLog();
     QString writeMutationLog();
+    QString writeVariableHgtProbLog();
+    QString writeVariableHgtLenLog();
+    QString writeVariableHgtIdLog();
     QString GetFrequenciesLogString(Species species, bool original);
 
     SimSettings *simSettings;

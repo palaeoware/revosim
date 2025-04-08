@@ -651,6 +651,9 @@ void LogSimulation::writeLog(QString globalSavePath, int batchRuns, int logType)
     if (logType == LOG_DISPARITY) loggingFile.append(QString(PRODUCTNAME) + "_disparity");
     if (logType == LOG_SPECIATION) loggingFile.append(QString(PRODUCTNAME) + "_speciation");
     if (logType == LOG_MUTATION) loggingFile.append(QString(PRODUCTNAME) + "_mutation");
+    if (logType == LOG_HGT_PROB) loggingFile.append(QString(PRODUCTNAME) + "_hgtprob");
+    if (logType == LOG_HGT_LEN) loggingFile.append(QString(PRODUCTNAME) + "_hgtlen");
+    if (logType == LOG_HGT_ID) loggingFile.append(QString(PRODUCTNAME) + "_hgtid");
     if (logType == LOG_DUMP_INDIVIDUALS) loggingFile.append(QString(PRODUCTNAME) + "_individuals_data");
 
     if (batchRuns > -1) loggingFile.append(QString("_run_%1").arg(batchRuns, 4, 10, QChar('0')));
@@ -669,6 +672,9 @@ void LogSimulation::writeLog(QString globalSavePath, int batchRuns, int logType)
         if (logType == LOG_DISPARITY) out << writeDisparityLogHeader();
         if (logType == LOG_SPECIATION) out << writeSpeciationLogHeader();
         if (logType == LOG_MUTATION) out << writeMutationLogHeader();
+        if (logType == LOG_HGT_PROB) out << writeVariableHgtProbHeader();
+        if (logType == LOG_HGT_LEN) out << writeVariableHgtLenHeader();
+        if (logType == LOG_HGT_ID) out << writeVariableHgtIdHeader();
         if (logType == LOG_DUMP_INDIVIDUALS) out <<  writeDisparityLogHeader(true);
     }
 
@@ -681,6 +687,9 @@ void LogSimulation::writeLog(QString globalSavePath, int batchRuns, int logType)
     if (logType == LOG_DISPARITY) out << writeDisparityLog();
     if (logType == LOG_SPECIATION) out << writeSpeciationLog();
     if (logType == LOG_MUTATION) out << writeMutationLog();
+    if (logType == LOG_HGT_PROB) out << writeVariableHgtProbLog();
+    if (logType == LOG_HGT_LEN) out << writeVariableHgtLenLog();
+    if (logType == LOG_HGT_ID) out << writeVariableHgtIdLog();
     if (logType == LOG_DUMP_INDIVIDUALS) out << writeDisparityLog(true);
 
     outputFile.close();
@@ -778,6 +787,114 @@ QString LogSimulation::writeMutationLogHeader()
         double percentProb =  ((4294967296. - static_cast<double>(n)) / 4294967296.) * 100.;
         if (csvOutput) out << i << "," << (4294967296 - n) << "/4294967296," << percentProb << "\n";
         else out << i << "\t" << (4294967296 - n) << "/4294967296, or " << percentProb << "%\n";
+
+    }
+
+    if (csvOutput)
+    {
+        out << "Output\nIteration:,Ones in genome\n";
+        for (int i = 0; i < 33; i++) out << i << ",";
+    }
+    else
+    {
+        out << "\n\nOutput - iteration:\tOnes in genome:\nIt:\t";
+        for (int i = 0; i < 33; i++) out << i << "\t";
+    }
+    out << "\n";
+
+    return logString;
+};
+
+QString LogSimulation::writeVariableHgtLenHeader()
+{
+    QString logString;
+    QTextStream out(&logString);
+
+    // Info on simulation setup
+    out << printSettings() << "\n";
+    out << "\nNote on log: this outputs a histogram for the grid showing the number of ones in the genome words which in turn dictates the length of transformation segment.\n"
+        "lengths are as follows:\n";
+
+    if (csvOutput)  out << "Number of ones,length of segment\n";
+    else  out << "Number of ones\tlength of segment\n";
+
+    for (int i = 0; i < 32; i++)
+    {
+        quint32 n = simulationManager->variableHgtLenSystem->returnCumulativeDistributionAtN(i);
+        if (csvOutput) out << i << "," << "1/" <<  n << "\n";
+        else out << i << "\t" << "1/" <<  n << "\n";
+
+    }
+
+    if (csvOutput)
+    {
+        out << "Output\nIteration:,Ones in genome\n";
+        for (int i = 0; i < 33; i++) out << i << ",";
+    }
+    else
+    {
+        out << "\n\nOutput - iteration:\tOnes in genome:\nIt:\t";
+        for (int i = 0; i < 33; i++) out << i << "\t";
+    }
+    out << "\n";
+
+    return logString;
+};
+
+QString LogSimulation::writeVariableHgtIdHeader()
+{
+    QString logString;
+    QTextStream out(&logString);
+
+    // Info on simulation setup
+    out << printSettings() << "\n";
+    out << "\nNote on log: this outputs a histogram for the grid showing the number of ones in the genome words which in turn dictates the max difference to transform between donor genome and transformation segment.\n"
+        "Maximum differences are as follows:\n";
+
+    if (csvOutput)  out << "Number of ones,Max difference allowed\n";
+    else  out << "Number of ones\tMax difference allowed\n";
+
+    for (int i = 0; i < 32; i++)
+    {
+        quint32 n = simulationManager->variableHgtIdSystem->returnCumulativeDistributionAtN(i);
+        if (csvOutput) out << i << "," << "1/" <<  n << "\n";
+        else out << i << "\t" << "1/" <<  n << "\n";
+
+    }
+
+    if (csvOutput)
+    {
+        out << "Output\nIteration:,Ones in genome\n";
+        for (int i = 0; i < 33; i++) out << i << ",";
+    }
+    else
+    {
+        out << "\n\nOutput - iteration:\tOnes in genome:\nIt:\t";
+        for (int i = 0; i < 33; i++) out << i << "\t";
+    }
+    out << "\n";
+
+    return logString;
+};
+
+QString LogSimulation::writeVariableHgtProbHeader()
+{
+    QString logString;
+    QTextStream out(&logString);
+
+    // Info on simulation setup
+    out << printSettings() << "\n";
+    out << "\nNote on log: this outputs a histogram for the grid showing the number of ones in the genome words which in turn dictates the probability of recieving transformation segment.\n"
+        "Probabilities are as follows:\n";
+
+    if (csvOutput)  out << "Number of ones,Probability of transformation occuring\n";
+    else  out << "Number of ones\tProbability of transformation occuring\n";
+
+    for (int i = 0; i < 32; i++)
+    {
+        quint32 n = simulationManager->variableHgtProbSystem->returnCumulativeDistributionAtN(i);
+        if (csvOutput) out << i << "," << "1/" <<  n << "\n";
+        else out << i << "\t" << "1/" <<  n << "\n";
 
     }
 
@@ -961,6 +1078,105 @@ QString LogSimulation::writeMutationLog()
     for (int i = 0; i < 33; i++)
     {
         out << variableMutateOnes[i];
+        if (csvOutput) out << ",";
+        else out << "\t";
+    }
+    out << "\n";
+    return logString;
+};
+
+QString LogSimulation::writeVariableHgtProbLog()
+{
+    QString logString;
+    QTextStream out(&logString);
+
+    if (!simulationManager->simulationSettings->variableHgtProb)
+    {
+        out << "Variable HGT probability not enabled. Will not log.\n\n";
+        return logString;
+    }
+
+    if (csvOutput) out << simulationManager->iteration << ",";
+    else out << simulationManager->iteration << ":\t";
+
+    //RJG counts for log - note it goes up to one more than max because need option for zero ones, plus all ones
+    QVector <quint32> variableHgtOnes;
+    for (int i = 0; i < (simulationManager->variableHgtProbSystem->returnUseGenomeWordsCount() * 32) + 1; i++)variableHgtOnes.append(0);
+
+    for (int i = 0; i < simulationManager->simulationSettings->gridX; i++)
+        for (int j = 0; j < simulationManager->simulationSettings->gridY; j++)
+            for (int c = 0; c < simulationManager->cellSettingsMaster->slotsPerSquare; c++)
+                if (critters[i][j][c].age > 0) variableHgtOnes[simulationManager->variableHgtProbSystem->returnBitcount(critters[i][j][c].genomeWords)]++;
+
+    for (int i = 0; i < 33; i++)
+    {
+        out << variableHgtOnes[i];
+        if (csvOutput) out << ",";
+        else out << "\t";
+    }
+    out << "\n";
+    return logString;
+};
+
+QString LogSimulation::writeVariableHgtLenLog()
+{
+    QString logString;
+    QTextStream out(&logString);
+
+    if (!simulationManager->simulationSettings->variableHgtLen)
+    {
+        out << "Variable HGT length not enabled. Will not log.\n\n";
+        return logString;
+    }
+
+    if (csvOutput) out << simulationManager->iteration << ",";
+    else out << simulationManager->iteration << ":\t";
+
+    //RJG counts for log - note it goes up to one more than max because need option for zero ones, plus all ones
+    QVector <quint32> variableHgtOnes;
+    for (int i = 0; i < (simulationManager->variableHgtLenSystem->returnUseGenomeWordsCount() * 32) + 1; i++)variableHgtOnes.append(0);
+
+    for (int i = 0; i < simulationManager->simulationSettings->gridX; i++)
+        for (int j = 0; j < simulationManager->simulationSettings->gridY; j++)
+            for (int c = 0; c < simulationManager->cellSettingsMaster->slotsPerSquare; c++)
+                if (critters[i][j][c].age > 0) variableHgtOnes[simulationManager->variableHgtLenSystem->returnBitcount(critters[i][j][c].genomeWords)]++;
+
+    for (int i = 0; i < 33; i++)
+    {
+        out << variableHgtOnes[i];
+        if (csvOutput) out << ",";
+        else out << "\t";
+    }
+    out << "\n";
+    return logString;
+};
+
+QString LogSimulation::writeVariableHgtIdLog()
+{
+    QString logString;
+    QTextStream out(&logString);
+
+    if (!simulationManager->simulationSettings->variableHgtId)
+    {
+        out << "Variable HGT ID not enabled. Will not log.\n\n";
+        return logString;
+    }
+
+    if (csvOutput) out << simulationManager->iteration << ",";
+    else out << simulationManager->iteration << ":\t";
+
+    //RJG counts for log - note it goes up to one more than max because need option for zero ones, plus all ones
+    QVector <quint32> variableHgtOnes;
+    for (int i = 0; i < (simulationManager->variableHgtIdSystem->returnUseGenomeWordsCount() * 32) + 1; i++)variableHgtOnes.append(0);
+
+    for (int i = 0; i < simulationManager->simulationSettings->gridX; i++)
+        for (int j = 0; j < simulationManager->simulationSettings->gridY; j++)
+            for (int c = 0; c < simulationManager->cellSettingsMaster->slotsPerSquare; c++)
+                if (critters[i][j][c].age > 0) variableHgtOnes[simulationManager->variableHgtIdSystem->returnBitcount(critters[i][j][c].genomeWords)]++;
+
+    for (int i = 0; i < 33; i++)
+    {
+        out << variableHgtOnes[i];
         if (csvOutput) out << ",";
         else out << "\t";
     }
