@@ -179,8 +179,8 @@ MainWindow::MainWindow(QWidget *parent) :
     });
 
     //RJG - shortcuts
-    new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, SLOT(runPressed()));
-    new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_P), this, SLOT(pause()));
+    new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_R), this, SLOT(runPressed()));
+    new QShortcut(QKeySequence(Qt::CTRL | Qt::Key_P), this, SLOT(pause()));
     new QShortcut(QKeySequence(Qt::Key_Escape), this, SLOT(stop()));
 }
 

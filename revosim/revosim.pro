@@ -116,7 +116,7 @@ RESOURCES += \
     resources.qrc
 
 #Needed to use C++ lamda functions
-CONFIG += c++11
+CONFIG += c++17
 
 DISTFILES += \
     ../LICENSE \

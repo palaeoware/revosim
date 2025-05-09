@@ -1272,12 +1272,12 @@ QString AnalysisTools::generateTree(const QString &filename)
         foreach (quint64 ID, magicList)
         {
             //find parent
-            int parent = speciesList[ID].parent;
+            quint64 parent = speciesList[ID].parent;
 
             if (parent > 0)
             {
                 //find parent's line number
-                int pline = magicList.indexOf(parent) * 2;
+                auto pline = magicList.indexOf(parent) * 2;
                 auto xPosition = (int)(((float)speciesList[ID].start) / timescale);
                 if (xPosition > (SCALE - 1)) xPosition = SCALE - 1;
                 output_grid[pline][xPosition] = 2;

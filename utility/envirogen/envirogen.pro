@@ -67,7 +67,7 @@ DISTFILES += \
     .astylerc
 
 #Needed to use C++ lamda functions
-CONFIG += c++11
+CONFIG += c++17
 
 #Needed to make binaries launchable from file in Ubuntu - GCC default link flag -pie on newer Ubuntu versions this so otherwise recognised as shared library
 QMAKE_LFLAGS += -no-pie
