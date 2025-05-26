@@ -1727,7 +1727,7 @@ QDockWidget *MainWindow::createLogSettingsDock()
          //sort the list
          list.sort();
          out << list.join("\n"); //and append with newline separators into the string;*/
-        QMessageBox::information(this, tr("REvoSim - Logging system"), outString, Qt::NonModal);
+        QMessageBox::information(this, tr("REvoSim - Logging system"), outString, QMessageBox::Ok);
     });
 
     QPushButton *commandLineLog = new QPushButton("Command line log file");
