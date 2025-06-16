@@ -39,6 +39,7 @@
 #include "variablemutatesystem.h"
 #include "visualisationsystem.h"
 #include "genomecomparisonsystem.h"
+#include "neuralnetweightssystem.h"
 
 #include <QElapsedTimer>
 #include <QFuture>
@@ -94,6 +95,11 @@ extern int settles[GRID_X][GRID_Y]; //for analysis purposes
 extern int settlefails[GRID_X][GRID_Y]; //for analysis purposes
 extern int maxUsed[GRID_X][GRID_Y]; //RJG - number of slots used within each grid square
 
+//Some more for NN system
+extern float partersFound[GRID_X][GRID_Y];
+extern float proportionDefect[GRID_X][GRID_Y];
+extern float meanScore[GRID_X][GRID_Y];
+
 /****** Species system variables ******/
 extern QList<Species> *oldSpeciesList, *newSpeciesList;
 extern QList< QList<Species> > archivedSpeciesLists;
@@ -104,7 +110,7 @@ extern QList<uint> speciesColours;
 extern quint8 speciesMode;
 extern bool allowExcludeWithDescendants;
 extern quint64 ids;
-
+extern QList<NeuralNet*> neuralNets;
 
 class SimManager
 {
@@ -151,6 +157,7 @@ public:
     VisualisationSystem *visualisationSystem2;
     LogSimulation *simulationLog;
     GenomeComparisonSystem *genomeComparisonSystem;
+    NeuralNetWeightsSystem *neuralNetWeightsSystem;
 
 
 
@@ -159,7 +166,7 @@ private:
     void makeLookups();
     void populateCellSettings();
     QList<QFuture<int>*> FuturesList;
-    int iterateParallel(int firstx, int lastx, int newgenomes_local, int *killCountLocal);
+    int iterateParallel(int firstx, int lastx, int newgenomes_local, int *killCountLocal, int parallelIndex);
     int settleParallel(int newGenomeCountsStart, int newGenomeCountsEnd, int *birthCountsLocal);
 
     bool temp_path_on;

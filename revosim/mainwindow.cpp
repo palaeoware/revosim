@@ -26,6 +26,7 @@
 #include "test.h"
 #include "imagesequence.h"
 #include "custommemorymanager.h"
+#include "neuralnet.h"
 
 #include <QActionGroup>
 #include <QComboBox>
@@ -301,6 +302,7 @@ void MainWindow::createMainMenu()
     QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveSimulation()));
     QObject::connect(ui->actionLoad, SIGNAL(triggered()), this, SLOT(loadSimulation()));
     QObject::connect(ui->actionExit, SIGNAL(triggered()), this, SLOT(exitProgram()));
+    //QObject::connect(, SIGNAL(triggered()), this, SLOT(exitProgram()));
 
 }
 
@@ -5649,3 +5651,4 @@ void MainWindow::doTests()
 
     setStatusBarText("Tests done.");
 }
+

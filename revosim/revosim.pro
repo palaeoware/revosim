@@ -36,6 +36,12 @@ SOURCES += main.cpp \
     logsimulation.cpp \
     mainwindow.cpp \
     mutationsystem.cpp \
+    neuralnet.cpp \
+    neuralnetweightssystem.cpp \
+    neuron.cpp \
+    neuron_input.cpp \
+    neuron_output.cpp \
+    neuron_relu.cpp \
     pathogenssystem.cpp \
     randoms.cpp \
     simmanager.cpp \
@@ -77,6 +83,12 @@ HEADERS += mainwindow.h \
     linkagesdialog.h \
     logsimulation.h \
     mutationsystem.h \
+    neuralnet.h \
+    neuralnetweightssystem.h \
+    neuron.h \
+    neuron_input.h \
+    neuron_output.h \
+    neuron_relu.h \
     pathogenssystem.h \
     randoms.h \
     simmanager.h \

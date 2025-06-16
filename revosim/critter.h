@@ -21,6 +21,7 @@
 #include <QtGlobal>
 #include "globals.h"
 #include "cellsettings.h"
+#include "neuralnet.h"
 
 class Critter
 {
@@ -32,7 +33,7 @@ public:
     const CellSettings *settings;
     bool iterateParallel(int *killCountLocal, float addFood, int settleTolerance);
     bool operator == (const Critter &c) const;
-    int calculateFitness(const quint8 *environment);
+    int calculateFitness(const quint8 *environment, int parallelIndex, int x, int y);
     int breedWithParallel(int xPosition, int yPosition, Critter *partner, int *newGenomeCountLocal);
     int returnRecombination();
 
@@ -52,6 +53,8 @@ public:
     float trophicLevel;
     quint32 *genomeWords; //new genome data
     quint64 speciesID; //this is inherited from parents
+private:
+    int PrisonersDilemmaFitness(NeuralNet *net, int x, int y);
 };
 
 

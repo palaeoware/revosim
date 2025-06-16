@@ -73,7 +73,7 @@ void Critter::initialise(quint32 *multiwordGenome, quint8 *environment, int x, i
     settings = &(simulationManager->cellSettings[xPosition][yPosition]);
 
     //RJG - Work out fitness
-    calculateFitness(environment);
+    calculateFitness(environment, 0, x,y);
 
     xPosition = x;
     yPosition = y;
@@ -98,12 +98,128 @@ int Critter::returnRecombination()
     return variableBreedAsex;
 }
 
+//Calculcate fitness based upon random number of games with a random opponent
+int Critter::PrisonersDilemmaFitness(NeuralNet *net, int x, int y)
+{
+    float weightsMe[100]; //TODO - better max for weights
+    float weightsThem[100];
+    float inputsMe[10];
+    float inputsThem[10];
+
+    //First, pick an opponent
+
+    int target_slot;
+    if (simulationManager->simulationRandoms->rand8()%2 == 1)
+        target_slot = (zPosition + 1) % simulationManager->cellSettingsMaster->slotsPerSquare;
+    else
+    {
+        target_slot = zPosition -1;
+        if (target_slot<0) target_slot = simulationManager->cellSettingsMaster->slotsPerSquare-1;
+    }
+
+    if (critters[xPosition][yPosition][target_slot].age ==0
+        || (simulationManager->cellSettingsMaster->interactWithinSpecies && critters[xPosition][yPosition][target_slot].speciesID != speciesID))
+    {
+        //If opponent is dead, or it's a different species - can't do game, return a default fitness
+        return 5;  //TODO - configurable default
+
+    }
+
+    partersFound[x][y]+=1;
+    int maxGames = 50, minGames = 5; //TODO  - make configuarable
+
+    //We have an opponent. Now we run a certain number of PD games against this opponent
+    int gameCount = simulationManager->simulationRandoms->rand32() % (maxGames-minGames) + minGames;
+
+    //Get neural net weights
+    simulationManager->neuralNetWeightsSystem->GetWeightsFromGenome(weightsMe, genomeWords);
+    simulationManager->neuralNetWeightsSystem->GetWeightsFromGenome(weightsThem, critters[xPosition][yPosition][target_slot].genomeWords);
+
+    inputsMe[0]=1; //input0 is static always 1
+    inputsThem[0]=1;
+
+    //Zero out other inputs (0 = no result)
+    for (int i=2; i<10; i++)
+    {
+        inputsMe[i]=0;
+        inputsThem[i]=0;
+    }
+
+    //Matrix to use is:
+        //Both cooperate: 3
+        //Both defect: 1
+        //Defect v Coop: 5
+        //Coop v Defect: 0
+
+    float myPayOff = 0;
+    int defectCount = 0;
+    for (int gameNumber = 0; gameNumber < gameCount; gameNumber++)
+    {
+        //Input 1 is RNG, implemented as -1 to +1 range
+        inputsMe[1]= (float)(((int)(simulationManager->simulationRandoms->rand32() % 1024)-512))/512.0;
+        inputsThem[1]= (float)(((int)(simulationManager->simulationRandoms->rand32() % 1024)-512))/512.0;
+
+        //treat cooperate as my output > .4
+        float myNet = net->Evaluate(weightsMe, inputsMe);
+        float theirNet = net->Evaluate(weightsThem, inputsThem);
+
+
+        bool meCooperate = (myNet > 0.4);
+        bool theyCooperate = (theirNet > 0.4);
+
+        if (!meCooperate) defectCount++;
+
+        //Correct matrix
+        if (meCooperate && theyCooperate) myPayOff += 3;
+        if (!meCooperate && !theyCooperate) myPayOff += 1;
+        if (meCooperate && !theyCooperate) myPayOff += 0;
+        if (!meCooperate && theyCooperate) myPayOff += 5;
+
+        //Test matrix
+        //if (meCooperate && theyCooperate) myPayOff += 3;
+        //if (!meCooperate && !theyCooperate) myPayOff += 0;
+        //if (meCooperate && !theyCooperate) myPayOff += 3;
+        //if (!meCooperate && theyCooperate) myPayOff += 0;
+
+        //if (x==50 && y==50 && (myNet!=0.5 || theirNet!=0.5))
+         //   qDebug()<<"Me: "<<myNet<<" Them: "<<theirNet<<" MeC:"<<meCooperate<<" ThC"<<theyCooperate<<" my payoff "<<myPayOff;
+        //Move games down list and insert new results
+        inputsMe[9] = inputsMe[7];
+        inputsMe[8] = inputsMe[6];
+        inputsThem[9] = inputsThem[7];
+        inputsThem[8] = inputsThem[6];
+
+        inputsMe[7] = inputsMe[5];
+        inputsMe[6] = inputsMe[4];
+        inputsThem[7] = inputsThem[5];
+        inputsThem[6] = inputsThem[4];
+
+        inputsMe[5] = inputsMe[3];
+        inputsMe[4] = inputsMe[2];
+        inputsThem[5] = inputsThem[3];
+        inputsThem[4] = inputsThem[2];
+
+        //new results
+        if (meCooperate) inputsMe[2] = 1; else inputsMe[2]=-1;
+        if (theyCooperate) inputsMe[3] = 1; else inputsMe[3]=-1;
+
+        //and the other matrix, but flip
+        if (meCooperate) inputsThem[3] = 1; else inputsThem[3]=-1;
+        if (theyCooperate) inputsThem[2] = 1; else inputsThem[2]=-1;
+
+    }
+    float meanPayoff = (myPayOff/(float)gameCount);
+    meanScore[x][y]+=meanPayoff;
+    proportionDefect[x][y]+= (float)defectCount/(float)gameCount;
+    return meanPayoff * 10.0; //a fudge factor
+}
+
 /*!
  * \brief Critter::calculateFitness
  * \param environment
  * \return
  */
-int Critter::calculateFitness(const quint8 *environment)
+int Critter::calculateFitness(const quint8 *environment, int parallelIndex, int x, int y)
 {
 
     calculateBitCountWithJitter(); // ENF Called here so that it is updated for breed lists later. Not related to bit counting in fitness algorithm.
@@ -115,22 +231,31 @@ int Critter::calculateFitness(const quint8 *environment)
         return fitness;
     }
 
-    int fitnessBitCount = simulationManager->environmentalFitnessSytem->calculateFitness(genomeWords, environment);
-    fitness = settings->settleTolerance - qAbs(fitnessBitCount - settings->target);
-    if (fitness < 0) fitness = 0;
-    if (fitness > settings->settleTolerance) qDebug() << "Oops - fitness too high?";
-
-    environmentalFitness = fitness; // ENF This tracks the non-interaction fitness level for logging and GUI display purposes
-
-    if (settings->interactFitness)
+    if (settings->prisonersDilemmaFitness && neuralNets.count()>0)
     {
-        for (int num_interactions = 0; num_interactions < simulationManager->cellSettingsMaster->interactions; num_interactions++)
+        //qDebug()<<parallelIndex<<"NN count"<<neuralNets.count();
+        fitness = PrisonersDilemmaFitness(neuralNets[parallelIndex], x, y);
+    }
+    else
+    {
+
+        int fitnessBitCount = simulationManager->environmentalFitnessSytem->calculateFitness(genomeWords, environment);
+        fitness = settings->settleTolerance - qAbs(fitnessBitCount - settings->target);
+        if (fitness < 0) fitness = 0;
+        if (fitness > settings->settleTolerance) qDebug() << "Oops - fitness too high?";
+
+        environmentalFitness = fitness; // ENF This tracks the non-interaction fitness level for logging and GUI display purposes
+
+        if (settings->interactFitness)
         {
-            quint32 target_slot = simulationManager->simulationRandoms->rand32() % (simulationManager->cellSettingsMaster->slotsPerSquare);
-            if (critters[xPosition][yPosition][target_slot].age && ((critters[xPosition][yPosition][target_slot].speciesID != speciesID)
-                                                                    || (simulationManager->cellSettingsMaster->interactWithinSpecies))) // Interacts only if that slot is occupied by a living critter
+            for (int num_interactions = 0; num_interactions < simulationManager->cellSettingsMaster->interactions; num_interactions++)
             {
-                fitness = (simulationManager->interactionSystem->performInteractFitness(genomeWords, critters[xPosition][yPosition][target_slot].genomeWords, fitness, settings->interactBlocks));
+                quint32 target_slot = simulationManager->simulationRandoms->rand32() % (simulationManager->cellSettingsMaster->slotsPerSquare);
+                if (critters[xPosition][yPosition][target_slot].age && ((critters[xPosition][yPosition][target_slot].speciesID != speciesID)
+                                                                        || (simulationManager->cellSettingsMaster->interactWithinSpecies))) // Interacts only if that slot is occupied by a living critter
+                {
+                    fitness = (simulationManager->interactionSystem->performInteractFitness(genomeWords, critters[xPosition][yPosition][target_slot].genomeWords, fitness, settings->interactBlocks));
+                }
             }
         }
     }

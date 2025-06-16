@@ -17,6 +17,7 @@
 
 #include "mainwindow.h"
 #include "simmanager.h"
+#include "neuralnet.h"
 
 #include <QDebug>
 #include <QImage>
@@ -64,6 +65,10 @@ int maxUsed[GRID_X][GRID_Y];
 int Randcelllist1[GRID_X];
 int Randcelllist2[GRID_Y];
 
+float partersFound[GRID_X][GRID_Y];
+float proportionDefect[GRID_X][GRID_Y];
+float meanScore[GRID_X][GRID_Y];
+
 //Species stuff
 LogSpecies *rootSpecies;
 QHash<quint64, LogSpecies *> logSpeciesByID;
@@ -74,6 +79,9 @@ quint8 speciesMode;
 quint64 nextSpeciesID;
 quint64 ids; //used in tree export
 bool allowExcludeWithDescendants = false;
+
+//Neural net structures
+QList<NeuralNet*> neuralNets;
 
 /*!
  * \brief SimManager::SimManager
@@ -161,6 +169,11 @@ SimManager::SimManager()
     genomeComparisonSystem->setGenomeWordsFromString("01", MAX_GENOME_WORDS);
     systemsList.append(genomeComparisonSystem);
 
+    neuralNetWeightsSystem = new NeuralNetWeightsSystem();
+    neuralNetWeightsSystem->setGenomeWordsFromString("01", MAX_GENOME_WORDS);
+    systemsList.append(neuralNetWeightsSystem);
+
+
     simulationLog = new LogSimulation(simulationSettings);
 }
 
@@ -179,6 +192,13 @@ void SimManager::SetProcessorCount(int count)
     if (ProcessorCount > 256) ProcessorCount = 256; //a sanity check
 
     for (int i = 0; i < ProcessorCount; i++) FuturesList.append(new QFuture<int>);
+
+    //Neural net initialisation
+    for (int i = 0; i < ProcessorCount; i++)
+    {
+        neuralNets.append(neuralNetWeightsSystem->CreateNeuralNet());
+    }
+    qDebug()<<"Nn count is "<<neuralNets.count();
 }
 
 /*!
@@ -302,6 +322,10 @@ void SimManager::setupRun()
             breedFails[n][m] = 0;
             settles[n][m] = 0;
             settlefails[n][m] = 0;
+
+            partersFound[n][m] = 0;
+            proportionDefect[n][m] = 0;
+            meanScore[n][m] = 0;
         }
 
     aliveCount = 0;
@@ -641,7 +665,7 @@ void SimManager::setupRun()
  * Parallel version - takes newgenomes_local as the start point it can write to in main genomes array
  * Returns number of new genomes
  */
-int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, int *killCountLocal)
+int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, int *killCountLocal, int parallelIndex)
 {
     int breedlist[67][SLOTS_PER_GRID_SQUARE]; // ENF 67 breed lists, one per possible bitcount value for a two-word genome, plus two to account for the bins added by +1 and -1 shifts in the bitcount system.
     int maxalive;
@@ -651,6 +675,7 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
     int IndexOffset = 0;
     int n;
     int m;
+
 
     // For every cell...
     for (int nOld = firstx; nOld <= lastx; nOld++)
@@ -750,6 +775,11 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                 }
             }
 
+
+            partersFound[n][m] = 0;
+            proportionDefect[n][m] = 0;
+            meanScore[n][m] = 0;
+
             // ... recalculate critter fitnesses if requested...
             if (simulationSettings->recalculateFitness)
                 // Not certain how this block interacts with the "interact with energy" exception to the settle failure rule.
@@ -757,12 +787,14 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                 totalFitness[n][m] = 0;
                 maxalive = 0;
                 deathcount = 0;
+                int crittersIterated=0;
                 for (int c = 0; c <= maxv; c++)
                 {
                     if (crit[c].age)
                     {
-                        quint32 f = crit[c].calculateFitness(environment);
+                        quint32 f = crit[c].calculateFitness(environment, parallelIndex, n, m);
                         totalFitness[n][m] += f;
+                        crittersIterated++;
                         if (f > 0) maxalive = c;
                         else deathcount++; // ... recording deaths caused by this recalculation.
                     }
@@ -770,6 +802,18 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                 maxUsed[n][m] = maxalive;
                 maxv = maxalive;
                 (*killCountLocal) += deathcount;
+
+                if (crittersIterated>0)
+                {
+                    partersFound[n][m] /= (float)crittersIterated;
+                    proportionDefect[n][m] /=(float)crittersIterated;
+                    meanScore[n][m] /= (float)crittersIterated;
+
+                    if (n==simulationSettings->gridX/2 && m == simulationSettings->gridY/2)
+                    {
+                        qDebug()<<"PF: "<<partersFound[n][m]<<"  propDefect: "<<proportionDefect[n][m]/partersFound[n][m] << "  meanScore: "<<meanScore[n][m]/partersFound[n][m];
+                    }
+                }
             }
 
             // RJG - reset counters for fitness logging to file
@@ -779,6 +823,8 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                 breedSuccess[n][m] = 0;
                 breedGeneration[n][m] = 0;
             }
+
+
 
             // Determine the food to be given to organisms per point of fitness that they have.
             float addFood;
@@ -980,6 +1026,8 @@ int SimManager::iterateParallel(int firstx, int lastx, int newGenomeCountLocal, 
                 IndexOffset++;
             }
         }
+
+    //
     return newGenomeCountLocal;
 }
 
@@ -1225,7 +1273,7 @@ bool SimManager::iterate(int eMode, bool interpolate)
     for (int i = 0; i < ProcessorCount; i++)
         *(FuturesList[i]) = QtConcurrent::run(&SimManager::iterateParallel, this,
                                               (i * simulationSettings->gridX) / ProcessorCount, (((i + 1) * simulationSettings->gridX) / ProcessorCount) - 1, newgenomecounts_starts[i],
-                                              &(KillCounts[i]));
+                                              &(KillCounts[i]), i);
 
     for (int i = 0; i < ProcessorCount; i++)
         FuturesList[i]->waitForFinished();
