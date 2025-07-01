@@ -1508,7 +1508,7 @@ QString AnalysisTools::writeData(LogSpecies *root)
     ids = 0;
 
     if (root)
-        return "id,ParentID,iteration,size,sampleGenome,sampleGenome_binary," + LogSpeciesDataItem::headersForSharedOutput() + "\n" + root->writeData(0, 0, true);
+        return "nodeID,revosimID,parentNodeID,iteration,size,sampleGenome,sampleGenome_binary," + LogSpeciesDataItem::headersForSharedOutput() + "\n" + root->writeData(0, 0, true);
     else
         return "ERROR - NO PHYLOGENY DATA";
 }
