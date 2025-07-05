@@ -58,7 +58,7 @@ QString LogSpecies::writeDataLine(quint64 start, quint64 end, quint64 speciesID,
 
     foreach (LogSpeciesDataItem *di, dataItems)
     {
-        if (di->iteration >= start && di->iteration < end)
+        if (di->iteration >= start && di->iteration <= end)
         {
             out << speciesID << "," << actualSpeciesID << "," << parentID << ",";
             out << di->iteration << "," << di->size << ",";
@@ -161,7 +161,8 @@ quint32 LogSpecies::maxSizeIncludingChildren()
  *
  * Tests if a species has become 'extinct', this will return TRUE if:
  * a) the species is only fetured in one iteration
- * b) one has no descendants and is smaller than minSpeciesSize (used by Newick string)
+ * b) one has no descendants (and appropriate UI box is ticked)
+ * and is smaller than minSpeciesSize (used by Newick string)
  * Will return FALSE otherwise
  *
  * \return bool
@@ -171,10 +172,8 @@ bool LogSpecies::isFluff()
     // Always fluff if only in one iteration
     if (timeOfFirstAppearance == timeOfLastAppearance) return true;
 
-    // Is this a 'fluff' species - i.e. one has no descendants and is smaller than minSpeciesSize?
-    // Used by filter of writeNewickString and other recursives
-    if (children.count() != 0 && !allowExcludeWithDescendants)
-        return false;
+    if (children.count() == 0 && allowExcludeWithDescendants)
+        return true;
 
     quint32 recurseMaxSize = maxSize;
     if (allowExcludeWithDescendants) recurseMaxSize = maxSizeIncludingChildren();
@@ -199,9 +198,10 @@ bool LogSpecies::isFluff()
  */
 QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool killFluff)
 {
+    qDebug()<<"In write newick, killfluff is "<<killFluff;
     //recursively generate Newick-format text description of tree
     //bl is branch length. For simple nodes - just last appearance time - first
-    int cc = children.count();
+    int childCount = children.count();
     quint64 branchLength;
     quint64 treeNodeID = ids++;
     quint64 actualSpeciesID = ID;
@@ -214,7 +214,7 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
 
     if (lastTimeBase == 0) lastTimeBase = timeOfFirstAppearance;
 
-    if (cc <= childIndex)
+    if (childCount <= childIndex)
     {
         branchLength = timeOfLastAppearance - lastTimeBase;
         if (timeOfLastAppearance < lastTimeBase) //seems to happen for fluff species
@@ -224,10 +224,10 @@ QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool
         return QString ("ID%1-%2-%3:%4").arg(treeNodeID).arg(actualSpeciesID).arg(maxSize).arg(branchLength);
     }
 
-    int nextchildindex = cc; //for if it runs off the end
+    int nextchildindex = childCount; //for if it runs off the end
     quint64 thisgeneration = 0;
     bool genvalid = false;
-    for (int i = childIndex; i < cc; i++)
+    for (int i = childIndex; i < childCount; i++)
     {
         if (!genvalid || children[i]->timeOfFirstAppearance == thisgeneration)
         {

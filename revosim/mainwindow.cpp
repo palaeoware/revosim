@@ -2427,6 +2427,7 @@ void MainWindow::restartTimer()
  */
 void MainWindow::finishRun()
 {
+    report();  //needs to do logging
     // Run start action
     ui->actionStart_Sim->setEnabled(true);
     startButton->setEnabled(true);

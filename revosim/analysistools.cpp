@@ -1490,6 +1490,7 @@ QString AnalysisTools::makeNewick(LogSpecies *root)
 {
     ids = 0;
 
+    //Killfluff always true - rules for killing are configurable, so leave it on
     if (root) return root->writeNewickString(0, 0, true);
 
     return "ERROR - NO PHYLOGENY DATA";
@@ -1507,6 +1508,7 @@ QString AnalysisTools::writeData(LogSpecies *root)
 {
     ids = 0;
 
+    //killfluff always turned on - it's configurable, so that's fine
     if (root)
         return "nodeID,revosimID,parentNodeID,iteration,size,sampleGenome,sampleGenome_binary," + LogSpeciesDataItem::headersForSharedOutput() + "\n" + root->writeData(0, 0, true);
     else
