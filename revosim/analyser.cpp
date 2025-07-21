@@ -488,7 +488,7 @@ int Analyser::perSpeciesAnalyis(Species *s)
                 auto *newdata = new LogSpeciesDataItem;
                 newdata->iteration = simulationManager->iteration;
 
-                newlogspecies->ID = nextSpeciesID;
+                newlogspecies->ID = newspID;
                 newlogspecies->timeOfFirstAppearance = simulationManager->iteration;
                 newlogspecies->timeOfLastAppearance = simulationManager->iteration;
                 newlogspecies->parent = thislogspecies;

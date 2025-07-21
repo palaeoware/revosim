@@ -91,10 +91,6 @@ QString LogSpecies::writeData(int childIndex, quint64 lastTimeBase, bool killFlu
     int cc = children.count();
     quint64 treeNodeID = ids++;
     quint64 actualSpeciesID = ID;
-    if (actualSpeciesID>1)
-    {
-        actualSpeciesID--;  //Don't ask. I have no idea why ID for all except species 1 is out by one - this fixes it though
-    }
 
     if (lastTimeBase == 0) lastTimeBase = timeOfFirstAppearance;
     if (cc <= childIndex)
@@ -198,18 +194,12 @@ bool LogSpecies::isFluff()
  */
 QString LogSpecies::writeNewickString(int childIndex, quint64 lastTimeBase, bool killFluff)
 {
-    qDebug()<<"In write newick, killfluff is "<<killFluff;
     //recursively generate Newick-format text description of tree
     //bl is branch length. For simple nodes - just last appearance time - first
     int childCount = children.count();
     quint64 branchLength;
     quint64 treeNodeID = ids++;
     quint64 actualSpeciesID = ID;
-    if (actualSpeciesID>1)
-    {
-        actualSpeciesID--;  //Don't ask. I have no idea why ID for all except species 1 is out by one - this fixes it though
-    }
-
 
 
     if (lastTimeBase == 0) lastTimeBase = timeOfFirstAppearance;
