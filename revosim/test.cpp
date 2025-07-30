@@ -789,12 +789,155 @@ bool test::testSeven(QString &outString)
     return testFlag;
 }
 
-
 bool test::testEight(QString &outString)
 {
     bool testFlag = true;
     QTextStream out(&outString);
 
+    out << "Testing the HGT system with 5 genomes.\n";
+
+    //- set settings for hgt transfer test
+    simulationManager->cellSettingsMaster->hgtTransferLength = 10;
+    simulationManager->simulationSettings->hgtMode = HGT_SYNOYMOUS; // for testing non shifting function
+    //simulationManager->simulationSettings->hgtMode = HGT_NON_SYNOYMOUS; // for testing the shifting function
+    simulationManager->simulationSettings->genomeSize = 3;
+    simulationManager->hgtSystem->setGenomeWordsFromString("02", MAX_GENOME_WORDS);
+
+    out << "\n Settings: \n Genome transfer length = 10 \n HGT mode = Synonoumous\n Transformable genome words ='02' \n";
+
+    for (int i = 0; i < 5; i++)
+    {
+        out << "\n\n" << i << "\n";
+
+        //- create recipent and donor genomes and mask
+        quint32 recipentGenome[3] = {simulationManager->simulationRandoms->rand32(),simulationManager->simulationRandoms->rand32(),simulationManager->simulationRandoms->rand32()};
+        quint32 donorGenome[3] = {simulationManager->simulationRandoms->rand32(),simulationManager->simulationRandoms->rand32(),simulationManager->simulationRandoms->rand32()};
+        quint32 mask[simulationManager->hgtSystem->useGenomeWordsCount];
+        quint32 maskofdonor[simulationManager->hgtSystem->useGenomeWordsCount];
+        quint32 donorGenomeCopy[3] =  {donorGenome[0], donorGenome[1], donorGenome[2]};
+
+
+
+        simulationManager->hgtSystem->generateMask(donorGenome, mask); //- use generateMask function to create mask of transfer segment
+
+        int startPosition = 0;
+        int maskWord =0;
+        bool found = false;
+
+        //-determine first set bit in mask
+        for (int i = 0; i < simulationManager->simulationSettings->genomeSize && !found; i++)
+        {
+            if (simulationManager->hgtSystem->returnGenomeWordInUse(i) && (maskWord < simulationManager->hgtSystem->returnUseGenomeWordsCount()))
+            {
+                for (int j = 0; j < 32 && !found; j++)
+                {
+
+                    int flag = (mask[maskWord] >> j) & 1;
+                    maskWord++;
+
+                    if (flag == 0)  // If the bit is 0
+                    {
+                        startPosition = j + (i * 32);  // Record the position of the first 0 bit
+                        found = true;
+                    }
+                }
+            }
+        }
+
+        // Test 1- Check mask has correct number of bits set
+        int totalBitCount = 0;
+        for (int i = 0; i < simulationManager->hgtSystem->useGenomeWordsCount; i++)
+        {
+            int bitCount = simulationManager->hgtSystem->bitCount(~(mask[i]));
+            totalBitCount += bitCount;
+        }
+        if ( simulationManager->cellSettingsMaster->hgtTransferLength != totalBitCount)
+        {
+            testFlag = false;
+            out << "\n Mask has incorrect number of bits\n" << totalBitCount;
+        }
+        else out << "Mask has correct number of bits set... \n";
+
+
+
+        simulationManager->hgtSystem->generateTransfer(donorGenome, mask, maskofdonor); //- generate the transfer segment by copying into the mask
+
+
+        //Test 2 - Check if the transfer sequence matches the donor genome after generateTransfer
+        int position = 0;
+        maskWord = 0;
+
+        for (int i = 0; i < simulationManager->simulationSettings->genomeSize; i++)
+        {
+            for (int j = 0; j < 32; j++)
+            {
+                if ((position >= startPosition && position < (startPosition + totalBitCount)) && simulationManager->hgtSystem->returnGenomeWordInUse(i))//- if the position is within the transfer segment
+                {
+                    int transferCheck = ((donorGenome[i] & ~(mask[maskWord])) >> j) & 1;
+                    int donorCheck = ((donorGenomeCopy[i] & ~(mask[maskWord])) >> j) & 1;
+                    maskWord++;
+                    if (transferCheck != donorCheck) //- check the bit match in the mask and donor genome at this position
+                    {
+                        testFlag = false;
+                        out <<  "\n Bits don't match and they should!" << position;
+                    }
+                }
+                position++;
+            }
+        }
+        if (testFlag) out << "Transfer segement matches donor genome sequence... \n";
+
+        // Test 3 - Apply the transformation and check if the recipient genome matches the donor in the transfer position
+        simulationManager->hgtSystem->transformRecipient(recipentGenome, mask, maskofdonor);
+
+            position = 0;
+            maskWord = 0;
+
+            for (int i = 0; i < simulationManager->simulationSettings->genomeSize; i++)
+            {
+                if (simulationManager->hgtSystem->returnGenomeWordInUse(i))
+                {
+                    for (int j = 0; j < 32; j++)
+                    {
+                        if (position >= startPosition && position < (startPosition + totalBitCount)) // If position within the transfer segment
+                        {
+                            int transferCheck = (recipentGenome[i] & ~(mask[maskWord])) & (1 << j);
+                            int donorCheck = (donorGenomeCopy[i] & ~(mask[maskWord])) & (1 << j);
+                            if (transferCheck != donorCheck)
+                            {
+                                testFlag = false;
+                                out << "\n Bits don't match and they should! " << position;
+                            }
+                        }
+                        position++;
+                    }
+                    maskWord++; // Increment maskWord only for valid genome words
+                }
+            }
+            if (testFlag) out << "Transformation successful....\n";
+
+
+        //- Output results
+        maskWord =0;
+        for (int i = 0; i < simulationManager->simulationSettings->genomeSize; i++)
+        {
+
+            out << "<font face='Courier New' size='6' color='white'><b>\n Recipent genome["<< i <<"]:---------------" << simulationManager->printGenome(recipentGenome[i])<< "</font><br>";
+            out << "<font face='Courier New' size='6' color='white'><b>\n Donor genome["<< i <<"]:------------------" << simulationManager->printGenome(donorGenomeCopy[i])<< "</font><br>";
+            if (simulationManager->hgtSystem->returnGenomeWordInUse(i) && (maskWord < simulationManager->hgtSystem->returnUseGenomeWordsCount()))
+            {
+                out << "<font face='Courier New' size='6' color='white'><b>\n MaskWord["<< i <<"]:----------------------" << simulationManager->printGenome(mask[maskWord])<< "</font><br>";
+                maskWord++;
+            }else{
+                out << "<font face='Courier New' size='6' color='white'><b>\nWord not transformable</font><br>";
+            }
+            out << "<font face='Courier New' size='6' color='white'><b>\n *********************************** \n</font><br>";
+        }
+   }
+
+    //- need to add tests variable prob, length and id matching
+
+    if (testFlag) out << "\n Tests passed.\n\n";
     return testFlag;
 }
 

@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'reseed.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.3
+** Created by: Qt User Interface Compiler version 6.8.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,6 +10,7 @@
 #define UI_RESEED_H
 
 #include <QtCore/QVariant>
+#include <QtWidgets/QAbstractButton>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QCheckBox>
 #include <QtWidgets/QDialog>
@@ -57,79 +58,78 @@ public:
     void setupUi(QDialog *Reseed)
     {
         if (Reseed->objectName().isEmpty())
-            Reseed->setObjectName(QString::fromUtf8("Reseed"));
+            Reseed->setObjectName("Reseed");
         Reseed->resize(717, 788);
         verticalLayout = new QVBoxLayout(Reseed);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName("verticalLayout");
         label_3 = new QLabel(Reseed);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
+        label_3->setObjectName("label_3");
         QFont font;
         font.setBold(true);
-        font.setWeight(QFont::Bold);
         label_3->setFont(font);
 
         verticalLayout->addWidget(label_3);
 
         label_4 = new QLabel(Reseed);
-        label_4->setObjectName(QString::fromUtf8("label_4"));
+        label_4->setObjectName("label_4");
         label_4->setWordWrap(true);
 
         verticalLayout->addWidget(label_4);
 
         dualReseedLayout = new QHBoxLayout();
-        dualReseedLayout->setObjectName(QString::fromUtf8("dualReseedLayout"));
+        dualReseedLayout->setObjectName("dualReseedLayout");
         checkBoxDualReseed = new QCheckBox(Reseed);
-        checkBoxDualReseed->setObjectName(QString::fromUtf8("checkBoxDualReseed"));
+        checkBoxDualReseed->setObjectName("checkBoxDualReseed");
 
         dualReseedLayout->addWidget(checkBoxDualReseed);
 
         identicalRadio = new QRadioButton(Reseed);
-        identicalRadio->setObjectName(QString::fromUtf8("identicalRadio"));
+        identicalRadio->setObjectName("identicalRadio");
 
         dualReseedLayout->addWidget(identicalRadio);
 
         randomRadio = new QRadioButton(Reseed);
-        randomRadio->setObjectName(QString::fromUtf8("randomRadio"));
+        randomRadio->setObjectName("randomRadio");
 
         dualReseedLayout->addWidget(randomRadio);
 
 
         verticalLayout->addLayout(dualReseedLayout);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
 
         label_8 = new QLabel(Reseed);
-        label_8->setObjectName(QString::fromUtf8("label_8"));
+        label_8->setObjectName("label_8");
 
         verticalLayout->addWidget(label_8);
 
         checkBoxGenetic = new QCheckBox(Reseed);
-        checkBoxGenetic->setObjectName(QString::fromUtf8("checkBoxGenetic"));
+        checkBoxGenetic->setObjectName("checkBoxGenetic");
 
         verticalLayout->addWidget(checkBoxGenetic);
 
         label_9 = new QLabel(Reseed);
-        label_9->setObjectName(QString::fromUtf8("label_9"));
+        label_9->setObjectName("label_9");
         label_9->setFont(font);
 
         verticalLayout->addWidget(label_9);
 
         tieringRadioLayout = new QHBoxLayout();
-        tieringRadioLayout->setObjectName(QString::fromUtf8("tieringRadioLayout"));
+        tieringRadioLayout->setObjectName("tieringRadioLayout");
         radio1Tier = new QRadioButton(Reseed);
-        radio1Tier->setObjectName(QString::fromUtf8("radio1Tier"));
+        radio1Tier->setObjectName("radio1Tier");
 
         tieringRadioLayout->addWidget(radio1Tier);
 
         radio3Tier = new QRadioButton(Reseed);
-        radio3Tier->setObjectName(QString::fromUtf8("radio3Tier"));
+        radio3Tier->setObjectName("radio3Tier");
 
         tieringRadioLayout->addWidget(radio3Tier);
 
         radio5Tier = new QRadioButton(Reseed);
-        radio5Tier->setObjectName(QString::fromUtf8("radio5Tier"));
+        radio5Tier->setObjectName("radio5Tier");
 
         tieringRadioLayout->addWidget(radio5Tier);
 
@@ -137,36 +137,36 @@ public:
         verticalLayout->addLayout(tieringRadioLayout);
 
         label_5 = new QLabel(Reseed);
-        label_5->setObjectName(QString::fromUtf8("label_5"));
+        label_5->setObjectName("label_5");
         label_5->setFont(font);
 
         verticalLayout->addWidget(label_5);
 
         label_6 = new QLabel(Reseed);
-        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setObjectName("label_6");
         label_6->setWordWrap(true);
 
         verticalLayout->addWidget(label_6);
 
         CheckBoxReseedSession = new QCheckBox(Reseed);
-        CheckBoxReseedSession->setObjectName(QString::fromUtf8("CheckBoxReseedSession"));
+        CheckBoxReseedSession->setObjectName("CheckBoxReseedSession");
 
         verticalLayout->addWidget(CheckBoxReseedSession);
 
         label_7 = new QLabel(Reseed);
-        label_7->setObjectName(QString::fromUtf8("label_7"));
+        label_7->setObjectName("label_7");
 
         verticalLayout->addWidget(label_7);
 
         hexRadioLayout = new QHBoxLayout();
-        hexRadioLayout->setObjectName(QString::fromUtf8("hexRadioLayout"));
+        hexRadioLayout->setObjectName("hexRadioLayout");
         hexRadio = new QRadioButton(Reseed);
-        hexRadio->setObjectName(QString::fromUtf8("hexRadio"));
+        hexRadio->setObjectName("hexRadio");
 
         hexRadioLayout->addWidget(hexRadio);
 
         binaryRadio = new QRadioButton(Reseed);
-        binaryRadio->setObjectName(QString::fromUtf8("binaryRadio"));
+        binaryRadio->setObjectName("binaryRadio");
 
         hexRadioLayout->addWidget(binaryRadio);
 
@@ -174,13 +174,13 @@ public:
         verticalLayout->addLayout(hexRadioLayout);
 
         label = new QLabel(Reseed);
-        label->setObjectName(QString::fromUtf8("label"));
+        label->setObjectName("label");
 
         verticalLayout->addWidget(label);
 
         genomeTextEdit = new QPlainTextEdit(Reseed);
-        genomeTextEdit->setObjectName(QString::fromUtf8("genomeTextEdit"));
-        QSizePolicy sizePolicy(QSizePolicy::Minimum, QSizePolicy::Expanding);
+        genomeTextEdit->setObjectName("genomeTextEdit");
+        QSizePolicy sizePolicy(QSizePolicy::Policy::Minimum, QSizePolicy::Policy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(genomeTextEdit->sizePolicy().hasHeightForWidth());
@@ -189,17 +189,17 @@ public:
         verticalLayout->addWidget(genomeTextEdit);
 
         label_2 = new QLabel(Reseed);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setObjectName("label_2");
 
         verticalLayout->addWidget(label_2);
 
         genomesLayout = new QVBoxLayout();
-        genomesLayout->setObjectName(QString::fromUtf8("genomesLayout"));
+        genomesLayout->setObjectName("genomesLayout");
 
         verticalLayout->addLayout(genomesLayout);
 
         buttonBox = new QDialogButtonBox(Reseed);
-        buttonBox->setObjectName(QString::fromUtf8("buttonBox"));
+        buttonBox->setObjectName("buttonBox");
         buttonBox->setOrientation(Qt::Horizontal);
         buttonBox->setStandardButtons(QDialogButtonBox::Cancel|QDialogButtonBox::Ok);
 
@@ -207,8 +207,8 @@ public:
 
 
         retranslateUi(Reseed);
-        QObject::connect(buttonBox, SIGNAL(accepted()), Reseed, SLOT(accept()));
-        QObject::connect(buttonBox, SIGNAL(rejected()), Reseed, SLOT(reject()));
+        QObject::connect(buttonBox, &QDialogButtonBox::accepted, Reseed, qOverload<>(&QDialog::accept));
+        QObject::connect(buttonBox, &QDialogButtonBox::rejected, Reseed, qOverload<>(&QDialog::reject));
 
         QMetaObject::connectSlotsByName(Reseed);
     } // setupUi

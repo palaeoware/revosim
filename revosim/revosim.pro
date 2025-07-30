@@ -58,8 +58,12 @@ SOURCES += main.cpp \
     system.cpp \
     test.cpp \
     variablebreedsystem.cpp \
+    variablehgtidsystem.cpp \
+    variablehgtprobsystem.cpp \
+    variablehgtlensystem.cpp \
     variablemutatesystem.cpp \
-    visualisationsystem.cpp
+    visualisationsystem.cpp \
+    hgtsystem.cpp
 
 HEADERS += mainwindow.h \
     bitcountsystem.h \
@@ -100,8 +104,13 @@ HEADERS += mainwindow.h \
     system.h \
     test.h \
     variablebreedsystem.h \
+    variablehgtidsystem.h \
+    variablehgtprobsystem.h \
+    variablehgtlensystem.h \
     variablemutatesystem.h \
-    visualisationsystem.h
+    visualisationsystem.h \
+    hgtsystem.h
+
 
 FORMS += mainwindow.ui \
     genomecomparison.ui \
@@ -127,4 +136,3 @@ RC_FILE = resources/revosim.rc
 
 #Mac icon
 ICON = ../resources/revosim.icns
-
