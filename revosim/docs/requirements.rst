@@ -6,7 +6,7 @@ Compiling, Installation, and Requirements
 Installation
 ------------
 
-Pre-compiled binary releases and packaged installers can be downloaded from the REvoSim GitHub repository. For Windows users we provide both a portable binary release (.zip) - which just needs extracting to a convenient location - and a self contained installer. For Mac we provide a zip containing the REvoSim program that can be downloaded from the REvoSim GitHub repository. To install the software, drag and drop the required .app folder(s) into the Applications folder. You may be required to the approve the software in security and privacy settings before it will launch. For Linux users, the instructions below will allow the software to be built using a limited number of lines of bash. Please contact palaeoware@gmail.com if you encounter any issues or would like an app image.
+Pre-compiled binary releases and packaged installers can be downloaded from the REvoSim GitHub repository. For Windows users we provide both a portable binary release (.zip) - which just needs extracting to a convenient location - and a self contained installer. For Mac we provide a zip containing the REvoSim program that can be downloaded from the [REvoSim GitHub repository](https://github.com/palaeoware/revosim/releases). To install the software, drag and drop the required .app folder(s) into the Applications folder. You may be required to the approve the software in security and privacy settings before it will launch. For Linux users, the instructions below will allow the software to be built using a limited number of lines of bash. Please contact palaeoware@gmail.com if you encounter any issues or would like an app image.
 
 System requirements
 -------------------
