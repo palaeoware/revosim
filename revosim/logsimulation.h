@@ -1,7 +1,6 @@
 #ifndef LOGSIMULATION_H
 #define LOGSIMULATION_H
 
-#include "cellsettings.h"
 #include "simsettings.h"
 #include "analyser.h"
 
@@ -57,6 +56,7 @@ private:
     QString writeFitnessLog();
     QString writeRecombinationLog();
     QString writeDisparityLog(bool fullDetails = false);
+    QString writeGridSpecies();
     QString writeSpeciationLog();
     QString writeMutationLog();
     QString GetFrequenciesLogString(Species species, bool original);

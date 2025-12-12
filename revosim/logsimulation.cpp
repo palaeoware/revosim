@@ -41,6 +41,8 @@ void LogSimulation::CreateReplacementText()
     replacementText.insert("*printSettings*", "*printSettings*");
     replacementText.insert("*printTime*", "*printTime*");
     replacementText.insert("*dumpGenomes*", "Genome_dump");
+    replacementText.insert("*dumpSpecies*", "Species_dump");
+
     replacementText.insert("*gridSpeciesRange*", "Grid_species_range");
     QStringList frequenciesHeaders;
     for (int ii = 0; ii < simSettings->genomeSize; ii++)
@@ -536,6 +538,7 @@ QString LogSimulation::processLogTextGeneral(QString text)
     QDateTime t(QDateTime::currentDateTime());
     text.replace("*printTime*", t.toString(Qt::ISODate));
     text.replace("*dumpGenomes*", writeDisparityLog());
+    text.replace("*dumpSpecies*", writeGridSpecies());
 
     if (text.contains("*gridSpeciesRange*"))
     {
@@ -809,9 +812,10 @@ QString LogSimulation::writeFitnessLog()
     QString logString;
     QTextStream out(&logString);
 
-    int gridNumberAlive = 0;
+    //These are useful in various different formulations of this log
+    /*int gridNumberAlive = 0;
     int gridTotalFitness = 0;
-    int gridBreedEntries = 0;
+    int gridBreedEntries = 0;*/
 
     for (int i = 0; i < simulationManager->simulationSettings->gridX; i++)
     {
@@ -831,7 +835,7 @@ QString LogSimulation::writeFitnessLog()
             // mean = static_cast<float>(totalFitness[i][j])/static_cast<float>(maxUsed[i][j])+1;
 
             //----RJG: Manually calculate total fitness for grid
-            gridTotalFitness += totalFitness[i][j];
+            //gridTotalFitness += totalFitness[i][j];
 
             int critters_alive = 0;
 
@@ -839,8 +843,7 @@ QString LogSimulation::writeFitnessLog()
             for (int k = 0; k < simulationManager->cellSettingsMaster->slotsPerSquare; k++)
                 if (critters[i][j][k].age > 0)
                 {
-                    //numberalive++;
-                    gridNumberAlive++;
+                    //gridNumberAlive++;
                     critters_alive++;
                 }
 
@@ -848,11 +851,10 @@ QString LogSimulation::writeFitnessLog()
             out << totalFitness[i][j] << " " << critters_alive << " " << breedAttempts[i][j];
 
             //----RJG: Manually count breed attempts for grid
-            gridBreedEntries += breedAttempts[i][j];
+            //gridBreedEntries += breedAttempts[i][j];
 
             out << "\n";
         }
-
     }
     return logString;
 }
@@ -921,6 +923,22 @@ QString LogSimulation::writeDisparityLog(bool fullDetails)
                     out << "\n";
                 }
 
+    return logString;
+}
+
+QString LogSimulation::writeGridSpecies()
+{
+    QString logString;
+    QTextStream out(&logString);
+
+    for (int i = 0; i < simulationManager->simulationSettings->gridX; i++)
+        for (int j = 0; j < simulationManager->simulationSettings->gridY; j++)
+        {
+            out << "x" << i << ",y" << j;
+            for (int k = 0; k < simulationManager->cellSettingsMaster->slotsPerSquare; k++)
+                if (critters[i][j][k].age > 0) out << "," << critters[i][j][k].speciesID;
+            out << "\n";
+        }
     return logString;
 }
 
