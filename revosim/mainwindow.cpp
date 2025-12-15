@@ -4654,10 +4654,13 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
             }
             if (settingsFileIn.name().toString() == "randomReseedBeforeGenetic")
                 simulationManager->simulationSettings->randomReseedBeforeGenetic = intToBool(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name().toString() == "speciesBurnIn")
+                simulationManager->simulationSettings->randomReseedBeforeGenetic = intToBool(settingsFileIn.readElementText().toInt());
 
             //No gui options for below
             if (settingsFileIn.name().toString() == "fitnessLoggingToFile")
                 simulationManager->simulationSettings->fitnessLoggingToFile = intToBool(settingsFileIn.readElementText().toInt());
+
             //Only GUI options
             if (settingsFileIn.name().toString() == "autowrite")
                 autoWriteLogCheckbox->setChecked(settingsFileIn.readElementText().toInt());
@@ -5067,6 +5070,10 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("predationRestriction");
     settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->simulationSettings->predationRestriction));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("speciesBurnIn");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->simulationSettings->speciesBurnIn));
     settingsFileOut.writeEndElement();
 
     //Strings
