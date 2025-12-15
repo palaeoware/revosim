@@ -25,7 +25,6 @@
 #include <QRandomGenerator>
 #include <cstdlib>
 #include <cmath>
-#include <iostream>
 
 /****** The below is all hard coded static arrays for speed, and is thus global ******/
 //Globabl data

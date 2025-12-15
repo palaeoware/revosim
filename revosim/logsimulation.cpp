@@ -189,16 +189,13 @@ QString LogSimulation::printSettings()
         settingsOut << "-- Interactions change energy: " << cellsettings.interactEnergy << "\n";
         settingsOut << "-- Multiple breed lists: " << cellsettings.multiBreedList << "\n";
         settingsOut << "-- Random reseed before genetic: " << simSettings->randomReseedBeforeGenetic << "\n";
+        settingsOut << "-- Species burnin: "  << simSettings->speciesBurnIn << "\n";
 
         settingsOut << "-- Breeding: ";
-        if (cellsettings.obligateSexual)
-            settingsOut << "obligate sexual" << "\n";
-        else if (cellsettings.facultativeSexual)
-            settingsOut << "facultative sexual" << "\n";
-        else if (cellsettings.asexual)
-            settingsOut << "asexual" << "\n";
-        else
-            settingsOut << "variable" << "\n";
+        if (cellsettings.obligateSexual) settingsOut << "obligate sexual" << "\n";
+        else if (cellsettings.facultativeSexual) settingsOut << "facultative sexual" << "\n";
+        else if (cellsettings.asexual) settingsOut << "asexual" << "\n";
+        else settingsOut << "variable" << "\n";
 
         settingsOut << "-- Pathogen mopde: ";
         if (simulationManager->simulationSettings->pathogenMode == PATH_MODE_DRIFT) settingsOut << "Drift\n";
@@ -293,7 +290,8 @@ QString LogSimulation::printSettings()
         settingsOut << "Multiple breed lists,";
         settingsOut << "Random reseed before genetic,";
         settingsOut << "Breeding,";
-        settingsOut << "Pathogen mopde: " << "\n";
+        settingsOut << "Pathogen mode, ";
+        settingsOut << "Species burnin, " << "\n";
 
         settingsOut << simSettings->recalculateFitness << ",";
         settingsOut << cellsettings.noSelection << ",";
@@ -316,8 +314,10 @@ QString LogSimulation::printSettings()
         else if (cellsettings.asexual) settingsOut << "asexual" << ",";
         else settingsOut << "variable" << ",";
 
-        if (simulationManager->simulationSettings->pathogenMode == PATH_MODE_DRIFT) settingsOut << "Drift\n";
-        else settingsOut << "Evolve\n";
+        if (simulationManager->simulationSettings->pathogenMode == PATH_MODE_DRIFT) settingsOut << "Drift,";
+        else settingsOut << "Evolve,";
+
+        settingsOut << simSettings->speciesBurnIn << "\n";
 
         settingsOut << "Systems\n";
         for (auto &s : simulationManager->systemsList) settingsOut << s->returnName() << ",";
@@ -445,7 +445,6 @@ void LogSimulation::writeRunData(QString globalSavePath, int batchRuns)
     out << mainWindow->handleAnalysisTool(ANALYSIS_TOOL_CODE_WRITE_DATA);
     outputfile.close();
 }
-
 
 //RJG - per species level outputs
 QString LogSimulation::processLogTextSpecies(QString text)

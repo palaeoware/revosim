@@ -42,6 +42,7 @@ public:
     bool environmentInterpolate;
     bool linkagesOn;
     bool randomReseedBeforeGenetic;
+    bool speciesBurnIn;
 };
 
 #endif // SIMSETTINGS_H

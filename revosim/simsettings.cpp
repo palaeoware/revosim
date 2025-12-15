@@ -36,4 +36,5 @@ SimSettings::SimSettings()
     environmentInterpolate = true;
     linkagesOn = false;
     randomReseedBeforeGenetic = true;
+    speciesBurnIn = false;
 }
