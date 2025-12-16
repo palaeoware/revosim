@@ -11,6 +11,14 @@ ImageSequence::ImageSequence(QStringList files, int rate)
     changeCounter = rate;
     changeForward = true;
     loadFromFile(simulationManager->simulationSettings->environmentMode);
+
+    burnInImage = QImage(simulationManager->simulationSettings->gridX, simulationManager->simulationSettings->gridY, QImage::Format_RGB32);
+    for (int i = 0; i < simulationManager->simulationSettings->gridX; i++)
+        for (int j = 0; j < simulationManager->simulationSettings->gridY; j++)
+        {
+            QColor randomColour(QRandomGenerator::global()->bounded(256), QRandomGenerator::global()->bounded(256), QRandomGenerator::global()->bounded(256));
+            burnInImage.setPixelColor(i, j, randomColour);
+        }
 }
 
 /*!
@@ -22,11 +30,10 @@ void ImageSequence::loadFromFile(int eMode)
 {
     //Use make qimage from file method
     //Load the image
-    if (currentFile >= fileList.count())
-    {
-        return;
-    }
-    QImage loadImage(fileList[currentFile]);
+    QImage loadImage;
+    if (currentFile >= fileList.count()) return;
+    else if (currentFile < 0 ) loadImage = burnInImage;
+    else loadImage = QImage(fileList[currentFile]);
 
     if (loadImage.isNull())
     {

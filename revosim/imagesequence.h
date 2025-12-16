@@ -2,6 +2,7 @@
 #define IMAGESEQUENCE_H
 
 #include <QStringList>
+#include <QImage>
 #include "globals.h"
 
 class ImageSequence
@@ -23,6 +24,7 @@ private:
     void loadFromFile(int eMode);
 
     QStringList fileList;
+    QImage burnInImage;
 
     int currentFile;
     int changeCounter;
