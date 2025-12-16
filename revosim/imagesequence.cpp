@@ -97,7 +97,7 @@ void ImageSequence::loadFromFile(int eMode)
                 if (eMode == ENV_MODE_BOUNCE) nextfile = currentFile - 1; //bounce mode
             }
         }
-        else     //backwards - simpler, must be eMode 3
+        else     //backwards - simpler, must be eMode ENV_MODE_BOUNCE
         {
             if (currentFile > 0) //not yet at end
                 nextfile = currentFile - 1;
@@ -130,7 +130,7 @@ bool ImageSequence::regenerate(int eMode, bool interpolate)
 //returns true if finished sim
 {
     //RJG - constant environment - either static in menu, or 0 environment change rate, or only one file
-    if (changeRate == 0 || eMode == 0 || fileList.count() == 1) return false;
+    if (changeRate == 0 || eMode == ENV_MODE_STATIC || fileList.count() == 1) return false;
 
     --changeCounter;
 
@@ -138,16 +138,16 @@ bool ImageSequence::regenerate(int eMode, bool interpolate)
     if (changeCounter <= 0)
     {
         //should not be going backwards!
-        if (eMode != 3 && !changeForward) changeForward = true;
+        if (eMode != ENV_MODE_BOUNCE && !changeForward) changeForward = true;
 
         if (changeForward)
         {
             currentFile++; //next image
             if (currentFile >= fileList.count())
             {
-                if (eMode == 1) return true; //no more files and we are in 'once' mode - stop the sim
-                if (eMode == 2) currentFile = 0; //loop mode
-                if (eMode == 3)
+                if (eMode == ENV_MODE_ONCE) return true; //no more files and we are in 'once' mode - stop the sim
+                if (eMode == ENV_MODE_LOOP) currentFile = 0; //loop mode
+                if (eMode == ENV_MODE_BOUNCE)
                 {
                     currentFile -= 2; //bounce mode - back two to undo the extra ++
                     changeForward = false;
