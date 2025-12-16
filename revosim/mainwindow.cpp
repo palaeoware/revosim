@@ -488,6 +488,14 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
         simulationManager->simulationSettings->toroidal = i;
     });
 
+    burnInCheckbox = new QCheckBox("Species burn in");
+    burnInCheckbox ->setChecked(simulationManager->simulationSettings->speciesBurnIn);
+    burnInCheckbox->setToolTip("<font>Turning this ON will run the simulation with a static noise image prior to loading your environment to allow you to reach species equilibrium faster.</font>");
+    environmentSettingsGrid->addWidget(burnInCheckbox, 7, 1, 1, 2);
+    connect(burnInCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
+    {
+        simulationManager->simulationSettings->speciesBurnIn = i;
+    });
     // Simulation Size Settings
     auto *simulationSizeSettingsGrid = new QGridLayout;
 
@@ -1972,16 +1980,6 @@ void MainWindow::changeEvent(QEvent *e)
  */
 void MainWindow::startSimulation()
 {
-
-    if (simulationManager->env->returnCurrentFileNumber() == -1)
-    {
-        QMessageBox::critical(nullptr, "", "Cannot start simulation without environment");
-        if (!loadEnvironmentFiles())
-        {
-            return;
-        }
-    }
-
     runSetUp();
 
     ui->LabelBatch->setText(tr("1/1"));
@@ -2016,16 +2014,6 @@ void MainWindow::startSimulation()
  */
 void MainWindow::runForNSimulation(int iterations)
 {
-    if (simulationManager->env->returnCurrentFileNumber() == -1)
-    {
-        QMessageBox::critical(nullptr, "", "Cannot start simulation without environment");
-        if (!loadEnvironmentFiles())
-        {
-            return;
-        }
-    }
-
-
     bool ok = false;
     int i;
     int numIterations;
@@ -2111,7 +2099,6 @@ void MainWindow::runForNSimulation(int iterations)
  */
 void MainWindow::startBatchSimulation()
 {
-
     //ARTS - set default vaules
     batchRunning = true;
     batchRuns = 0;
@@ -2195,16 +2182,6 @@ void MainWindow::startBatchSimulation()
 
         //And run...
         ui->LabelBatch->setText(tr("%1/%2").arg((batchRuns + 1)).arg(batchTargetRuns));
-
-        if (simulationManager->env->returnCurrentFileNumber() == -1)
-        {
-            QMessageBox::critical(nullptr, "", "Cannot start simulation without environment");
-            if (!loadEnvironmentFiles())
-            {
-                return;
-            }
-        }
-
         runSetUp();
         quint64 i = batchIterations;
         while (!stopFlag && i > 0)
@@ -3549,6 +3526,7 @@ bool MainWindow::loadEnvironmentFiles(QString folder)
 
     delete (simulationManager->env);
     simulationManager->env = new ImageSequence(files, simulationManager->simulationSettings->environmentChangeRate);
+    if (simulationManager->simulationSettings->speciesBurnIn)simulationManager->env->setCurrentFileNumber(-20);
 
     refreshEnvironment();
 

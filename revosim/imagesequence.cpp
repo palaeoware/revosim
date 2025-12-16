@@ -30,6 +30,7 @@ void ImageSequence::loadFromFile(int eMode)
 {
     //Use make qimage from file method
     //Load the image
+    qDebug() << "CurrentImage is" << currentFile;
     QImage loadImage;
     if (currentFile >= fileList.count()) return;
     else if (currentFile < 0 ) loadImage = burnInImage;
@@ -69,7 +70,7 @@ void ImageSequence::loadFromFile(int eMode)
         }
 
     //set up environment next - depends on eMode
-    if (eMode == 0 || fileList.count() == 1)   //static environment
+    if (eMode == ENV_MODE_STATIC || fileList.count() == 1)   //static environment
     {
         for (int i = 0; i < simulationManager->simulationSettings->gridX; i++)
             for (int j = 0; j < simulationManager->simulationSettings->gridY; j++)
@@ -91,9 +92,9 @@ void ImageSequence::loadFromFile(int eMode)
             else
             {
                 //depends on eMode
-                if (eMode == 1) nextfile = currentFile; //won't matter
-                if (eMode == 2) nextfile = 0; //loop mode
-                if (eMode == 3) nextfile = currentFile - 1; //bounce mode
+                if (eMode == ENV_MODE_ONCE) nextfile = currentFile; //won't matter
+                if (eMode == ENV_MODE_LOOP) nextfile = 0; //loop mode
+                if (eMode == ENV_MODE_BOUNCE) nextfile = currentFile - 1; //bounce mode
             }
         }
         else     //backwards - simpler, must be eMode 3

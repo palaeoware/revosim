@@ -163,6 +163,7 @@ private:
     QCheckBox *recalculateFitnessCheckbox{};
     QCheckBox *noSelectionFitnessCheckbox{};
     QCheckBox *toroidalCheckbox{};
+    QCheckBox *burnInCheckbox{};
     QCheckBox *nonspatialCheckbox{};
     QCheckBox *breedDifferenceCheckbox{};
     QCheckBox *breedSpeciesCheckbox{};
