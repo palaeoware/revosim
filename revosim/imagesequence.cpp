@@ -30,7 +30,6 @@ void ImageSequence::loadFromFile(int eMode)
 {
     //Use make qimage from file method
     //Load the image
-    qDebug() << "CurrentImage is" << currentFile;
     QImage loadImage;
     if (currentFile >= fileList.count()) return;
     else if (currentFile < 0 ) loadImage = burnInImage;
@@ -129,8 +128,8 @@ void ImageSequence::loadFromFile(int eMode)
 bool ImageSequence::regenerate(int eMode, bool interpolate)
 //returns true if finished sim
 {
-    //RJG - constant environment - either static in menu, or 0 environment change rate, or only one file
-    if (changeRate == 0 || eMode == ENV_MODE_STATIC || fileList.count() == 1) return false;
+    //RJG - constant environment - either static in menu, or 0 environment change rate
+    if (changeRate == 0 || (eMode == ENV_MODE_STATIC && currentFile == 0)) return false;
 
     --changeCounter;
 
@@ -271,6 +270,7 @@ QStringList ImageSequence::returnFileList()
 void ImageSequence::setCurrentFileNumber(int n)
 {
     currentFile = n;
+
 }
 
 /*!

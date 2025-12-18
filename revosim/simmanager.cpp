@@ -1166,6 +1166,7 @@ bool SimManager::iterate(int eMode, bool interpolate)
         qInfo() << "FYI the species searches are taking more than five seconds each, so are significantly slowing your simulation down. Do they need to be on?";
     }
 
+    //If regeneration returns true, then this is run once and the simulation has ended
     if (env->regenerate(eMode, interpolate)) return true;
 
     //RJG - pathogens will need to change if they are to be applied on a cell-level basis

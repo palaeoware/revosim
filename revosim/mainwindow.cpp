@@ -495,6 +495,16 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     connect(burnInCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
     {
         simulationManager->simulationSettings->speciesBurnIn = i;
+        if (i)
+        {
+            //getInt(QWidget * parent, const QString & title, const QString & label, int value = 0, int min = -2147483647, int max = 2147483647, int step = 1, bool *ok = nullptr,
+            //     Qt::WindowFlags flags = Qt::WindowFlags())
+            simulationManager->env->setCurrentFileNumber(-20);
+        }
+        else simulationManager->env->setCurrentFileNumber(0);
+        simulationManager->env->reset(0);
+        simulationManager->env->regenerate(simulationManager->simulationSettings->environmentMode, simulationManager->simulationSettings->environmentInterpolate);
+        resetSimulation();
     });
     // Simulation Size Settings
     auto *simulationSizeSettingsGrid = new QGridLayout;
