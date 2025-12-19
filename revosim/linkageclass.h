@@ -5,7 +5,7 @@
 #include <QStringList>
 #include <QMessageBox>
 
-#include <imagesequence.h>
+#include "imagesequence.h"
 
 class linkageClass
 {

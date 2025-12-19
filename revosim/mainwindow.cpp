@@ -499,8 +499,8 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
         {
             QString message("Please enter the number of static noise environmental images you would like to prepend to your own image sequence.");
             bool ok;
-            int newCurrentFileNumber = QInputDialog::getInt(this, tr("Burn in duration"), message, 25, 1, 1000, 1, &ok);
-            if (ok) simulationManager->env->setCurrentFileNumber(-newCurrentFileNumber);
+            simulationManager->simulationSettings->speciesBurnInDuration = QInputDialog::getInt(this, tr("Burn in duration"), message, 25, 1, 1000, 1, &ok);
+            if (ok) simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
             else simulationManager->env->setCurrentFileNumber(0);
         }
         else simulationManager->env->setCurrentFileNumber(0);
