@@ -499,9 +499,13 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
         {
             QString message("Please enter the number of static noise environmental images you would like to prepend to your own image sequence.");
             bool ok;
-            simulationManager->simulationSettings->speciesBurnInDuration = QInputDialog::getInt(this, tr("Burn in duration"), message, 25, 1, 1000, 1, &ok);
+            qDebug() << "1" << simulationManager->simulationSettings->speciesBurnInDuration;
+            simulationManager->simulationSettings->speciesBurnInDuration = QInputDialog::getInt(this, tr("Burn in duration"), message, simulationManager->simulationSettings->speciesBurnInDuration, 1, 1000, 1,
+                                                                                                &ok);
+            qDebug() << "2" << simulationManager->simulationSettings->speciesBurnInDuration;
             if (ok) simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
             else simulationManager->env->setCurrentFileNumber(0);
+            qDebug() << "3" << simulationManager->simulationSettings->speciesBurnInDuration;
         }
         else simulationManager->env->setCurrentFileNumber(0);
         simulationManager->env->reset(0);
@@ -1925,6 +1929,11 @@ void MainWindow::resetSimulation()
 {
     // Reset the information bar
     resetInformationBar();
+
+    //If we have burn in switched on, we need to make sure that happens as part of the reset
+    simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
+    simulationManager->env->reset(0);
+    simulationManager->env->regenerate(simulationManager->simulationSettings->environmentMode, simulationManager->simulationSettings->environmentInterpolate);
 
     //RJG - This resets all the species logging stuff as well as setting up the run
     simulationManager->setupRun();
