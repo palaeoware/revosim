@@ -4574,6 +4574,8 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
                 simulationManager->cellSettingsMaster->predationEfficiency = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name().toString() == "minDeltaPredatorness")
                 simulationManager->cellSettingsMaster->minDeltaPredatorness = settingsFileIn.readElementText().toInt();
+            if (settingsFileIn.name().toString() == "speciesBurnInDuration")
+                simulationManager->simulationSettings->speciesBurnInDuration = settingsFileIn.readElementText().toInt();
 
             //No Gui options for the remaining settings as yet.
             if (settingsFileIn.name().toString() == "speciesSamples")
@@ -4919,6 +4921,10 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("croppingRate");
     settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->croppingFrequency));
+    settingsFileOut.writeEndElement();
+
+    settingsFileOut.writeStartElement("speciesBurnInDuration");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->simulationSettings->speciesBurnInDuration));
     settingsFileOut.writeEndElement();
 
     //Bools
