@@ -172,6 +172,7 @@ QString LogSimulation::printSettings()
         settingsOut << "-- Genome size: " << simSettings->genomeSize << "\n";
         settingsOut << "-- Interaction attempts per organism per iteration: " << cellsettings.interactions << "\n";
         settingsOut << "-- Cropping rate: " << cellsettings.croppingFrequency << "\n";
+        settingsOut << "-- Species burn in duration: " << simSettings->speciesBurnInDuration << "\n";
 
         settingsOut << "\n- Bools:\n";
         settingsOut << "-- Recalculate fitness: " << simSettings->recalculateFitness << "\n";

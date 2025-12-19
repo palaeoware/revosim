@@ -21,6 +21,7 @@ public:
     int trophicSeedMode;
     int genomeSize;
     int reseedMode;
+    int speciesBurnInDuration;
 
     quint8 environmentMode;
     qint16 a_priori_interaction[4][4];

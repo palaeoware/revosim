@@ -19,6 +19,7 @@ SimSettings::SimSettings()
     pathogenMode = PATH_MODE_DRIFT;
     trophicSeedMode = TROPHIC_SEED_DEFAULT;
     reseedMode = RESEED_MODE_SINGLE_RANDOM;
+    speciesBurnInDuration = -20;
 
     //EF - A priori ecological interactions table, from which more computationally efficient tables are constructed. Table arrangement is {row 1: 00_vs{00,01,10,11}, row 2: 01_vs{00,01,10,11}...}
     qint16 default_a_priori_interaction[4][4] = {{0, -2, -2, -4}, {2, 0, 0, -2}, {2, 0, 0, -2}, {4, 2, 2, 0}}; // Predator Grid
