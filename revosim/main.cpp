@@ -52,91 +52,6 @@ QHash<QString, QString> *parse(QCoreApplication *app)
     parser->addHelpOption();
     parser->setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
 
-    //add all options
-
-    /* Full list of options:
-
-    -a -startage [int]
-    -b -breedthreshold [int]
-    -c -breedcost [int]
-    -d -maxdifftobreed [int]
-    -e -environment [foldername]  - folder containing environment files
-    -f -usemaxdifftobreed
-    -g -breedwithinspecies
-    -i -dispersal [int]
-    -j -outputpath [path]
-    -k -logtype [Phylogeny|Normal|Both]
-    -l -excludenodescendents
-    -m -environmentmode [Static|Once|Loop|Bounce]
-    -n -energy [int] energy input
-    -o -tolerance [int]   [settle tolerance]
-    -p -phylogeny Off|Basic|Phylogeny|Metrics
-    -q -recalcfitness
-    -r -refreshrate [integer] - environment refresh rate
-    -s -slots [integer]
-    -t -toroidal
-    -u -mutation [int]
-    -v -csv
-    -w -interpolate
-    -x -gridx [integer]
-    -y -gridy [integer]
-    -z - genome length
-    Long only
-    --polling [int]
-    --auto [int]
-    --nonspatial
-    --minspeciessize
-    --fitnesstarget
-    --breed [obligate | facultative | variable | asexual]
-    --variablemutate
-    --interactblocks
-    --interactfitness
-    --interactenergy
-    --interactrate
-    --minpredatorscore
-    --predationefficiency
-    --multibreedlist
-    --v2log
-    --log
-    --settings
-    --maxthreads
-
-    log image options
-    --li_population
-    --li_fitness
-    --li_coding
-    --li_noncoding
-    --li_species
-    --li_settles
-    --li_fails
-    --li_environment
-
-    systems
-    --sys_fitness
-    --sys_breed
-    --sys_mutate
-    --sys_var_mutate
-    --sys_var_breed
-    --sys_pathogens
-    --sys_species_ID
-    --sys_interactions
-    --sys_visualisation
-    --sys_visualisation2
-
-    linkages
-    -- L1_variable
-    -- L1_imageSequence
-    -- L1_mode
-    -- L1_interpolate
-    -- L1_change_rate
-    -- L2_variable
-    -- L2_imageSequence
-    -- L2_mode
-    -- L2_interpolate
-    -- L2_change_rate
-
-    */
-
     //short-form options
     QCommandLineOption opt_a(QStringList() << "a" << "startage",
                              QCoreApplication::translate("main", "Starting age for organisms."),
@@ -280,6 +195,16 @@ QHash<QString, QString> *parse(QCoreApplication *app)
                                 QCoreApplication::translate("main", "iterations [integer]"));
     parser->addOption(opt_auto);
 
+    QCommandLineOption opt_speciesBurnIn(QStringList() << "speciesburnin",
+                                         QCoreApplication::translate("main", "Set a species burn in - if using you should also set the duration."),
+                                         QCoreApplication::translate("main", "On/Off"));
+    parser->addOption(opt_speciesBurnIn);
+
+    QCommandLineOption opt_speciesBurnInDuration(QStringList() << "speciesburninduration",
+                                                 QCoreApplication::translate("main", "Sets the number of static noise environmental images you would like to prepend to your own image sequence"),
+                                                 QCoreApplication::translate("main", "images [integer]"));
+    parser->addOption(opt_speciesBurnInDuration);
+
     QCommandLineOption opt_nonspatial(QStringList() << "nonspatial",
                                       QCoreApplication::translate("main", "Use non-spatial simulation mode."),
                                       QCoreApplication::translate("main", "On/Off"));
@@ -335,7 +260,6 @@ QHash<QString, QString> *parse(QCoreApplication *app)
                                          QCoreApplication::translate("main", "On/Off"));
     parser->addOption(opt_customLogging);
 
-
     QCommandLineOption opt_disparityLogging(QStringList() << "disparityLogging",
                                             QCoreApplication::translate("main", "Record disparity log."),
                                             QCoreApplication::translate("main", "On/Off"));
@@ -386,17 +310,6 @@ QHash<QString, QString> *parse(QCoreApplication *app)
                                           QCoreApplication::translate("main", "On/Off"));
     parser->addOption(opt_interactenergy);
 
-    //and the image logging ones
-    /*
-        --li_population
-        --li_fitness
-        --li_coding
-        --li_noncoding
-        --li_species
-        --li_fails
-        --li_environment
-    */
-
     QCommandLineOption opt_li_population(QStringList() << "li_population",
                                          QCoreApplication::translate("main", "Log images for population"),
                                          QCoreApplication::translate("main", "On/Off"));
@@ -436,20 +349,6 @@ QHash<QString, QString> *parse(QCoreApplication *app)
                                           QCoreApplication::translate("main", "Log images for environenment"),
                                           QCoreApplication::translate("main", "On/Off"));
     parser->addOption(opt_li_environment);
-
-    //and the systems
-    /*
-        --sys_fitness
-        --sys_breed
-        --sys_mutate
-        --sys_var_mutate
-        --sys_var_breed
-        --sys_pathogens
-        --sys_species_ID
-        --sys_interactions
-        --sys_visualisation
-        --sys_visualisation2
-    */
 
     QCommandLineOption opt_sys_fitness(QStringList() << "sys_fitness",
                                        QCoreApplication::translate("main", "Fitness system"),
@@ -511,21 +410,6 @@ QHash<QString, QString> *parse(QCoreApplication *app)
                                       QCoreApplication::translate("main", "thread count (integer)"));
     parser->addOption(opt_maxthreads);
 
-
-    //Then the linkages - currently limit to two from command line
-    /*
-     -- L1_variable
-     -- L1_imageSequence
-     -- L1_mode
-     -- L1_interpolate
-     -- L1_change_rate
-     -- L2_variable
-     -- L2_imageSequence
-     -- L2_mode
-     -- L2_interpolate
-     -- L2_change_rate
-    */
-
     QStringList linkagesList = {LINKAGES_LIST};
     QString linkages = linkagesList.join("/");
     QCommandLineOption opt_L1_variable(QStringList() << "L1_variable",
@@ -580,7 +464,6 @@ QHash<QString, QString> *parse(QCoreApplication *app)
                                           QCoreApplication::translate("main", "rate (integer)"));
     parser->addOption(opt_L2_change_rate);
 
-
     parser->process(*app); //parse the command line
 
     //hash to hold converted form of parsing
@@ -615,6 +498,8 @@ QHash<QString, QString> *parse(QCoreApplication *app)
     if (parser->isSet(opt_z)) hashResults->insert("z", parser->value(opt_z));
     //RJG - Positional arguments
     if (parser->isSet(opt_auto)) hashResults->insert("auto", parser->value(opt_auto));
+    if (parser->isSet(opt_speciesBurnIn)) hashResults->insert("opt_speciesBurnIn", parser->value(opt_speciesBurnIn));
+    if (parser->isSet(opt_speciesBurnInDuration)) hashResults->insert("opt_speciesBurnInDuration", parser->value(opt_speciesBurnInDuration));
     if (parser->isSet(opt_nonspatial)) hashResults->insert("nonspatial", boolValue(parser->value(opt_nonspatial)));
     if (parser->isSet(opt_polling)) hashResults->insert("polling", parser->value(opt_polling));
     if (parser->isSet(opt_minspeciessize)) hashResults->insert("minspeciessize", parser->value(opt_minspeciessize));

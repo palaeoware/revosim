@@ -497,21 +497,43 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
         simulationManager->simulationSettings->speciesBurnIn = i;
         if (i)
         {
-            QString message("Please enter the number of static noise environmental images you would like to prepend to your own image sequence.");
-            bool ok;
-            qDebug() << "1" << simulationManager->simulationSettings->speciesBurnInDuration;
-            simulationManager->simulationSettings->speciesBurnInDuration = QInputDialog::getInt(this, tr("Burn in duration"), message, simulationManager->simulationSettings->speciesBurnInDuration, 1, 1000, 1,
-                                                                                                &ok);
-            qDebug() << "2" << simulationManager->simulationSettings->speciesBurnInDuration;
-            if (ok) simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
-            else simulationManager->env->setCurrentFileNumber(0);
-            qDebug() << "3" << simulationManager->simulationSettings->speciesBurnInDuration;
+            simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
+            speciesBurnInDurationSpin->setEnabled(true);
+            speciesBurnInDurationSpin->setValue(simulationManager->simulationSettings->speciesBurnInDuration);
         }
-        else simulationManager->env->setCurrentFileNumber(0);
+        else
+        {
+            simulationManager->env->setCurrentFileNumber(0);
+            speciesBurnInDurationSpin->setEnabled(false);
+        }
         simulationManager->env->reset(0);
         simulationManager->env->regenerate(simulationManager->simulationSettings->environmentMode, simulationManager->simulationSettings->environmentInterpolate);
         resetSimulation();
     });
+
+
+    QLabel *speciesBurnInDuration_label = new QLabel("Burn in duration:");
+    speciesBurnInDuration_label->setToolTip("<font>The number of static noise environmental images you would like to prepend to your own image sequence.</font>");
+    speciesBurnInDurationSpin = new QSpinBox;
+    speciesBurnInDurationSpin->setMinimum(1);
+    speciesBurnInDurationSpin->setMaximum(1000);
+    speciesBurnInDurationSpin->setValue(simulationManager->simulationSettings->speciesBurnInDuration);
+    speciesBurnInDurationSpin->setToolTip("<font>the number of static noise environmental images you would like to prepend to your own image sequence.</font>");
+    environmentSettingsGrid->addWidget(speciesBurnInDuration_label, 8, 1, 1, 1);
+    environmentSettingsGrid->addWidget(speciesBurnInDurationSpin, 8, 2, 1, 1);
+    speciesBurnInDurationSpin->setEnabled(false);
+    connect(speciesBurnInDurationSpin, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), mainWindow, [ = ](const int &i)
+    {
+        simulationManager->simulationSettings->speciesBurnInDuration = i;
+        if (simulationManager->simulationSettings->speciesBurnIn)
+        {
+            simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
+            simulationManager->env->reset(0);
+            simulationManager->env->regenerate(simulationManager->simulationSettings->environmentMode, simulationManager->simulationSettings->environmentInterpolate);
+            resetSimulation();
+        }
+    });
+
     // Simulation Size Settings
     auto *simulationSizeSettingsGrid = new QGridLayout;
 
@@ -1931,7 +1953,8 @@ void MainWindow::resetSimulation()
     resetInformationBar();
 
     //If we have burn in switched on, we need to make sure that happens as part of the reset
-    simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
+    if (simulationManager->simulationSettings->speciesBurnIn) simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
+    else if (simulationManager->env->returnCurrentFileNumber() < 0) simulationManager->env->setCurrentFileNumber(0);
     simulationManager->env->reset(0);
     simulationManager->env->regenerate(simulationManager->simulationSettings->environmentMode, simulationManager->simulationSettings->environmentInterpolate);
 
@@ -4656,7 +4679,7 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
             if (settingsFileIn.name().toString() == "randomReseedBeforeGenetic")
                 simulationManager->simulationSettings->randomReseedBeforeGenetic = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name().toString() == "speciesBurnIn")
-                simulationManager->simulationSettings->randomReseedBeforeGenetic = intToBool(settingsFileIn.readElementText().toInt());
+                simulationManager->simulationSettings->speciesBurnIn = intToBool(settingsFileIn.readElementText().toInt());
 
             //No gui options for below
             if (settingsFileIn.name().toString() == "fitnessLoggingToFile")
@@ -4740,6 +4763,7 @@ void MainWindow::updateGUIFromVariables()
     pathogenFrequencySpin->setValue(simulationManager->cellSettingsMaster->pathogenFrequency);
     if (simulationManager->simulationSettings->pathogenMode == PATH_MODE_DRIFT)pathogenDriftRadio->setChecked(true);
     else pathogenEvolveRadio->setChecked(true);
+    speciesBurnInDurationSpin->setValue(simulationManager->simulationSettings->speciesBurnInDuration);
 
     // Add speciesMode
     speciesModeChanged(speciesMode, true);
@@ -4765,6 +4789,7 @@ void MainWindow::updateGUIFromVariables()
     guiCheckbox->setChecked(simulationManager->simulationSettings->gui);
     interpolateCheckbox->setChecked(simulationManager->simulationSettings->environmentInterpolate);
     minSpeciesSizeSpin->setValue(simulationManager->simulationSettings->minSpeciesSize);
+    burnInCheckbox->setChecked(simulationManager->simulationSettings->speciesBurnIn);
 
     if (simulationManager->cellSettingsMaster->interactBlocks) BlockInteractionsRadio->setChecked(true);
     else XORRadio->setChecked(true);

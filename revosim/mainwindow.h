@@ -216,10 +216,10 @@ private:
     QSpinBox *dispersalSpin{};
     QSpinBox *energySpin{};
     QSpinBox *breedCostSpin{};
-    // Only in development branch (as is variable breed above)
     QSpinBox *pathogenMutateSpin{};
     QSpinBox *pathogenFrequencySpin{};
     QSpinBox *croppingFrequencySpin{};
+    QSpinBox *speciesBurnInDurationSpin{};
 
     //RJG - text edits for logs
     QTextEdit *headerTextEdit;
