@@ -5323,6 +5323,8 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
     if (options->contains("predationefficiency")) simulationManager->cellSettingsMaster->predationEfficiency = options->value("predationefficiency").toInt();
 
     if (options->contains("nonspatial")) simulationManager->simulationSettings->nonspatial = boolStringToBool(options->value("nonspatial"));
+    if (options->contains("speciesburnin"))simulationManager->simulationSettings->speciesBurnIn = boolStringToBool(options->value("speciesburnin"));
+    if (options->contains("speciesburninduration"))simulationManager->simulationSettings->speciesBurnInDuration = options->value("speciesburninduration").toInt();
     if (options->contains("polling"))
     {
         qInfo() << "Setting polling to " << options->value("polling").toInt();

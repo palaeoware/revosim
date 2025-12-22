@@ -498,8 +498,8 @@ QHash<QString, QString> *parse(QCoreApplication *app)
     if (parser->isSet(opt_z)) hashResults->insert("z", parser->value(opt_z));
     //RJG - Positional arguments
     if (parser->isSet(opt_auto)) hashResults->insert("auto", parser->value(opt_auto));
-    if (parser->isSet(opt_speciesBurnIn)) hashResults->insert("opt_speciesBurnIn", parser->value(opt_speciesBurnIn));
-    if (parser->isSet(opt_speciesBurnInDuration)) hashResults->insert("opt_speciesBurnInDuration", parser->value(opt_speciesBurnInDuration));
+    if (parser->isSet(opt_speciesBurnIn)) hashResults->insert("speciesburnin", boolValue(parser->value(opt_speciesBurnIn)));
+    if (parser->isSet(opt_speciesBurnInDuration)) hashResults->insert("speciesburninduration", parser->value(opt_speciesBurnInDuration));
     if (parser->isSet(opt_nonspatial)) hashResults->insert("nonspatial", boolValue(parser->value(opt_nonspatial)));
     if (parser->isSet(opt_polling)) hashResults->insert("polling", parser->value(opt_polling));
     if (parser->isSet(opt_minspeciessize)) hashResults->insert("minspeciessize", parser->value(opt_minspeciessize));
