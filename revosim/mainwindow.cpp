@@ -1724,15 +1724,6 @@ QDockWidget *MainWindow::createLogSettingsDock()
     auto *logSettingsGrid = new QGridLayout;
     logSettingsGrid->setAlignment(Qt::AlignTop);
 
-    loggingCheckbox = new QCheckBox("Write to file");
-    loggingCheckbox->setChecked(simulationManager->simulationSettings->logging);
-    loggingCheckbox->setToolTip("<font>Turn on/off this option to write to a text log file every refresh/poll.</font>");
-    logSettingsGrid->addWidget(loggingCheckbox, 0, 1);
-    connect(loggingCheckbox, &QCheckBox::stateChanged, mainWindow, [ = ](const bool & i)
-    {
-        simulationManager->simulationSettings->logging = i;
-    });
-
     QPushButton *validateButton = new QPushButton("Validate logs");
     validateButton->setToolTip("<font>Click here to validate the logs - possible errors will appear in red.</font>");
     validateButton->setObjectName("validateButton");
@@ -1753,7 +1744,7 @@ QDockWidget *MainWindow::createLogSettingsDock()
     QPushButton *instructionsButton = new QPushButton("Instructions");
     instructionsButton->setObjectName("instructionsButton");
     instructionsButton->setToolTip("<font>Click here for logging instructions.</font>");
-    logSettingsGrid->addWidget(instructionsButton, 0, 2);
+    logSettingsGrid->addWidget(instructionsButton, 0, 1, 1, 2);
     connect(instructionsButton, &QPushButton::clicked, logSettingsDock, [ = ]()
     {
         QString outString;
@@ -1844,6 +1835,20 @@ QDockWidget *MainWindow::createLogSettingsDock()
         headerTextEdit->setText(simulationManager->simulationLog->writeHeaderFromLogText(logTextEdit->toPlainText()));
     });
 
+    loggingCheckbox = new QCheckBox("Write to file");
+    loggingCheckbox->setChecked(simulationManager->simulationSettings->logging);
+    loggingCheckbox->setToolTip("<font>Turn on/off this option to write to a text log file every refresh/poll.</font>");
+    logSettingsGrid->addWidget(loggingCheckbox, 14, 1);
+    connect(loggingCheckbox, &QCheckBox::stateChanged, mainWindow, [ = ](const bool & i)
+    {
+        simulationManager->simulationSettings->logging = i;
+    });
+
+    appendCheckbox = new QCheckBox("Append running log");
+    loggingCheckbox->setToolTip("<font>Deselect to write a separate running log file every iteration.</font>");
+    logSettingsGrid->addWidget(appendCheckbox, 14, 2);
+
+
     //RJG - placed here so other objects already exist
     QPushButton *defaultLogsButton = new QPushButton("v2.0.0 log");
     defaultLogsButton->setObjectName("defaultLogsButton");
@@ -1872,7 +1877,6 @@ QDockWidget *MainWindow::createLogSettingsDock()
 
         }
     });
-
 
     //RJG - placed here so other objects already exist
     QPushButton *defaultLogsButtonCSV = new QPushButton("v2.0.0 CSV log");

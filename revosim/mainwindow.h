@@ -173,6 +173,7 @@ private:
     QCheckBox *variableMutationCheckbox{};
     QCheckBox *excludeWithoutDescendantsCheckbox{};
     QCheckBox *loggingCheckbox{};
+    QCheckBox *appendCheckbox{};
     QCheckBox *autoWriteLogCheckbox{};
     QCheckBox *autoWriteLogIndividualsCheckbox{};
 
