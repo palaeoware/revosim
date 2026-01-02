@@ -1847,7 +1847,10 @@ QDockWidget *MainWindow::createLogSettingsDock()
     appendCheckbox = new QCheckBox("Append running log");
     loggingCheckbox->setToolTip("<font>Deselect to write a separate running log file every iteration.</font>");
     logSettingsGrid->addWidget(appendCheckbox, 14, 2);
-
+    connect(appendCheckbox, &QCheckBox::stateChanged, mainWindow, [ = ](const bool & i)
+    {
+        simulationManager->simulationSettings->appendRunningLog = i;
+    });
 
     //RJG - placed here so other objects already exist
     QPushButton *defaultLogsButton = new QPushButton("v2.0.0 log");
@@ -4656,6 +4659,8 @@ void MainWindow::loadSettings(QString fileName, bool calledFromCommandLine)
                 simulationManager->cellSettingsMaster->variableBreed = settingsFileIn.readElementText().toInt();
             if (settingsFileIn.name().toString() == "logging")
                 simulationManager->simulationSettings->logging = intToBool(settingsFileIn.readElementText().toInt());
+            if (settingsFileIn.name().toString() == "appendRunningLog")
+                simulationManager->simulationSettings->appendRunningLog = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name().toString() == "csvoutput")
                 simulationManager->simulationLog->csvOutput = intToBool(settingsFileIn.readElementText().toInt());
             if (settingsFileIn.name().toString() == "gui")
@@ -4790,6 +4795,7 @@ void MainWindow::updateGUIFromVariables()
     asexualRadio->setChecked(simulationManager->cellSettingsMaster->asexual);
     variableBreedRadio->setChecked(simulationManager->cellSettingsMaster->variableBreed);
     loggingCheckbox->setChecked(simulationManager->simulationSettings->logging);
+    appendCheckbox->setChecked(simulationManager->simulationSettings->appendRunningLog);
     guiCheckbox->setChecked(simulationManager->simulationSettings->gui);
     interpolateCheckbox->setChecked(simulationManager->simulationSettings->environmentInterpolate);
     minSpeciesSizeSpin->setValue(simulationManager->simulationSettings->minSpeciesSize);
@@ -5020,6 +5026,11 @@ void MainWindow::saveSettings(QString fileName)
 
     settingsFileOut.writeStartElement("variableBreed");
     settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->cellSettingsMaster->variableBreed));
+    settingsFileOut.writeEndElement();
+
+    //Bools
+    settingsFileOut.writeStartElement("appendRunningLog");
+    settingsFileOut.writeCharacters(QString("%1").arg(simulationManager->simulationSettings->appendRunningLog));
     settingsFileOut.writeEndElement();
 
     settingsFileOut.writeStartElement("logging");
@@ -5323,6 +5334,7 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
         simulationManager->simulationLog->setSpeciestTextFromGUI(mainWindow->logTextEdit->toHtml());
         simulationManager->simulationSettings->logging = true;
     }
+    if (options->contains("appendRunningLog"))simulationManager->simulationSettings->appendRunningLog = boolStringToBool(options->value("appendRunningLog"));
     if (options->contains("minpredatorscore")) simulationManager->cellSettingsMaster->minDeltaPredatorness = options->value("minpredatorscore").toInt();
     if (options->contains("predationefficiency")) simulationManager->cellSettingsMaster->predationEfficiency = options->value("predationefficiency").toInt();
 

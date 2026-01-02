@@ -29,6 +29,7 @@ SimSettings::SimSettings()
     //Settable bools
     predationRestriction = false;
     logging = false;
+    appendRunningLog = true;
     fitnessLoggingToFile = false;
     nonspatial = false;
     toroidal = false;

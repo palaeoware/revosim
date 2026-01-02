@@ -39,6 +39,7 @@ public:
     bool speciesLoggingToFile;
     bool fitnessLoggingToFile;
     bool logging;
+    bool appendRunningLog;
     bool predationRestriction;
     bool environmentInterpolate;
     bool linkagesOn;

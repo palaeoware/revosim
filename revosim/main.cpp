@@ -103,7 +103,7 @@ QHash<QString, QString> *parse(QCoreApplication *app)
 
     QCommandLineOption opt_k(QStringList() << "k" << "logtype",
                              QCoreApplication::translate("main", "logs to generate."),
-                             QCoreApplication::translate("main", "Phylogeny/Normal/Both"));
+                             QCoreApplication::translate("main", "Phylogeny (=Eng run log)/Normal (=Running log)/Both"));
     parser->addOption(opt_k);
 
     QCommandLineOption opt_l(QStringList() << "l" << "excludenodescendents",
@@ -299,6 +299,11 @@ QHash<QString, QString> *parse(QCoreApplication *app)
                                  QCoreApplication::translate("main", "Initiates v2.0.0 logging style."),
                                  QCoreApplication::translate("main", "On/Off"));
     parser->addOption(opt_v2log);
+
+    QCommandLineOption opt_appendRunningLog(QStringList() << "append",
+                                            QCoreApplication::translate("main", "Append running log to single file (default is on)."),
+                                            QCoreApplication::translate("main", "On/Off"));
+    parser->addOption(opt_appendRunningLog);
 
     QCommandLineOption opt_interactfitness(QStringList() << "interactfitness",
                                            QCoreApplication::translate("main", "Interactions modify fitness."),
@@ -519,6 +524,7 @@ QHash<QString, QString> *parse(QCoreApplication *app)
     if (parser->isSet(opt_interactfitness)) hashResults->insert("interactfitness", boolValue(parser->value(opt_interactfitness)));
     if (parser->isSet(opt_interactenergy)) hashResults->insert("interactenergy", boolValue(parser->value(opt_interactenergy)));
     if (parser->isSet(opt_v2log)) hashResults->insert("v2log", boolValue(parser->value(opt_v2log)));
+    if (parser->isSet(opt_appendRunningLog))hashResults->insert("appendRunningLog", boolValue(parser->value(opt_appendRunningLog)));
     if (parser->isSet(opt_log))hashResults->insert("opt_log", parser->value(opt_log));
     if (parser->isSet(opt_predationefficiency)) hashResults->insert("predationefficiency", parser->value(opt_predationefficiency));
     if (parser->isSet(opt_minpredatorscore)) hashResults->insert("minpredatorscore", parser->value(opt_minpredatorscore));
