@@ -23,7 +23,7 @@ public:
     QString writeHeaderFromLogText(QString text);
 
     void writeRunData(QString globalSavePath, int batchRuns);
-    void writeLog(QString globalSavePath, int batchRuns, int logType);
+    void writeLog(QString globalSavePath, int batchRuns, int logType, int iteration = -1);
     void setHeaderTextFromGUI(QString text);
     void setIterationTextFromGUI(QString text);
     void setSpeciestTextFromGUI(QString text);

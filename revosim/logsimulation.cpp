@@ -644,7 +644,7 @@ QString LogSimulation::processLogTextGeneral(QString text)
 
 }
 
-void LogSimulation::writeLog(QString globalSavePath, int batchRuns, int logType)
+void LogSimulation::writeLog(QString globalSavePath, int batchRuns, int logType, int iteration)
 {
     QString loggingFile = globalSavePath;
     if (!loggingFile.endsWith(QDir::separator())) loggingFile.append(QDir::separator());
@@ -657,6 +657,7 @@ void LogSimulation::writeLog(QString globalSavePath, int batchRuns, int logType)
     if (logType == LOG_DUMP_INDIVIDUALS) loggingFile.append(QString(PRODUCTNAME) + "_individuals_data");
 
     if (batchRuns > -1) loggingFile.append(QString("_run_%1").arg(batchRuns, 4, 10, QChar('0')));
+    if (iteration > -1) loggingFile.append(QString("_iteration_%1").arg(iteration, 4, 10, QChar('0')));
     loggingFile.append(".txt");
 
     QFile outputFile(loggingFile);

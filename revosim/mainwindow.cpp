@@ -4365,7 +4365,8 @@ void MainWindow::writeLog()
         simulationManager->simulationLog->setHeaderTextFromGUI(mainWindow->headerTextEdit->toPlainText());
         simulationManager->simulationLog->setIterationTextFromGUI(mainWindow->iterationTextEdit->toPlainText());
         simulationManager->simulationLog->setSpeciestTextFromGUI(mainWindow->logTextEdit->toPlainText());
-        simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_CUSTOM);
+        if (simulationManager->simulationSettings->appendRunningLog)simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_CUSTOM);
+        else simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_CUSTOM, simulationManager->iteration);
     }
     if (ui->actionRecombination_logging->isChecked())simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_RECOMBINATION);
     if (ui->actionFitness_logging_to_File->isChecked())simulationManager->simulationLog->writeLog(getSavePath(), batchNumber, LOG_FITNESS);
