@@ -98,7 +98,7 @@ QString LogSimulation::printDefaultHeaderText()
         out << "-- Species mean environmental (non-interaction) fitness<br />";
         out << "-- Species current modal genome<br />";
         out << "<br />";
-        out << "**Note that this excludes species with less individuals than minimum species size, but is not able to exlude species without descendants, which can only be achieved with the end-run log.**<br /><br />";
+        out << "**Note that this excludes species with less individuals than minimum species size, but is not able to exclude species without descendants, which can only be achieved with the end-run log.**<br /><br />";
         out << "===================<br /><br />";
     }
     return outString;
