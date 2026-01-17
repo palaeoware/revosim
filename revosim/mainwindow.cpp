@@ -494,7 +494,17 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
     environmentSettingsGrid->addWidget(burnInCheckbox, 7, 1, 1, 2);
     connect(burnInCheckbox, &QCheckBox::stateChanged, [ = ](const bool & i)
     {
+        if (!autoFromCommand && simulationManager->iteration != 0 && i)
+            if (QMessageBox::question(this, "Warning", "This will reset your simulation. Do you want to continue?",
+                                      QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes) == QMessageBox::No)
+            {
+                burnInCheckbox->setCheckState(Qt::Unchecked);
+                return;
+            }
+            else resetSimulation();
+
         simulationManager->simulationSettings->speciesBurnIn = i;
+
         if (i)
         {
             simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
@@ -506,9 +516,13 @@ QDockWidget *MainWindow::createSimulationSettingsDock()
             simulationManager->env->setCurrentFileNumber(0);
             speciesBurnInDurationSpin->setEnabled(false);
         }
-        simulationManager->env->reset(0);
-        simulationManager->env->regenerate(simulationManager->simulationSettings->environmentMode, simulationManager->simulationSettings->environmentInterpolate);
-        resetSimulation();
+
+        if (simulationManager->iteration == 0)
+        {
+            simulationManager->env->reset(0);
+            simulationManager->env->regenerate(simulationManager->simulationSettings->environmentMode, simulationManager->simulationSettings->environmentInterpolate);
+            resetSimulation();
+        }
     });
 
 
@@ -1961,7 +1975,8 @@ void MainWindow::resetSimulation()
 
     //If we have burn in switched on, we need to make sure that happens as part of the reset
     if (simulationManager->simulationSettings->speciesBurnIn) simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
-    else if (simulationManager->env->returnCurrentFileNumber() < 0) simulationManager->env->setCurrentFileNumber(0);
+    else simulationManager->env->setCurrentFileNumber(0);
+
     simulationManager->env->reset(0);
     simulationManager->env->regenerate(simulationManager->simulationSettings->environmentMode, simulationManager->simulationSettings->environmentInterpolate);
 
