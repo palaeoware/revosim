@@ -104,7 +104,10 @@ void ImageSequence::loadFromFile(int eMode)
                 nextfile = 1; //bounce mode
         }
 
-        QImage loadImage2(fileList[nextfile]);
+        QImage loadImage2;
+        if (nextfile < 0 ) loadImage2 = burnInImage;
+        else loadImage2 = QImage(fileList[nextfile]);
+
         if (xsize < simulationManager->simulationSettings->gridX || ysize < simulationManager->simulationSettings->gridY) //rescale if necessary - only if too small
             loadImage2 = loadImage2.scaled(QSize(simulationManager->simulationSettings->gridX, simulationManager->simulationSettings->gridY), Qt::IgnoreAspectRatio);
         //Get it
