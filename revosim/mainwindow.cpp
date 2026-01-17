@@ -3577,7 +3577,7 @@ bool MainWindow::loadEnvironmentFiles(QString folder)
 
     delete (simulationManager->env);
     simulationManager->env = new ImageSequence(files, simulationManager->simulationSettings->environmentChangeRate);
-    if (simulationManager->simulationSettings->speciesBurnIn)simulationManager->env->setCurrentFileNumber(-20);
+    if (simulationManager->simulationSettings->speciesBurnIn) simulationManager->env->setCurrentFileNumber(simulationManager->simulationSettings->speciesBurnInDuration);
 
     refreshEnvironment();
 
