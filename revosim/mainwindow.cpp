@@ -3157,7 +3157,6 @@ void MainWindow::writeRunData()
  */
 void MainWindow::writeIndividualsData()
 {
-
     doSavePath();
     simulationManager->simulationLog->writeLog(getSavePath(), -1, LOG_DUMP_INDIVIDUALS);
     if (getSavePath().endsWith("REvoSim_output/"))globalSavePath->setText(getSavePath().remove("REvoSim_output/"));
