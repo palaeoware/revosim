@@ -3591,7 +3591,11 @@ bool MainWindow::loadEnvironmentFiles(QString folder)
 
     delete (simulationManager->env);
     simulationManager->env = new ImageSequence(files, simulationManager->simulationSettings->environmentChangeRate);
-    if (simulationManager->simulationSettings->speciesBurnIn) simulationManager->env->setCurrentFileNumber(simulationManager->simulationSettings->speciesBurnInDuration);
+    if (simulationManager->simulationSettings->speciesBurnIn)
+    {
+        simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
+        simulationManager->env->regenerate(simulationManager->simulationSettings->environmentMode, simulationManager->simulationSettings->environmentInterpolate);
+    }
 
     refreshEnvironment();
 
@@ -5273,8 +5277,10 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
         loadSettings(options->value("settings"), true);
     }
     if (options->contains("x")) simulationManager->simulationSettings->gridX = options->value("x").toInt();
-    //Do  r here as then load environment below calls setuprun, which will update the environmental counter
+    //Do  r and species burnin here as then load environment below calls setuprun, which will update the environmental counter
     if (options->contains("r")) simulationManager->simulationSettings->environmentChangeRate = options->value("r").toInt();
+    if (options->contains("speciesburnin"))simulationManager->simulationSettings->speciesBurnIn = boolStringToBool(options->value("speciesburnin"));
+    if (options->contains("speciesburninduration"))simulationManager->simulationSettings->speciesBurnInDuration = options->value("speciesburninduration").toInt();
     if (options->contains("e")) loadEnvironmentFiles(options->value("e"));
     if (options->contains("opt_log"))
     {
@@ -5349,8 +5355,6 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
     if (options->contains("predationefficiency")) simulationManager->cellSettingsMaster->predationEfficiency = options->value("predationefficiency").toInt();
 
     if (options->contains("nonspatial")) simulationManager->simulationSettings->nonspatial = boolStringToBool(options->value("nonspatial"));
-    if (options->contains("speciesburnin"))simulationManager->simulationSettings->speciesBurnIn = boolStringToBool(options->value("speciesburnin"));
-    if (options->contains("speciesburninduration"))simulationManager->simulationSettings->speciesBurnInDuration = options->value("speciesburninduration").toInt();
     if (options->contains("polling"))
     {
         qInfo() << "Setting polling to " << options->value("polling").toInt();
@@ -5595,7 +5599,13 @@ void MainWindow::setOptionsFromParser(QHash<QString, QString> *options)
         qInfo().noquote() << "After parsing the command line, REvoSim has the settings shown below.\n\n" << simulationManager->simulationLog->printSettings();
 
         simulationManager->setupRun();
-
+        if (simulationManager->simulationSettings->speciesBurnIn)
+        {
+            simulationManager->env->setCurrentFileNumber(-simulationManager->simulationSettings->speciesBurnInDuration);
+            simulationManager->env->reset(-simulationManager->simulationSettings->speciesBurnInDuration);
+            refreshEnvironment();
+            resetSimulation();
+        }
         int autoFromCommandValue = options->value("auto").toInt();
         if (autoFromCommandValue == 0) // run for ever
         {
