@@ -39,6 +39,9 @@ public:
     bool interactFitness; //Interactions influence fitness
     bool interactEnergy; //Interactions influence energy directly
     bool interactWithinSpecies; //Allows interactions between members of the same species
+    bool hgtTransform; // Allows HGT to take place
+    int hgtTransferLength; // Sets transfer length in HGT
+    int hgtTransferChance; //Sets HGT probability
 
 };
 

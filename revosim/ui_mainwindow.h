@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created by: Qt User Interface Compiler version 5.15.3
+** Created by: Qt User Interface Compiler version 6.8.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,6 +10,7 @@
 #define UI_MAINWINDOW_H
 
 #include <QtCore/QVariant>
+#include <QtGui/QAction>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QComboBox>
 #include <QtWidgets/QDockWidget>
@@ -62,6 +63,9 @@ public:
     QAction *actionOutput_Dock;
     QAction *actionUseNewSpeciesID;
     QAction *actionGatherBySpecies;
+    QAction *actionVariable_hgt_prob_logging;
+    QAction *actionVariable_hgt_len_logging;
+    QAction *actionVariable_hgt_id_logging;
     QWidget *centralWidget;
     QVBoxLayout *verticalLayout_4;
     QFrame *frame_2;
@@ -125,89 +129,98 @@ public:
     void setupUi(QMainWindow *MainWindow)
     {
         if (MainWindow->objectName().isEmpty())
-            MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
+            MainWindow->setObjectName("MainWindow");
         MainWindow->resize(1292, 843);
         MainWindow->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
         MainWindow->setDocumentMode(false);
         actionReset = new QAction(MainWindow);
-        actionReset->setObjectName(QString::fromUtf8("actionReset"));
+        actionReset->setObjectName("actionReset");
         actionStart_Sim = new QAction(MainWindow);
-        actionStart_Sim->setObjectName(QString::fromUtf8("actionStart_Sim"));
+        actionStart_Sim->setObjectName("actionStart_Sim");
         actionStop_Sim = new QAction(MainWindow);
-        actionStop_Sim->setObjectName(QString::fromUtf8("actionStop_Sim"));
+        actionStop_Sim->setObjectName("actionStop_Sim");
         actionRun_for = new QAction(MainWindow);
-        actionRun_for->setObjectName(QString::fromUtf8("actionRun_for"));
+        actionRun_for->setObjectName("actionRun_for");
         actionSave = new QAction(MainWindow);
-        actionSave->setObjectName(QString::fromUtf8("actionSave"));
+        actionSave->setObjectName("actionSave");
         actionSave->setEnabled(false);
         actionLoad = new QAction(MainWindow);
-        actionLoad->setObjectName(QString::fromUtf8("actionLoad"));
+        actionLoad->setObjectName("actionLoad");
         actionLoad->setEnabled(false);
         actionGenomeComparison = new QAction(MainWindow);
-        actionGenomeComparison->setObjectName(QString::fromUtf8("actionGenomeComparison"));
+        actionGenomeComparison->setObjectName("actionGenomeComparison");
         actionGenomeComparison->setCheckable(true);
         actionGenomeComparison->setChecked(false);
         actionGo_Slow = new QAction(MainWindow);
-        actionGo_Slow->setObjectName(QString::fromUtf8("actionGo_Slow"));
+        actionGo_Slow->setObjectName("actionGo_Slow");
         actionGo_Slow->setCheckable(true);
         actionLoad_Random_Numbers = new QAction(MainWindow);
-        actionLoad_Random_Numbers->setObjectName(QString::fromUtf8("actionLoad_Random_Numbers"));
+        actionLoad_Random_Numbers->setObjectName("actionLoad_Random_Numbers");
         actionFitness_logging_to_File = new QAction(MainWindow);
-        actionFitness_logging_to_File->setObjectName(QString::fromUtf8("actionFitness_logging_to_File"));
+        actionFitness_logging_to_File->setObjectName("actionFitness_logging_to_File");
         actionFitness_logging_to_File->setCheckable(true);
         actionFitness_logging_to_File->setEnabled(true);
         actionReseed = new QAction(MainWindow);
-        actionReseed->setObjectName(QString::fromUtf8("actionReseed"));
+        actionReseed->setObjectName("actionReseed");
         actionReseed->setCheckable(false);
         actionBatch = new QAction(MainWindow);
-        actionBatch->setObjectName(QString::fromUtf8("actionBatch"));
+        actionBatch->setObjectName("actionBatch");
         actionRecombination_logging = new QAction(MainWindow);
-        actionRecombination_logging->setObjectName(QString::fromUtf8("actionRecombination_logging"));
+        actionRecombination_logging->setObjectName("actionRecombination_logging");
         actionRecombination_logging->setCheckable(true);
         actionCount_peaks = new QAction(MainWindow);
-        actionCount_peaks->setObjectName(QString::fromUtf8("actionCount_peaks"));
+        actionCount_peaks->setObjectName("actionCount_peaks");
         actionSave_settings = new QAction(MainWindow);
-        actionSave_settings->setObjectName(QString::fromUtf8("actionSave_settings"));
+        actionSave_settings->setObjectName("actionSave_settings");
         actionLoad_settings = new QAction(MainWindow);
-        actionLoad_settings->setObjectName(QString::fromUtf8("actionLoad_settings"));
+        actionLoad_settings->setObjectName("actionLoad_settings");
         actionPause_Sim = new QAction(MainWindow);
-        actionPause_Sim->setObjectName(QString::fromUtf8("actionPause_Sim"));
+        actionPause_Sim->setObjectName("actionPause_Sim");
         actionAbout = new QAction(MainWindow);
-        actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
+        actionAbout->setObjectName("actionAbout");
         actionExit = new QAction(MainWindow);
-        actionExit->setObjectName(QString::fromUtf8("actionExit"));
+        actionExit->setObjectName("actionExit");
         actionCode_on_GitHub = new QAction(MainWindow);
-        actionCode_on_GitHub->setObjectName(QString::fromUtf8("actionCode_on_GitHub"));
+        actionCode_on_GitHub->setObjectName("actionCode_on_GitHub");
         actionOnline_User_Manual = new QAction(MainWindow);
-        actionOnline_User_Manual->setObjectName(QString::fromUtf8("actionOnline_User_Manual"));
+        actionOnline_User_Manual->setObjectName("actionOnline_User_Manual");
         actionSettings_Dock = new QAction(MainWindow);
-        actionSettings_Dock->setObjectName(QString::fromUtf8("actionSettings_Dock"));
+        actionSettings_Dock->setObjectName("actionSettings_Dock");
         actionSettings_Dock->setCheckable(true);
         actionReportBugIssueFeatureRequest = new QAction(MainWindow);
-        actionReportBugIssueFeatureRequest->setObjectName(QString::fromUtf8("actionReportBugIssueFeatureRequest"));
+        actionReportBugIssueFeatureRequest->setObjectName("actionReportBugIssueFeatureRequest");
         actionVariable_mutation_logging = new QAction(MainWindow);
-        actionVariable_mutation_logging->setObjectName(QString::fromUtf8("actionVariable_mutation_logging"));
+        actionVariable_mutation_logging->setObjectName("actionVariable_mutation_logging");
         actionVariable_mutation_logging->setCheckable(true);
         actionSpeciation_logging = new QAction(MainWindow);
-        actionSpeciation_logging->setObjectName(QString::fromUtf8("actionSpeciation_logging"));
+        actionSpeciation_logging->setObjectName("actionSpeciation_logging");
         actionSpeciation_logging->setCheckable(true);
         actionDisparity_logging = new QAction(MainWindow);
-        actionDisparity_logging->setObjectName(QString::fromUtf8("actionDisparity_logging"));
+        actionDisparity_logging->setObjectName("actionDisparity_logging");
         actionDisparity_logging->setCheckable(true);
         actionOutput_Dock = new QAction(MainWindow);
-        actionOutput_Dock->setObjectName(QString::fromUtf8("actionOutput_Dock"));
+        actionOutput_Dock->setObjectName("actionOutput_Dock");
         actionOutput_Dock->setCheckable(true);
         actionUseNewSpeciesID = new QAction(MainWindow);
-        actionUseNewSpeciesID->setObjectName(QString::fromUtf8("actionUseNewSpeciesID"));
+        actionUseNewSpeciesID->setObjectName("actionUseNewSpeciesID");
         actionUseNewSpeciesID->setCheckable(true);
         actionUseNewSpeciesID->setChecked(true);
         actionGatherBySpecies = new QAction(MainWindow);
-        actionGatherBySpecies->setObjectName(QString::fromUtf8("actionGatherBySpecies"));
+        actionGatherBySpecies->setObjectName("actionGatherBySpecies");
         actionGatherBySpecies->setCheckable(true);
         actionGatherBySpecies->setChecked(true);
+        actionVariable_hgt_prob_logging = new QAction(MainWindow);
+        actionVariable_hgt_prob_logging->setObjectName("actionVariable_hgt_prob_logging");
+        actionVariable_hgt_prob_logging->setCheckable(true);
+        actionVariable_hgt_len_logging = new QAction(MainWindow);
+        actionVariable_hgt_len_logging->setObjectName("actionVariable_hgt_len_logging");
+        actionVariable_hgt_len_logging->setCheckable(true);
+        actionVariable_hgt_id_logging = new QAction(MainWindow);
+        actionVariable_hgt_id_logging->setObjectName("actionVariable_hgt_id_logging");
+        actionVariable_hgt_id_logging->setCheckable(true);
         centralWidget = new QWidget(MainWindow);
-        centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+        centralWidget->setObjectName("centralWidget");
+        QSizePolicy sizePolicy(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(1);
         sizePolicy.setHeightForWidth(centralWidget->sizePolicy().hasHeightForWidth());
@@ -215,23 +228,23 @@ public:
         verticalLayout_4 = new QVBoxLayout(centralWidget);
         verticalLayout_4->setSpacing(3);
         verticalLayout_4->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_4->setObjectName(QString::fromUtf8("verticalLayout_4"));
+        verticalLayout_4->setObjectName("verticalLayout_4");
         verticalLayout_4->setContentsMargins(0, 0, 0, 0);
         frame_2 = new QFrame(centralWidget);
-        frame_2->setObjectName(QString::fromUtf8("frame_2"));
+        frame_2->setObjectName("frame_2");
         frame_2->setFrameShape(QFrame::StyledPanel);
         frame_2->setFrameShadow(QFrame::Raised);
         horizontalLayout = new QHBoxLayout(frame_2);
         horizontalLayout->setSpacing(4);
         horizontalLayout->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setObjectName("horizontalLayout");
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
         verticalLayout = new QVBoxLayout();
         verticalLayout->setSpacing(3);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        verticalLayout->setObjectName("verticalLayout");
         frame_3 = new QFrame(frame_2);
-        frame_3->setObjectName(QString::fromUtf8("frame_3"));
-        QSizePolicy sizePolicy1(QSizePolicy::Preferred, QSizePolicy::Fixed);
+        frame_3->setObjectName("frame_3");
+        QSizePolicy sizePolicy1(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Fixed);
         sizePolicy1.setHorizontalStretch(0);
         sizePolicy1.setVerticalStretch(25);
         sizePolicy1.setHeightForWidth(frame_3->sizePolicy().hasHeightForWidth());
@@ -243,15 +256,15 @@ public:
         horizontalLayout_4 = new QHBoxLayout(frame_3);
         horizontalLayout_4->setSpacing(6);
         horizontalLayout_4->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_4->setObjectName(QString::fromUtf8("horizontalLayout_4"));
+        horizontalLayout_4->setObjectName("horizontalLayout_4");
         horizontalLayout_4->setContentsMargins(0, 0, 0, 0);
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_4->addItem(horizontalSpacer);
 
         label_7 = new QLabel(frame_3);
-        label_7->setObjectName(QString::fromUtf8("label_7"));
-        QSizePolicy sizePolicy2(QSizePolicy::Fixed, QSizePolicy::Preferred);
+        label_7->setObjectName("label_7");
+        QSizePolicy sizePolicy2(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Preferred);
         sizePolicy2.setHorizontalStretch(0);
         sizePolicy2.setVerticalStretch(0);
         sizePolicy2.setHeightForWidth(label_7->sizePolicy().hasHeightForWidth());
@@ -260,8 +273,8 @@ public:
         horizontalLayout_4->addWidget(label_7);
 
         populationWindowComboBox = new QComboBox(frame_3);
-        populationWindowComboBox->setObjectName(QString::fromUtf8("populationWindowComboBox"));
-        QSizePolicy sizePolicy3(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        populationWindowComboBox->setObjectName("populationWindowComboBox");
+        QSizePolicy sizePolicy3(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
         sizePolicy3.setHorizontalStretch(0);
         sizePolicy3.setVerticalStretch(0);
         sizePolicy3.setHeightForWidth(populationWindowComboBox->sizePolicy().hasHeightForWidth());
@@ -269,7 +282,7 @@ public:
 
         horizontalLayout_4->addWidget(populationWindowComboBox);
 
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_4->addItem(horizontalSpacer_2);
 
@@ -277,7 +290,7 @@ public:
         verticalLayout->addWidget(frame_3);
 
         GV_Population = new QGraphicsView(frame_2);
-        GV_Population->setObjectName(QString::fromUtf8("GV_Population"));
+        GV_Population->setObjectName("GV_Population");
         sizePolicy3.setHeightForWidth(GV_Population->sizePolicy().hasHeightForWidth());
         GV_Population->setSizePolicy(sizePolicy3);
         GV_Population->setMinimumSize(QSize(500, 350));
@@ -296,9 +309,9 @@ public:
 
         verticalLayout_2 = new QVBoxLayout();
         verticalLayout_2->setSpacing(3);
-        verticalLayout_2->setObjectName(QString::fromUtf8("verticalLayout_2"));
+        verticalLayout_2->setObjectName("verticalLayout_2");
         frame_4 = new QFrame(frame_2);
-        frame_4->setObjectName(QString::fromUtf8("frame_4"));
+        frame_4->setObjectName("frame_4");
         sizePolicy1.setHeightForWidth(frame_4->sizePolicy().hasHeightForWidth());
         frame_4->setSizePolicy(sizePolicy1);
         frame_4->setMinimumSize(QSize(0, 25));
@@ -308,26 +321,26 @@ public:
         horizontalLayout_2 = new QHBoxLayout(frame_4);
         horizontalLayout_2->setSpacing(6);
         horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        horizontalLayout_2->setObjectName("horizontalLayout_2");
         horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
-        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_2->addItem(horizontalSpacer_3);
 
         label_2 = new QLabel(frame_4);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setObjectName("label_2");
         label_2->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
 
         horizontalLayout_2->addWidget(label_2);
 
         environmentWindowComboBox = new QComboBox(frame_4);
-        environmentWindowComboBox->setObjectName(QString::fromUtf8("environmentWindowComboBox"));
+        environmentWindowComboBox->setObjectName("environmentWindowComboBox");
         sizePolicy3.setHeightForWidth(environmentWindowComboBox->sizePolicy().hasHeightForWidth());
         environmentWindowComboBox->setSizePolicy(sizePolicy3);
 
         horizontalLayout_2->addWidget(environmentWindowComboBox);
 
-        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_4 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_2->addItem(horizontalSpacer_4);
 
@@ -335,7 +348,7 @@ public:
         verticalLayout_2->addWidget(frame_4);
 
         GV_Environment = new QGraphicsView(frame_2);
-        GV_Environment->setObjectName(QString::fromUtf8("GV_Environment"));
+        GV_Environment->setObjectName("GV_Environment");
         sizePolicy3.setHeightForWidth(GV_Environment->sizePolicy().hasHeightForWidth());
         GV_Environment->setSizePolicy(sizePolicy3);
         GV_Environment->setMinimumSize(QSize(500, 350));
@@ -351,7 +364,7 @@ public:
         verticalLayout_4->addWidget(frame_2);
 
         testLog = new QTextEdit(centralWidget);
-        testLog->setObjectName(QString::fromUtf8("testLog"));
+        testLog->setObjectName("testLog");
         sizePolicy3.setHeightForWidth(testLog->sizePolicy().hasHeightForWidth());
         testLog->setSizePolicy(sizePolicy3);
         testLog->setTextInteractionFlags(Qt::TextSelectableByMouse);
@@ -359,8 +372,8 @@ public:
         verticalLayout_4->addWidget(testLog);
 
         frame = new QFrame(centralWidget);
-        frame->setObjectName(QString::fromUtf8("frame"));
-        QSizePolicy sizePolicy4(QSizePolicy::Preferred, QSizePolicy::Maximum);
+        frame->setObjectName("frame");
+        QSizePolicy sizePolicy4(QSizePolicy::Policy::Preferred, QSizePolicy::Policy::Maximum);
         sizePolicy4.setHorizontalStretch(0);
         sizePolicy4.setVerticalStretch(0);
         sizePolicy4.setHeightForWidth(frame->sizePolicy().hasHeightForWidth());
@@ -370,27 +383,27 @@ public:
         verticalLayout_5 = new QVBoxLayout(frame);
         verticalLayout_5->setSpacing(3);
         verticalLayout_5->setContentsMargins(11, 11, 11, 11);
-        verticalLayout_5->setObjectName(QString::fromUtf8("verticalLayout_5"));
+        verticalLayout_5->setObjectName("verticalLayout_5");
         verticalLayout_5->setContentsMargins(0, 0, 0, 0);
         scrollArea = new QScrollArea(frame);
-        scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
+        scrollArea->setObjectName("scrollArea");
         scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
-        scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 1288, 68));
+        scrollAreaWidgetContents->setObjectName("scrollAreaWidgetContents");
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 1288, 69));
         horizontalLayout_5 = new QHBoxLayout(scrollAreaWidgetContents);
         horizontalLayout_5->setSpacing(6);
         horizontalLayout_5->setContentsMargins(11, 11, 11, 11);
-        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
+        horizontalLayout_5->setObjectName("horizontalLayout_5");
         horizontalLayout_3 = new QHBoxLayout();
         horizontalLayout_3->setSpacing(6);
-        horizontalLayout_3->setObjectName(QString::fromUtf8("horizontalLayout_3"));
+        horizontalLayout_3->setObjectName("horizontalLayout_3");
         horizontalLayout_3->setSizeConstraint(QLayout::SetMinAndMaxSize);
         batchLabel = new QLabel(scrollAreaWidgetContents);
-        batchLabel->setObjectName(QString::fromUtf8("batchLabel"));
-        QSizePolicy sizePolicy5(QSizePolicy::Maximum, QSizePolicy::Preferred);
+        batchLabel->setObjectName("batchLabel");
+        QSizePolicy sizePolicy5(QSizePolicy::Policy::Maximum, QSizePolicy::Policy::Preferred);
         sizePolicy5.setHorizontalStretch(0);
         sizePolicy5.setVerticalStretch(0);
         sizePolicy5.setHeightForWidth(batchLabel->sizePolicy().hasHeightForWidth());
@@ -399,18 +412,18 @@ public:
         horizontalLayout_3->addWidget(batchLabel);
 
         LabelBatch = new QLabel(scrollAreaWidgetContents);
-        LabelBatch->setObjectName(QString::fromUtf8("LabelBatch"));
+        LabelBatch->setObjectName("LabelBatch");
         sizePolicy5.setHeightForWidth(LabelBatch->sizePolicy().hasHeightForWidth());
         LabelBatch->setSizePolicy(sizePolicy5);
 
         horizontalLayout_3->addWidget(LabelBatch);
 
-        horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_5 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_3->addItem(horizontalSpacer_5);
 
         iterationLabel = new QLabel(scrollAreaWidgetContents);
-        iterationLabel->setObjectName(QString::fromUtf8("iterationLabel"));
+        iterationLabel->setObjectName("iterationLabel");
         sizePolicy5.setHeightForWidth(iterationLabel->sizePolicy().hasHeightForWidth());
         iterationLabel->setSizePolicy(sizePolicy5);
         iterationLabel->setTextFormat(Qt::AutoText);
@@ -419,18 +432,18 @@ public:
         horizontalLayout_3->addWidget(iterationLabel);
 
         LabelIteration = new QLabel(scrollAreaWidgetContents);
-        LabelIteration->setObjectName(QString::fromUtf8("LabelIteration"));
+        LabelIteration->setObjectName("LabelIteration");
         sizePolicy5.setHeightForWidth(LabelIteration->sizePolicy().hasHeightForWidth());
         LabelIteration->setSizePolicy(sizePolicy5);
 
         horizontalLayout_3->addWidget(LabelIteration);
 
-        horizontalSpacer_6 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_6 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_3->addItem(horizontalSpacer_6);
 
         iterationsperhourLabel = new QLabel(scrollAreaWidgetContents);
-        iterationsperhourLabel->setObjectName(QString::fromUtf8("iterationsperhourLabel"));
+        iterationsperhourLabel->setObjectName("iterationsperhourLabel");
         sizePolicy5.setHeightForWidth(iterationsperhourLabel->sizePolicy().hasHeightForWidth());
         iterationsperhourLabel->setSizePolicy(sizePolicy5);
         iterationsperhourLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
@@ -438,18 +451,18 @@ public:
         horizontalLayout_3->addWidget(iterationsperhourLabel);
 
         LabelIterationsPerHour = new QLabel(scrollAreaWidgetContents);
-        LabelIterationsPerHour->setObjectName(QString::fromUtf8("LabelIterationsPerHour"));
+        LabelIterationsPerHour->setObjectName("LabelIterationsPerHour");
         sizePolicy5.setHeightForWidth(LabelIterationsPerHour->sizePolicy().hasHeightForWidth());
         LabelIterationsPerHour->setSizePolicy(sizePolicy5);
 
         horizontalLayout_3->addWidget(LabelIterationsPerHour);
 
-        horizontalSpacer_7 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_7 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_3->addItem(horizontalSpacer_7);
 
         crittersLabel = new QLabel(scrollAreaWidgetContents);
-        crittersLabel->setObjectName(QString::fromUtf8("crittersLabel"));
+        crittersLabel->setObjectName("crittersLabel");
         sizePolicy5.setHeightForWidth(crittersLabel->sizePolicy().hasHeightForWidth());
         crittersLabel->setSizePolicy(sizePolicy5);
         crittersLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
@@ -457,18 +470,18 @@ public:
         horizontalLayout_3->addWidget(crittersLabel);
 
         LabelCritters = new QLabel(scrollAreaWidgetContents);
-        LabelCritters->setObjectName(QString::fromUtf8("LabelCritters"));
+        LabelCritters->setObjectName("LabelCritters");
         sizePolicy5.setHeightForWidth(LabelCritters->sizePolicy().hasHeightForWidth());
         LabelCritters->setSizePolicy(sizePolicy5);
 
         horizontalLayout_3->addWidget(LabelCritters);
 
-        horizontalSpacer_8 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_8 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_3->addItem(horizontalSpacer_8);
 
         msPerIterationLabel = new QLabel(scrollAreaWidgetContents);
-        msPerIterationLabel->setObjectName(QString::fromUtf8("msPerIterationLabel"));
+        msPerIterationLabel->setObjectName("msPerIterationLabel");
         sizePolicy5.setHeightForWidth(msPerIterationLabel->sizePolicy().hasHeightForWidth());
         msPerIterationLabel->setSizePolicy(sizePolicy5);
         msPerIterationLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
@@ -476,18 +489,18 @@ public:
         horizontalLayout_3->addWidget(msPerIterationLabel);
 
         LabelSpeed = new QLabel(scrollAreaWidgetContents);
-        LabelSpeed->setObjectName(QString::fromUtf8("LabelSpeed"));
+        LabelSpeed->setObjectName("LabelSpeed");
         sizePolicy5.setHeightForWidth(LabelSpeed->sizePolicy().hasHeightForWidth());
         LabelSpeed->setSizePolicy(sizePolicy5);
 
         horizontalLayout_3->addWidget(LabelSpeed);
 
-        horizontalSpacer_9 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_9 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_3->addItem(horizontalSpacer_9);
 
         meanFitLabel = new QLabel(scrollAreaWidgetContents);
-        meanFitLabel->setObjectName(QString::fromUtf8("meanFitLabel"));
+        meanFitLabel->setObjectName("meanFitLabel");
         sizePolicy5.setHeightForWidth(meanFitLabel->sizePolicy().hasHeightForWidth());
         meanFitLabel->setSizePolicy(sizePolicy5);
         meanFitLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
@@ -495,18 +508,18 @@ public:
         horizontalLayout_3->addWidget(meanFitLabel);
 
         LabelFitness = new QLabel(scrollAreaWidgetContents);
-        LabelFitness->setObjectName(QString::fromUtf8("LabelFitness"));
+        LabelFitness->setObjectName("LabelFitness");
         sizePolicy5.setHeightForWidth(LabelFitness->sizePolicy().hasHeightForWidth());
         LabelFitness->setSizePolicy(sizePolicy5);
 
         horizontalLayout_3->addWidget(LabelFitness);
 
-        horizontalSpacer_10 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_10 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_3->addItem(horizontalSpacer_10);
 
         speciesLabel = new QLabel(scrollAreaWidgetContents);
-        speciesLabel->setObjectName(QString::fromUtf8("speciesLabel"));
+        speciesLabel->setObjectName("speciesLabel");
         sizePolicy5.setHeightForWidth(speciesLabel->sizePolicy().hasHeightForWidth());
         speciesLabel->setSizePolicy(sizePolicy5);
         speciesLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
@@ -514,18 +527,18 @@ public:
         horizontalLayout_3->addWidget(speciesLabel);
 
         LabelSpecies = new QLabel(scrollAreaWidgetContents);
-        LabelSpecies->setObjectName(QString::fromUtf8("LabelSpecies"));
+        LabelSpecies->setObjectName("LabelSpecies");
         sizePolicy5.setHeightForWidth(LabelSpecies->sizePolicy().hasHeightForWidth());
         LabelSpecies->setSizePolicy(sizePolicy5);
 
         horizontalLayout_3->addWidget(LabelSpecies);
 
-        horizontalSpacer_11 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer_11 = new QSpacerItem(40, 20, QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Minimum);
 
         horizontalLayout_3->addItem(horizontalSpacer_11);
 
         environmentLabel = new QLabel(scrollAreaWidgetContents);
-        environmentLabel->setObjectName(QString::fromUtf8("environmentLabel"));
+        environmentLabel->setObjectName("environmentLabel");
         sizePolicy5.setHeightForWidth(environmentLabel->sizePolicy().hasHeightForWidth());
         environmentLabel->setSizePolicy(sizePolicy5);
         environmentLabel->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
@@ -533,7 +546,7 @@ public:
         horizontalLayout_3->addWidget(environmentLabel);
 
         LabelEnvironment = new QLabel(scrollAreaWidgetContents);
-        LabelEnvironment->setObjectName(QString::fromUtf8("LabelEnvironment"));
+        LabelEnvironment->setObjectName("LabelEnvironment");
         sizePolicy5.setHeightForWidth(LabelEnvironment->sizePolicy().hasHeightForWidth());
         LabelEnvironment->setSizePolicy(sizePolicy5);
         LabelEnvironment->setAlignment(Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter);
@@ -552,32 +565,32 @@ public:
 
         MainWindow->setCentralWidget(centralWidget);
         statusBar = new QStatusBar(MainWindow);
-        statusBar->setObjectName(QString::fromUtf8("statusBar"));
+        statusBar->setObjectName("statusBar");
         MainWindow->setStatusBar(statusBar);
         genomeComparisonDock = new QDockWidget(MainWindow);
-        genomeComparisonDock->setObjectName(QString::fromUtf8("genomeComparisonDock"));
+        genomeComparisonDock->setObjectName("genomeComparisonDock");
         genomeComparisonDock->setMinimumSize(QSize(250, 150));
         genomeComparisonDock->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
         genomeComparisonContent = new QWidget();
-        genomeComparisonContent->setObjectName(QString::fromUtf8("genomeComparisonContent"));
+        genomeComparisonContent->setObjectName("genomeComparisonContent");
         genomeComparisonDock->setWidget(genomeComparisonContent);
-        MainWindow->addDockWidget(Qt::BottomDockWidgetArea, genomeComparisonDock);
+        MainWindow->addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, genomeComparisonDock);
         toolBar = new QToolBar(MainWindow);
-        toolBar->setObjectName(QString::fromUtf8("toolBar"));
-        MainWindow->addToolBar(Qt::TopToolBarArea, toolBar);
+        toolBar->setObjectName("toolBar");
+        MainWindow->addToolBar(Qt::ToolBarArea::TopToolBarArea, toolBar);
         menuBar = new QMenuBar(MainWindow);
-        menuBar->setObjectName(QString::fromUtf8("menuBar"));
+        menuBar->setObjectName("menuBar");
         menuBar->setGeometry(QRect(0, 0, 1292, 22));
         menuCommands = new QMenu(menuBar);
-        menuCommands->setObjectName(QString::fromUtf8("menuCommands"));
+        menuCommands->setObjectName("menuCommands");
         menuCommands->setMouseTracking(true);
         menuCommands->setFocusPolicy(Qt::NoFocus);
         menuTools = new QMenu(menuBar);
-        menuTools->setObjectName(QString::fromUtf8("menuTools"));
+        menuTools->setObjectName("menuTools");
         menuCustom_Logging = new QMenu(menuTools);
-        menuCustom_Logging->setObjectName(QString::fromUtf8("menuCustom_Logging"));
+        menuCustom_Logging->setObjectName("menuCustom_Logging");
         menuHelp = new QMenu(menuBar);
-        menuHelp->setObjectName(QString::fromUtf8("menuHelp"));
+        menuHelp->setObjectName("menuHelp");
         MainWindow->setMenuBar(menuBar);
 
         menuBar->addAction(menuCommands->menuAction());
@@ -610,6 +623,9 @@ public:
         menuCustom_Logging->addAction(actionVariable_mutation_logging);
         menuCustom_Logging->addAction(actionSpeciation_logging);
         menuCustom_Logging->addAction(actionDisparity_logging);
+        menuCustom_Logging->addAction(actionVariable_hgt_prob_logging);
+        menuCustom_Logging->addAction(actionVariable_hgt_len_logging);
+        menuCustom_Logging->addAction(actionVariable_hgt_id_logging);
         menuHelp->addAction(actionReportBugIssueFeatureRequest);
         menuHelp->addAction(actionCode_on_GitHub);
         menuHelp->addAction(actionOnline_User_Manual);
@@ -617,7 +633,7 @@ public:
         menuHelp->addAction(actionAbout);
 
         retranslateUi(MainWindow);
-        QObject::connect(actionGenomeComparison, SIGNAL(triggered(bool)), genomeComparisonDock, SLOT(setVisible(bool)));
+        QObject::connect(actionGenomeComparison, &QAction::triggered, genomeComparisonDock, &QDockWidget::setVisible);
 
         populationWindowComboBox->setCurrentIndex(-1);
 
@@ -699,6 +715,9 @@ public:
         actionOutput_Dock->setText(QCoreApplication::translate("MainWindow", "Output Dock", nullptr));
         actionUseNewSpeciesID->setText(QCoreApplication::translate("MainWindow", "UseNewSpeciesID", nullptr));
         actionGatherBySpecies->setText(QCoreApplication::translate("MainWindow", "GatherBySpecies", nullptr));
+        actionVariable_hgt_prob_logging->setText(QCoreApplication::translate("MainWindow", "Variable HGT Probability logging", nullptr));
+        actionVariable_hgt_len_logging->setText(QCoreApplication::translate("MainWindow", "Variable HGT Length logging", nullptr));
+        actionVariable_hgt_id_logging->setText(QCoreApplication::translate("MainWindow", "Variable HGT ID logging", nullptr));
         label_7->setText(QCoreApplication::translate("MainWindow", "<b>Population:</b>", nullptr));
         label_2->setText(QCoreApplication::translate("MainWindow", "<html><head/><body><p><span style=\" font-weight:600;\">Environment/Linkage:</span></p></body></html>", nullptr));
         batchLabel->setText(QCoreApplication::translate("MainWindow", "<b>Batch:</b>", nullptr));

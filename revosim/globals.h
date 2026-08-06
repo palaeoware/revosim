@@ -74,12 +74,19 @@
 #define LOG_SPECIES 7
 #define LOG_HEADER 8
 #define LOG_DUMP_INDIVIDUALS 9
+#define LOG_HGT_PROB 10
+#define LOG_HGT_LEN 11
+#define LOG_HGT_ID 12
+
 
 #define RESEED_MODE_SINGLE_RANDOM 0
 #define RESEED_MODE_SINGLE_KNOWN 1
 #define RESEED_MODE_DUAL_RANDOM 2
 #define RESEED_MODE_DUAL_IDENTICAL 3
 #define RESEED_MODE_DUAL_KNOWN 4
+
+#define HGT_SYNOYMOUS 0
+#define HGT_NON_SYNOYMOUS 1
 
 //RJG - Add new linkages here - this is a define in order to be able to provide text to the command line parser (needed before simulation manager is created)
 #define LINKAGES_LIST "Energy", "No_selection", "Mutation_rate"

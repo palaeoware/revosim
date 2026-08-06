@@ -114,6 +114,7 @@ bool EnvironmentFitnessSystem::findRandomViableGenome(quint32 *genome, const qui
         }
         if (baseScore < settleTolerance)
             return true; //found!
+
     }
     return false;
 }
